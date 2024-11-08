@@ -6,6 +6,7 @@ import '../app/styles/css/style.css'
 import 'swiper/swiper-bundle.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import Footer from "./components/footer/footer";
 
 
 export const metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({ children }) {
      
         <Navbar/>
         {children}
+        <Footer/>
       </body>
     </html>
   );

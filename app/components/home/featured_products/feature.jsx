@@ -1,5 +1,7 @@
 import React from "react";
 import Image from "next/image";
+import { CiSearch } from "react-icons/ci";
+import { FaCartArrowDown } from "react-icons/fa";
 function Feature() {
   return (
     <div className="container">
@@ -8,20 +10,33 @@ function Feature() {
           Featured Products
         </h2>
         <div className="col-12 d-flex flex-wrap gap-3 py-5">
-          <div class="card" style={{ width: "15rem" }}>
+          <div class="card" style={{ width: "18rem" }}>
             <Image
-              src="/img/product/product-1.jpg"
+              src="/img/product/dress-1.png"
               className="card-img-top"
               alt="product image"
               width={500}
               height={250}
             />
-           <div className="py-2 justify-content-center d-flex flex-column align-items-center">
-           <h4>Dress</h4>
-           <h6 className="product_price">1000 tk</h6>
-           </div>
+
+            <div className="product-option d-flex  flex-column justify-content-center rounded align-items-center">
+              <FaCartArrowDown className="fs-4 " />
+              <CiSearch className="fs-4 mt-2" />
+            </div>
+
+            <div className="pt-5 pb-3 justify-content-center d-flex flex-column px-3">
+              <div>
+                <h5>
+                  2024 autumn new girl nice wallet
+                </h5>
+              </div>
+              <div className="mt-3">
+                <span class="text-decoration-line-through me-2 ">$35.00</span>{" "}
+                <br />
+                <span class="product_price  fw-bold">$35.00</span>
+              </div>
+            </div>
           </div>
-          
         </div>
       </div>
     </div>
