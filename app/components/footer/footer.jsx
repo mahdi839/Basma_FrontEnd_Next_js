@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { FaFacebook,FaInstagram,FaYoutube } from "react-icons/fa";
+import { FaFacebook,FaInstagram,FaYoutube,FaWhatsappSquare } from "react-icons/fa";
 export default function Footer() {
   return (
     <div className="d-full bg-black">
@@ -37,9 +37,13 @@ export default function Footer() {
               <span className="footer_icons text-white pe-3 fs-3">
                 <FaYoutube />
               </span>
-              <span className="footer_icons text-white fs-3">
+              <span className="footer_icons text-white pe-3 fs-3">
                 <FaInstagram />
               </span>
+              <span className="footer_icons text-white fs-3">
+              <FaWhatsappSquare />
+            </span>
+              
             </div>
           </div>
         </div>

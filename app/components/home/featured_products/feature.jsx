@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
 import { FaCartArrowDown } from "react-icons/fa";
+import Link from "next/link";
 function Feature() {
   return (
     <div className="container">
@@ -26,9 +27,9 @@ function Feature() {
 
             <div className="pt-5 pb-3 justify-content-center d-flex flex-column px-3">
               <div>
-                <h5>
+                <Link href="https://react-icons.github.io/react-icons/search/#q=what">
                   2024 autumn new girl nice wallet
-                </h5>
+                </Link>
               </div>
               <div className="mt-3">
                 <span class="text-decoration-line-through me-2 ">$35.00</span>{" "}
