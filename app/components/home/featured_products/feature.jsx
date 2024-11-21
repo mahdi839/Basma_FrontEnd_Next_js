@@ -22,12 +22,12 @@ function Feature() {
 
             <div className="product-option d-flex  flex-column justify-content-center rounded align-items-center">
               <FaCartArrowDown className="fs-4 " />
-              <CiSearch className="fs-4 mt-2" />
+              <Link href="/product-page"> <CiSearch className="fs-4 mt-2 text-white" /> </Link> 
             </div>
 
             <div className="pt-5 pb-3 justify-content-center d-flex flex-column px-3">
               <div>
-                <Link href="https://react-icons.github.io/react-icons/search/#q=what">
+                <Link href="/product-page">
                   2024 autumn new girl nice wallet
                 </Link>
               </div>

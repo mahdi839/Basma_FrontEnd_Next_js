@@ -726,6 +726,43 @@ ol {
 	letter-spacing: 1px;
 }
 
-
+/* product -page start */
+.qty-div{
+	border: 1px solid #0101;
+	padding: 5px 20px;
+}
+.qty-div input {
+	width: 45px;
+	border: none;
+	outline: none;
+	text-align: center;
+}
+.cart-minus,.cart-plus{
+	color: var(--primary-color);
+}
+.cart-button{
+	background: var(--primary-color);
+	color: white;
+	
+}
+.product_desc .order_now{
+	background: var(--primary-color);
+	color: white;
+	margin-top: 25px;
+	width: 50%;
+	height: 35px;
+	border: none;
+	outline: none;
+	
+}
+.product_desc .call_now{
+	background: rgb(10, 42, 85);
+	color: white;
+	margin-top: 25px;
+	width: 50%;
+	height: 35px;
+	border: none;
+	outline: none;
+}
 
 
