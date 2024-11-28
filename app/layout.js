@@ -3,9 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../app/styles/globals.scss'
 import '../app/styles/css/bootstrap.min.css'
 import '../app/styles/css/style.css'
-import 'swiper/swiper-bundle.css';
-import 'swiper/css';
-import 'swiper/css/navigation';
 import Footer from "./components/footer/footer";
 
 

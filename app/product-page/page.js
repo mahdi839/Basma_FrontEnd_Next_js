@@ -1,10 +1,14 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { FaMinus, FaPhone, FaPlus } from "react-icons/fa";
+import { FaFirstOrder, FaMinus, FaPhone, FaPlus } from "react-icons/fa";
+
+import { IoIosArrowUp,IoIosArrowDown  } from "react-icons/io";
 
 export default function page() {
   const [imgUrl, setImgUrl] = useState("");
+  const [activeTab, setActiveTab] = useState("desc");
+  const [show, setShow] = useState(0);
   let images = [
     {
       id: 1,
@@ -23,6 +27,13 @@ export default function page() {
   function showImage(id) {
     const clickedImg = images.find((img) => img.id == id);
     setImgUrl(clickedImg.src);
+  }
+
+  function showTab(id) {
+    setActiveTab(id);
+  }
+  function showAccording(id) {
+    setShow((prev)=>prev==id?0:id);
   }
   return (
     <>
@@ -65,6 +76,25 @@ export default function page() {
             <div className="ms-5">
               <p className="fw-bold">2024 autumn new girl nice wallet</p>
               <h5 className="product_price">450tk</h5>
+              <div className="flex justify-content-center align-items-center mt-3 size-div">
+                <span className="me-3 fw-bold">Select</span>
+                <input className="me-3 " id="m" type="radio" name="size" />
+                <label htmlFor="m" className="me-3 fw-bold">
+                  M
+                </label>
+                <input className="me-3 " type="radio" name="size" />
+                <label htmlFor="l" className="me-3 fw-bold">
+                  L
+                </label>
+                <input className="me-3 " type="radio" name="size" />
+                <label htmlFor="xl" className="me-3 fw-bold">
+                  xl
+                </label>
+                <input className="me-3 " type="radio" name="size" />
+                <label htmlFor="xxl" className="me-3 fw-bold">
+                  xxl
+                </label>
+              </div>
               <p className="pt-2">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
                 industry.lorem jkdjfks kjflk kjsdklfja l skdfjls tlerjl lkjfla
@@ -81,17 +111,156 @@ export default function page() {
                 <button className="btn cart-button">Add To Cart</button>
               </div>
             </div>
-           <div className="ms-5">
-           <button className=" order_now">Order Now</button> <br />
-           <button className=" call_now">
-             <span className="pe-1">
-               <FaPhone />
-             </span>
-             01795802507
-           </button>
-           </div>
+            <div className="ms-5">
+              <button className=" order_now">
+                <span className="pe-1">
+                  <FaFirstOrder />
+                </span>
+                Order Now
+              </button>
+              <br />
+              <button className=" call_now">
+                <span className="pe-1">
+                  <FaPhone />
+                </span>
+                01795802507
+              </button>
+            </div>
           </div>
         </div>
+        <div className="desc_tab_header d-flex justify-content-center gap-5">
+          <button
+            className={`btn ${activeTab == "desc" ? "active" : ""} `}
+            onClick={() => showTab("desc")}
+          >
+            Description
+          </button>
+          <button
+            className={`btn ${activeTab == "faq" ? "active" : ""} `}
+            onClick={() => showTab("faq")}
+          >
+            FAQ
+          </button>
+          <button
+            className={`btn ${activeTab == "terms" ? "active" : ""} `}
+            onClick={() => showTab("terms")}
+          >
+            Terms & condition
+          </button>
+        </div>
+        {activeTab == "desc" && (
+          <div className="flex justify-content-center desc-text">
+            <p className="p-3">
+              Lorem Ipsum is simply dummy text of the printing and typesetting
+              industry. Lorem Ipsum has been the industry's standard dummy text
+              ever since the 1500s, when an unknown printer took a galley of
+              type and scrambled it to make a type specimen book. It has
+              survived not only five centuries, but also the leap into
+              electronic typesetting, remaining essentially unchanged. It was
+              popularised in the 1960s with the release of Letraset sheets
+              containing Lorem Ipsum passages, and more recently with desktop
+              publishing software like Aldus PageMaker including versions of
+              Lorem Ipsum.
+            </p>
+          </div>
+        )}
+        {activeTab == "faq" && (
+          <div className=" faq-text card  my-3">
+            <div className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 " onClick={()=>showAccording(1)}>
+              <div className="d-flex justify-content-between  "  >
+                <p className="pt-2 ps-3">
+                  how much price? is this product available? i want this how much price? is this product available? i want this
+                </p>
+                <span className="pt-2">
+                  {show == 1 ? <IoIosArrowDown className="custome-icon " />: <IoIosArrowUp className="custome-icon" />}
+                  
+                </span>
+              </div>
+              {
+                show ==1 && (
+                  <div className="text-center px-3">
+                Contrary to popular belief, Lorem Ipsum is not simply random
+                text. It has roots in a piece of classical Latin literature from
+                45 BC, making it over 2000 years old. Richard McClintock, a
+                Latin professor at Hampden-Sydney College in Virginia, looked up
+                one of the more obscure Latin words, consectetur, from a Lorem
+                Ipsum passage, and going through the cites of the word in
+                classical literature, discovered the undoubtable source. Lorem
+                Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus
+                Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero,
+                written in 45 BC. This book is a treatise on the theory of
+                ethics, very popular during the Renaissance. The first line of
+                Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line
+                in section 1.10.32.
+              </div>
+                )
+              }
+            </div>
+            <div className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 " onClick={()=>showAccording(2)}>
+              <div className="d-flex justify-content-between  "  >
+                <p className="pt-2 ps-3">
+                  how much price? is this product available? i want this
+                </p>
+                <span className="pt-2">
+                {show == 2 ? <IoIosArrowDown className="custome-icon " />: <IoIosArrowUp className="custome-icon" />}
+                </span>
+              </div>
+              {
+                show == 2 && (
+                  <div className="text-center px-3">
+                Contrary to popular belief, Lorem Ipsum is not simply random
+                text. It has roots in a piece of classical Latin literature from
+                45 BC, making it over 2000 years old. Richard McClintock, a
+                Latin professor at Hampden-Sydney College in Virginia, looked up
+                one of the more obscure Latin words, consectetur, from a Lorem
+                Ipsum passage, and going through the cites of the word in
+                classical literature, discovered the undoubtable source. Lorem
+                Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus
+                Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero,
+                written in 45 BC. This book is a treatise on the theory of
+                ethics, very popular during the Renaissance. The first line of
+                Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line
+                in section 1.10.32.
+              </div>
+                )
+              }
+            </div>
+            <div className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 " onClick={()=>showAccording(3)}>
+              <div className="d-flex justify-content-between"  >
+                <p className="pt-2 ps-3">
+                  how much price? is this product available? i want this
+                </p>
+                <span className="pt-2">
+                {show == 3 ? <IoIosArrowDown className="custome-icon " />: <IoIosArrowUp className="custome-icon" />}
+                </span>
+              </div>
+              {
+                show == 3 && (
+                  <div className="text-center px-3">
+                Contrary to popular belief, Lorem Ipsum is not simply random
+                text. It has roots in a piece of classical Latin literature from
+                45 BC, making it over 2000 years old. Richard McClintock, a
+                Latin professor at Hampden-Sydney College in Virginia, looked up
+                one of the more obscure Latin words, consectetur, from a Lorem
+                Ipsum passage, and going through the cites of the word in
+                classical literature, discovered the undoubtable source. Lorem
+                Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus
+                Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero,
+                written in 45 BC. This book is a treatise on the theory of
+                ethics, very popular during the Renaissance. The first line of
+                Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line
+                in section 1.10.32.
+              </div>
+                )
+              }
+            </div>
+          </div>
+        )}
+        {activeTab == "terms" && (
+          <div className="flex justify-content-center terms-text">
+            <p className="p-3">terms and condition</p>
+          </div>
+        )}
       </div>
     </>
   );
