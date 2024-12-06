@@ -3,12 +3,15 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { FaFirstOrder, FaMinus, FaPhone, FaPlus } from "react-icons/fa";
 
-import { IoIosArrowUp,IoIosArrowDown  } from "react-icons/io";
+import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+
+
 
 export default function page() {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [show, setShow] = useState(0);
+
   let images = [
     {
       id: 1,
@@ -27,13 +30,14 @@ export default function page() {
   function showImage(id) {
     const clickedImg = images.find((img) => img.id == id);
     setImgUrl(clickedImg.src);
+    
   }
 
   function showTab(id) {
     setActiveTab(id);
   }
   function showAccording(id) {
-    setShow((prev)=>prev==id?0:id);
+    setShow((prev) => (prev == id ? 0 : id));
   }
   return (
     <>
@@ -162,103 +166,159 @@ export default function page() {
               publishing software like Aldus PageMaker including versions of
               Lorem Ipsum.
             </p>
+
+            <div
+              style={{
+                position: "relative",
+                paddingBottom: "56.25%",
+                height: 0,
+                overflow: "hidden",
+                marginBottom:'2rem'
+              }}
+            >
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/po0s-Dawm4U?si=eb5_4OJBaMMgWZ-P"
+                title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                }}
+              ></iframe>
+            </div>
           </div>
         )}
         {activeTab == "faq" && (
           <div className=" faq-text card  my-3">
-            <div className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 " onClick={()=>showAccording(1)}>
-              <div className="d-flex justify-content-between  "  >
+            <div
+              className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 "
+              onClick={() => showAccording(1)}
+            >
+              <div className="d-flex justify-content-between  border ">
                 <p className="pt-2 ps-3">
-                  how much price? is this product available? i want this how much price? is this product available? i want this
+                  how much price? is this product available? i want this how
+                  much price? is this product available? i want this
                 </p>
                 <span className="pt-2">
-                  {show == 1 ? <IoIosArrowDown className="custome-icon " />: <IoIosArrowUp className="custome-icon" />}
-                  
+                  {show == 1 ? (
+                    <IoIosArrowDown className="custome-icon " />
+                  ) : (
+                    <IoIosArrowUp className="custome-icon" />
+                  )}
                 </span>
               </div>
-              {
-                show ==1 && (
-                  <div className="text-center px-3">
-                Contrary to popular belief, Lorem Ipsum is not simply random
-                text. It has roots in a piece of classical Latin literature from
-                45 BC, making it over 2000 years old. Richard McClintock, a
-                Latin professor at Hampden-Sydney College in Virginia, looked up
-                one of the more obscure Latin words, consectetur, from a Lorem
-                Ipsum passage, and going through the cites of the word in
-                classical literature, discovered the undoubtable source. Lorem
-                Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus
-                Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero,
-                written in 45 BC. This book is a treatise on the theory of
-                ethics, very popular during the Renaissance. The first line of
-                Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line
-                in section 1.10.32.
-              </div>
-                )
-              }
+              {show == 1 && (
+                <div className="text-center px-3 pt-2">
+                  Contrary to popular belief, Lorem Ipsum is not simply random
+                  text. It has roots in a piece of classical Latin literature
+                  from 45 BC, making it over 2000 years old. Richard McClintock,
+                  a Latin professor at Hampden-Sydney College in Virginia,
+                  looked up one of the more obscure Latin words, consectetur,
+                  from a Lorem Ipsum passage, and going through the cites of the
+                  word in classical literature, discovered the undoubtable
+                  source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of
+                  "de Finibus Bonorum et Malorum" (The Extremes of Good and
+                  Evil) by Cicero, written in 45 BC. This book is a treatise on
+                  the theory of ethics, very popular during the Renaissance. The
+                  first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
+                  comes from a line in section 1.10.32.
+                </div>
+              )}
             </div>
-            <div className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 " onClick={()=>showAccording(2)}>
-              <div className="d-flex justify-content-between  "  >
+            <div
+              className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 "
+              onClick={() => showAccording(2)}
+            >
+              <div className="d-flex justify-content-between  border">
                 <p className="pt-2 ps-3">
                   how much price? is this product available? i want this
                 </p>
                 <span className="pt-2">
-                {show == 2 ? <IoIosArrowDown className="custome-icon " />: <IoIosArrowUp className="custome-icon" />}
+                  {show == 2 ? (
+                    <IoIosArrowDown className="custome-icon " />
+                  ) : (
+                    <IoIosArrowUp className="custome-icon" />
+                  )}
                 </span>
               </div>
-              {
-                show == 2 && (
-                  <div className="text-center px-3">
-                Contrary to popular belief, Lorem Ipsum is not simply random
-                text. It has roots in a piece of classical Latin literature from
-                45 BC, making it over 2000 years old. Richard McClintock, a
-                Latin professor at Hampden-Sydney College in Virginia, looked up
-                one of the more obscure Latin words, consectetur, from a Lorem
-                Ipsum passage, and going through the cites of the word in
-                classical literature, discovered the undoubtable source. Lorem
-                Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus
-                Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero,
-                written in 45 BC. This book is a treatise on the theory of
-                ethics, very popular during the Renaissance. The first line of
-                Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line
-                in section 1.10.32.
-              </div>
-                )
-              }
+              {show == 2 && (
+                <div className="text-center px-3 pt-2">
+                  Contrary to popular belief, Lorem Ipsum is not simply random
+                  text. It has roots in a piece of classical Latin literature
+                  from 45 BC, making it over 2000 years old. Richard McClintock,
+                  a Latin professor at Hampden-Sydney College in Virginia,
+                  looked up one of the more obscure Latin words, consectetur,
+                  from a Lorem Ipsum passage, and going through the cites of the
+                  word in classical literature, discovered the undoubtable
+                  source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of
+                  "de Finibus Bonorum et Malorum" (The Extremes of Good and
+                  Evil) by Cicero, written in 45 BC. This book is a treatise on
+                  the theory of ethics, very popular during the Renaissance. The
+                  first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
+                  comes from a line in section 1.10.32.
+                </div>
+              )}
             </div>
-            <div className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 " onClick={()=>showAccording(3)}>
-              <div className="d-flex justify-content-between"  >
+            <div
+              className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 "
+              onClick={() => showAccording(3)}
+            >
+              <div className="d-flex justify-content-between border ">
                 <p className="pt-2 ps-3">
                   how much price? is this product available? i want this
                 </p>
                 <span className="pt-2">
-                {show == 3 ? <IoIosArrowDown className="custome-icon " />: <IoIosArrowUp className="custome-icon" />}
+                  {show == 3 ? (
+                    <IoIosArrowDown className="custome-icon " />
+                  ) : (
+                    <IoIosArrowUp className="custome-icon" />
+                  )}
                 </span>
               </div>
-              {
-                show == 3 && (
-                  <div className="text-center px-3">
-                Contrary to popular belief, Lorem Ipsum is not simply random
-                text. It has roots in a piece of classical Latin literature from
-                45 BC, making it over 2000 years old. Richard McClintock, a
-                Latin professor at Hampden-Sydney College in Virginia, looked up
-                one of the more obscure Latin words, consectetur, from a Lorem
-                Ipsum passage, and going through the cites of the word in
-                classical literature, discovered the undoubtable source. Lorem
-                Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus
-                Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero,
-                written in 45 BC. This book is a treatise on the theory of
-                ethics, very popular during the Renaissance. The first line of
-                Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line
-                in section 1.10.32.
-              </div>
-                )
-              }
+              {show == 3 && (
+                <div className="text-center px-3 pt-2">
+                  Contrary to popular belief, Lorem Ipsum is not simply random
+                  text. It has roots in a piece of classical Latin literature
+                  from 45 BC, making it over 2000 years old. Richard McClintock,
+                  a Latin professor at Hampden-Sydney College in Virginia,
+                  looked up one of the more obscure Latin words, consectetur,
+                  from a Lorem Ipsum passage, and going through the cites of the
+                  word in classical literature, discovered the undoubtable
+                  source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of
+                  "de Finibus Bonorum et Malorum" (The Extremes of Good and
+                  Evil) by Cicero, written in 45 BC. This book is a treatise on
+                  the theory of ethics, very popular during the Renaissance. The
+                  first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
+                  comes from a line in section 1.10.32.
+                </div>
+              )}
             </div>
           </div>
         )}
         {activeTab == "terms" && (
           <div className="flex justify-content-center terms-text">
-            <p className="p-3">terms and condition</p>
+            <p className="p-3 ">
+              There are many variations of passages of Lorem Ipsum available,
+              but the majority have suffered alteration in some form, by
+              injected humour, or randomised words which don't look even
+              slightly believable. If you are going to use a passage of Lorem
+              Ipsum, you need to be sure there isn't anything embarrassing
+              hidden in the middle of text. All the Lorem Ipsum generators on
+              the Internet tend to repeat predefined chunks as necessary, making
+              this the first true generator on the Internet. It uses a
+              dictionary of over 200 Latin words, combined with a handful of
+              model sentence structures, to generate Lorem Ipsum which looks
+              reasonable. The generated Lorem Ipsum is therefore always free
+              from repetition, injected humour, or non-characteristic words etc.
+            </p>
           </div>
         )}
       </div>

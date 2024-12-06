@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+
 import {
   FaMapMarkerAlt,
   FaEnvelope,
@@ -13,7 +14,11 @@ import {
   FaTwitter,
   FaLinkedin,
   FaPinterest,
+  FaSign,
+  FaSignInAlt,
+  FaArrowAltCircleRight,
 } from "react-icons/fa";
+import LogButtons from "./LogButtons";
 
 export default function Navbar() {
   return (
@@ -51,10 +56,35 @@ export default function Navbar() {
               </li>
             </ul>
           </div>
-          <div class="header__top__right__auth">
+
+          <div class="header__top__right__auth dropdown">
             <Link href="#">
-              <FaUser class="fa fa-user" /> Login
+              <FaUser
+                class="fa fa-user dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              />{" "}
+              Login
             </Link>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+              <li>
+                <a class="dropdown-item" href="#">
+                  Action
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  Another action
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  Something else here
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
         <nav class="humberger__menu__nav mobile-menu">
@@ -163,10 +193,22 @@ export default function Navbar() {
                       </li>
                     </ul>
                   </div>
-                  <div class="header__top__right__auth">
-                    <Link href="#">
-                      <FaUser class="fa fa-user" /> Login
-                    </Link>
+                  
+                  <div class="header__top__right__auth  dropdown">
+                    <FaUser
+                      class="fa fa-user  dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    />
+                    <ul
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                     <LogButtons />
+                      
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -202,7 +244,7 @@ export default function Navbar() {
                       <FaHeart
                         class="fa fa-heart"
                         style={{ color: "black", fontSize: "20px" }}
-                      />{" "}
+                      />
                       <span>1</span>
                     </Link>
                   </li>
@@ -211,7 +253,7 @@ export default function Navbar() {
                       <FaShoppingBag
                         class="fa fa-shopping-bag"
                         style={{ color: "black", fontSize: "20px" }}
-                      />{" "}
+                      />
                       <span>3</span>
                     </Link>
                   </li>

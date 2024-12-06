@@ -3,7 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
 
 
 :root {
@@ -793,6 +795,27 @@ ol {
 	color: var(--primary-color);
 	font-size: 24px;
 	margin-right: 1rem;
+}
+.admin_log_in{
+	color: #08478f;
+	font-family: "Roboto Slab", serif;
+	position: relative;
+    
+}
+
+.admin_log_in::after{
+	position: absolute;
+	content: "";
+	left: 50%;
+    transform: translateX(-50%);
+	width: 8%;
+	height: 3px;
+	top: 33px;
+	background-color: var(--primary-color);
+}
+.btn{
+	background: var(--primary-color);
+	color: white;
 }
 
 

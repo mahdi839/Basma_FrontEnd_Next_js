@@ -1,9 +1,12 @@
-import Navbar from "./components/navber";
+import Navbar from "./components/nabvar/navber";
 import 'bootstrap/dist/css/bootstrap.min.css'; 
 import '../app/styles/globals.scss'
 import '../app/styles/css/bootstrap.min.css'
 import '../app/styles/css/style.css'
 import Footer from "./components/footer/footer";
+import Bootstrap_js from "./components/bootstrapJs/bootstrap_js";
+import 'react-toastify/dist/ReactToastify.css'; 
+import { ToastContainer } from "react-toastify";
 
 
 export const metadata = {
@@ -19,6 +22,8 @@ export default function RootLayout({ children }) {
       >
      
         <Navbar/>
+        <Bootstrap_js />
+        <ToastContainer />
         {children}
         <Footer/>
       </body>
