@@ -25,7 +25,7 @@ export default function Admin_Log_in() {
       if (response.data.status) {
         localStorage.setItem("token", response.data.token);
         toast.success("successfully log in");
-        router.push('/dashboard/main')
+        router.push('/dashboard')
       }
     } catch (err) {
       toast.error(err.response?.data?.message || "An Error Occured");

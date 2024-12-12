@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto+Serif:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&family=Roboto+Slab:wght@100..900&display=swap');
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+	--primary-color: #DB3340;
+	
+  }
+  .Dashboard_layout{
+    display: flex;
+   
+}
+.dashboard_content{
+    flex: 1;
+    
+}
+.sideBarDiv{
+    width: 15rem;
+    background: var(--primary-color);
+    height: 100vh;
+}
+.sideBar_icon_siteName{
+    
+    position: absolute;
+    top: 1rem;
+    left: 2rem;
+   
+}
+.sideBarIcon{
+    color: white;
+    font-size: 25px;
+    margin-left: 30px;
+}
+
+.sideBar_list{
+    position: absolute;
+    margin-top: 6rem;
+    margin-left: 2rem;
+}
+
+.sideBar_list p {
+    font-size: 15px;
+    font-family: "Roboto Serif", serif;
+
+}
+
+.upload_product{
+   width: 50%;
+   position: absolute;
+   top: 10%;
+   left: 30%;
+}

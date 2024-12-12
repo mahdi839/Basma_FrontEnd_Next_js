@@ -32,7 +32,7 @@ export default function LogButtons() {
                (
                 <>
                 <li >
-               <Link className="dropdown-item" href="/log_in">
+               <Link className="dropdown-item" href="/frontEnd/log_in">
                <MdAssignmentInd  style={{ fontSize: '20px', color: '#DB3340' }}/> <span  className="ml-2"> Log In</span>
                </Link>
                </li>
