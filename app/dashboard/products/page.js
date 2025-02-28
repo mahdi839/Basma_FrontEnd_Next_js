@@ -6,12 +6,12 @@ import Button from '@/app/components/dashboard/components/button/Button';
 export default async function ProductIndexPage() {
   let productData = [];
   try {
-    let response = await getData('products');
+    let response = await getData('api/products');
     productData = response?.data || [];
   } catch (err) {
     return <div>An error occurred</div>;
   }
-
+console.log(productData)
   return (
     <div className="container-fluid py-4">
       <Link href="/dashboard/products/add_product">
