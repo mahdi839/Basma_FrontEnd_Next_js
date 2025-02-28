@@ -11,7 +11,7 @@ export default async function ProductIndexPage() {
   } catch (err) {
     return <div>An error occurred</div>;
   }
-console.log(productData)
+
   return (
     <div className="container-fluid py-4">
       <Link href="/dashboard/products/add_product">

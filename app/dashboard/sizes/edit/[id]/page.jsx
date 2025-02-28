@@ -1,6 +1,6 @@
 "use client"
 import Button from '@/app/components/dashboard/components/button/Button';
-import { getData } from '@/lib/api';
+
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
