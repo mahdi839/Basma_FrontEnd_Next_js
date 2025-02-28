@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { getData } from "@/lib/api";
+import Button from "@/app/components/dashboard/components/button/Button";
 export default function Page() {
     const [ size,setSize] = useState("");
     const [ loading,setLoading] = useState(false);
@@ -36,7 +37,7 @@ export default function Page() {
             <label htmlFor="size" className="fw-bold">Size:</label>
             <input type="text" className="form-control" id="size" name="size" placeholder="Enter size" onChange={(e)=>setSize(e.target.value)} />
           </div>
-          <button type="submit" className="btn btn-primary w-100 mt-3">{loading ? "Adding..." : "Add Size"}</button>
+          <Button type="submit" className="btn btn-primary w-100 mt-3">{loading ? "Adding..." : "Add Size"}</Button>
         </form>
       </div>
     </div>

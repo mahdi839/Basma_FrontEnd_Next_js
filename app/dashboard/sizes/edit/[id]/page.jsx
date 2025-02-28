@@ -1,4 +1,5 @@
 "use client"
+import Button from '@/app/components/dashboard/components/button/Button';
 import { getData } from '@/lib/api';
 import axios from 'axios';
 import { useParams, useRouter } from 'next/navigation'
@@ -53,7 +54,7 @@ export default  function page() {
           <label htmlFor="size" className="fw-bold">Size:</label>
           <input type="text" className="form-control" id="size" name="size" placeholder="Enter size" value={data?.size} onChange={handleChange}/>
         </div>
-        <button type="submit" className="btn btn-primary w-100 mt-3"> {isLoading?"...Updating":"Update"} </button>
+        <Button type="submit" className=" btn-primary w-100 mt-3"> {isLoading?"...Updating":"Update"} </Button>
       </form>
     </div>
   </div>

@@ -46,7 +46,8 @@
 .size_btn{
     background:var(--primary-color);
 }
-.size_btn:hover{
+.btn-hover:hover{
     background: #e60719;
     color: white ;
+    outline: none;
 }

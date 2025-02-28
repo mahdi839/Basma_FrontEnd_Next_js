@@ -60,7 +60,7 @@ export default function SizeTable({ initialSizes }) {
                   <Link href={`/dashboard/sizes/edit/${size.id}`}>
                     <FaEdit className="text-dark"/>
                   </Link>
-                  <FaTrash className="text-danger " onClick={() => handleDelete(size.id)} style={{cursor:'pointer'}}/>
+                  <FaTrash className="text-danger mt-2" onClick={() => handleDelete(size.id)} style={{cursor:'pointer'}}/>
                 </span>
               </td>
             </tr>
