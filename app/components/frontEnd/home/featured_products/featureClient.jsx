@@ -26,7 +26,7 @@ function FeatureClient({products}) {
       }
   }, [products]);
 
-console.log(products)
+
   // Slider settings with autoplay
   const settings = {
     infinite: true,
