@@ -1,36 +1,35 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaFirstOrder, FaMinus, FaPhone, FaPlus } from "react-icons/fa";
-
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { toast } from "react-toastify";
 
 
 
-export default function page() {
+export default function Products({products}) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [show, setShow] = useState(0);
+  const [isLoading,setIsLoading] = useState(true);
 
-  let images = [
-    {
-      id: 1,
-      src: "/img/product/dress-1.png",
-    },
-    {
-      id: 2,
-      src: "/img/featured/feature-1.jpg",
-    },
-    {
-      id: 3,
-      src: "/img/featured/feature-2.jpg",
-    },
-  ];
+
+  let baseUrl = process.env.BACKEND_URL;
+
+  useEffect(()=>{
+    if(products){
+        setIsLoading(false)
+    }
+    if(products.error){
+        toast.error(products.error)
+    }
+  },[products])
+
+  
 
   function showImage(id) {
-    const clickedImg = images.find((img) => img.id == id);
-    setImgUrl(clickedImg.src);
-    
+    const clickedImg = products.images.find((img) => img.id == id);
+    setImgUrl(baseUrl + clickedImg.image);
   }
 
   function showTab(id) {
@@ -46,7 +45,7 @@ export default function page() {
           <div className="product_image col-6 d-flex flex-column ">
             <div className="main_image mb-4 " style={{ background: "#0202" }}>
               <Image
-                src={imgUrl ? imgUrl : "/img/product/dress-1.png"}
+                src={imgUrl? imgUrl: baseUrl + products?.images?.[0].image}
                 className="card-img-top"
                 alt="product image"
                 width={500}
@@ -54,7 +53,7 @@ export default function page() {
               />
             </div>
             <div className="sub_image d-flex gap-3 justify-content-center align-content-center">
-              {images.map((img) => (
+              {products?.images?.map((img) => (
                 <div
                   key={img.id}
                   style={{
@@ -65,7 +64,7 @@ export default function page() {
                   }}
                 >
                   <Image
-                    src={img.src}
+                    src={baseUrl + img.image}
                     className=""
                     alt="product image"
                     width={100}
@@ -78,8 +77,8 @@ export default function page() {
           </div>
           <div className="product_desc col-6 ">
             <div className="ms-5">
-              <p className="fw-bold">2024 autumn new girl nice wallet</p>
-              <h5 className="product_price">450tk</h5>
+              <p className="fw-bold">{products?.title}</p>
+              <h5 className="product_price">{products?.price??100}</h5>
               <div className="flex justify-content-center align-items-center mt-3 size-div">
                 <span className="me-3 fw-bold">Select</span>
                 <input className="me-3 " id="m" type="radio" name="size" />

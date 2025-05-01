@@ -185,7 +185,7 @@ function FeatureClient({ products }) {
                       {product.title}
                     </Link>
                   </h5>
-                  <Link href='/frontEnd/product-page'>
+                  <Link href={`/frontEnd/product-page/${product.id}`}>
                     <p className="text-muted small mb-2 product-subtitle"
                       style={{
                         fontSize: '13px',
