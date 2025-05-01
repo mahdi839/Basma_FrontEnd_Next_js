@@ -10,20 +10,20 @@ import "slick-carousel/slick/slick-theme.css";
 
 import { toast } from "react-toastify";
 
-function FeatureClient({products}) {
-  
+function FeatureClient({ products }) {
+
   const [isLoading, setIsLoading] = useState(true)
   const sliderRef = useRef(null);
 
   let baseUrl = process.env.BACKEND_URL;
-  
+
   useEffect(() => {
-     if(products){
-        setIsLoading(false)
-     }
-      if(products?.error){
-        toast.error(products.error)
-      }
+    if (products) {
+      setIsLoading(false)
+    }
+    if (products?.error) {
+      toast.error(products.error)
+    }
   }, [products]);
 
 
@@ -34,8 +34,7 @@ function FeatureClient({products}) {
     slidesToShow: 4,
     slidesToScroll: 1,
     arrows: false,
-    autoplay: true,
-    autoplaySpeed: 5000,
+
     pauseOnHover: true,
     responsive: [
       {
@@ -44,8 +43,7 @@ function FeatureClient({products}) {
           slidesToShow: 3,
           slidesToScroll: 1,
           infinite: true,
-          autoplay: true,
-          autoplaySpeed: 5000
+
         }
       },
       {
@@ -53,8 +51,7 @@ function FeatureClient({products}) {
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
-          autoplay: true,
-          autoplaySpeed: 5000
+
         }
       },
       {
@@ -62,8 +59,7 @@ function FeatureClient({products}) {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          autoplay: true,
-          autoplaySpeed: 5000
+
         }
       }
     ]
@@ -89,14 +85,14 @@ function FeatureClient({products}) {
 
           <div className="d-flex gap-2">
             <button
-              className="btn d-flex align-items-center justify-content-center slider-nav-btn"
+              className=" d-flex align-items-center justify-content-center slider-nav-btn"
               style={{ width: '36px', height: '36px' }}
               onClick={() => sliderRef.current.slickPrev()}
             >
               <FaChevronLeft className="slider-arrow" style={{ fontSize: '14px' }} />
             </button>
             <button
-              className="btn p-2 d-flex align-items-center justify-content-center slider-nav-btn"
+              className=" p-2 d-flex align-items-center justify-content-center slider-nav-btn"
               style={{ width: '36px', height: '36px', borderColor: '#e1e1e1' }}
               onClick={() => sliderRef.current.slickNext()}
             >
@@ -133,13 +129,8 @@ function FeatureClient({products}) {
                 {/* Sale Badge */}
 
                 <div className="position-absolute  text-white px-1 py-2 small sale-badge rounded-circle"
-                  style={{
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    zIndex: '1',
-
-                  }}>
-                  -{product.discount ?? 20}%
+                 >
+                  -{typeof product.discount === "number" && product.discount > 0 ? product.discount : 20}%
                 </div>
 
 
@@ -232,13 +223,20 @@ function FeatureClient({products}) {
                   </div>
                 </div>
 
-                {/* Add to Cart Button  */}
-                <div className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 ">
-                  <button className=" bg-transparent  w-100 rounded-0 ">
+                <div className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer d-lg-none d-block">
+                  <button className="bg-transparent w-100 rounded-0">
                     <FaCartArrowDown className="me-2" />
                     Add to Cart
                   </button>
                 </div>
+
+                <div className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer d-none d-lg-block">
+                  <button className="bg-transparent w-100 rounded-0">
+                    <FaCartArrowDown className="me-2" />
+                    Add to Cart
+                  </button>
+                </div>
+
               </div>
             </div>
           ))}
