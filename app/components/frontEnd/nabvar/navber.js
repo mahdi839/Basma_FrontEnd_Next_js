@@ -23,30 +23,30 @@ import LogButtons from "./LogButtons";
 export default function Navbar() {
   return (
     <div>
-      <div class="humberger__menu__overlay"></div>
-      <div class="humberger__menu__wrapper">
-        <div class="humberger__menu__cart">
+      <div className="humberger__menu__overlay"></div>
+      <div className="humberger__menu__wrapper">
+        <div className="humberger__menu__cart">
           <ul>
             <li>
               <Link href="#">
-                <i class="fa fa-heart"></i> <span>1</span>
+                <i className="fa fa-heart"></i> <span>1</span>
               </Link>
             </li>
             <li>
               <Link href="#">
-                <i class="fa fa-shopping-bag"></i> <span>3</span>
+                <i className="fa fa-shopping-bag"></i> <span>3</span>
               </Link>
             </li>
           </ul>
-          <div class="header__cart__price">
+          <div className="header__cart__price">
             item: <span>$150.00</span>
           </div>
         </div>
-        <div class="humberger__menu__widget">
-          <div class="header__top__right__language">
+        <div className="humberger__menu__widget">
+          <div className="header__top__right__language">
             <Image src="/img/language.png" alt="" width={20} height={20} />
             <div>English</div>
-            <span class="arrow_carrot-down"></span>
+            <span className="arrow_carrot-down"></span>
             <ul>
               <li>
                 <Link href="#">Spanis</Link>
@@ -57,10 +57,10 @@ export default function Navbar() {
             </ul>
           </div>
 
-          <div class="header__top__right__auth dropdown">
+          <div className="header__top__right__auth dropdown">
             <Link href="#">
               <FaUser
-                class="fa fa-user dropdown-toggle"
+                className="fa fa-user dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton1"
                 data-bs-toggle="dropdown"
@@ -68,28 +68,28 @@ export default function Navbar() {
               />{" "}
               Login
             </Link>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li>
-                <a class="dropdown-item" href="#">
+                <a className="dropdown-item" href="#">
                   Action
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#">
+                <a className="dropdown-item" href="#">
                   Another action
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" href="#">
+                <a className="dropdown-item" href="#">
                   Something else here
                 </a>
               </li>
             </ul>
           </div>
         </div>
-        <nav class="humberger__menu__nav mobile-menu">
+        <nav className="humberger__menu__nav mobile-menu">
           <ul>
-            <li class="active">
+            <li className="active">
               <Link href="/">Home</Link>
             </li>
             <li>
@@ -97,7 +97,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link href="#">Pages</Link>
-              <ul class="header__menu__dropdown">
+              <ul className="header__menu__dropdown">
                 <li>
                   <Link href="./shop-details.html">Shop Details</Link>
                 </li>
@@ -121,61 +121,61 @@ export default function Navbar() {
           </ul>
         </nav>
         <div id="mobile-menu-wrap"></div>
-        <div class="header__top__right__social">
+        <div className="header__top__right__social">
           <Link href="#">
-            <i class="fa fa-facebook"></i>
+            <i className="fa fa-facebook"></i>
           </Link>
           <Link href="#">
-            <i class="fa fa-twitter"></i>
+            <i className="fa fa-twitter"></i>
           </Link>
           <Link href="#">
-            <i class="fa fa-linkedin"></i>
+            <i className="fa fa-linkedin"></i>
           </Link>
           <Link href="#">
-            <i class="fa fa-pinterest-p"></i>
+            <i className="fa fa-pinterest-p"></i>
           </Link>
         </div>
-        <div class="humberger__menu__contact">
+        <div className="humberger__menu__contact">
           <ul>
             <li>
-              <FaEnvelope class="fa fa-envelope" /> hello@colorlib.com
+              <FaEnvelope className="fa fa-envelope" /> hello@colorlib.com
             </li>
             <li>Free Shipping for all Order of $99</li>
           </ul>
         </div>
       </div>
 
-      <header class="header">
-        <div class="header__top">
-          <div class="container">
-            <div class="row">
-              <div class="col-lg-6 col-md-6">
-                <div class="header__top__left">
+      <header className="header">
+        <div className="header__top">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-6 col-md-6">
+                <div className="header__top__left">
                   <ul>
                     <li>
-                      <FaEnvelope class="fa fa-envelope" /> hello@colorlib.com
+                      <FaEnvelope className="fa fa-envelope" /> hello@colorlib.com
                     </li>
                     <li>Free Shipping for all Order of $99</li>
                   </ul>
                 </div>
               </div>
-              <div class="col-lg-6 col-md-6">
-                <div class="header__top__right">
-                  <div class="header__top__right__social">
+              <div className="col-lg-6 col-md-6">
+                <div className="header__top__right">
+                  <div className="header__top__right__social">
                     <Link href="#">
-                      <FaFacebook class="fa fa-facebook" />
+                      <FaFacebook className="fa fa-facebook" />
                     </Link>
                     <Link href="#">
-                      <FaTwitter class="fa fa-twitter" />
+                      <FaTwitter className="fa fa-twitter" />
                     </Link>
                     <Link href="#">
-                      <FaLinkedin class="fa fa-linkedin" />
+                      <FaLinkedin className="fa fa-linkedin" />
                     </Link>
                     <Link href="#">
-                      <FaPinterest class="fa fa-pinterest-p" />
+                      <FaPinterest className="fa fa-pinterest-p" />
                     </Link>
                   </div>
-                  <div class="header__top__right__language">
+                  <div className="header__top__right__language">
                     <Image
                       src="/img/language.png"
                       alt=""
@@ -183,7 +183,7 @@ export default function Navbar() {
                       height={14}
                     />
                     <div>English</div>
-                    <span class="arrow_carrot-down"></span>
+                    <span className="arrow_carrot-down"></span>
                     <ul>
                       <li>
                         <Link href="#">Spanis</Link>
@@ -194,16 +194,16 @@ export default function Navbar() {
                     </ul>
                   </div>
                   
-                  <div class="header__top__right__auth  dropdown">
+                  <div className="header__top__right__auth  dropdown">
                     <FaUser
-                      class="fa fa-user  dropdown-toggle"
+                      className="fa fa-user  dropdown-toggle"
                       type="button"
                       id="dropdownMenuButton1"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     />
                     <ul
-                      class="dropdown-menu"
+                      className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
                      <LogButtons />
@@ -215,19 +215,19 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-3">
-              <div class="header__logo">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3">
+              <div className="header__logo">
                 <Link href="/">
                   <Image src="/img/logo3.png" alt="" width={250} height={50} />
                 </Link>
               </div>
             </div>
-            <div class="col-lg-6">
-              <nav class="header__menu">
+            <div className="col-lg-6">
+              <nav className="header__menu">
                 <ul>
-                  <li class="active">
+                  <li className="active">
                     <Link href="/">Home</Link>
                   </li>
                   <li>
@@ -236,13 +236,13 @@ export default function Navbar() {
                 </ul>
               </nav>
             </div>
-            <div class="col-lg-3">
-              <div class="header__cart">
+            <div className="col-lg-3">
+              <div className="header__cart">
                 <ul>
                   <li>
                     <Link href="#">
                       <FaHeart
-                        class="fa fa-heart"
+                        className="fa fa-heart"
                         style={{ color: "black", fontSize: "20px" }}
                       />
                       <span>1</span>
@@ -251,21 +251,21 @@ export default function Navbar() {
                   <li>
                     <Link href="#">
                       <FaShoppingBag
-                        class="fa fa-shopping-bag"
+                        className="fa fa-shopping-bag"
                         style={{ color: "black", fontSize: "20px" }}
                       />
                       <span>3</span>
                     </Link>
                   </li>
                 </ul>
-                <div class="header__cart__price">
+                <div className="header__cart__price">
                   item: <span>$150.00</span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="humberger__open">
-            <FaBars class="fa fa-bars" />
+          <div className="humberger__open">
+            <FaBars className="fa fa-bars" />
           </div>
         </div>
       </header>

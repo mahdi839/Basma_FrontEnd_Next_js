@@ -90,9 +90,14 @@ export default function ProductUploadForm() {
             data.append(`question[${index}]`, faq.question);
             data.append(`answer[${index}]`, faq.answer);
         });
-       
+        const token = localStorage.getItem('token');
         try {
-            await axios.post('http://127.0.0.1:8000/api/products', data);
+            await axios.post('http://127.0.0.1:8000/api/products', data,{
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data' // Important for file uploads
+                }
+            });
             
             // Reset form
             setFormData({

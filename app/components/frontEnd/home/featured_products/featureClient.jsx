@@ -150,14 +150,15 @@ function FeatureClient({products}) {
                   <Image
                     width={500}
                     height={400}
-                    src={baseUrl + product.images[0].image || "/img/product/dress-1.png"}
+                    src={product.images?.[0]?.image ? baseUrl + product.images[0].image : "/img/product/dress-1.png"}
+
                     className="position-absolute w-100 h-100 object-fit-cover p-3"
                     alt={product.title}
                     style={{ top: '0', left: '0', transition: 'transform 0.3s ease' }}
                   />
 
                   {/* Product Actions */}
-                  <div className="product-actions position-absolute d-flex flex-column"
+                  <div className="quick-add-btn product-actions position-absolute d-flex flex-column"
                   >
                     <Link href='/frontEnd/product-page'>
                       <button className="  rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
@@ -169,8 +170,6 @@ function FeatureClient({products}) {
                       style={{ width: '36px', height: '36px', border: '1px solid var(--primary-colo' }}>
                       <FaCartArrowDown className="fs-5" style={{ color: '#000' }} />
                     </button>
-
-
                   </div>
 
                   {/* Quick add to cart button (shown on hover) */}
@@ -233,7 +232,7 @@ function FeatureClient({products}) {
                   </div>
                 </div>
 
-                {/* Add to Cart Button (visible on mobile) */}
+                {/* Add to Cart Button  */}
                 <div className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 ">
                   <button className=" bg-transparent  w-100 rounded-0 ">
                     <FaCartArrowDown className="me-2" />
