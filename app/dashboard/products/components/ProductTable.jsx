@@ -9,7 +9,9 @@ import { FaArrowRight } from "react-icons/fa";
 
 export default function ProductTable({ productData }) {
     const [products, setProducts] = useState(productData);
+    
 
+    let token = localStorage.getItem('token')
     function formatCreatedAt(dateString) {
         const date = new Date(dateString);
         const day = date.getDate();
@@ -33,8 +35,12 @@ export default function ProductTable({ productData }) {
         if (!result.isConfirmed) return;
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-            await axios.delete(`${baseUrl}/api/products/${id}`);
+            const baseUrl = process.env.BACKEND_URL;
+            await axios.delete(`${baseUrl}api/products/${id}`,{
+                headers:{
+                    Authorization:`Bearer ${token}`,
+                }
+            });
             setProducts(products.filter((product) => product.id !== id));
 
             Swal.fire({
@@ -70,7 +76,7 @@ export default function ProductTable({ productData }) {
                                     <td>
                                         {product.images?.length > 0 ? (
                                             <img
-                                                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${product.images[0].image}`}
+                                                src={`${process.env.BACKEND_URL}${product.images[0].image}`}
                                                 alt="Product thumbnail"
                                                 className="img-thumbnail"
                                                 style={{ width: "80px", height: "80px", objectFit: "cover" }}
@@ -131,7 +137,7 @@ export default function ProductTable({ productData }) {
                                                 <FaEdit className="text-dark" />
                                             </Link>
                                             <FaTrash
-                                                className="text-danger"
+                                                className="text-danger mt-2"
                                                 onClick={() => handleDelete(product.id)}
                                                 style={{ cursor: "pointer" }}
                                             />

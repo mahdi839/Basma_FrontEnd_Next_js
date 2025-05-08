@@ -135,9 +135,10 @@ function FeatureClient({ products }) {
 
 
                 {/* Product Image */}
+                
                 <div className="position-relative overflow-hidden product-image-container"
                   style={{ paddingTop: '100%', backgroundColor: '#f9f9f9' }}>
-
+                <Link href={`/frontEnd/product-page/${product.id}`}>
                   <Image
                     width={500}
                     height={400}
@@ -147,11 +148,11 @@ function FeatureClient({ products }) {
                     alt={product.title}
                     style={{ top: '0', left: '0', transition: 'transform 0.3s ease' }}
                   />
-
+                </Link>
                   {/* Product Actions */}
                   <div className="quick-add-btn product-actions position-absolute d-flex flex-column"
                   >
-                    <Link href='/frontEnd/product-page'>
+                    <Link href={`/frontEnd/product-page/${product.id}`}>
                       <button className="  rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
                         style={{ width: '36px', height: '36px', border: '1px solid var(--primary-colo)' }}>
                         <CiSearch className="fs-5" style={{ color: '#000' }} />
@@ -166,11 +167,13 @@ function FeatureClient({ products }) {
                   {/* Quick add to cart button (shown on hover) */}
 
                 </div>
+              
+            
 
                 {/* Product Body */}
                 <div className="card-body px-3 pb-2 pt-3">
                   <h5 className="card-title mb-1">
-                    <Link href='/frontEnd/product-page'
+                    <Link href={`/frontEnd/product-page/${product.id}`}
                       className="text-decoration-none text-dark product-title"
                       style={{
                         fontSize: '14px',

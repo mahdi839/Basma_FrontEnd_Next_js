@@ -9,7 +9,7 @@ export default async function page({params}) {
     }catch(err){
       data = {error:err.message}
     }
-    console.log(data.data)
+   
   return (
     <>
     <Products products={data.data} />

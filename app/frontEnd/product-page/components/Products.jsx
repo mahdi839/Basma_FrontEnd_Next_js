@@ -7,25 +7,28 @@ import { toast } from "react-toastify";
 
 
 
-export default function Products({products}) {
+export default function Products({ products }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [show, setShow] = useState(0);
-  const [isLoading,setIsLoading] = useState(true);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [price,setPrice] = useState(0)
 
   let baseUrl = process.env.BACKEND_URL;
 
-  useEffect(()=>{
-    if(products){
-        setIsLoading(false)
+  useEffect(() => {
+    if (products) {
+      setIsLoading(false)
+      if(products.sizes && products.sizes.length>0){
+        setPrice(products.sizes[0].pivot.price)
+      }
     }
-    if(products.error){
-        toast.error(products.error)
+    if (products.error) {
+      toast.error(products.error)
     }
-  },[products])
+  }, [products])
 
-  
+  console.log(products)
 
   function showImage(id) {
     const clickedImg = products.images.find((img) => img.id == id);
@@ -38,6 +41,12 @@ export default function Products({products}) {
   function showAccording(id) {
     setShow((prev) => (prev == id ? 0 : id));
   }
+
+  let selectSize = (e)=>{
+       let sizeId = e.target.value;
+       let seletedSize = products.sizes.find(size=> size.id == sizeId)
+       setPrice(seletedSize.pivot.price)
+  }
   return (
     <>
       <div className="container">
@@ -45,7 +54,7 @@ export default function Products({products}) {
           <div className="product_image col-6 d-flex flex-column ">
             <div className="main_image mb-4 " style={{ background: "#0202" }}>
               <Image
-                src={imgUrl? imgUrl: baseUrl + products?.images?.[0].image}
+                src={imgUrl ? imgUrl : baseUrl + products?.images?.[0].image}
                 className="card-img-top"
                 alt="product image"
                 width={500}
@@ -78,25 +87,20 @@ export default function Products({products}) {
           <div className="product_desc col-6 ">
             <div className="ms-5">
               <p className="fw-bold">{products?.title}</p>
-              <h5 className="product_price">{products?.price??100}</h5>
+              <h5 className="product_price">{price || products?.sizes[0]?.pivot.price}</h5>
               <div className="flex justify-content-center align-items-center mt-3 size-div">
                 <span className="me-3 fw-bold">Select</span>
-                <input className="me-3 " id="m" type="radio" name="size" />
-                <label htmlFor="m" className="me-3 fw-bold">
-                  M
-                </label>
-                <input className="me-3 " type="radio" name="size" />
-                <label htmlFor="l" className="me-3 fw-bold">
-                  L
-                </label>
-                <input className="me-3 " type="radio" name="size" />
-                <label htmlFor="xl" className="me-3 fw-bold">
-                  xl
-                </label>
-                <input className="me-3 " type="radio" name="size" />
-                <label htmlFor="xxl" className="me-3 fw-bold">
-                  xxl
-                </label>
+                {products.sizes.map((size,index) => (
+                  <div className="d-flex d-inline" key={size.id}>
+                    <input className="me-3 " id="m" type="radio" name="size" value={size.id} onChange={selectSize} defaultChecked={index===0}/>
+                    <label htmlFor="m" className="me-3 fw-bold">
+                      {size.size}
+                    </label>
+                  </div>
+
+                ))}
+
+
               </div>
               <p className="pt-2">
                 Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -172,7 +176,7 @@ export default function Products({products}) {
                 paddingBottom: "56.25%",
                 height: 0,
                 overflow: "hidden",
-                marginBottom:'2rem'
+                marginBottom: '2rem'
               }}
             >
               <iframe
