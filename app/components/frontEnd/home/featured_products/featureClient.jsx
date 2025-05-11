@@ -64,15 +64,18 @@ function FeatureClient({ products }) {
       }
     ]
   };
-
   if (isLoading) {
-    return (
-      <div className="text-center my-5">
-        <FaSpinner className="loading-spinner" size={30} />
-
-      </div>
-    );
+    return <div className="text-center my-5"><FaSpinner size={30} /></div>;
   }
+
+  if (products?.error) {
+    return <div className="text-center my-5">Error: {products.error}</div>;
+  }
+
+  if (!products?.data?.length) {
+    return <div className="text-center my-5">No products found</div>;
+  }
+
 
   return (
     <div className="container my-5 py-4">
@@ -127,11 +130,15 @@ function FeatureClient({ products }) {
                   boxShadow: '0 0 10px rgba(0,0,0,0.03)'
                 }}>
                 {/* Sale Badge */}
-
-                <div className="position-absolute  text-white px-1 py-2 small sale-badge rounded-circle"
-                 >
-                  -{typeof product.discount === "number" && product.discount > 0 ? product.discount : 20}%
-                </div>
+                {
+                  product.discount && product.discount !==null && (
+                    <div className="position-absolute  text-white px-1 py-2 small sale-badge rounded-circle"
+                    >
+                     -{typeof product.discount === "number" && product.discount > 0 ? product.discount : ""}%
+                   </div>
+                  )
+                }
+              
 
 
                 {/* Product Image */}
@@ -206,14 +213,8 @@ function FeatureClient({ products }) {
                     <div>
                       <span className="text-dark fw-bold product-price"
                         style={{ fontSize: '16px', fontWeight: '600' }}>
-                        ৳{product?.price}
+                        ৳{product.sizes[0]?.pivot.price}
                       </span>
-                      {product?.original_price && (
-                        <span className="text-decoration-line-through text-muted ms-2 original-price"
-                          style={{ fontSize: '14px' }}>
-                          ৳{product?.original_price}
-                        </span>
-                      )}
                     </div>
                     <div className="text-warning small product-rating">
                       <FaStar style={{ fontSize: '12px' }} />

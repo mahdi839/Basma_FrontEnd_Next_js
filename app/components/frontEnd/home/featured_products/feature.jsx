@@ -5,7 +5,7 @@ import FeatureClient from './featureClient'
 export default async function Feature() {
   let data =[]
   try{
-    data = await getData('api/products')
+    data = await getData('api/products/')
   }catch(err){
     data = {error:err.message}
   }
