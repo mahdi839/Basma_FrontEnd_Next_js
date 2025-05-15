@@ -12,14 +12,14 @@ export default function Products({ products }) {
   const [activeTab, setActiveTab] = useState("desc");
   const [show, setShow] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [price,setPrice] = useState(0)
+  const [price, setPrice] = useState(0)
 
   let baseUrl = process.env.BACKEND_URL;
 
   useEffect(() => {
     if (products) {
       setIsLoading(false)
-      if(products.sizes && products.sizes.length>0){
+      if (products.sizes && products.sizes.length > 0) {
         setPrice(products.sizes[0].pivot.price)
       }
     }
@@ -42,11 +42,21 @@ export default function Products({ products }) {
     setShow((prev) => (prev == id ? 0 : id));
   }
 
-  let selectSize = (e)=>{
-       let sizeId = e.target.value;
-       let seletedSize = products.sizes.find(size=> size.id == sizeId)
-       setPrice(seletedSize.pivot.price)
+  let selectSize = (e) => {
+    let sizeId = e.target.value;
+    let seletedSize = products.sizes.find(size => size.id == sizeId)
+    setPrice(seletedSize.pivot.price)
   }
+
+  const getYoutubeVideoId = (url) => {
+    if (!url) return null;
+
+    // Handle different YouTube URL formats
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
   return (
     <>
       <div className="container">
@@ -90,9 +100,9 @@ export default function Products({ products }) {
               <h5 className="product_price">{price || products?.sizes[0]?.pivot.price}</h5>
               <div className="flex justify-content-center align-items-center mt-3 size-div">
                 <span className="me-3 fw-bold">Select</span>
-                {products.sizes.map((size,index) => (
+                {products.sizes.map((size, index) => (
                   <div className="d-flex d-inline" key={size.id}>
-                    <input className="me-3 " id="m" type="radio" name="size" value={size.id} onChange={selectSize} defaultChecked={index===0}/>
+                    <input className="me-3 " id="m" type="radio" name="size" value={size.id} onChange={selectSize} defaultChecked={index === 0} />
                     <label htmlFor="m" className="me-3 fw-bold">
                       {size.size}
                     </label>
@@ -103,9 +113,7 @@ export default function Products({ products }) {
 
               </div>
               <p className="pt-2">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry.lorem jkdjfks kjflk kjsdklfja l skdfjls tlerjl lkjfla
-                lajreiruoeriu isdroerio oajfkd fklas fkldf la{" "}
+                {products.description}
               </p>
             </div>
             <div className="d-flex ms-5">
@@ -158,152 +166,77 @@ export default function Products({ products }) {
         {activeTab == "desc" && (
           <div className="flex justify-content-center desc-text">
             <p className="p-3">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged. It was
-              popularised in the 1960s with the release of Letraset sheets
-              containing Lorem Ipsum passages, and more recently with desktop
-              publishing software like Aldus PageMaker including versions of
-              Lorem Ipsum.
+              {products.description}
             </p>
 
-            <div
-              style={{
-                position: "relative",
-                paddingBottom: "56.25%",
-                height: 0,
-                overflow: "hidden",
-                marginBottom: '2rem'
-              }}
-            >
-              <iframe
-                width="560"
-                height="315"
-                src="https://www.youtube.com/embed/po0s-Dawm4U?si=eb5_4OJBaMMgWZ-P"
-                title="YouTube video player"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  width: "100%",
-                  height: "100%",
-                }}
-              ></iframe>
-            </div>
+
+
+            {products?.video_url && (
+              <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden" }}>
+                {(() => {
+                  // Only proceed if there's a video URL
+                  if (!products?.video_url) return null;
+
+                  // Extract the video ID
+                  const videoId = getYoutubeVideoId(products.video_url);
+
+                  // Only render if we have a valid video ID
+                  if (!videoId) return null;
+
+                  return (
+                    <iframe
+                      width="560"
+                      height="315"
+                      src={`https://www.youtube.com/embed/${videoId}`}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                      }}
+                    ></iframe>
+                  );
+                })()}
+              </div>
+            )}
+
           </div>
         )}
         {activeTab == "faq" && (
           <div className=" faq-text card  my-3">
-            <div
-              className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 "
-              onClick={() => showAccording(1)}
-            >
-              <div className="d-flex justify-content-between  border ">
-                <p className="pt-2 ps-3">
-                  how much price? is this product available? i want this how
-                  much price? is this product available? i want this
-                </p>
-                <span className="pt-2">
-                  {show == 1 ? (
-                    <IoIosArrowDown className="custome-icon " />
-                  ) : (
-                    <IoIosArrowUp className="custome-icon" />
+            {
+              products?.faqs?.map((faq) => (
+                <div
+                  className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 "
+                  onClick={() => showAccording(faq.id)}
+                >
+                  <div className="d-flex justify-content-between  border ">
+                    <p className="pt-2 ps-3">
+                      {faq.question}
+                    </p>
+                    <span className="pt-2">
+                      {show == faq.id ? (
+                        <IoIosArrowDown className="custome-icon " />
+                      ) : (
+                        <IoIosArrowUp className="custome-icon" />
+                      )}
+                    </span>
+                  </div>
+                  {show == faq.id && (
+                    <div className="text-center px-3 pt-2">
+                      {faq.answer}
+                    </div>
                   )}
-                </span>
-              </div>
-              {show == 1 && (
-                <div className="text-center px-3 pt-2">
-                  Contrary to popular belief, Lorem Ipsum is not simply random
-                  text. It has roots in a piece of classical Latin literature
-                  from 45 BC, making it over 2000 years old. Richard McClintock,
-                  a Latin professor at Hampden-Sydney College in Virginia,
-                  looked up one of the more obscure Latin words, consectetur,
-                  from a Lorem Ipsum passage, and going through the cites of the
-                  word in classical literature, discovered the undoubtable
-                  source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of
-                  "de Finibus Bonorum et Malorum" (The Extremes of Good and
-                  Evil) by Cicero, written in 45 BC. This book is a treatise on
-                  the theory of ethics, very popular during the Renaissance. The
-                  first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                  comes from a line in section 1.10.32.
                 </div>
-              )}
-            </div>
-            <div
-              className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 "
-              onClick={() => showAccording(2)}
-            >
-              <div className="d-flex justify-content-between  border">
-                <p className="pt-2 ps-3">
-                  how much price? is this product available? i want this
-                </p>
-                <span className="pt-2">
-                  {show == 2 ? (
-                    <IoIosArrowDown className="custome-icon " />
-                  ) : (
-                    <IoIosArrowUp className="custome-icon" />
-                  )}
-                </span>
-              </div>
-              {show == 2 && (
-                <div className="text-center px-3 pt-2">
-                  Contrary to popular belief, Lorem Ipsum is not simply random
-                  text. It has roots in a piece of classical Latin literature
-                  from 45 BC, making it over 2000 years old. Richard McClintock,
-                  a Latin professor at Hampden-Sydney College in Virginia,
-                  looked up one of the more obscure Latin words, consectetur,
-                  from a Lorem Ipsum passage, and going through the cites of the
-                  word in classical literature, discovered the undoubtable
-                  source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of
-                  "de Finibus Bonorum et Malorum" (The Extremes of Good and
-                  Evil) by Cicero, written in 45 BC. This book is a treatise on
-                  the theory of ethics, very popular during the Renaissance. The
-                  first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                  comes from a line in section 1.10.32.
-                </div>
-              )}
-            </div>
-            <div
-              className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 "
-              onClick={() => showAccording(3)}
-            >
-              <div className="d-flex justify-content-between border ">
-                <p className="pt-2 ps-3">
-                  how much price? is this product available? i want this
-                </p>
-                <span className="pt-2">
-                  {show == 3 ? (
-                    <IoIosArrowDown className="custome-icon " />
-                  ) : (
-                    <IoIosArrowUp className="custome-icon" />
-                  )}
-                </span>
-              </div>
-              {show == 3 && (
-                <div className="text-center px-3 pt-2">
-                  Contrary to popular belief, Lorem Ipsum is not simply random
-                  text. It has roots in a piece of classical Latin literature
-                  from 45 BC, making it over 2000 years old. Richard McClintock,
-                  a Latin professor at Hampden-Sydney College in Virginia,
-                  looked up one of the more obscure Latin words, consectetur,
-                  from a Lorem Ipsum passage, and going through the cites of the
-                  word in classical literature, discovered the undoubtable
-                  source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of
-                  "de Finibus Bonorum et Malorum" (The Extremes of Good and
-                  Evil) by Cicero, written in 45 BC. This book is a treatise on
-                  the theory of ethics, very popular during the Renaissance. The
-                  first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-                  comes from a line in section 1.10.32.
-                </div>
-              )}
-            </div>
+              ))
+            }
+
           </div>
         )}
         {activeTab == "terms" && (

@@ -4,16 +4,16 @@ import axios from 'axios';
 import Button from '@/app/components/dashboard/components/button/Button';
 import { toast } from 'react-toastify';
 
-export default function ProductUploadForm({ 
-  isEditMode = false, 
-  initialData = null,
-  sizesData =[],
-  productId = null 
+export default function ProductUploadForm({
+    isEditMode = false,
+    initialData = null,
+    sizesData = [],
+    productId = null
 }) {
     const [sizes, setSizes] = useState(sizesData);
     const [useSinglePrice, setUseSinglePrice] = useState(true);
     const [existingImages, setExistingImages] = useState([]);
-    
+
     const [formData, setFormData] = useState({
         title: '',
         sub_title: '',
@@ -68,17 +68,18 @@ export default function ProductUploadForm({
     };
 
     const handleDeleteImage = (imageId) => {
-        setExistingImages(existingImages.map(img => 
-            img.id === imageId ? {...img, markedForDelete: true} : img
+        setExistingImages(existingImages.map(img =>
+            img.id === imageId ? { ...img, markedForDelete: true } : img
         ));
     };
 
     const handleAddFAQ = () => {
-        setFormData({ 
-            ...formData, 
-            faqs: [...formData.faqs, { question: '', answer: '', id: null }] 
+        setFormData({
+            ...formData,
+            faqs: [...formData.faqs, { question: '', answer: '', id: null }]
         });
     };
+    const token = localStorage.getItem('token');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -109,7 +110,7 @@ export default function ProductUploadForm({
         });
 
         // FAQs
-        const validFAQs = formData.faqs.filter(faq => 
+        const validFAQs = formData.faqs.filter(faq =>
             faq.question.trim() && faq.answer.trim()
         );
         validFAQs.forEach((faq, index) => {
@@ -119,11 +120,17 @@ export default function ProductUploadForm({
         });
 
         try {
-            const url = isEditMode 
-                ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/${productId}`
-                : `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`;
+            const url = isEditMode
+                ? `${process.env.BACKEND_URL}api/products/${productId}`
+                : `${process.env.BACKEND_URL}api/products`;
 
-            await axios.post(url, data);
+            await axios.post(url, data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                }
+            });
+
             toast.success(`Product ${isEditMode ? 'Updated' : 'Created'} Successfully`);
             window.location.href = "/dashboard/products";
         } catch (error) {
@@ -152,7 +159,7 @@ export default function ProductUploadForm({
                     </div>
                 )
             ))}
-            
+
             {formData.images.map((image, index) => (
                 <img
                     key={index}
@@ -167,7 +174,7 @@ export default function ProductUploadForm({
 
     return (
         <div className="container mt-4">
-           
+
             <form onSubmit={handleSubmit}>
                 {/* Basic Information */}
                 <div className="card mb-4">
@@ -253,7 +260,7 @@ export default function ProductUploadForm({
                                                 className="form-select"
                                                 value={size.size_id || ''}
                                                 onChange={(e) => handleSizeChange(index, 'size_id', e.target.value)}
-                                                
+
                                             >
                                                 <option value="">Select Size</option>
                                                 {sizes.map((sizeOption) => (
