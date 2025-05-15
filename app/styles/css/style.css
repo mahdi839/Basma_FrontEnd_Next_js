@@ -911,3 +911,134 @@ ol {
 	z-index: 1;
 	background:var(--primary-color)
 }
+
+/* Tabs Header */
+.tabs-header {
+	border-bottom: 2px solid #f0f0f0;
+	padding-bottom: 1rem;
+  }
+  
+  .tab-btn {
+	background: none;
+	border: none;
+	padding: 0.75rem 1.5rem;
+	font-weight: 500;
+	color: #666;
+	transition: all 0.3s ease;
+	position: relative;
+	
+	&:hover {
+	  color: #2a2a2a;
+	}
+	
+	&.active {
+	  color: var(--primary-color);
+	  &:after {
+		content: '';
+		position: absolute;
+		bottom: -1.1rem;
+		left: 0;
+		right: 0;
+		height: 3px;
+		background: var(--primary-color);
+	  }
+	}
+  }
+  
+  /* Content Cards */
+  .content-card {
+	background: white;
+	border-radius: 12px;
+	padding: 2rem;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+	max-width: 800px;
+	margin: 0 auto;
+  }
+  
+  .section-title {
+	color: #1a1a1a;
+	font-size: 1.5rem;
+	font-weight: 600;
+  }
+  
+  /* Description Section */
+  .description-text {
+	color: #4a5568;
+	line-height: 1.7;
+	font-size: 1rem;
+  }
+  
+  .video-container {
+	margin-top: 2rem;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* FAQ Accordion */
+  .accordion-item {
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	margin-bottom: 1rem;
+	transition: all 0.3s ease;
+	
+	&:hover {
+	  border-color: #cbd5e0;
+	}
+	
+	&.active {
+	  border-color: #2563eb;
+	}
+  }
+  
+  .accordion-header {
+	padding: 1.25rem;
+	cursor: pointer;
+	background-color: #f8fafc;
+	
+	h4 {
+	  margin: 0;
+	  font-size: 1rem;
+	  color: #2d3748;
+	}
+  }
+  
+  .accordion-body {
+	padding: 1.25rem;
+	background: white;
+	border-top: 1px solid #e2e8f0;
+  }
+  
+  .accordion-icon {
+	transition: transform 0.3s ease;
+	
+	svg {
+	  color: #718096;
+	}
+  }
+  
+  .active .accordion-icon {
+	transform: rotate(180deg);
+  }
+  
+  /* Terms Section */
+  .terms-text {
+	color: #4a5568;
+	line-height: 1.7;
+	
+	p {
+	  margin-bottom: 1rem;
+	}
+  }
+  
+  /* Animations */
+  .animated-fade {
+	animation: fadeIn 0.3s ease-in;
+  }
+  
+  @keyframes fadeIn {
+	from { opacity: 0; transform: translateY(10px); }
+	to { opacity: 1; transform: translateY(0); }
+  }
+
+  

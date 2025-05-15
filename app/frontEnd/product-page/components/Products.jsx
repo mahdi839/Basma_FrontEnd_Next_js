@@ -143,120 +143,105 @@ export default function Products({ products }) {
             </div>
           </div>
         </div>
-        <div className="desc_tab_header d-flex justify-content-center gap-5">
-          <button
-            className={`btn ${activeTab == "desc" ? "active" : ""} `}
-            onClick={() => showTab("desc")}
-          >
-            Description
-          </button>
-          <button
-            className={`btn ${activeTab == "faq" ? "active" : ""} `}
-            onClick={() => showTab("faq")}
-          >
-            FAQ
-          </button>
-          <button
-            className={`btn ${activeTab == "terms" ? "active" : ""} `}
-            onClick={() => showTab("terms")}
-          >
-            Terms & condition
-          </button>
-        </div>
-        {activeTab == "desc" && (
-          <div className="flex justify-content-center desc-text">
-            <p className="p-3">
-              {products.description}
-            </p>
-
-
-
-            {products?.video_url && (
-              <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden" }}>
-                {(() => {
-                  // Only proceed if there's a video URL
-                  if (!products?.video_url) return null;
-
-                  // Extract the video ID
-                  const videoId = getYoutubeVideoId(products.video_url);
-
-                  // Only render if we have a valid video ID
-                  if (!videoId) return null;
-
-                  return (
-                    <iframe
-                      width="560"
-                      height="315"
-                      src={`https://www.youtube.com/embed/${videoId}`}
-                      title="YouTube video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                      }}
-                    ></iframe>
-                  );
-                })()}
-              </div>
-            )}
-
+        <div className="desc_tab_container">
+          {/* Tabs Header */}
+          <div className="tabs-header d-flex justify-content-center gap-3 mb-4">
+            <button
+              className={`tab-btn ${activeTab === "desc" ? "active" : ""}`}
+              onClick={() => showTab("desc")}
+            >
+              Description
+            </button>
+            <button
+              className={`tab-btn ${activeTab === "faq" ? "active" : ""}`}
+              onClick={() => showTab("faq")}
+            >
+              FAQ
+            </button>
+            <button
+              className={`tab-btn ${activeTab === "terms" ? "active" : ""}`}
+              onClick={() => showTab("terms")}
+            >
+              ADDITIONAL INFORMATION
+            </button>
           </div>
-        )}
-        {activeTab == "faq" && (
-          <div className=" faq-text card  my-3">
-            {
-              products?.faqs?.map((faq) => (
-                <div
-                  className="d-flex flex-column border accordion-div mx-auto mb-2   mt-3 "
-                  onClick={() => showAccording(faq.id)}
-                >
-                  <div className="d-flex justify-content-between  border ">
-                    <p className="pt-2 ps-3">
-                      {faq.question}
-                    </p>
-                    <span className="pt-2">
-                      {show == faq.id ? (
-                        <IoIosArrowDown className="custome-icon " />
-                      ) : (
-                        <IoIosArrowUp className="custome-icon" />
-                      )}
-                    </span>
-                  </div>
-                  {show == faq.id && (
-                    <div className="text-center px-3 pt-2">
-                      {faq.answer}
+
+          {/* Content Sections */}
+          <div className="tab-content">
+            {/* Description Tab */}
+            {activeTab === "desc" && (
+              <div className="description-content animated-fade">
+                <div className="content-card">
+                  <h3 className="section-title mb-4">Product Details</h3>
+                  <p className="description-text">
+                    {products.description}
+                  </p>
+
+                  {products?.video_url && (
+                    <div className="video-container mt-4 w-full">
+                      <div className="video-wrapper">
+                        <iframe
+                          className="youtube-embed"
+                          src={`https://www.youtube.com/embed/${getYoutubeVideoId(products.video_url)}`}
+                          title="Product Video"
+                          allowFullScreen
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
-              ))
-            }
+              </div>
+            )}
 
+            {/* FAQ Tab */}
+            {activeTab === "faq" && (
+              <div className="faq-content animated-fade">
+                <div className="content-card">
+                  <h3 className="section-title mb-4">Frequently Asked Questions</h3>
+                  <div className="accordion-list">
+                    {products?.faqs?.map((faq) => (
+                      <div
+                        className={`accordion-item ${show === faq.id ? "active" : ""}`}
+                        key={faq.id}
+                      >
+                        <div
+                          className="accordion-header"
+                          onClick={() => showAccording(faq.id)}
+                        >
+                          <div className="d-flex justify-content-between align-items-center">
+                            <h4 className="question-text">{faq.question}</h4>
+                            <span className="accordion-icon">
+                              {show === faq.id ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                            </span>
+                          </div>
+                        </div>
+                        {show === faq.id && (
+                          <div className="accordion-body">
+                            <p className="answer-text">{faq.answer}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Terms Tab */}
+            {activeTab === "terms" && (
+              <div className="terms-content animated-fade">
+                <div className="content-card">
+                  <h3 className="section-title mb-4">Additional Information</h3>
+                  <div className="terms-text">
+                    <p>
+                      {/* Your terms content here */}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-        {activeTab == "terms" && (
-          <div className="flex justify-content-center terms-text">
-            <p className="p-3 ">
-              There are many variations of passages of Lorem Ipsum available,
-              but the majority have suffered alteration in some form, by
-              injected humour, or randomised words which don't look even
-              slightly believable. If you are going to use a passage of Lorem
-              Ipsum, you need to be sure there isn't anything embarrassing
-              hidden in the middle of text. All the Lorem Ipsum generators on
-              the Internet tend to repeat predefined chunks as necessary, making
-              this the first true generator on the Internet. It uses a
-              dictionary of over 200 Latin words, combined with a handful of
-              model sentence structures, to generate Lorem Ipsum which looks
-              reasonable. The generated Lorem Ipsum is therefore always free
-              from repetition, injected humour, or non-characteristic words etc.
-            </p>
-          </div>
-        )}
+        </div>
       </div>
     </>
   );
