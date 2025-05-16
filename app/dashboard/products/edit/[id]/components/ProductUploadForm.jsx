@@ -144,7 +144,7 @@ export default function ProductUploadForm({
                 !image.markedForDelete && (
                     <div key={image.id} className="position-relative d-inline-block me-2">
                         <img
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${image.image}`}
+                            src={`${process.env.BACKEND_URL}${image.image}`}
                             alt="Existing"
                             className="img-thumbnail"
                             style={{ width: '100px', height: '100px' }}

@@ -1,9 +1,10 @@
 import React from "react";
 import "../../layouts/dashboard.css";
 import { BsLayoutTextSidebar } from "react-icons/bs";
-import { FaProductHunt, FaShower } from "react-icons/fa";
+import { FaProductHunt} from "react-icons/fa";
 import { RiKanbanView2 } from "react-icons/ri";
 import { IoIosResize } from "react-icons/io";
+import { BiSolidCategory } from "react-icons/bi";
 import SideBarItem from "../components/sidebarItem/SideBarItem";
 export default function SideBar() {
   return (
@@ -13,6 +14,7 @@ export default function SideBar() {
         <BsLayoutTextSidebar className="sideBarIcon" />
       </div>
       <div className="sideBar_list mt-4">
+      <SideBarItem href="/dashboard/category" Icon={BiSolidCategory} label='Category'/>
       <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Sizes'/>
        <SideBarItem href="/dashboard/products" Icon={FaProductHunt} label='Products'/>
        <SideBarItem href="/"   Icon={RiKanbanView2} label='My Website' />

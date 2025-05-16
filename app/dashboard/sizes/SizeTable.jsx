@@ -10,6 +10,7 @@ export default function SizeTable({ initialSizes }) {
   const [sizes, setSizes] = useState(initialSizes); // Manage state
 
   async function handleDelete(id) {
+    const url = process.env.BACKEND_URL + `api/sizes/${id}`
     const result = await Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -23,7 +24,7 @@ export default function SizeTable({ initialSizes }) {
       if (!result.isConfirmed) return;
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/sizes/${id}`);
+      await axios.delete(url);
       
       // Remove deleted size from the state without page reload
       setSizes(sizes.filter((size) => size.id !== id));
