@@ -1,6 +1,6 @@
 "use client";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Link from "next/link";
@@ -20,7 +20,7 @@ export default function ProductTable({ productData }) {
         return `${day}/${month}/${year}`;
     }
 
-    
+
     async function handleDelete(id) {
         const result = await Swal.fire({
             title: "Are you sure?",
@@ -36,9 +36,9 @@ export default function ProductTable({ productData }) {
 
         try {
             const baseUrl = process.env.BACKEND_URL;
-            await axios.delete(`${baseUrl}api/products/${id}`,{
-                headers:{
-                    Authorization:`Bearer ${token}`,
+            await axios.delete(`${baseUrl}api/products/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
                 }
             });
             setProducts(products.filter((product) => product.id !== id));
@@ -54,6 +54,8 @@ export default function ProductTable({ productData }) {
             toast.error(err.response?.data?.message || "An Error Occurred");
         }
     }
+
+    
 
     return (
         <div className="card">
@@ -94,6 +96,12 @@ export default function ProductTable({ productData }) {
                                             Created: {formatCreatedAt(product.created_at)}
                                         </small>
                                     </td>
+                                    <td> {product.category?.map((category)=>(
+                                        
+                                        <div className="mb-2">
+                                            <span class="badge bg-info text-white">{category.name}</span>
+                                        </div>
+                                    ))} </td>
                                     <td>
                                         <div className="d-flex gap-1 flex-wrap">
                                             {product.sizes && product.sizes.map((size) => (
