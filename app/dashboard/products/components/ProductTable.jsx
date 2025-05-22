@@ -64,6 +64,7 @@ export default function ProductTable({ productData }) {
                             <tr>
                                 <th>Thumbnail</th>
                                 <th>Product Info</th>
+                                <th>Categories</th>
                                 <th>Size/Price</th>
                                 <th>FAQ</th>
                                 <th>Video URL</th>

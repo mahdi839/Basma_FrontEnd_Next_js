@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 export default function ProductUploadForm() {
     const [sizes, setSizes] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [useSinglePrice, setUseSinglePrice] = useState(true);
     const [formData, setFormData] = useState({
         title: '',
@@ -17,19 +18,30 @@ export default function ProductUploadForm() {
         images: [],
         sizes: [],
         faqs: [],
+        categories: []
     });
 
+    const baseUrl = process.env.BACKEND_URL;
     // Fetch available sizes
     useEffect(() => {
         const fetchSizes = async () => {
             try {
-                const response = await axios.get('http://127.0.0.1:8000/api/sizes');
+                const response = await axios.get(`${baseUrl}api/sizes`);
                 setSizes(response.data);
             } catch (error) {
                 console.error('Error fetching sizes:', error);
             }
         };
         fetchSizes();
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${baseUrl}api/categories`);
+                setCategories(response.data);
+            } catch (error) {
+                toast.error(error.message)
+            }
+        };
+        fetchCategories();
     }, []);
 
     // Handle dynamic size fields
@@ -81,6 +93,13 @@ export default function ProductUploadForm() {
             data.append('image[]', image);
         });
 
+        
+
+        // Handle categories
+        formData.categories.forEach((category, index) => {
+            data.append(`categories[${index}][category_id]`, category.category_id);
+        });
+
         // Filter out empty FAQs before submission
         const validFAQs = formData.faqs.filter(faq =>
             faq.question.trim() !== '' && faq.answer.trim() !== ''
@@ -92,13 +111,13 @@ export default function ProductUploadForm() {
         });
         const token = localStorage.getItem('token');
         try {
-            await axios.post('http://127.0.0.1:8000/api/products', data,{
+            await axios.post('http://127.0.0.1:8000/api/products', data, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data' // Important for file uploads
                 }
             });
-            
+
             // Reset form
             setFormData({
                 title: '',
@@ -344,16 +363,45 @@ export default function ProductUploadForm() {
                         <Button
                             type="button"
                             className="btn "
-                            onClick={() => setFormData({ 
-                                ...formData, 
-                                faqs: [...formData.faqs, { 
-                                  question: 'Question ' + (formData.faqs.length + 1), // Default value
-                                  answer: '' 
-                                }] 
-                              })}
+                            onClick={() => setFormData({
+                                ...formData,
+                                faqs: [...formData.faqs, {
+                                    question: 'Question ' + (formData.faqs.length + 1), // Default value
+                                    answer: ''
+                                }]
+                            })}
                         >
                             Add FAQ
                         </Button>
+                    </div>
+                </div>
+                {/* categories */}
+                <div className="card mb-4">
+                    <div className="card-header">Categories</div>
+                    <div className="card-body">
+                        <div className="mb-3">
+                            <label className="form-label">Select Categories (Ctrl + click for multiple)<span className="text-danger">*</span></label>
+                            <select
+                                multiple
+                                className="form-select"
+                                value={formData.categories.map(c => c.category_id)}
+                                onChange={(e) => {
+                                    const selectedIds = Array.from(e.target.selectedOptions, option => option.value);
+                                    setFormData({
+                                        ...formData,
+                                        categories: selectedIds.map(categoryId => ({ category_id: categoryId }))
+                                    });
+                                }}
+                                required
+                            >
+                                <option value="">Choose a category</option>
+                                {categories?.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
 
