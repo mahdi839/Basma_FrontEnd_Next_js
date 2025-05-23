@@ -4,16 +4,17 @@ import axios from 'axios';
 import Button from '@/app/components/dashboard/components/button/Button';
 import { toast } from 'react-toastify';
 
-export default function ProductUploadForm({
+export default function ProductUpdateForm({
     isEditMode = false,
     initialData = null,
     sizesData = [],
+    categoryData = [],
     productId = null
 }) {
     const [sizes, setSizes] = useState(sizesData);
     const [useSinglePrice, setUseSinglePrice] = useState(true);
     const [existingImages, setExistingImages] = useState([]);
-
+    const [categories, setCategories] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
         sub_title: '',
@@ -24,6 +25,7 @@ export default function ProductUploadForm({
         images: [],
         sizes: [],
         faqs: [],
+        categories: []
     });
 
     useEffect(() => {
@@ -41,10 +43,14 @@ export default function ProductUploadForm({
                     price: size.pivot.price
                 })) || [],
                 faqs: initialData.faqs || [],
+                categories: initialData.category?.map(cat => ({
+                    category_id: cat.id // Convert to string to match select value
+                })) || []
             });
             setExistingImages(initialData.images || []);
             setUseSinglePrice(!initialData.sizes?.length);
         }
+        setCategories(categoryData)
     }, [isEditMode, initialData]);
 
     // Handlers
@@ -103,6 +109,11 @@ export default function ProductUploadForm({
             });
         }
 
+        // Handle categories
+        formData.categories.forEach((category, index) => {
+            data.append(`categories[${index}][category_id]`, category.category_id);
+        });
+
         // Images
         formData.images.forEach(image => data.append('image[]', image));
         existingImages.forEach(image => {
@@ -118,6 +129,7 @@ export default function ProductUploadForm({
             data.append(`faqs[${index}][answer]`, faq.answer);
             if (faq.id) data.append(`faqs[${index}][id]`, faq.id);
         });
+
 
         try {
             const url = isEditMode
@@ -382,6 +394,36 @@ export default function ProductUploadForm({
                         >
                             Add FAQ
                         </Button>
+                    </div>
+                </div>
+
+                {/* categories */}
+                <div className="card mb-4">
+                    <div className="card-header">Categories</div>
+                    <div className="card-body">
+                        <div className="mb-3">
+                            <label className="form-label">Select Categories (Ctrl + click for multiple)<span className="text-danger">*</span></label>
+                            <select
+                                multiple
+                                className="form-select"
+                                value={formData.categories.map(c => c.category_id)}
+                                onChange={(e) => {
+                                    const selectedIds = Array.from(e.target.selectedOptions, option => option.value);
+                                    setFormData({
+                                        ...formData,
+                                        categories: selectedIds.map(categoryId => ({ category_id: categoryId }))
+                                    });
+                                }}
+                                required
+                            >
+                                <option value="">Choose a category</option>
+                                {categories?.map((category) => (
+                                    <option key={category.id} value={category.id}>
+                                        {category.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
                 </div>
 

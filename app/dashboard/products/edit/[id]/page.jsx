@@ -1,6 +1,6 @@
 import { getData } from '@/lib/api';
 import { getSizes } from "@/lib/GetSize";
-import ProductUploadForm from './components/ProductUploadForm';
+import ProductUpdateForm from './components/ProductUpdateForm';
 
 
 
@@ -8,7 +8,7 @@ import ProductUploadForm from './components/ProductUploadForm';
 export default async function EditProductPage({ params }) {
   let productData = null;
   let sizesData = [];
-
+  let categoryData = []
   try {
     // Fetch product data
     const productResponse = await getData(`api/products/${params.id}`);
@@ -16,6 +16,10 @@ export default async function EditProductPage({ params }) {
     
     // Fetch sizes
      sizesData = await getSizes();
+
+    //  fetch categories
+    categoryData = await getData('api/categories')
+    
     
     
   } catch (err) {
@@ -23,14 +27,15 @@ export default async function EditProductPage({ params }) {
   }
 
   if (!productData) return <div>Product not found</div>;
-  
+ 
   return (
     <div className="container mt-4">
       <h3 className="mb-4 text-center">Edit Product</h3>
-      <ProductUploadForm 
+      <ProductUpdateForm 
         isEditMode={true}
         initialData={productData}
         sizesData={sizesData}
+        categoryData={categoryData}
         productId={params.id}
       />
     </div>
