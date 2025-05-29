@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useRef, } from "react";
 import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
-import { FaCartArrowDown, FaStar, FaStarHalfAlt, FaChevronLeft, FaChevronRight, FaSpinner, FaAccessibleIcon } from 'react-icons/fa';
+import { FaCartArrowDown, FaStar, FaStarHalfAlt, FaChevronLeft, FaChevronRight, FaSpinner, FaTimes } from 'react-icons/fa';
 import Link from "next/link";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -15,9 +15,10 @@ function FeatureClient({ products }) {
   const [isLoading, setIsLoading] = useState(true)
   const sliderRef = useRef(null);
   const [showOptionDiv, setShowOptionDiv] = useState({
-    productId:null,
-    status:false
+    productId: null,
+    status: false
   });
+  const [selectedSizes, setSelectedSizes] = useState("");
 
   let baseUrl = process.env.BACKEND_URL;
 
@@ -93,12 +94,14 @@ function FeatureClient({ products }) {
   function handleOptionDiv(e, productid) {
     e.preventDefault()
     setShowOptionDiv({
-      productId:productid,
-      status:true
+      productId: productid,
+      status: true
     })
   }
 
-
+  function handleSizeSelect (e){
+    setSelectedSizes(e.target.value)
+  }
 
   return (
     <div className="container my-5 py-4">
@@ -180,26 +183,26 @@ function FeatureClient({ products }) {
                     />
                   </Link>
                   {/* Product Actions */}
-                {
-                  showOptionDiv.status ===false &&(
-                    <div className="quick-add-btn product-actions position-absolute d-flex flex-column "
-                    style={{ zIndex: 10 }}>
-                    <Link href={`/frontEnd/product-page/${product.id}`}>
-                      <button className="  rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
-                        style={{ width: '36px', height: '36px', border: '1px solid var(--primary-colo)', zIndex: '99' }}>
-                        <CiSearch className="fs-5" style={{ color: '#000' }} />
-                      </button>
-                    </Link>
-                    <button className="    rounded-circle p-2 action-btn d-flex justify-content-center"
-                      style={{ width: '36px', height: '36px', border: '1px solid var(--primary-colo' }}>
-                      <FaCartArrowDown className="fs-5" style={{ color: '#000' }} />
-                    </button>
-                  </div>
-                  )
-                }
-                     
-                    
-                  
+                  {
+                    showOptionDiv.status === false && (
+                      <div className="quick-add-btn product-actions position-absolute d-flex flex-column "
+                        style={{ zIndex: 10 }}>
+                        <Link href={`/frontEnd/product-page/${product.id}`}>
+                          <button className="  rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
+                            style={{ width: '36px', height: '36px', border: '1px solid var(--primary-colo)', zIndex: '99' }}>
+                            <CiSearch className="fs-5" style={{ color: '#000' }} />
+                          </button>
+                        </Link>
+                        <button className="    rounded-circle p-2 action-btn d-flex justify-content-center"
+                          style={{ width: '36px', height: '36px', border: '1px solid var(--primary-colo' }}>
+                          <FaCartArrowDown className="fs-5" style={{ color: '#000' }} />
+                        </button>
+                      </div>
+                    )
+                  }
+
+
+
                   {/* Quick add to cart button (shown on hover) */}
 
                 </div>
@@ -285,12 +288,44 @@ function FeatureClient({ products }) {
                 </div>
                 {/* options selection div start */}
                 {
-                  showOptionDiv.productId === product.id && showOptionDiv.status ===true && (
-                    <div className="position-absolute option-div">
-                      
+                  showOptionDiv.productId === product.id && showOptionDiv.status === true && (
+                    <div className="position-absolute option-div d-flex flex-column justify-content-center">
+                      <button
+                        className="position-absolute close-btn bg-transparent border-0"
+                        onClick={() => setShowOptionDiv({ productId: null, status: false })}
+                      >
+                        <FaTimes className="text-dark" />
+                      </button>
+
+                      <div className="size-selector-container p-3">
+                        <h6 className="text-center mb-3">SELECT SIZE</h6>
+
+                        <div className="mb-3">
+                          <select
+                            className="form-select form-select-sm"
+                            value={selectedSizes}
+                            onChange={(e) => handleSizeSelect(e)}
+                          >
+                            <option value="">Choose size</option>
+                            {product.sizes.map(size => (
+                              <option key={size.id} value={size.id}>
+                                {size.size} - ৳{size.pivot.price}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <button
+                          className="btn btn-dark w-100 btn-sm"
+                         
+                        >
+                          ADD TO CART
+                        </button>
+                      </div>
                     </div>
                   )
                 }
+
                 {/* options selection div end */}
               </div>
 
