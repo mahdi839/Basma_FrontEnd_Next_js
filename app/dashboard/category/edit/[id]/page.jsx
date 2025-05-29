@@ -22,7 +22,7 @@ export default function page({ params }) {
         }
         if (id) fetchCategory()
     }, [id])
-    console.log(data)
+   
     function handleChange (e){
       setData({...data, name: e.target.value})
     }

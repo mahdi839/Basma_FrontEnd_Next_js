@@ -28,7 +28,7 @@ export default function Products({ products }) {
     }
   }, [products])
 
-  console.log(products)
+ 
 
   function showImage(id) {
     const clickedImg = products.images.find((img) => img.id == id);
