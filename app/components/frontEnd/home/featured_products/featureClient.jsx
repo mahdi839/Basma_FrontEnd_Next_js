@@ -2,13 +2,14 @@
 import React, { useEffect, useState, useRef, } from "react";
 import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
-import { FaCartArrowDown, FaStar, FaStarHalfAlt, FaChevronLeft, FaChevronRight, FaSpinner, FaTimes } from 'react-icons/fa';
+import { FaCartArrowDown, FaStar, FaStarHalfAlt, FaChevronLeft, FaChevronRight, FaSpinner } from 'react-icons/fa';
 import Link from "next/link";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { GrAidOption } from "react-icons/gr";
 import { toast } from "react-toastify";
+import OptionDiv from "./components/OptionDiv";
 
 function FeatureClient({ products }) {
 
@@ -286,46 +287,16 @@ function FeatureClient({ products }) {
                     </button>)}
 
                 </div>
-                {/* options selection div start */}
-                {
-                  showOptionDiv.productId === product.id && showOptionDiv.status === true && (
-                    <div className="position-absolute option-div d-flex flex-column justify-content-center">
-                      <button
-                        className="position-absolute close-btn bg-transparent border-0"
-                        onClick={() => setShowOptionDiv({ productId: null, status: false })}
-                      >
-                        <FaTimes className="text-dark" />
-                      </button>
-
-                      <div className="size-selector-container p-3">
-                        <h6 className="text-center mb-3">SELECT SIZE</h6>
-
-                        <div className="mb-3">
-                          <select
-                            className="form-select form-select-sm"
-                            value={selectedSizes}
-                            onChange={(e) => handleSizeSelect(e)}
-                          >
-                            <option value="">Choose size</option>
-                            {product.sizes.map(size => (
-                              <option key={size.id} value={size.id}>
-                                {size.size} - ৳{size.pivot.price}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <button
-                          className="btn btn-dark w-100 btn-sm"
-                         
-                        >
-                          ADD TO CART
-                        </button>
-                      </div>
-                    </div>
-                  )
-                }
-
+                {/* options div component start */}
+               
+               <OptionDiv
+                showOptionDiv = {showOptionDiv}
+                setShowOptionDiv = {setShowOptionDiv}
+                selectedSizes = {selectedSizes}
+                handleSizeSelect = {handleSizeSelect}
+                product = {product}
+                 />
+               
                 {/* options selection div end */}
               </div>
 
