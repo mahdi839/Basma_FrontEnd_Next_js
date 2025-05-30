@@ -147,9 +147,9 @@ function FeatureClient({ products }) {
 
 
 
-        <Slider ref={sliderRef} {...settings} className="w-100">
+        <Slider ref={sliderRef} {...settings} className="w-100 ">
           {products?.data?.map((product, index) => (
-            <div key={index} className="px-2 ">
+            <div key={index} className={`px-2 ${index===0?'first-slide':''}`}>
               <div className="card product-div  p-2 bg-white h-100 product-card position-relative"
                 style={{
                   borderRadius: '0',
