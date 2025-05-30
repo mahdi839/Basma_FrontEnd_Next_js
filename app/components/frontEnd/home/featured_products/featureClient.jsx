@@ -104,6 +104,9 @@ function FeatureClient({ products }) {
     setSelectedSizes(e.target.value)
   }
 
+   function handleAddToCart (){
+      
+   }
   return (
     <div className="container my-5 py-4">
       <div className="row position-relative">
@@ -267,7 +270,7 @@ function FeatureClient({ products }) {
                     <GrAidOption className="me-2" />
                     Select options
                   </button> :
-                    <button className="bg-transparent w-100 rounded-0">
+                    <button className="bg-transparent w-100 rounded-0" onClick={handleAddToCart}>
                       <FaCartArrowDown className="me-2" />
                       Add to cart
                     </button>}
@@ -281,7 +284,7 @@ function FeatureClient({ products }) {
                     <GrAidOption className="me-2" />
                     Select options
                   </button>) :
-                    (<button className="bg-transparent w-100 rounded-0">
+                    (<button className="bg-transparent w-100 rounded-0" onClick={handleAddToCart}>
                       <FaCartArrowDown className="me-2" />
                       Add to cart
                     </button>)}
