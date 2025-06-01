@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import Image from "next/image";
 
@@ -19,8 +20,10 @@ import {
   FaArrowAltCircleRight,
 } from "react-icons/fa";
 import LogButtons from "./LogButtons";
+import { useSelector } from "react-redux";
 
 export default function Navbar() {
+ const cartCount =  useSelector(state=>state.cart.count)
   return (
     <div>
       <div className="humberger__menu__overlay"></div>
@@ -34,7 +37,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link href="#">
-                <i className="fa fa-shopping-bag"></i> <span>3</span>
+                <i className="fa fa-shopping-bag"></i> <span>{cartCount?? 0}</span>
               </Link>
             </li>
           </ul>
@@ -254,7 +257,7 @@ export default function Navbar() {
                         className="fa fa-shopping-bag"
                         style={{ color: "black", fontSize: "20px" }}
                       />
-                      <span>3</span>
+                      <span>{cartCount}</span>
                     </Link>
                   </li>
                 </ul>

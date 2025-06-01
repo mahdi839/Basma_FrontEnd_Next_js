@@ -10,7 +10,8 @@ import "slick-carousel/slick/slick-theme.css";
 import { GrAidOption } from "react-icons/gr";
 import { toast } from "react-toastify";
 import OptionDiv from "./components/OptionDiv";
-
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from '@/redux/slices/CartSlice';
 function FeatureClient({ products }) {
 
   const [isLoading, setIsLoading] = useState(true)
@@ -22,7 +23,8 @@ function FeatureClient({ products }) {
   const [selectedSizes, setSelectedSizes] = useState("");
 
   let baseUrl = process.env.BACKEND_URL;
-
+  const dispatch = useDispatch ()
+  const cartCount = useSelector(state=>state.cart.count);
   useEffect(() => {
     if (products) {
       setIsLoading(false)
@@ -30,14 +32,6 @@ function FeatureClient({ products }) {
     if (products?.error) {
       toast.error(products.error)
     }
-
-    // const handleClickOutside = (e) => {
-    //   if (!e.target.closest('.option-div')) {
-    //     setShowOptionsForProduct(null);
-    //   }
-    // };
-    // window.addEventListener('click', handleClickOutside);
-    // return () => window.removeEventListener('click', handleClickOutside);
 
 
   }, [products]);
@@ -104,9 +98,19 @@ function FeatureClient({ products }) {
     setSelectedSizes(e.target.value)
   }
 
-   function handleAddToCart (){
-      
+   function handleAddToCart (product){
+    dispatch(addToCart({
+      id: product.id,
+      title: product.title,
+      size: selectedSizes ?? "",
+      price: product.sizes?product.sizes[0]?.pivot?.price : "" || product.price,
+      image: product.images?.[0]?.image || "/default-image.jpg"
+    }));
+
+    setSelectedSizes(""); // Reset selection
+    toast.success("Added to cart!");
    }
+   console.log(cartCount)
   return (
     <div className="container my-5 py-4">
       <div className="row position-relative">
@@ -270,7 +274,7 @@ function FeatureClient({ products }) {
                     <GrAidOption className="me-2" />
                     Select options
                   </button> :
-                    <button className="bg-transparent w-100 rounded-0" onClick={handleAddToCart}>
+                    <button className="bg-transparent w-100 rounded-0" onClick={()=>handleAddToCart(product)}>
                       <FaCartArrowDown className="me-2" />
                       Add to cart
                     </button>}
@@ -284,7 +288,7 @@ function FeatureClient({ products }) {
                     <GrAidOption className="me-2" />
                     Select options
                   </button>) :
-                    (<button className="bg-transparent w-100 rounded-0" onClick={handleAddToCart}>
+                    (<button className="bg-transparent w-100 rounded-0" onClick={()=>handleAddToCart(product)}>
                       <FaCartArrowDown className="me-2" />
                       Add to cart
                     </button>)}
