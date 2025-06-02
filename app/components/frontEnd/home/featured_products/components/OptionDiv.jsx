@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaTimes } from 'react-icons/fa'
 
-export default function OptionDiv({showOptionDiv,setShowOptionDiv,selectedSizes,handleSizeSelect,product}) {
+export default function OptionDiv({showOptionDiv,setShowOptionDiv,selectedSizes,handleSizeSelect,product,handleAddToCart}) {
   return (
     showOptionDiv.productId === product.id && showOptionDiv.status === true && (
         <div className="position-absolute option-div d-flex flex-column justify-content-center">
@@ -31,6 +31,7 @@ export default function OptionDiv({showOptionDiv,setShowOptionDiv,selectedSizes,
             </div>
 
             <button
+             onClick={()=>handleAddToCart(product)}
               className="btn btn-dark w-100 btn-sm"
              
             >

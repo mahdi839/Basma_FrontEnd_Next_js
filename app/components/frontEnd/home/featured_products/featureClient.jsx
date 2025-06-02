@@ -118,7 +118,7 @@ function FeatureClient({ products }) {
       id: product.id,
       title: product.title,
       size: selectedSizes ?? "",
-      price: product.sizes?product.sizes[0]?.pivot?.price : "" || product.price,
+      price: product.sizes?product.sizes[0]?.pivot?.price :  product.price,
       image: product.images?.[0]?.image || "/default-image.jpg"
     }));
 
@@ -268,7 +268,7 @@ function FeatureClient({ products }) {
                     <div>
                       <span className="text-dark fw-bold product-price"
                         style={{ fontSize: '16px', fontWeight: '600' }}>
-                        ৳{product.sizes[0]?.pivot.price}
+                        ৳{product.sizes[0]?.pivot.price || product.price}
                       </span>
                     </div>
                     <div className="text-warning small product-rating">
@@ -317,6 +317,7 @@ function FeatureClient({ products }) {
                 selectedSizes = {selectedSizes}
                 handleSizeSelect = {handleSizeSelect}
                 product = {product}
+                handleAddToCart = {handleAddToCart}
                  />
                
                 {/* options selection div end */}
