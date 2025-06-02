@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import OptionDiv from "./components/OptionDiv";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from '@/redux/slices/CartSlice';
+import Swal from "sweetalert2";
 function FeatureClient({ products }) {
 
   const [isLoading, setIsLoading] = useState(true)
@@ -25,6 +26,7 @@ function FeatureClient({ products }) {
   let baseUrl = process.env.BACKEND_URL;
   const dispatch = useDispatch ()
   const cartCount = useSelector(state=>state.cart.count);
+  const cartItems = useSelector(state=>state.cart.items)
   useEffect(() => {
     if (products) {
       setIsLoading(false)
@@ -99,6 +101,19 @@ function FeatureClient({ products }) {
   }
 
    function handleAddToCart (product){
+    let existingCart = cartItems.find(existProduct=> existProduct.id === product.id)
+    if(existingCart){
+      Swal.fire(
+       {
+         title: "Already in the cart",
+        text: "This product is already in your cart",
+        icon: "info",
+        confirmButtonText: "Ok",
+        confirmButtonColor:"#DB3340"
+       }
+      )
+      return;
+    }
     dispatch(addToCart({
       id: product.id,
       title: product.title,

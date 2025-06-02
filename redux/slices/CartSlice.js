@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+
 const loadCartFromStorage = ()=>{
     if(typeof window !== 'undefined'){
        let storedCart = localStorage.getItem("cart");
@@ -21,6 +22,7 @@ const cartSlice = createSlice({
             if(existingItem){
                 existingItem.qty += 1;
                 existingItem.price = existingItem.price * existingItem.qty
+                
             }else{
                 state.items.push({
                     id,
@@ -31,6 +33,7 @@ const cartSlice = createSlice({
                     qty:1
                 })
             }
+            state.count = state.items.length
             if (typeof window !== 'undefined') {
                 localStorage.setItem('cart', JSON.stringify(state.items));
             }

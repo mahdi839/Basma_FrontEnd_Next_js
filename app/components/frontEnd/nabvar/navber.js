@@ -21,9 +21,14 @@ import {
 } from "react-icons/fa";
 import LogButtons from "./LogButtons";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
  const cartCount =  useSelector(state=>state.cart.count)
+ const [isClient, setIsClient] = useState(false);
+ useEffect(()=>{
+  setIsClient(true);
+ },[])
   return (
     <div>
       <div className="humberger__menu__overlay"></div>
@@ -32,12 +37,12 @@ export default function Navbar() {
           <ul>
             <li>
               <Link href="#">
-                <i className="fa fa-heart"></i> <span>1</span>
+                <FaHeart className="fa fa-heart" /> <span>1</span>
               </Link>
             </li>
             <li>
               <Link href="#">
-                <i className="fa fa-shopping-bag"></i> <span>{cartCount?? 0}</span>
+                <FaShoppingBag className="fa fa-shopping-bag" /> <span>{isClient ? cartCount : 0}</span>
               </Link>
             </li>
           </ul>
@@ -257,7 +262,7 @@ export default function Navbar() {
                         className="fa fa-shopping-bag"
                         style={{ color: "black", fontSize: "20px" }}
                       />
-                      <span>{cartCount}</span>
+                      <span>{isClient ? cartCount : 0}</span>
                     </Link>
                   </li>
                 </ul>
