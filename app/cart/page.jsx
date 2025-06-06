@@ -3,12 +3,26 @@ import React from "react";
 import { FaTrash, FaPlus, FaMinus, FaHeart } from "react-icons/fa";
 import Link from "next/link";
 import Navbar from "../components/frontEnd/nabvar/navber";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { increament,decreament } from "@/redux/slices/CartSlice";
 
 
 function CartPage() {
   
 let cartItems = useSelector((state=>state.cart.items))
+let dispatch = useDispatch()
+
+function handleIncreament (id){
+  dispatch(increament({id}))
+}
+
+function handleDecreament (id){
+  dispatch(decreament({id}))
+}
+
+
+
+
 if (cartItems.length === 0) {
   return (
     <div>
@@ -70,7 +84,7 @@ if (cartItems.length === 0) {
               
               <div class="d-flex mb-4" style={{maxWidth: "300px"}}>
                 <button data-mdb-button-init data-mdb-ripple-init class=" px-3 me-2"
-                  onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
+                  onClick={()=>handleDecreament(item.id)}>
                   <FaMinus />
                 </button>
 
@@ -79,7 +93,7 @@ if (cartItems.length === 0) {
                 </div>
 
                 <button data-mdb-button-init data-mdb-ripple-init class=" px-3 ms-2"
-                  onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
+                  onClick={()=>handleIncreament(item.id)}>
                  <FaPlus />
                 </button>
               </div>
