@@ -1,7 +1,9 @@
 "use client"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowRight, FaBars, FaPhone } from "react-icons/fa";
 import HeroBgImage from "./dynamic_hero_bg";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function Hero() {
   const bgImages = [
@@ -10,52 +12,50 @@ export default function Hero() {
     '/img/hero/banner3.jpg',
   ];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [category,setCategory] = useState([])
+  const [showCategory,setShowCategory] = useState(false)
+ 
+ async function fetchCategories (){
+  const url = process.env.BACKEND_URL + 'api/categories'
+    try{
+      const data = await axios.get(url)
+      setCategory(data.data)
+    }catch(err){
+      toast.error(err.message)
+    }
+  }
+
+  useEffect(()=>{
+     fetchCategories()
+  },[])
+
+  function handleCategory (){
+    setShowCategory(!showCategory)
+  }
+
+
   return (
     <section className="hero">
       <div className="container">
         <div className="row">
           <div className="col-lg-3">
             <div className="hero__categories">
-              <div className="hero__categories__all">
+              <div  className="hero__categories__all" onClick={handleCategory}>
                 <FaBars className="fa fa-bars hero_category_icon"  />
                 <span>All Categories</span>
                 <FaArrowRight style={{ position: 'absolute', right: '18px', top: '17px', color: '#ffffff', fontSize: '18px' }} />
               </div>
-              <ul>
-                <li>
-                  <a href="#">Fresh Meat</a>
+             {
+              showCategory && (
+                <ul>
+                {category.map((categ)=>(
+                  <li>
+                  <a href="#">{categ.name}</a>
                 </li>
-                <li>
-                  <a href="#">Vegetables</a>
-                </li>
-                <li>
-                  <a href="#">Fruit & Nut Gifts</a>
-                </li>
-                <li>
-                  <a href="#">Fresh Berries</a>
-                </li>
-                <li>
-                  <a href="#">Ocean Foods</a>
-                </li>
-                <li>
-                  <a href="#">Butter & Eggs</a>
-                </li>
-                <li>
-                  <a href="#">Fastfood</a>
-                </li>
-                <li>
-                  <a href="#">Fresh Onion</a>
-                </li>
-                <li>
-                  <a href="#">Papayaya & Crisps</a>
-                </li>
-                <li>
-                  <a href="#">Oatmeal</a>
-                </li>
-                <li>
-                  <a href="#">Fresh Bananas</a>
-                </li>
+                ))}
               </ul>
+              )
+             }
             </div>
           </div>
           <div className="col-lg-9">

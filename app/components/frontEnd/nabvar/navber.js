@@ -36,12 +36,12 @@ export default function Navbar() {
         <div className="humberger__menu__cart">
           <ul>
             <li>
-              <Link href="#">
+              <Link href="">
                 <FaHeart className="fa fa-heart" /> <span>1</span>
               </Link>
             </li>
             <li>
-              <Link href="#">
+              <Link href="/cart">
                 <FaShoppingBag className="fa fa-shopping-bag" /> <span>{isClient ? cartCount : 0}</span>
               </Link>
             </li>
@@ -257,7 +257,7 @@ export default function Navbar() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="#">
+                    <Link href="/cart">
                       <FaShoppingBag
                         className="fa fa-shopping-bag"
                         style={{ color: "black", fontSize: "20px" }}

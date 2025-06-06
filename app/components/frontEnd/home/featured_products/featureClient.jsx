@@ -114,6 +114,17 @@ function FeatureClient({ products }) {
       )
       return;
     }
+
+    // check if user select size or not for multiple sizes
+    if(product.sizes.length>0 && !selectedSizes){
+        Swal.fire({
+          title: "Please Select A Size",
+          icon: "warning",
+          confirmButtonText: "Ok",
+          confirmButtonColor:"#DB3340"
+        })
+        return;
+    }
     dispatch(addToCart({
       id: product.id,
       title: product.title,
