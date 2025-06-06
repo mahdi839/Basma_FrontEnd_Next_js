@@ -1,0 +1,15 @@
+.category_list {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.8s linear;
+  }
+  
+  .category_main:hover .category_list {
+    max-height: 500px; /* large enough to fit all items */
+    opacity: 1;
+    transform: translateY(0);
+    z-index: 10;
+  }
+  

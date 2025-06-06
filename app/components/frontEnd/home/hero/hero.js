@@ -4,7 +4,7 @@ import { FaArrowRight, FaBars, FaPhone } from "react-icons/fa";
 import HeroBgImage from "./dynamic_hero_bg";
 import { toast } from "react-toastify";
 import axios from "axios";
-
+import style from "./hero.module.css"
 export default function Hero() {
   const bgImages = [
     '/img/hero/banner.jpg',
@@ -13,7 +13,7 @@ export default function Hero() {
   ];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [category,setCategory] = useState([])
-  const [showCategory,setShowCategory] = useState(false)
+  
  
  async function fetchCategories (){
   const url = process.env.BACKEND_URL + 'api/categories'
@@ -29,33 +29,29 @@ export default function Hero() {
      fetchCategories()
   },[])
 
-  function handleCategory (){
-    setShowCategory(!showCategory)
-  }
-
+ 
 
   return (
     <section className="hero">
       <div className="container">
         <div className="row">
           <div className="col-lg-3">
-            <div className="hero__categories">
-              <div  className="hero__categories__all" onClick={handleCategory}>
+            <div className={`${style.category_main} hero__categories`}>
+              <div  className={`${style.category_dropdown} hero__categories__all`} >
                 <FaBars className="fa fa-bars hero_category_icon"  />
                 <span>All Categories</span>
                 <FaArrowRight style={{ position: 'absolute', right: '18px', top: '17px', color: '#ffffff', fontSize: '18px' }} />
               </div>
-             {
-              showCategory && (
-                <ul>
+             
+             
+                <ul className={style.category_list}>
                 {category.map((categ)=>(
-                  <li>
+                  <li key={categ.id}>
                   <a href="#">{categ.name}</a>
                 </li>
                 ))}
               </ul>
-              )
-             }
+              
             </div>
           </div>
           <div className="col-lg-9">
@@ -82,12 +78,14 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-            <div className="hero__item set-bg"  style={{
+          </div>
+        </div>
+        <div className="row">
+        <div className="col-12 hero__item set-bg"  style={{
               backgroundImage: `url(${bgImages[currentImageIndex]})`,}}>
             <HeroBgImage bgImages={bgImages} setCurrentImageIndex={setCurrentImageIndex} />
               
-            </div>
-          </div>
+         </div>
         </div>
       </div>
     </section>
