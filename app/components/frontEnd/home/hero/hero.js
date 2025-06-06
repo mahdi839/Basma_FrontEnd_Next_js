@@ -84,7 +84,6 @@ export default function Hero() {
         <div className="col-12 hero__item set-bg"  style={{
               backgroundImage: `url(${bgImages[currentImageIndex]})`,}}>
             <HeroBgImage bgImages={bgImages} setCurrentImageIndex={setCurrentImageIndex} />
-              
          </div>
         </div>
       </div>

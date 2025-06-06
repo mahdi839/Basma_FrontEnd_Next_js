@@ -129,8 +129,8 @@ function FeatureClient({ products }) {
       id: product.id,
       title: product.title,
       size: selectedSizes ?? "",
-      price: product.sizes?product.sizes[0]?.pivot?.price :  product.price,
-      image: product.images?.[0]?.image || "/default-image.jpg"
+      price: product.sizes[0]?.pivot?.price?? product.price,
+      image: baseUrl+product.images?.[0]?.image || ""
     }));
 
     setSelectedSizes(""); // Reset selection
