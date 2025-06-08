@@ -4,7 +4,7 @@ import { FaTrash, FaPlus, FaMinus, FaHeart } from "react-icons/fa";
 import Link from "next/link";
 import Navbar from "../components/frontEnd/nabvar/navber";
 import { useDispatch, useSelector } from "react-redux";
-import { increament,decreament } from "@/redux/slices/CartSlice";
+import { increament,decreament,removeCart } from "@/redux/slices/CartSlice";
 
 
 function CartPage() {
@@ -18,6 +18,10 @@ function handleIncreament (id){
 
 function handleDecreament (id){
   dispatch(decreament({id}))
+}
+
+function handleRemove (id){
+  dispatch(removeCart({id}))
 }
 
 
@@ -69,11 +73,11 @@ if (cartItems.length === 0) {
             
               <p><strong>{item.title}</strong></p>
                <p>Size: {item.size || "No Size"}</p>
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class=" me-1 mb-2" data-mdb-tooltip-init
-                title="Remove item">
+              <button  type="button" data-mdb-button-init data-mdb-ripple-init class=" me-1 mb-2" 
+                title="Remove item" onClick={()=>handleRemove(item.id)}>
                 <FaTrash />
               </button>
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class=" mb-2" data-mdb-tooltip-init
+              <button  type="button" data-mdb-button-init data-mdb-ripple-init class=" mb-2" 
                 title="Move to the wish list">
                 <FaHeart />
               </button>
