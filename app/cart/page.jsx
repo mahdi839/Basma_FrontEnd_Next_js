@@ -100,7 +100,7 @@ if (cartItems.length === 0) {
               
 
               <p class="text-start text-md-center">
-                <strong>{item.price} TK </strong>
+                <strong>{item.totalPrice} TK </strong>
               </p>
             
             </div>

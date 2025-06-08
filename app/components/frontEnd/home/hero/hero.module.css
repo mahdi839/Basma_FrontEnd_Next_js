@@ -1,15 +1,23 @@
+.category_main {
+  position: relative;
+}
+
 .category_list {
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: all 0.8s linear;
-  }
-  
-  .category_main:hover .category_list {
-    max-height: 500px; /* large enough to fit all items */
-    opacity: 1;
-    transform: translateY(0);
-    z-index: 10;
-  }
-  
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s linear;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.category_main:hover .category_list {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

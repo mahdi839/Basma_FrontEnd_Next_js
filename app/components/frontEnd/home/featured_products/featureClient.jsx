@@ -101,6 +101,7 @@ function FeatureClient({ products }) {
   }
 
    function handleAddToCart (product){
+    setShowOptionDiv(false)
     let existingCart = cartItems.find(existProduct=> existProduct.id === product.id)
     if(existingCart){
       Swal.fire(
@@ -116,7 +117,7 @@ function FeatureClient({ products }) {
     }
 
     // check if user select size or not for multiple sizes
-    if(product.sizes.length>0 && !selectedSizes){
+    if(product.sizes.length>1 && !selectedSizes){
         Swal.fire({
           title: "Please Select A Size",
           icon: "warning",
@@ -135,8 +136,9 @@ function FeatureClient({ products }) {
 
     setSelectedSizes(""); // Reset selection
     toast.success("Added to cart!");
+   
    }
-   console.log(cartCount)
+   
   return (
     <div className="container my-5 py-4">
       <div className="row position-relative">

@@ -27,7 +27,8 @@ const cartSlice = createSlice({
                     id,
                     title,
                     size,
-                    price,
+                    unitPrice:price,
+                    totalPrice:price,
                     image,
                     qty:1
                 })
@@ -42,7 +43,7 @@ const cartSlice = createSlice({
             const item = state.items.find(i => i.id === id)
             if(item){
                 item.qty +=1
-                item.price = item.price * item.qty
+                item.totalPrice = item.unitPrice * item.qty
                 localStorage.setItem('cart',JSON.stringify(state.items))
             }
         },
@@ -51,7 +52,7 @@ const cartSlice = createSlice({
             const item = state.items.find(i => i.id === id)
             if(item && item.qty>1){
                 item.qty -=1
-                item.price = item.price * item.qty
+                item.totalPrice = item.unitPrice * item.qty
                 localStorage.setItem('cart',JSON.stringify(state.items))
             }
         }
