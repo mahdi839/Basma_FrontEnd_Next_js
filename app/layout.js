@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 
 import Bootstrap_js from "./components/bootstrapJs/Bootstrap_js";
 import Providers from "./Providers";
+import Footer from "./components/footer/footer";
 
 export const metadata = {
   title: "Poeple Place",
@@ -21,8 +22,10 @@ export default function RootLayout({ children }) {
       <body>
         <Providers>
         <Bootstrap_js />
+        <Navbar />
         <ToastContainer />
         {children}
+        <Footer />
         </Providers>
         
       </body>

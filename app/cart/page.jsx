@@ -2,7 +2,6 @@
 import React from "react";
 import { FaTrash, FaPlus, FaMinus, FaHeart } from "react-icons/fa";
 import Link from "next/link";
-import Navbar from "../components/frontEnd/nabvar/navber";
 import { useDispatch, useSelector } from "react-redux";
 import { increament,decreament,removeCart } from "@/redux/slices/CartSlice";
 import style from './cart.module.css'
@@ -25,12 +24,14 @@ function handleRemove (id){
   dispatch(removeCart({id}))
 }
 
+function handleCheckout (){
+  window.location.href = "/checkout"
+}
 
 
   return (
     <div >
      
-     <Navbar />
      <section class="h-100 ">
   <div class="container py-5">
     <div class="row d-flex justify-content-center my-4">
@@ -106,9 +107,9 @@ function handleRemove (id){
               <div className="col-md-4 col-5">
                 <h6 className="mb-1 fw-bold text-truncate">{item.title}</h6>
                 <div className="d-flex flex-column gap-2 small">
-                  <span className="text-muted">Size: <span className="text-dark fw-medium">{item.size || "NS"}</span></span>
+                  {item.size&& <span className="text-muted">Size: <span className="text-dark fw-medium">{item.size}</span></span>}
                   <span 
-                      className=" border-0 "
+                      className={`border-0 ${style.cursor}`}
                       onClick={() => handleRemove(item.id)}
                       title="Remove"
                     >
@@ -158,9 +159,10 @@ function handleRemove (id){
        
      
       <div class="col-md-4">
-        <div class="card mb-4">
-          <div class="card-header py-3">
-            <h5 class="mb-0">Summary</h5>
+        <div class={`border  mb-4 ${style.summery_main}`}>
+          <div className={`${style.summery_bg}`}></div>
+          <div class=" py-3 border-bottom">
+            <h5 class="mb-0 text-center">Summary</h5>
           </div>
           <div class="card-body">
             <ul class="list-group list-group-flush">
@@ -182,7 +184,7 @@ function handleRemove (id){
               </li>
             </ul>
 
-            <button  type="button" data-mdb-button-init data-mdb-ripple-init class=" btn-lg btn-block">
+            <button onClick={handleCheckout}  type="button" data-mdb-button-init data-mdb-ripple-init class=" btn-lg btn-block btn-light border-0">
               Go to checkout
             </button>
           </div>
