@@ -5,7 +5,7 @@ import Link from "next/link";
 import Navbar from "../components/frontEnd/nabvar/navber";
 import { useDispatch, useSelector } from "react-redux";
 import { increament,decreament,removeCart } from "@/redux/slices/CartSlice";
-
+import style from './cart.module.css'
 
 function CartPage() {
   
@@ -31,18 +31,18 @@ function handleRemove (id){
     <div >
      
      <Navbar />
-     <section class="h-100 gradient-custom">
+     <section class="h-100 ">
   <div class="container py-5">
     <div class="row d-flex justify-content-center my-4">
       <div class="col-md-8">
-        <div class="card mb-4">
-          <div class="card-header py-3">
+        
+          <div class="border py-3 px-5 mb-2">
             <h5 class="mb-0">Items in Your Cart: <span className="text-danger">( {cartItems.length} )</span> </h5>
           </div>
-          <div class="card-body">
+          
          {
            cartItems.length === 0?(
-            <div className="container py-5 text-center">
+            <div className="container py-5 text-center border">
     <div className="empty-cart-container" style={{
       maxWidth: '500px',
       margin: '0 auto',
@@ -82,94 +82,81 @@ function handleRemove (id){
       </Link>
     </div>
   </div>
-          ):  cartItems?.map((item)=>(
-            <div className="row align-items-center mb-4 pb-3 border-bottom">
-            {/* Product Image */}
-            <div className="col-lg-3 col-md-4 col-12 mb-4 mb-lg-0">
-              <div className="bg-image hover-zoom ripple rounded overflow-hidden position-relative">
-                <img 
-                  src={item.image} 
-                  className="w-100" 
-                  alt={item.title}
-                  style={{
-                    height: '160px',
-                    objectFit: 'cover',
-                    borderRadius: '8px'
-                  }}
-                />
-                <div className="hover-overlay">
-                  <div className="mask" style={{backgroundColor: "rgba(251, 251, 251, 0.15)"}}></div>
+          ):  
+          cartItems?.map((item) => (
+            <div className="row align-items-center border mb-2 py-3 mx-0 px-0">
+              {/* Product Image - Circular */}
+              <div className="col-md-1 col-2 pe-0">
+                <div className="position-relative">
+                  <img 
+                    src={item.image} 
+                    className="rounded-circle"
+                    alt={item.title}
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      objectFit: 'cover',
+                      border: '1px solid #f0f0f0'
+                    }}
+                  />
                 </div>
               </div>
-            </div>
           
-            {/* Product Info */}
-            <div className="col-lg-4 col-md-4 col-12 mb-4 mb-md-0">
-              <h5 className="mb-2" style={{fontWeight: '600'}}>{item.title}</h5>
-              <p className="mb-2 text-muted">Price: <span className="text-dark">{item.unitPrice}</span></p>
-              <p className="mb-2 text-muted">Size: <span className="text-dark">{item.size || "No Size"}</span></p>
-             
-            </div>
+              {/* Product Info - Compact */}
+              <div className="col-md-4 col-5">
+                <h6 className="mb-1 fw-bold text-truncate">{item.title}</h6>
+                <div className="d-flex flex-column gap-2 small">
+                  <span className="text-muted">Size: <span className="text-dark fw-medium">{item.size || "NS"}</span></span>
+                  <span 
+                      className=" border-0 "
+                      onClick={() => handleRemove(item.id)}
+                      title="Remove"
+                    >
+                      <FaTrash  className="text-danger" />
+                  </span>
+                 
+                </div>
+              </div>
           
-            {/* Quantity & Price */}
-            <div className="col-lg-4 col-md-4 col-12">
-             <div className="d-flex gap-3">
-             <div className="d-flex align-items-center justify-content-between mb-3">
-                <div className="d-flex align-items-center">
+              {/* Quantity Controls */}
+              <div className="col-md-3 col-5">
+                <div className="d-flex align-items-center justify-content-center">
                   <button 
-                    className="border-0 py-1 px-2"
+                    className=" px-2 py-1 border-0"
                     onClick={() => handleDecreament(item.id)}
                     disabled={item.qty <= 1}
+                    style={{ opacity: item.qty <= 1 ? 0.5 : 1 }}
                   >
-                    <FaMinus />
+                    <FaMinus  />
                   </button>
                   
-                  <input 
-                    type="number" 
-                    min="1" 
-                    value={item.qty} 
-                    className=" text-center mx-2" 
-                    style={{width: '60px'}}
-                    readOnly
-                  />
+                  <span className="mx-3" style={{ minWidth: '30px', textAlign: 'center' }}>
+                    {item.qty}
+                  </span>
                   
                   <button 
-                    className="border-0 py-1 px-2"
+                    className="px-2 py-1 border-0"
                     onClick={() => handleIncreament(item.id)}
                   >
-                    <FaPlus />
+                    <FaPlus  />
                   </button>
                 </div>
-                
-               
               </div>
-              <div className="d-flex  gap-2 align-items-center mb-3">
-               
-                <button 
-                  type="button" 
-                  className="border-0 me-2 py-1 px-2"
-                  onClick={() => handleRemove(item.id)}
-                  
-                >
-                  <FaTrash className="me-1" />
-                  
-                </button>
-              </div>
-             </div>
-            </div>
-          </div>
-             ))
-         }
           
-           
-
-            <hr class="my-4" />
-
-           
+              {/* Price & Actions */}
+              <div className="col-md-4 col-12 mt-md-0 mt-2">
+                <div className="d-flex align-items-center justify-content-center ">
+                  <h6 className="mb-0 fw-bold">{item.totalPrice} TK</h6>
+                  
+                </div>
+              </div>
+            </div>
+          ))}
+        
           </div>
-        </div>
+        
        
-      </div>
+     
       <div class="col-md-4">
         <div class="card mb-4">
           <div class="card-header py-3">
