@@ -21,11 +21,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <Providers>
+        <div className="root-container">
         <Bootstrap_js />
-        <Navbar />
         <ToastContainer />
         {children}
-        <Footer />
+        </div>
         </Providers>
         
       </body>

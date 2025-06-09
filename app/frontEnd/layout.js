@@ -4,10 +4,10 @@ import Footer from "@/app/components/footer/footer";
 
 export default function FrontEndLayout({ children }) {
   return (
-    <>
+    <div className="frontEndLayout">
       <Navbar />
-      <main>{children}</main>
+      <main className="frontMain">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }

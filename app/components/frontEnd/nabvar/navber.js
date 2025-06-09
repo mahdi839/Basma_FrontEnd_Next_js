@@ -25,10 +25,13 @@ import { useEffect, useState } from "react";
 
 export default function Navbar() {
  const cartCount =  useSelector(state=>state.cart.count)
+ const cartItems = useSelector((state=>state.cart.items))
  const [isClient, setIsClient] = useState(false);
  useEffect(()=>{
   setIsClient(true);
  },[])
+
+ let CartItemsPrice = cartItems.reduce((total,item)=>total+item.totalPrice,0)
   return (
     <div>
       <div className="humberger__menu__overlay"></div>
@@ -41,7 +44,7 @@ export default function Navbar() {
               </Link>
             </li>
             <li>
-              <Link href="/cart">
+              <Link href="/frontEnd/cart">
                 <FaShoppingBag className="fa fa-shopping-bag" /> <span>{isClient ? cartCount : 0}</span>
               </Link>
             </li>
@@ -257,7 +260,7 @@ export default function Navbar() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/cart">
+                    <Link href="/frontEnd/cart">
                       <FaShoppingBag
                         className="fa fa-shopping-bag"
                         style={{ color: "black", fontSize: "20px" }}
@@ -267,7 +270,7 @@ export default function Navbar() {
                   </li>
                 </ul>
                 <div className="header__cart__price">
-                  item: <span>$150.00</span>
+                Cart Total: <span>{CartItemsPrice??0} Tk</span>
                 </div>
               </div>
             </div>

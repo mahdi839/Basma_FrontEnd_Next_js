@@ -24,9 +24,10 @@ function handleRemove (id){
   dispatch(removeCart({id}))
 }
 
-function handleCheckout (){
-  window.location.href = "/checkout"
-}
+// function handleCheckout (e){
+//   e.preventDefault()
+//   window.location.href = "/checkout"
+// }
 
 
   return (
@@ -184,9 +185,9 @@ function handleCheckout (){
               </li>
             </ul>
 
-            <button onClick={handleCheckout}  type="button" data-mdb-button-init data-mdb-ripple-init class=" btn-lg btn-block btn-light border-0">
-              Go to checkout
-            </button>
+            <Link href='/frontEnd/checkout' >
+              <button type="button" className="btn-lg btn-block btn-light border-0">Go to checkout</button>
+            </Link>
           </div>
         </div>
       </div>

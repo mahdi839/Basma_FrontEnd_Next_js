@@ -12,7 +12,7 @@ export default async function page({params}) {
    
   return (
     <>
-    <Products products={data.data} />
+    <Products product={data.data} />
     </>
   )
 }
