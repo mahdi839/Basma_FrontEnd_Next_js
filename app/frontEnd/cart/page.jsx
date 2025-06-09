@@ -106,7 +106,13 @@ function handleRemove (id){
           
               {/* Product Info - Compact */}
               <div className="col-md-4 col-5">
-                <h6 className="mb-1 fw-bold text-truncate">{item.title}</h6>
+              <Link href={`/frontEnd/product-page/${item.id}`}>
+                <h6 className="mb-1 fw-bold text-truncate">
+                 
+                  {item.title}
+                 
+                </h6>
+                </Link>
                 <div className="d-flex flex-column gap-2 small">
                   {item.size&& <span className="text-muted">Size: <span className="text-dark fw-medium">{item.size}</span></span>}
                   <span 
