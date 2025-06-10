@@ -129,11 +129,7 @@ ol {
 	margin: 0 auto;
 }
 
-.set-bg {
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: top center;
-}
+
 
 .spad {
 	padding-top: 100px;
@@ -675,13 +671,7 @@ ol {
 	color: #6f6f6f;
 }
 
-.hero__item {
-	height: 431px;
-	display: flex;
-	transition: transform 1s ease-in-out;
-	align-items: center;
-	padding-left: 75px;
-}
+
 
 .hero__text span {
 	font-size: 14px;

@@ -21,3 +21,16 @@
   visibility: visible;
   transform: translateY(0);
 }
+.hero__item {
+	height: 431px;
+	display: flex;
+	transition: transform 1s ease-in-out;
+	align-items: center;
+	
+}
+
+.set_bg {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: top center;
+}

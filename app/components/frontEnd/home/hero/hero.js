@@ -7,9 +7,8 @@ import axios from "axios";
 import style from "./hero.module.css"
 export default function Hero() {
   const bgImages = [
-    '/img/hero/banner.jpg',
-    '/img/hero/banner4.jpg',
-    '/img/hero/banner3.jpg',
+    '/img/banner/banner-3.png',
+    '/img/banner/banner-4.png',
   ];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [category,setCategory] = useState([])
@@ -81,7 +80,7 @@ export default function Hero() {
           </div>
         </div>
         <div className="row">
-        <div className="col-12 hero__item set-bg"  style={{
+        <div className={`col-12 ${style.hero__item} ${style.set_bg}`}  style={{
               backgroundImage: `url(${bgImages[currentImageIndex]})`,}}>
             <HeroBgImage bgImages={bgImages} setCurrentImageIndex={setCurrentImageIndex} />
          </div>
