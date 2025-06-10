@@ -50,7 +50,7 @@ export default function Navbar() {
             </li>
           </ul>
           <div className="header__cart__price">
-            item: <span>$150.00</span>
+          Cart Total: <span>{CartItemsPrice??0} Tk</span>
           </div>
         </div>
         <div className="humberger__menu__widget">
