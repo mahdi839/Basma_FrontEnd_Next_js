@@ -284,14 +284,6 @@ function FeatureClient({ products }) {
                         ৳{product.sizes[0]?.pivot.price || product.price}
                       </span>
                     </div>
-                    <div className="text-warning small product-rating">
-                      <FaStar style={{ fontSize: '12px' }} />
-                      <FaStar style={{ fontSize: '12px' }} />
-                      <FaStar style={{ fontSize: '12px' }} />
-                      <FaStar style={{ fontSize: '12px' }} />
-                      <FaStarHalfAlt style={{ fontSize: '12px' }} />
-                      <span className="text-muted ms-1" style={{ fontSize: '12px' }}>(12)</span>
-                    </div>
                   </div>
                 </div>
 
