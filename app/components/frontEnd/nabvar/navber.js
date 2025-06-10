@@ -54,19 +54,7 @@ export default function Navbar() {
           </div>
         </div>
         <div className="humberger__menu__widget">
-          <div className="header__top__right__language">
-            <Image src="/img/language.png" alt="" width={20} height={20} />
-            <div>English</div>
-            <span className="arrow_carrot-down"></span>
-            <ul>
-              <li>
-                <Link href="#">Spanis</Link>
-              </li>
-              <li>
-                <Link href="#">English</Link>
-              </li>
-            </ul>
-          </div>
+        
 
           <div className="header__top__right__auth dropdown">
             <Link href="#">
@@ -151,7 +139,6 @@ export default function Navbar() {
             <li>
               <FaEnvelope className="fa fa-envelope" /> hello@colorlib.com
             </li>
-            <li>Free Shipping for all Order of $99</li>
           </ul>
         </div>
       </div>
@@ -166,7 +153,7 @@ export default function Navbar() {
                     <li>
                       <FaEnvelope className="fa fa-envelope" /> hello@colorlib.com
                     </li>
-                    <li>Free Shipping for all Order of $99</li>
+                    <li></li>
                   </ul>
                 </div>
               </div>
@@ -186,24 +173,7 @@ export default function Navbar() {
                       <FaPinterest className="fa fa-pinterest-p" />
                     </Link>
                   </div>
-                  <div className="header__top__right__language">
-                    <Image
-                      src="/img/language.png"
-                      alt=""
-                      width={27}
-                      height={14}
-                    />
-                    <div>English</div>
-                    <span className="arrow_carrot-down"></span>
-                    <ul>
-                      <li>
-                        <Link href="#">Spanis</Link>
-                      </li>
-                      <li>
-                        <Link href="#">English</Link>
-                      </li>
-                    </ul>
-                  </div>
+                
                   
                   <div className="header__top__right__auth  dropdown">
                     <FaUser

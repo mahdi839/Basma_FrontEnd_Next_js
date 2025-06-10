@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { FaArrowRight, FaBars, FaPhone } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaBars, FaPhone } from "react-icons/fa";
 import HeroBgImage from "./dynamic_hero_bg";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -11,8 +11,7 @@ export default function Hero() {
     '/img/banner/banner-4.png',
   ];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [category,setCategory] = useState([])
-  
+  const [category,setCategory] = useState([]);
  
  async function fetchCategories (){
   const url = process.env.BACKEND_URL + 'api/categories'
@@ -28,7 +27,16 @@ export default function Hero() {
      fetchCategories()
   },[])
 
- 
+ function handleSlider (arrow_type){
+    if(arrow_type === "right"){
+      setCurrentImageIndex((prev)=>prev===bgImages.length-1?0:prev+1)
+      
+    }else{
+      setCurrentImageIndex((prev)=>prev===0?bgImages.length-1:prev-1)
+     
+    }
+    
+ }
 
   return (
     <section className="hero">
@@ -82,7 +90,8 @@ export default function Hero() {
         <div className="row">
         <div className={`col-12 ${style.hero__item} ${style.set_bg}`}  style={{
               backgroundImage: `url(${bgImages[currentImageIndex]})`,}}>
-            <HeroBgImage bgImages={bgImages} setCurrentImageIndex={setCurrentImageIndex} />
+            <FaArrowRight  className={`${style.arrow_right}`} onClick={()=>handleSlider('right')}/>
+            <FaArrowLeft className={`${style.arrow_left}`} onClick={()=>handleSlider('left')} /> 
          </div>
         </div>
       </div>
