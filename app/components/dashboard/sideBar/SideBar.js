@@ -1,7 +1,7 @@
 import React from "react";
 import "../../layouts/dashboard.css";
 import { BsLayoutTextSidebar } from "react-icons/bs";
-import { FaProductHunt} from "react-icons/fa";
+import { FaProductHunt, FaShippingFast} from "react-icons/fa";
 import { RiKanbanView2 } from "react-icons/ri";
 import { IoIosResize } from "react-icons/io";
 import { BiSolidCategory } from "react-icons/bi";
@@ -17,6 +17,7 @@ export default function SideBar() {
       <SideBarItem href="/dashboard/category" Icon={BiSolidCategory} label='Category'/>
       <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Sizes'/>
        <SideBarItem href="/dashboard/products" Icon={FaProductHunt} label='Products'/>
+       <SideBarItem href="/dashboard/shipping" Icon={FaShippingFast} label='Shipping Cost'/>
        <SideBarItem href="/"   Icon={RiKanbanView2} label='My Website' />
       </div>
     </div>
