@@ -1,25 +1,29 @@
 "use client"
 import Button from '@/app/components/dashboard/components/button/Button';
+import useStoreData from '@/app/hooks/useStoreData';
 import React, { useState } from 'react'
+
 
 export default function Page() {
     const [shippingType, setShippingType] = useState('');
-    const [insideDhaka, setInsideDhaka] = useState('');
-    const [outsideDhaka, setOutsideDhaka] = useState('');
-    const [oneShipping, setOneShipping] = useState('');
+    const [storeShipping, setStoreShipping] = useState({
+        inside_dhaka:"",
+        outside_dhaka: "",
+        one_shipping_cost: ""
+    });
+   const {storeData,loading} = useStoreData()
+    const url = process.env.BACKEND_URL + "api/shipping-costs"
 
-    function storeShipping(e) {
+    function handleShipping (e){
+        const {name,value} = e.target;
+        setStoreShipping((prev)=>({
+            ...prev,
+            [name]:value
+        }) )
+    }
+    async function  submitShipping(e) {
         e.preventDefault();
-        
-        // Handle form submission based on selected type
-        if (shippingType === 'inside_outside') {
-            console.log('Inside Dhaka:', insideDhaka);
-            console.log('Outside Dhaka:', outsideDhaka);
-            // Submit both values
-        } else if (shippingType === 'one') {
-            console.log('One Shipping Cost:', oneShipping);
-            // Submit single value
-        }
+        await storeData(url,storeShipping)
     }
 
     return (
@@ -27,7 +31,7 @@ export default function Page() {
             <div className="card shadow-lg p-4" style={{ width: "400px" }}>
                 <h4 className="text-center mb-4">Add Shipping Cost</h4>
 
-                <form onSubmit={storeShipping}>
+                <form onSubmit={submitShipping}>
                     {/* Shipping Type Selector */}
                     <div className="form-group mb-3">
                         <label htmlFor="shippingType" className="fw-bold">Shipping Type:</label>
@@ -53,10 +57,11 @@ export default function Page() {
                                     type="number"
                                     className="form-control"
                                     id="insideDhaka"
+                                    name='inside_dhaka'
                                     placeholder="Enter cost for Inside Dhaka"
-                                    value={insideDhaka}
-                                    onChange={(e) => setInsideDhaka(e.target.value)}
-                                    required
+                                    value={setStoreShipping.inside_dhaka}
+                                    onChange={handleShipping}
+                                    
                                 />
                             </div>
                             <div className="form-group mb-3">
@@ -65,10 +70,11 @@ export default function Page() {
                                     type="number"
                                     className="form-control"
                                     id="outsideDhaka"
+                                    name='outside_dhaka'
                                     placeholder="Enter cost for Outside Dhaka"
-                                    value={outsideDhaka}
-                                    onChange={(e) => setOutsideDhaka(e.target.value)}
-                                    required
+                                    value={setStoreShipping.outside_dhaka}
+                                    onChange={handleShipping}
+                                    
                                 />
                             </div>
                         </>
@@ -81,10 +87,11 @@ export default function Page() {
                                 type="number"
                                 className="form-control"
                                 id="oneShipping"
+                                name='one_shipping_cost'
                                 placeholder="Enter shipping cost"
-                                value={oneShipping}
-                                onChange={(e) => setOneShipping(e.target.value)}
-                                required
+                                value={setStoreShipping.one_shipping_cost}
+                                onChange={handleShipping}
+                                
                             />
                         </div>
                     )}
