@@ -1,106 +1,97 @@
 "use client"
+
 import Button from '@/app/components/dashboard/components/button/Button';
-import useStoreData from '@/app/hooks/useStoreData';
-import React, { useState } from 'react'
-
-
+import useIndexData from '@/app/hooks/useIndexData';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react'
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { toast } from 'react-toastify';
+import Swal from "sweetalert2";
 export default function Page() {
-    const [shippingType, setShippingType] = useState('');
-    const [storeShipping, setStoreShipping] = useState({
-        inside_dhaka:"",
-        outside_dhaka: "",
-        one_shipping_cost: ""
-    });
-   const {storeData,loading} = useStoreData()
-    const url = process.env.BACKEND_URL + "api/shipping-costs"
+   
+      const {indexData,data,loading} = useIndexData()
+       const url = process.env.BACKEND_URL + "api/shipping-costs"
 
-    function handleShipping (e){
-        const {name,value} = e.target;
-        setStoreShipping((prev)=>({
-            ...prev,
-            [name]:value
-        }) )
-    }
-    async function  submitShipping(e) {
-        e.preventDefault();
-        await storeData(url,storeShipping)
-    }
+       useEffect(()=>{
+          indexData(url)
+       },[])
 
+    // async function handleDelete(id) {
+    //     const token = localStorage.getItem('token')
+    //     const url = process.env.BACKEND_URL + `api/shipping-costs/${id}`
+    //     const result = await Swal.fire({
+    //         title: "Are you sure?",
+    //         text: "You won't be able to revert this!",
+    //         icon: "warning",
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#d33",
+    //         cancelButtonColor: "#3085d6",
+    //         confirmButtonText: " Delete",
+    //     });
+
+    //     if (!result.isConfirmed) return;
+    //     try {
+    //         await axios.delete(url, {
+    //             headers: {
+    //                 'Authorization': `Bearer ${token}`
+    //             }
+    //         })
+    //         Swal.fire({
+    //             title: "Successfully Deleted",
+    //             icon: "success",
+    //             showConfirmButton: false,
+    //             timer: 1500,
+    //             timerProgressBar: true,
+    //         });
+    //     } catch (err) {
+    //         toast.error(err.message)
+    //     }
+    //      // Update state to remove deleted category
+    //      setGetCategories(prev => prev.filter(category => category.id !== id));
+    // }
     return (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="card shadow-lg p-4" style={{ width: "400px" }}>
-                <h4 className="text-center mb-4">Add Shipping Cost</h4>
+        <div className="container-fluid my-5">
+     <Link href="/dashboard/shipping/add">
+      <Button className='mb-3'>Add Shipping Cost</Button>
+    </Link>
+        <table className="table table-bordered">
+            <thead>
+                <tr>
+                    <th className="text-center">Id</th>
+                    <th className="text-center">Inside Dhaka</th>
+                    <th className="text-center">Outside Dhaka</th>
+                    <th className="text-center">On Shipping Cost</th>
+                    <th className="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {data.length === 0 ? (
+                    <tr>
+                        <td colSpan="3" className="text-center text-danger">
+                            No Shipping Cost Available
+                        </td>
+                    </tr>
+                ) : (
+                    data.map((singleData) => (
+                        <tr key={singleData.id}>
+                            <td className="text-center">{singleData.id}</td>
+                            <td className="text-center">{singleData.inside_dhaka}</td>
+                            <td className="text-center">{singleData.outside_dhaka}</td>
+                            <td className="text-center">{singleData.one_shipping_cost||"N/A"}</td>
+                            <td className="text-center">
+                                <span className="d-flex gap-3 justify-content-center ">
+                                    <Link href="/">
+                                        <FaEdit className="text-dark" />
+                                    </Link>
+                                    <FaTrash className="text-danger mt-2"  />
+                                </span>
+                            </td>
 
-                <form onSubmit={submitShipping}>
-                    {/* Shipping Type Selector */}
-                    <div className="form-group mb-3">
-                        <label htmlFor="shippingType" className="fw-bold">Shipping Type:</label>
-                        <select
-                            className="form-control"
-                            id="shippingType"
-                            value={shippingType}
-                            onChange={(e) => setShippingType(e.target.value)}
-                            required
-                        >
-                            <option value="">Select Type</option>
-                            <option value="inside_outside">Inside/Outside Dhaka</option>
-                            <option value="one">One Shipping</option>
-                        </select>
-                    </div>
-
-                    {/* Conditional Fields */}
-                    {shippingType === 'inside_outside' && (
-                        <>
-                            <div className="form-group mb-3">
-                                <label htmlFor="insideDhaka" className="fw-bold">Inside Dhaka Cost:</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    id="insideDhaka"
-                                    name='inside_dhaka'
-                                    placeholder="Enter cost for Inside Dhaka"
-                                    value={setStoreShipping.inside_dhaka}
-                                    onChange={handleShipping}
-                                    
-                                />
-                            </div>
-                            <div className="form-group mb-3">
-                                <label htmlFor="outsideDhaka" className="fw-bold">Outside Dhaka Cost:</label>
-                                <input
-                                    type="number"
-                                    className="form-control"
-                                    id="outsideDhaka"
-                                    name='outside_dhaka'
-                                    placeholder="Enter cost for Outside Dhaka"
-                                    value={setStoreShipping.outside_dhaka}
-                                    onChange={handleShipping}
-                                    
-                                />
-                            </div>
-                        </>
-                    )}
-
-                    {shippingType === 'one' && (
-                        <div className="form-group mb-3">
-                            <label htmlFor="oneShipping" className="fw-bold">Shipping Cost: (Applicable For All District)</label>
-                            <input
-                                type="number"
-                                className="form-control"
-                                id="oneShipping"
-                                name='one_shipping_cost'
-                                placeholder="Enter shipping cost"
-                                value={setStoreShipping.one_shipping_cost}
-                                onChange={handleShipping}
-                                
-                            />
-                        </div>
-                    )}
-
-                    <Button type="submit" className="btn btn-primary w-100 mt-3">
-                        Add Shipping Cost
-                    </Button>
-                </form>
-            </div>
+                        </tr>
+                    ))
+                )}
+            </tbody>
+        </table>
         </div>
     )
 }
