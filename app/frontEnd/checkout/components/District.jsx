@@ -72,7 +72,7 @@ export default function District({ value, onChange, required = false }) {
     <Select
     options={bdDistricts}
     value={bdDistricts.find(option => option.value === value)}
-    onChange={(selectedOption) => onChange(selectedOption.value)}
+    onChange={onChange}
     placeholder="Search or select district..."
     isSearchable
     required={required}

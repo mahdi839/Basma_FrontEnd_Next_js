@@ -4,7 +4,7 @@ import Button from '@/app/components/dashboard/components/button/Button';
 import useIndexData from '@/app/hooks/useIndexData';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaSpinner, FaTrash } from "react-icons/fa";
 import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 export default function Page() {
@@ -49,6 +49,9 @@ export default function Page() {
     //      // Update state to remove deleted category
     //      setGetCategories(prev => prev.filter(category => category.id !== id));
     // }
+     if (loading) {
+        return <div className="text-center my-5 "><FaSpinner size={30} /></div>;
+      }
     return (
         <div className="container-fluid my-5">
      <Link href="/dashboard/shipping/add">
@@ -60,14 +63,14 @@ export default function Page() {
                     <th className="text-center">Id</th>
                     <th className="text-center">Inside Dhaka</th>
                     <th className="text-center">Outside Dhaka</th>
-                    <th className="text-center">On Shipping Cost</th>
+                    <th className="text-center">One Shipping Cost</th>
                     <th className="text-center">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {data.length === 0 ? (
                     <tr>
-                        <td colSpan="3" className="text-center text-danger">
+                        <td colSpan="4" className="text-center text-danger">
                             No Shipping Cost Available
                         </td>
                     </tr>

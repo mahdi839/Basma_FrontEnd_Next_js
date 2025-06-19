@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaLock,FaMoneyBill } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import District from "./components/District";
+import useShowData from "@/app/hooks/useShowData";
 
 
 function CheckoutPage() {
@@ -15,7 +16,8 @@ function CheckoutPage() {
     phone: '',
     address: '',
     district: '',
-    paymentMethod: 'cash'
+    paymentMethod: 'cash',
+    notes: ''
   });
 
   const handleChange = (e) => {
@@ -29,6 +31,19 @@ function CheckoutPage() {
     console.log('Form submitted:', formData);
     // Typically you would process payment here
   };
+  const {showData,loading,data}= useShowData()
+  const url = process.env.BACKEND_URL + "api/shipping-costs"
+  useEffect(()=>{
+    showData(url)
+  },[])
+
+  const handleDistrictChange = (selectedOption) => {
+    setFormData((prev) => ({
+      ...prev,
+      district: selectedOption?.value || "",
+    }));
+  };
+  
 
   return (
     <div className="container py-5">
@@ -83,7 +98,7 @@ function CheckoutPage() {
         <label htmlFor="district" className="form-label">District</label>
         <District 
           value={formData.district}
-          onChange={handleChange}
+          onChange={handleDistrictChange}
           required
         />
       </div>
@@ -111,7 +126,7 @@ function CheckoutPage() {
       name="notes"
       rows="3"
       placeholder=""
-      value=''
+      value={formData.notes}
       onChange={handleChange}
     ></textarea>
     <div className="form-text">E.g., building location, landmark, or preferred delivery time</div>
