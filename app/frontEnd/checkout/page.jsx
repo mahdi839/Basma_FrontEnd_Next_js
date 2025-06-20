@@ -4,13 +4,13 @@ import { FaLock,FaMoneyBill } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import District from "./components/District";
-import useShowData from "@/app/hooks/useShowData";
+import useGetSingleData from "@/app/hooks/useGetSingleData";
 
 
 function CheckoutPage() {
   const cartItems = useSelector(state => state.cart.items);
   const totalPrice = cartItems.reduce((total, item) => total + item.totalPrice, 0);
-  
+  const [shippingAmount, setShippingAmount] = useState(0);
   const [formData, setFormData] = useState({
     Name: '',
     phone: '',
@@ -31,12 +31,25 @@ function CheckoutPage() {
     console.log('Form submitted:', formData);
     // Typically you would process payment here
   };
-  const {showData,loading,data}= useShowData()
-  const url = process.env.BACKEND_URL + "api/shipping-costs"
+  const {fetchSingleData,loading,data}= useGetSingleData()
+  const url = process.env.BACKEND_URL + "api/shipping-costs-latest"
   useEffect(()=>{
-    showData(url)
-  },[])
+    fetchSingleData(url)
 
+    if (data && formData.district) {
+      const isDhaka = formData.district === 'dhaka';
+  
+      if (data.inside_dhaka && data.outside_dhaka) {
+        setShippingAmount(isDhaka ? data.inside_dhaka : data.outside_dhaka);
+      } else if (data.flat_rate) {
+        setShippingAmount(data.flat_rate);
+      }else {
+        setShippingAmount(0); // fallback
+      }
+    }
+  },[data, formData.district,fetchSingleData])
+
+ console.log(data)
   const handleDistrictChange = (selectedOption) => {
     setFormData((prev) => ({
       ...prev,
@@ -44,6 +57,7 @@ function CheckoutPage() {
     }));
   };
   
+
 
   return (
     <div className="container py-5">
@@ -197,11 +211,11 @@ function CheckoutPage() {
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center px-0 border-bottom-0">
                   <span>Shipping</span>
-                  <span className="text-success">FREE</span>
+                  <span className="text-success">{shippingAmount}</span>
                 </li>
                 <li className="list-group-item d-flex justify-content-between align-items-center px-0 fw-bold fs-5">
                   <span>Total</span>
-                  <span>{totalPrice} TK</span>
+                  <span>{totalPrice + shippingAmount} TK</span>
                 </li>
               </ul>
 

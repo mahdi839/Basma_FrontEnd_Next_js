@@ -80,7 +80,7 @@ export default function Page() {
                             <td className="text-center">{singleData.id}</td>
                             <td className="text-center">{singleData.inside_dhaka}</td>
                             <td className="text-center">{singleData.outside_dhaka}</td>
-                            <td className="text-center">{singleData.one_shipping_cost||"N/A"}</td>
+                            <td className="text-center">{singleData.one_shipping_cost||0}</td>
                             <td className="text-center">
                                 <span className="d-flex gap-3 justify-content-center ">
                                     <Link href="/">
