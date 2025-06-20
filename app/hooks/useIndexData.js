@@ -22,5 +22,5 @@ export default function useIndexData() {
         setLoading(false)
      }
   }
-  return {indexData,loading,data};
+  return {indexData,loading,data,setData};
 }

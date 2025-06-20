@@ -41,15 +41,14 @@ function CheckoutPage() {
   
       if (data.inside_dhaka && data.outside_dhaka) {
         setShippingAmount(isDhaka ? data.inside_dhaka : data.outside_dhaka);
-      } else if (data.flat_rate) {
-        setShippingAmount(data.flat_rate);
+      } else if (data.one_shipping_cost) {
+        setShippingAmount(data.one_shipping_cost);
       }else {
         setShippingAmount(0); // fallback
       }
     }
   },[data, formData.district,fetchSingleData])
 
- console.log(data)
   const handleDistrictChange = (selectedOption) => {
     setFormData((prev) => ({
       ...prev,
@@ -58,7 +57,7 @@ function CheckoutPage() {
   };
   
 
-
+  
   return (
     <div className="container py-5">
       <div className="row">

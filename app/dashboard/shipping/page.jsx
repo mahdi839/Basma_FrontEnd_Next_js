@@ -2,6 +2,7 @@
 
 import Button from '@/app/components/dashboard/components/button/Button';
 import useIndexData from '@/app/hooks/useIndexData';
+import axios from 'axios';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react'
 import { FaEdit, FaSpinner, FaTrash } from "react-icons/fa";
@@ -9,46 +10,46 @@ import { toast } from 'react-toastify';
 import Swal from "sweetalert2";
 export default function Page() {
    
-      const {indexData,data,loading} = useIndexData()
+      const {indexData,setData,data,loading} = useIndexData()
        const url = process.env.BACKEND_URL + "api/shipping-costs"
 
        useEffect(()=>{
           indexData(url)
        },[])
 
-    // async function handleDelete(id) {
-    //     const token = localStorage.getItem('token')
-    //     const url = process.env.BACKEND_URL + `api/shipping-costs/${id}`
-    //     const result = await Swal.fire({
-    //         title: "Are you sure?",
-    //         text: "You won't be able to revert this!",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonColor: "#d33",
-    //         cancelButtonColor: "#3085d6",
-    //         confirmButtonText: " Delete",
-    //     });
+    async function handleDelete(id) {
+        const token = localStorage.getItem('token')
+        const url = process.env.BACKEND_URL + `api/shipping-costs/${id}`
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: " Delete",
+        });
 
-    //     if (!result.isConfirmed) return;
-    //     try {
-    //         await axios.delete(url, {
-    //             headers: {
-    //                 'Authorization': `Bearer ${token}`
-    //             }
-    //         })
-    //         Swal.fire({
-    //             title: "Successfully Deleted",
-    //             icon: "success",
-    //             showConfirmButton: false,
-    //             timer: 1500,
-    //             timerProgressBar: true,
-    //         });
-    //     } catch (err) {
-    //         toast.error(err.message)
-    //     }
-    //      // Update state to remove deleted category
-    //      setGetCategories(prev => prev.filter(category => category.id !== id));
-    // }
+        if (!result.isConfirmed) return;
+        try {
+            await axios.delete(url, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            Swal.fire({
+                title: "Successfully Deleted",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+            });
+        } catch (err) {
+            toast.error(err.message)
+        }
+         // Update state to remove deleted category
+         setData(prev => prev.filter(single => single.id !== id));
+    }
      if (loading) {
         return <div className="text-center my-5 "><FaSpinner size={30} /></div>;
       }
@@ -83,10 +84,10 @@ export default function Page() {
                             <td className="text-center">{singleData.one_shipping_cost||0}</td>
                             <td className="text-center">
                                 <span className="d-flex gap-3 justify-content-center ">
-                                    <Link href="/">
+                                    <Link href={`/dashboard/shipping/edit/${singleData.id}`}>
                                         <FaEdit className="text-dark" />
                                     </Link>
-                                    <FaTrash className="text-danger mt-2"  />
+                                    <FaTrash className="text-danger mt-2" onClick={()=>handleDelete(singleData.id)}  />
                                 </span>
                             </td>
 
