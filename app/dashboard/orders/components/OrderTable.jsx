@@ -13,19 +13,19 @@ export default function OrderTable({ loading, orders }) {
           <table className="table table-hover align-middle">
             <thead className="bg-light">
               <tr>
-                <th>ID</th>
+                <th>#</th>
                 <th>Customer Info</th>
                 <th>Ordered Products</th>
-                <th>Total</th>
+                <th>Order Summery</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {orders.length > 0 ? (
-                orders.map((order) => (
+                orders.map((order,index) => (
                   <tr key={order.id}>
-                    <td>{order.id}</td>
+                    <td>{index+1}</td>
                     <td>
                       <h6 className="mb-0">Name: {order.name || 'N/A'}</h6>
                       <small> <strong>Phone:</strong> {order.phone || 'N/A'}</small> <br/>
@@ -33,16 +33,18 @@ export default function OrderTable({ loading, orders }) {
                       <small> <strong>District:</strong> {order.district || 'N/A'}</small>
                     </td>
                     <td>
-                      {order.order_items?.map(item => (
+                      {order.order_items?.map((item,itemIndex) => (
                         <div key={item.id}>
-                          {item.title} (qty:{item.qty})
+                         <strong> {`${itemIndex+1}.`} </strong>{item.title} (qty:{item.qty} )
                         </div>
                       ))}
-                      {order.order_items?.length > 2 && (
-                        <div>+{order.order_items.length - 2} more</div>
-                      )}
                     </td>
-                    <td>${order.total}</td>
+                    <td>
+                      <p> <strong>Shipping Cost:</strong> {order.shipping_cost} </p>
+                      <p> <strong>Payment Method:</strong> {order.payment_method} </p>
+                      <p><strong>Total:</strong> {order.total} TK</p>
+                      
+                    </td>
                     <td>
                       <span className={`badge ${order.status === 'completed' ? 'bg-success' : 'bg-warning'}`}>
                         {order.status}

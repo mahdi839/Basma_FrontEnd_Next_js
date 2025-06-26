@@ -1,17 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FaLock,FaMoneyBill } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart } from "@/redux/slices/CartSlice";
 import Link from "next/link";
 import District from "./components/District";
 import useGetSingleData from "@/app/hooks/useGetSingleData";
 import useStoreData from "@/app/hooks/useStoreData";
+import { useRouter } from "next/navigation";
 
 
 function CheckoutPage() {
   const cartItems = useSelector(state => state.cart.items);
   const totalPrice = cartItems.reduce((total, item) => total + item.totalPrice, 0);
+  const dispatch = useDispatch();
   const [shippingAmount, setShippingAmount] = useState(0);
+  const route = useRouter()
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -66,6 +70,9 @@ function CheckoutPage() {
 
   const storeOrderUrl = process.env.BACKEND_URL + "api/orders";
   storeData(storeOrderUrl, updatedFormData, 'Thank you for your purchase! Order placed successfully.');
+   dispatch(clearCart())
+   route.push("/")
+
   };
   
   return (
