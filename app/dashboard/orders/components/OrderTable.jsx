@@ -1,14 +1,16 @@
 // app/dashboard/orders/components/OrderTable.jsx
+import DynamicLoader from '@/app/components/loader/dynamicLoader';
+import PageLoader from '@/app/components/loader/pageLoader';
 import React from 'react';
 
 export default function OrderTable({ loading, orders }) {
   if (loading) {
-    return <div className="text-center py-5">Loading orders...</div>;
+    return <PageLoader />;
   }
 
   return (
     <div className="card">
-      <div className="card-body p-0">
+      <div className="">
         <div className="table-responsive">
           <table className="table table-hover align-middle">
             <thead className="bg-light">

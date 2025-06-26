@@ -1145,3 +1145,19 @@ button{
 .frontMain{
 	flex-grow: 1;
 }
+
+/* Remove border from last td/th in each row */
+
+.table td, .table th {
+    border: none !important;
+}
+table tr td{
+	border: 1px solid gray;
+}
+.table tr td:last-child{
+	border: none;
+}
+
+.loader-icon{
+	color: var(--primary-color);
+}

@@ -5,14 +5,16 @@ import { toast } from 'react-toastify';
 
 export default function useIndexData() {
   const [loading,setLoading] = useState(false);
+  const [pagination,setPagination] = useState({
+    current_page: 1,
+    last_page: 1
+  })
   const [data,setData] =useState(
    {
-    data: [],          // Actual items
-    links: {},         // Pagination links
-    meta: {} 
+    data: [],    
    }
   );
-  const indexData = async (url,params = {})=>{
+  const indexData = async (url)=>{
      const token = localStorage.getItem("token");
      setLoading(true);
      try{
@@ -20,18 +22,16 @@ export default function useIndexData() {
          headers:{
             Authorization: `Bearer ${token}`
          },
-         params
        })
        setData({
         data: response.data.data || [],
-        links: response.data.links || {},
-        meta: response.data.meta || {}
        });
+       setPagination({current_page: response.data.current_page,last_page: response.data.last_page})
      }catch(err){
        toast.error(err.response?.data?.message || err.message)
      }finally{
         setLoading(false)
      }
   }
-  return {indexData,loading,data,setData};
+  return {indexData,loading,data,setData,pagination,setPagination};
 }

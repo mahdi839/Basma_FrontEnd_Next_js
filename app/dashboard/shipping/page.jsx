@@ -1,6 +1,7 @@
 "use client"
 
 import Button from '@/app/components/dashboard/components/button/Button';
+import PageLoader from '@/app/components/loader/pageLoader';
 import useIndexData from '@/app/hooks/useIndexData';
 import axios from 'axios';
 import Link from 'next/link';
@@ -51,7 +52,7 @@ export default function Page() {
          setData(prev => prev.filter(single => single.id !== id));
     }
      if (loading) {
-        return <div className="text-center my-5 "><FaSpinner size={30} /></div>;
+        return <PageLoader />
       }
     return (
         <div className="container-fluid my-5">
@@ -69,14 +70,14 @@ export default function Page() {
                 </tr>
             </thead>
             <tbody>
-                {data.length === 0 ? (
+                {data.data.length === 0 ? (
                     <tr>
                         <td colSpan="4" className="text-center text-danger">
                             No Shipping Cost Available
                         </td>
                     </tr>
                 ) : (
-                    data.map((singleData) => (
+                    data.data.map((singleData) => (
                         <tr key={singleData.id}>
                             <td className="text-center">{singleData.id}</td>
                             <td className="text-center">{singleData.inside_dhaka}</td>

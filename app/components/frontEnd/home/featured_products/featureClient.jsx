@@ -13,6 +13,7 @@ import OptionDiv from "./components/OptionDiv";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from '@/redux/slices/CartSlice';
 import Swal from "sweetalert2";
+import DynamicLoader from "@/app/components/loader/dynamicLoader";
 function FeatureClient({ products }) {
 
   const [isLoading, setIsLoading] = useState(true)
@@ -77,7 +78,7 @@ function FeatureClient({ products }) {
     ]
   };
   if (isLoading) {
-    return <div className="text-center my-5"><FaSpinner size={30} /></div>;
+    return <DynamicLoader /> ;
   }
 
   if (products?.error) {
