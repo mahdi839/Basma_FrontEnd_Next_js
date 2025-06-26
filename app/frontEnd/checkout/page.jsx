@@ -20,7 +20,7 @@ function CheckoutPage() {
     payment_method: 'cash',
     delivery_notes: '',
     cart:cartItems,
-    shipping_cost: shippingAmount
+    shipping_cost: ''
   });
 
   const handleChange = (e) => {
@@ -58,8 +58,14 @@ function CheckoutPage() {
   const {storeData} = useStoreData();
   const handleSubmit = (e) => {
     e.preventDefault();
-    const storeOrderUrl = process.env.BACKEND_URL + "api/orders";
-    storeData(storeOrderUrl, formData,'Thank you for your purchase!  order placed successfully.');
+    // Update shipping_cost in formData before sending
+  const updatedFormData = {
+    ...formData,
+    shipping_cost: shippingAmount,
+  };
+
+  const storeOrderUrl = process.env.BACKEND_URL + "api/orders";
+  storeData(storeOrderUrl, updatedFormData, 'Thank you for your purchase! Order placed successfully.');
   };
   
   return (
