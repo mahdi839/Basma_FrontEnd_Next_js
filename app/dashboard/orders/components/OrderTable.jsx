@@ -35,7 +35,7 @@ export default function OrderTable({ loading, orders }) {
                     <td>
                       {order.order_items?.map((item,itemIndex) => (
                         <div key={item.id}>
-                         <strong> {`${itemIndex+1}.`} </strong>{item.title} (qty:{item.qty} )
+                         <strong> {`${itemIndex+1}.`} </strong>{item.title} (qty:{item.qty} x Price: {item.unitPrice} = { item.totalPrice} )
                         </div>
                       ))}
                     </td>
