@@ -6,7 +6,7 @@ import { toast } from 'react-toastify'
 export default function useStoreData() {
     const [loading,setLoading] = useState(false)
    
-  const storeData = async (url,data) =>{
+  const storeData = async (url,data,successMsg) =>{
     const token = localStorage.getItem('token')
       setLoading(true)
       try{
@@ -15,7 +15,7 @@ export default function useStoreData() {
                'Authorization': `Bearer ${token}`
             }
         });
-        toast.success("successfully Added")
+        toast.success(successMsg)
       }catch(err){
         toast.error(err.message)
       }

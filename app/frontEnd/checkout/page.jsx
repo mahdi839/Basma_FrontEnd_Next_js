@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import Link from "next/link";
 import District from "./components/District";
 import useGetSingleData from "@/app/hooks/useGetSingleData";
+import useStoreData from "@/app/hooks/useStoreData";
 
 
 function CheckoutPage() {
@@ -12,12 +13,14 @@ function CheckoutPage() {
   const totalPrice = cartItems.reduce((total, item) => total + item.totalPrice, 0);
   const [shippingAmount, setShippingAmount] = useState(0);
   const [formData, setFormData] = useState({
-    Name: '',
+    name: '',
     phone: '',
     address: '',
     district: '',
-    paymentMethod: 'cash',
-    notes: ''
+    payment_method: 'cash',
+    delivery_notes: '',
+    cart:cartItems,
+    shipping_cost: shippingAmount
   });
 
   const handleChange = (e) => {
@@ -25,17 +28,14 @@ function CheckoutPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    console.log('Form submitted:', formData);
-    // Typically you would process payment here
-  };
+  
   const {fetchSingleData,loading,data}= useGetSingleData()
-  const url = process.env.BACKEND_URL + "api/shipping-costs-latest"
+  const latestApiUrl = process.env.BACKEND_URL + "api/shipping-costs-latest"
   useEffect(()=>{
-    fetchSingleData(url)
-
+    fetchSingleData(latestApiUrl)
+  },[])
+  useEffect(()=>{
+   
     if (data && formData.district) {
       const isDhaka = formData.district === 'dhaka';
   
@@ -47,7 +47,7 @@ function CheckoutPage() {
         setShippingAmount(0); // fallback
       }
     }
-  },[data, formData.district,fetchSingleData])
+  },[data, formData.district])
 
   const handleDistrictChange = (selectedOption) => {
     setFormData((prev) => ({
@@ -55,8 +55,12 @@ function CheckoutPage() {
       district: selectedOption?.value || "",
     }));
   };
-  
-
+  const {storeData} = useStoreData();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const storeOrderUrl = process.env.BACKEND_URL + "api/orders";
+    storeData(storeOrderUrl, formData,'Thank you for your purchase!  order placed successfully.');
+  };
   
   return (
     <div className="container py-5">
@@ -73,13 +77,13 @@ function CheckoutPage() {
                 <h5 className="mb-3">Personal Information</h5>
                 <div className="row g-3">
                   <div className="col-md-6">
-                    <label htmlFor="firstName" className="form-label"> Name</label>
+                    <label htmlFor="name" className="form-label"> Name</label>
                     <input 
                       type="text" 
                       className="form-control" 
-                      id="firstName"
-                      name="firstName"
-                      value={formData.firstName}
+                      id="name"
+                      name="name"
+                      value={formData.name}
                       onChange={handleChange}
                       required
                     />
@@ -135,11 +139,11 @@ function CheckoutPage() {
     <label htmlFor="notes" className="form-label">Delivery Notes (Optional)</label>
     <textarea
       className="form-control"
-      id="notes"
-      name="notes"
+      id="delivery_notes"
+      name="delivery_notes"
       rows="3"
       placeholder=""
-      value={formData.notes}
+      value={formData.delivery_notes}
       onChange={handleChange}
     ></textarea>
     <div className="form-text">E.g., building location, landmark, or preferred delivery time</div>
@@ -159,7 +163,7 @@ function CheckoutPage() {
                       name="paymentMethod" 
                       id="cash" 
                       value={formData.cash}
-                      checked={formData.paymentMethod === 'cash'}
+                      checked={formData.payment_method === 'cash'}
                       onChange={handleChange}
                     />
                     <label className="form-check-label d-flex align-items-center" htmlFor="cash">
@@ -174,7 +178,7 @@ function CheckoutPage() {
                 <Link href="/cart" className="btn btn-outline-secondary">
                   Back to Cart
                 </Link>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" >
                   <FaLock className="me-2" />
                   Complete Purchase
                 </button>
