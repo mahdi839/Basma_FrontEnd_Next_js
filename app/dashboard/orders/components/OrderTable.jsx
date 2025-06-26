@@ -26,7 +26,7 @@ export default function OrderTable({ loading, orders }) {
             <tbody>
               {orders.length > 0 ? (
                 orders.map((order,index) => (
-                  <tr key={order.id}>
+                  <tr key={order.id} className={`${index+1 !== orders.length?'border':''}`}>
                     <td>{index+1}</td>
                     <td>
                       <h6 className="mb-0">Name: {order.name || 'N/A'}</h6>
