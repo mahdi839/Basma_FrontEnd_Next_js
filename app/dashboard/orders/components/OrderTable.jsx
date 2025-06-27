@@ -1,16 +1,168 @@
 // app/dashboard/orders/components/OrderTable.jsx
-import DynamicLoader from '@/app/components/loader/dynamicLoader';
+"use client"
 import PageLoader from '@/app/components/loader/pageLoader';
-import React from 'react';
+import District from '@/app/frontEnd/checkout/components/District';
+import React, { useState } from 'react';
+import ProductFilter from './ProductFilter';
 
-export default function OrderTable({ loading, orders }) {
+export default function OrderTable({ 
+  loading, 
+  orders, 
+  filters,
+  onApplyFilters,
+  onResetFilters 
+}) {
+  const [draftFilters, setDraftFilters] = useState(filters);
+
+  // Sync with parent filters when they change
+  React.useEffect(() => {
+    setDraftFilters(filters);
+  }, [filters]);
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setDraftFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleApply = () => {
+    onApplyFilters(draftFilters);
+  };
+
+  const handleReset = () => {
+    onResetFilters();
+  };
+
+   // Special handler for react-select components
+   const handleSelectChange = (name) => (selectedOption) => {
+    setDraftFilters(prev => ({
+      ...prev,
+      [name]: selectedOption ? selectedOption.value : ''
+    }));
+  };
+
   if (loading) {
     return <PageLoader />;
   }
 
   return (
     <div className="card">
-      <div className="">
+      {/* Filter Section */}
+      <div className="card-header bg-light py-3">
+        <div className="row g-3">
+          {/* Search Input */}
+          <div className="col-md-3">
+            <input 
+              type="text" 
+              className="form-control" 
+              placeholder="Search name/phone..." 
+              name="search"
+              value={draftFilters.search}
+              onChange={handleFilterChange}
+            />
+          </div>
+          
+          {/* Min/Max Amount */}
+          <div className="col-md-3">
+            <div className="input-group">
+              <span className="input-group-text">৳</span>
+              <input 
+                type="number" 
+                className="form-control" 
+                placeholder="Min" 
+                name="min"
+                value={draftFilters.min}
+                onChange={handleFilterChange}
+              />
+              <span className="input-group-text">-</span>
+              <input 
+                type="number" 
+                className="form-control" 
+                placeholder="Max" 
+                name="max"
+                value={draftFilters.max}
+                onChange={handleFilterChange}
+              />
+            </div>
+          </div>
+          
+          {/* Date Range */}
+          <div className="col-md-3">
+            <div className="input-group">
+              <input 
+                type="date" 
+                className="form-control" 
+                name="start_date"
+                value={draftFilters.start_date}
+                onChange={handleFilterChange}
+              />
+              <span className="input-group-text">to</span>
+              <input 
+                type="date" 
+                className="form-control" 
+                name="end_date"
+                value={draftFilters.end_date}
+                onChange={handleFilterChange}
+              />
+            </div>
+          </div>
+          
+          {/* Status Filter */}
+          <div className="col-md-3">
+            <select 
+              className="form-select" 
+              name="status"
+              value={draftFilters.status}
+              onChange={handleFilterChange}
+            >
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="completed">placed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="processing">Processing</option>
+            </select>
+          </div>
+          
+          {/* District Filter */}
+          {/* District Filter */}
+          <div className="col-md-3 mt-2">
+            <label className="form-label small mb-1">District</label>
+            <District
+              value={draftFilters.district}
+              onChange={handleSelectChange('district')}
+            />
+          </div>
+          
+          {/* Product Filter */}
+         {/* Product Filter */}
+         <div className="col-md-3 mt-2">
+            <label className="form-label small mb-1">Product</label>
+            <ProductFilter
+              value={draftFilters.product_title}
+              onChange={handleSelectChange('product_title')}
+            />
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="col-md-6 mt-2 d-flex justify-content-end">
+            <button 
+              className="btn btn-primary me-2"
+              onClick={handleApply}
+            >
+              <i className="bi bi-funnel me-1"></i> Apply Filters
+            </button>
+            <button 
+              className="btn btn-outline-secondary"
+              onClick={handleReset}
+            >
+              <i className="bi bi-arrow-repeat me-1"></i> Reset
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Table Section */}
+      <div className="card-body">
         <div className="table-responsive">
           <table className="table table-hover align-middle">
             <thead className="bg-light">
@@ -18,7 +170,7 @@ export default function OrderTable({ loading, orders }) {
                 <th>#</th>
                 <th>Customer Info</th>
                 <th>Ordered Products</th>
-                <th>Order Summery</th>
+                <th>Order Summary</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -30,6 +182,7 @@ export default function OrderTable({ loading, orders }) {
                     <td>{index+1}</td>
                     <td>
                       <h6 className="mb-0">Name: {order.name || 'N/A'}</h6>
+                      <small> <strong>Order Date:</strong> {order.created_at || 'N/A'}</small> <br/>
                       <small> <strong>Phone:</strong> {order.phone || 'N/A'}</small> <br/>
                       <small> <strong>Address:</strong> {order.address || 'N/A'}</small> <br/>
                       <small> <strong>District:</strong> {order.district || 'N/A'}</small>
@@ -45,10 +198,11 @@ export default function OrderTable({ loading, orders }) {
                       <p> <strong>Shipping Cost:</strong> {order.shipping_cost} </p>
                       <p> <strong>Payment Method:</strong> {order.payment_method} </p>
                       <p><strong>Total:</strong> {order.total} TK</p>
-                      
                     </td>
                     <td>
-                      <span className={`badge ${order.status === 'completed' ? 'bg-success' : 'bg-warning'}`}>
+                      <span className={`badge ${order.status === 'completed' ? 'bg-success' : 
+                                        order.status === 'pending' ? 'bg-warning' :
+                                        order.status === 'cancelled' ? 'bg-danger' : 'bg-info'}`}>
                         {order.status}
                       </span>
                     </td>
