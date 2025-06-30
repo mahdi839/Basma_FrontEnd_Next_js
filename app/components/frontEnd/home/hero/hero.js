@@ -54,7 +54,7 @@ export default function Hero() {
                 <ul className={style.category_list}>
                 {category.map((categ)=>(
                   <li key={categ.id}>
-                  <a href="#">{categ.name}</a>
+                  <a href={`/frontEnd/${categ.slug}`}>{categ.name}</a>
                 </li>
                 ))}
               </ul>

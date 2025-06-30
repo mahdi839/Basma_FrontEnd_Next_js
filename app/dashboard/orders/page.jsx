@@ -27,7 +27,6 @@ export default function page() {
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params.append(key, value);
       });
-      
       return `${baseUrl}&${params.toString()}`;
     };
     const {indexData,loading,data,setData,pagination,setPagination} = useIndexData()
