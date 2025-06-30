@@ -102,7 +102,8 @@ function FeatureClient({ products }) {
   }
 
    function handleAddToCart (product){
-    setShowOptionDiv(false)
+     setShowOptionDiv(false)
+    
     let existingCart = cartItems.find(existProduct=> existProduct.id === product.id)
     if(existingCart){
       Swal.fire(
