@@ -1,9 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { FaArrowLeft, FaArrowRight, FaBars, FaPhone } from "react-icons/fa";
-import HeroBgImage from "./dynamic_hero_bg";
-import { toast } from "react-toastify";
-import axios from "axios";
+import { FaArrowLeft, FaArrowRight, FaBars, FaChevronLeft, FaChevronRight, FaPhone } from "react-icons/fa";
+
 import style from '../../nabvar/hero.module.css'
 export default function Hero() {
   const bgImages = [
@@ -32,8 +30,11 @@ export default function Hero() {
         <div className="row">
         <div className={`col-12 ${style.hero__item} ${style.set_bg}`}  style={{
               backgroundImage: `url(${bgImages[currentImageIndex]})`,}}>
-            <FaArrowRight  className={`${style.arrow_right}`} onClick={()=>handleSlider('right')}/>
-            <FaArrowLeft className={`${style.arrow_left}`} onClick={()=>handleSlider('left')} /> 
+           <div className={style.arrow_div_right}> <FaChevronLeft  className={`${style.arrow_right}`} onClick={()=>handleSlider('right')}/>
+            </div>
+           <div className={style.arrow_div_left}>
+           <FaChevronRight className={`${style.arrow_left}`} onClick={()=>handleSlider('left')} /> 
+           </div>
          </div>
         </div>
       </div>
