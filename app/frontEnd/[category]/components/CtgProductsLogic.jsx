@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState,} from "react";
 import Image from "next/image";
-import { CiSearch } from "react-icons/ci";
 import { FaCartArrowDown } from 'react-icons/fa';
 import Link from "next/link";
 import { GrAidOption } from "react-icons/gr";
@@ -12,8 +11,8 @@ import { addToCart } from '@/redux/slices/CartSlice';
 import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import OptionDiv from '@/app/components/frontEnd/home/featured_products/components/OptionDiv';
-export default function CtgProductsLogic({products}) {
-    console.log(products)
+export default function CtgProductsLogic({products,category}) {
+  
 const [isLoading, setIsLoading] = useState(true)
   const [showOptionDiv, setShowOptionDiv] = useState({
     productId: null,
@@ -22,7 +21,6 @@ const [isLoading, setIsLoading] = useState(true)
   const [selectedSizes, setSelectedSizes] = useState("");
   let baseUrl = process.env.BACKEND_URL;
   const dispatch = useDispatch ()
-  const cartCount = useSelector(state=>state.cart.count);
   const cartItems = useSelector(state=>state.cart.items)
   useEffect(() => {
     if (products) {
@@ -44,7 +42,7 @@ const [isLoading, setIsLoading] = useState(true)
     }
   
     if (!products?.length) {
-      return <div className="text-center my-5">No products found</div>;
+      return <div className="text-center my-5 text-danger">No products found</div>;
     }
   
     function handleOptionDiv(e, productid) {
@@ -60,8 +58,7 @@ const [isLoading, setIsLoading] = useState(true)
     }
   
      function handleAddToCart (product){
-        - setShowOptionDiv(false)
-        + setShowOptionDiv({ productId: null, status: false })
+        setShowOptionDiv(false)
       let existingCart = cartItems.find(existProduct=> existProduct.id === product.id)
       if(existingCart){
         Swal.fire(
@@ -102,8 +99,11 @@ const [isLoading, setIsLoading] = useState(true)
 
   return (
     <div className="container my-5 py-4">
+       
     <div className="row position-relative">
+    
     {products?.map((product, index) => (
+      
         <div key={index} className='col-lg-3 col-md-6'>
           <div className="card product-div  p-2 bg-white h-100 product-card position-relative"
             style={{

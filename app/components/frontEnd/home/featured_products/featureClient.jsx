@@ -14,6 +14,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from '@/redux/slices/CartSlice';
 import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
+
+
 function FeatureClient({ products }) {
 
   const [isLoading, setIsLoading] = useState(true)
@@ -193,15 +195,7 @@ function FeatureClient({ products }) {
                   transition: 'all 0.3s ease',
                   boxShadow: '0 0 10px rgba(0,0,0,0.03)'
                 }}>
-                {/* Sale Badge */}
-                {
-                  product.discount && product.discount !== null && (
-                    <div className="position-absolute  text-white px-1 py-2 small sale-badge rounded-circle"
-                    >
-                      -{typeof product.discount === "number" && product.discount > 0 ? product.discount : ""}%
-                    </div>
-                  )
-                }
+                
 
 
 
@@ -233,7 +227,7 @@ function FeatureClient({ products }) {
                         </Link>
                         <button className="    rounded-circle p-2 action-btn d-flex justify-content-center"
                           style={{ width: '36px', height: '36px', border: '1px solid var(--primary-colo' }}>
-                          <FaCartArrowDown className="fs-5" style={{ color: '#000' }} />
+                          <FaCartArrowDown className="fs-5" style={{ color: '#000' }} onClick={()=>handleAddToCart(product)}/>
                         </button>
                       </div>
                     )

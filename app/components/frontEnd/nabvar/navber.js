@@ -3,11 +3,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 import {
-  FaMapMarkerAlt,
   FaEnvelope,
   FaUser,
-  FaSearch,
-  FaShoppingCart,
   FaBars,
   FaShoppingBag,
   FaHeart,
@@ -15,21 +12,25 @@ import {
   FaTwitter,
   FaLinkedin,
   FaPinterest,
-  FaSign,
-  FaSignInAlt,
-  FaArrowAltCircleRight,
+  
 } from "react-icons/fa";
 import LogButtons from "./LogButtons";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import NavSearch from "./navSearch/NavSearch";
+
 
 export default function Navbar() {
  const cartCount =  useSelector(state=>state.cart.count)
  const cartItems = useSelector((state=>state.cart.items))
  const [isClient, setIsClient] = useState(false);
- useEffect(()=>{
-  setIsClient(true);
- },[])
+
+  useEffect(()=>{
+    setIsClient(true);
+  },[])
+
+ 
+
 
  let CartItemsPrice = cartItems.reduce((total,item)=>total+item.totalPrice,0)
   return (
@@ -45,12 +46,13 @@ export default function Navbar() {
             </li>
             <li>
               <Link href="/frontEnd/cart">
-                <FaShoppingBag className="fa fa-shopping-bag" /> <span>{isClient ? cartCount : 0}</span>
+                <FaShoppingBag className="fa fa-shopping-bag" /> <span>{isClient && cartCount}</span>
+
               </Link>
             </li>
           </ul>
           <div className="header__cart__price">
-          Cart Total: <span>{CartItemsPrice??0} Tk</span>
+          Cart Total: <span>{isClient?CartItemsPrice:0} Tk</span>
           </div>
         </div>
         <div className="humberger__menu__widget">
@@ -240,7 +242,7 @@ export default function Navbar() {
                   </li>
                 </ul>
                 <div className="header__cart__price">
-                Cart Total: <span>{CartItemsPrice??0} Tk</span>
+                Cart Total: <span>{isClient? CartItemsPrice : 0} Tk</span>
                 </div>
               </div>
             </div>
@@ -248,6 +250,7 @@ export default function Navbar() {
           <div className="humberger__open">
             <FaBars className="fa fa-bars" />
           </div>
+         <NavSearch />
         </div>
       </header>
     </div>

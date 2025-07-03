@@ -44,7 +44,9 @@ const cartSlice = createSlice({
             if(item){
                 item.qty +=1
                 item.totalPrice = item.unitPrice * item.qty
+                if (typeof window !== 'undefined') {
                 localStorage.setItem('cart',JSON.stringify(state.items))
+               }
             }
         },
         decreament: (state,action)=>{
@@ -53,14 +55,18 @@ const cartSlice = createSlice({
             if(item && item.qty>1){
                 item.qty -=1
                 item.totalPrice = item.unitPrice * item.qty
+                if (typeof window !== 'undefined') {
                 localStorage.setItem('cart',JSON.stringify(state.items))
+                }
             }
         },
         removeCart:(state,action)=>{
             const {id} = action.payload;
             state.items = state.items.filter((item)=> item.id !== id)
             state.count = state.items.length
+            if (typeof window !== 'undefined') {
             localStorage.setItem('cart',JSON.stringify(state.items))
+            }
         },
         clearCart:(state)=>{
             state.items = [];
