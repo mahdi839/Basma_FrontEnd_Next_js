@@ -1,6 +1,7 @@
 'use client'
 import Button from '@/app/components/dashboard/components/button/Button';
-import React, { useState } from 'react';
+import useIndexData from '@/app/hooks/useIndexData';
+import React, { useEffect, useState } from 'react';
 
 export default function SlotForm() {
   const [slotType, setSlotType] = useState('');
@@ -8,7 +9,6 @@ export default function SlotForm() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [categoryInput, setCategoryInput] = useState('');
   const [productInput, setProductInput] = useState('');
-
   const handleAddCategory = () => {
     if (categoryInput && !selectedCategories.includes(categoryInput)) {
       setSelectedCategories([...selectedCategories, categoryInput]);
@@ -34,7 +34,13 @@ export default function SlotForm() {
     updated.splice(index, 1);
     setSelectedProducts(updated);
   };
-
+   
+    const {indexData,loading,data,setData} = useIndexData();
+     const ProductsUrl = process.env.BACKEND_URL + `api/products`;
+     useEffect(()=>{
+        indexData(ProductsUrl)
+     },[])
+  
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-3">
       <div className="card shadow-lg rounded-3 border-0 w-100" style={{ maxWidth: '800px' }}>
@@ -169,10 +175,13 @@ export default function SlotForm() {
                         onChange={(e) => setProductInput(e.target.value)}
                       >
                         <option value="" disabled>Select product</option>
-                        <option value="Premium Headphones">Premium Headphones - $199</option>
-                        <option value="Smart Watch">Smart Watch Series 5</option>
-                        <option value="Cotton T-Shirt">Organic Cotton T-Shirt</option>
-                        <option value="Water Bottle">Stainless Steel Water Bottle</option>
+                        {
+                            data.data.map((product)=>(
+                                <option value={product.id} >{product.title}</option>
+                            ))
+                        }
+                    
+                        
                       </select>
                       <button 
                         type="button" 
