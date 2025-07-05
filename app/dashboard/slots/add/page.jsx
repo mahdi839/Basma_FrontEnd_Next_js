@@ -1,7 +1,10 @@
 'use client'
 import Button from '@/app/components/dashboard/components/button/Button';
 import useIndexData from '@/app/hooks/useIndexData';
+import useStoreData from '@/app/hooks/useStoreData';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 
 export default function SlotForm() {
   const [slotType, setSlotType] = useState('');
@@ -61,7 +64,57 @@ export default function SlotForm() {
     const product = data?.data?.products?.find(prod => prod.id == id);
     return product ? product.title : `Product (ID: ${id})`;
   };
-  
+
+  const { storeData, loading: isStoring } = useStoreData();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Frontend validation
+    if (slotType === 'category' && selectedCategories.length === 0) {
+      Swal.fire({
+        'title': 'No category Selected!',
+        'text':'Please add at least one category',
+        'icon': 'error'
+      });
+      return;
+    }
+    if (slotType === 'manual' && selectedProducts.length === 0) {
+        Swal.fire({
+            title: 'No Products Selected',
+            text: 'Please add at least one product before continuing.',
+            icon: 'error'
+          });
+      return;
+    }
+
+    // Prepare data for API
+    const payload = {
+      slot_name: e.target.slot_name.value,
+      priority: parseInt(e.target.priority.value),
+      product_id:  selectedProducts.map(Number) ,
+       
+      category_id: selectedCategories.map(cat => Number(cat.categoryInput)) ,
+        
+      limit: slotType === 'category' ? Number(productLimit) : null
+    };
+
+    // Submit to backend
+    const success = await storeData(
+      process.env.BACKEND_URL + 'api/product-slots',
+      payload,
+      'Slot created successfully'
+    );
+
+    // Reset form on success
+    if (success) {
+      e.target.reset();
+      setSelectedCategories([]);
+      setSelectedProducts([]);
+      setSlotType('');
+      setProductLimit(8);
+    }
+  };
+
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-3">
       <div className="card shadow-lg rounded-3 border-0 w-100" style={{ maxWidth: '800px' }}>
@@ -70,7 +123,7 @@ export default function SlotForm() {
         </div>
         
         <div className="card-body p-4">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="row g-4">
               {/* Slot Name */}
               <div className="col-md-6">
@@ -80,6 +133,7 @@ export default function SlotForm() {
                     className="form-control border-secondary"
                     id="slotName"
                     placeholder="e.g. Featured Products"
+                    name='slot_name'
                     required
                   />
                   <label htmlFor="slotName" className="text-muted">
@@ -97,6 +151,7 @@ export default function SlotForm() {
                     id="priority"
                     placeholder="e.g. 1"
                     min="1"
+                    name='priority'
                     required
                   />
                   <label htmlFor="priority" className="text-muted">
@@ -182,7 +237,7 @@ export default function SlotForm() {
                         className="btn btn-outline-primary"
                         onClick={handleAddCategory}
                       >
-                        Add
+                        Save
                       </button>
                     </div>
                     
@@ -238,7 +293,7 @@ export default function SlotForm() {
                         className="btn btn-outline-primary"
                         onClick={handleAddProduct}
                       >
-                        Add
+                        Save
                       </button>
                     </div>
                     
@@ -272,8 +327,12 @@ export default function SlotForm() {
                 <Button type="button"  >
                   Cancel
                 </Button>
-                <Button type="submit" className=" px-4">
-                  Save Slot
+                <Button 
+                    type="submit" 
+                    className="px-4" 
+                    disabled={isStoring}
+                >
+                    Save Slot
                 </Button>
               </div>
             </div>
