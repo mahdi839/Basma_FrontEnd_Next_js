@@ -9,6 +9,8 @@ export default function SlotForm() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [categoryInput, setCategoryInput] = useState('');
   const [productInput, setProductInput] = useState('');
+
+
   const handleAddCategory = () => {
     if (categoryInput && !selectedCategories.includes(categoryInput)) {
       setSelectedCategories([...selectedCategories, categoryInput]);
@@ -36,10 +38,22 @@ export default function SlotForm() {
   };
    
     const {indexData,loading,data,setData} = useIndexData();
-     const ProductsUrl = process.env.BACKEND_URL + `api/products`;
+     const ProductsUrl = process.env.BACKEND_URL + `api/slots_products/create`;
      useEffect(()=>{
         indexData(ProductsUrl)
      },[])
+
+      // Find category name by ID
+  const getCategoryName = (id) => {
+    const category = data?.data?.categories?.find(cat => cat.id == id);
+    return category ? category.name : `Category (ID: ${id})`;
+  };
+
+  // Find product name by ID
+  const getProductName = (id) => {
+    const product = data?.data?.products?.find(prod => prod.id == id);
+    return product ? product.title : `Product (ID: ${id})`;
+  };
   
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-3">
@@ -123,10 +137,12 @@ export default function SlotForm() {
                         onChange={(e) => setCategoryInput(e.target.value)}
                       >
                         <option value="" disabled>Select category</option>
-                        <option value="Electronics">Electronics</option>
-                        <option value="Fashion">Fashion</option>
-                        <option value="Home & Garden">Home & Garden</option>
-                        <option value="Sports">Sports</option>
+                       {
+                         data.data.categories.map((category)=>(
+                            <option value={category.id}>{category.name}</option>
+                         ))
+                       }
+                      
                       </select>
                       <button 
                         type="button" 
@@ -138,13 +154,13 @@ export default function SlotForm() {
                     </div>
                     
                     <div className="mt-3">
-                      {selectedCategories.map((category, index) => (
+                      {selectedCategories.map((categoryId, index) => (
                         <div key={index} className="d-flex align-items-center justify-content-between bg-light p-3 mb-2 rounded-2 shadow-sm">
                           <div className="d-flex align-items-center">
                             <span className="badge bg-info me-2">
                               {index + 1}
                             </span>
-                            <span className="fw-medium">{category}</span>
+                            <span className="fw-medium">{getCategoryName(categoryId)}</span>
                           </div>
                           <button 
                             type="button" 
@@ -176,12 +192,10 @@ export default function SlotForm() {
                       >
                         <option value="" disabled>Select product</option>
                         {
-                            data.data.map((product)=>(
+                            data.data.products.map((product)=>(
                                 <option value={product.id} >{product.title}</option>
                             ))
                         }
-                    
-                        
                       </select>
                       <button 
                         type="button" 
@@ -193,13 +207,13 @@ export default function SlotForm() {
                     </div>
                     
                     <div className="mt-3">
-                      {selectedProducts.map((product, index) => (
+                      {selectedProducts.map((productId, index) => (
                         <div key={index} className="d-flex align-items-center justify-content-between bg-light p-3 mb-2 rounded-2 shadow-sm">
                           <div className="d-flex align-items-center">
                             <span className="badge bg-info me-2">
                               {index + 1}
                             </span>
-                            <span className="fw-medium">{product}</span>
+                            <span className="fw-medium">{getProductName(productId)}</span>
                           </div>
                           <button 
                             type="button" 
