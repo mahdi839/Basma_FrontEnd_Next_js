@@ -9,11 +9,18 @@ export default function SlotForm() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [categoryInput, setCategoryInput] = useState('');
   const [productInput, setProductInput] = useState('');
-
+  const [productLimit, setProductLimit] = useState(8);
+  const [formData,setFormData]=useState({
+    'slot_name':'',
+    'priority':'',
+    'product_id':[],
+    'category_id':[],
+    'limit':''
+  })
 
   const handleAddCategory = () => {
-    if (categoryInput && !selectedCategories.includes(categoryInput)) {
-      setSelectedCategories([...selectedCategories, categoryInput]);
+    if (categoryInput && productLimit &&  !selectedCategories.some(c => c.categoryInput === categoryInput)) {
+      setSelectedCategories([...selectedCategories, {'categoryInput':categoryInput,'productLimit':productLimit}]);
       setCategoryInput('');
     }
   };
@@ -121,6 +128,32 @@ export default function SlotForm() {
                   ))}
                 </div>
               </div>
+
+                {/* Product Limit (only for category slot type) */}
+                {slotType === 'category' && (
+                <div className="col-12">
+                  <div className="form-floating">
+                    <input
+                      type="number"
+                      className="form-control border-secondary"
+                      id="productLimit"
+                      placeholder="e.g. 10"
+                      min="1"
+                      max="100"
+                      value={productLimit}
+                      onChange={(e) => setProductLimit(e.target.value)}
+                      required
+                    />
+                    <label htmlFor="productLimit" className="text-muted">
+                      Product Limit
+                    </label>
+                    <div className="form-text text-muted small mt-1">
+                      Maximum number of products to display from selected categories
+                    </div>
+                  </div>
+                </div>
+              )}
+              
               
               {/* Category Selection */}
               {slotType === 'category' && (
@@ -138,7 +171,7 @@ export default function SlotForm() {
                       >
                         <option value="" disabled>Select category</option>
                        {
-                         data.data.categories.map((category)=>(
+                         data?.data?.categories?.map((category)=>(
                             <option value={category.id}>{category.name}</option>
                          ))
                        }
@@ -154,13 +187,16 @@ export default function SlotForm() {
                     </div>
                     
                     <div className="mt-3">
-                      {selectedCategories.map((categoryId, index) => (
+                      {selectedCategories.map((category, index) => (
                         <div key={index} className="d-flex align-items-center justify-content-between bg-light p-3 mb-2 rounded-2 shadow-sm">
                           <div className="d-flex align-items-center">
                             <span className="badge bg-info me-2">
                               {index + 1}
                             </span>
-                            <span className="fw-medium">{getCategoryName(categoryId)}</span>
+                            <span className="fw-medium"> <strong>Category:</strong> {getCategoryName(category.categoryInput)} </span>
+                          </div>
+                          <div className='d-flex align-items-center'>
+                            <span className="fw-medium"> <strong> Limit:</strong>{category.productLimit}</span>
                           </div>
                           <button 
                             type="button" 
@@ -192,7 +228,7 @@ export default function SlotForm() {
                       >
                         <option value="" disabled>Select product</option>
                         {
-                            data.data.products.map((product)=>(
+                            data?.data?.products?.map((product)=>(
                                 <option value={product.id} >{product.title}</option>
                             ))
                         }
