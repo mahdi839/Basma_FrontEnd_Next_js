@@ -1,11 +1,12 @@
 import React from "react";
 import "../../layouts/dashboard.css";
 import { BsLayoutTextSidebar } from "react-icons/bs";
-import { FaJediOrder, FaProductHunt, FaShippingFast, FaShoppingBag} from "react-icons/fa";
+import {  FaProductHunt, FaShippingFast, FaShoppingBag} from "react-icons/fa";
 import { RiKanbanView2 } from "react-icons/ri";
 import { IoIosResize } from "react-icons/io";
 import { BiSolidCategory } from "react-icons/bi";
 import SideBarItem from "../components/sidebarItem/SideBarItem";
+import { IoOptionsOutline } from "react-icons/io5";
 export default function SideBar() {
   return (
     <div className="sideBarDiv d-flex flex-column">
@@ -17,6 +18,7 @@ export default function SideBar() {
       <SideBarItem href="/dashboard/category" Icon={BiSolidCategory} label='Category'/>
       <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Sizes'/>
        <SideBarItem href="/dashboard/products" Icon={FaProductHunt} label='Products'/>
+       <SideBarItem href="/dashboard/slots" Icon={IoOptionsOutline} label='Home Page Slots'/>
        <SideBarItem href="/dashboard/orders" Icon={FaShoppingBag} label='Orders'/>
        <SideBarItem href="/dashboard/shipping" Icon={FaShippingFast} label='Shipping Cost'/>
        <SideBarItem href="/"   Icon={RiKanbanView2} label='My Website' />
