@@ -39,7 +39,7 @@ export default function page() {
                         <label htmlFor="size" className="fw-bold">Size:</label>
                         <input type="text" className="form-control" id="category" name="category" placeholder="Enter category" onChange={(e) => setCategory(e.target.value)} />
                     </div>
-                    <Button type="submit" className="btn btn-primary w-100 mt-3">{loading ? "Adding..." : "Add category"}</Button>
+                    <button type="submit" className="dashboard-btn w-100 mt-3">{loading ? "Adding..." : "Add category"}</button>
                 </form>
             </div>
         </div>

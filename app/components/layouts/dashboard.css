@@ -8,6 +8,7 @@
 
 :root {
     --primary-color: #5d30af;
+    --hover-color: #451b92;
 }
 
 .Dashboard_layout {
@@ -29,7 +30,30 @@
 .sideBar_icon_siteName {
     margin-bottom: 2rem;
 }
+.dashboard-cancel-btn{
+    padding: 8px 15px;
+    background: red;
+    color: white;
+    font-weight: 500;
+    border: none;
+    outline: none;
+    border-radius: 5px;
+}
 
+.dashboard-cancel-btn:hover{
+    background: rgb(192, 2, 2);
+}
+.dashboard-btn{
+    padding: 8px 15px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 500;
+    border: none;
+    outline: none;
+}
+.dashboard-btn:hover{
+    background: var(--hover-color);
+}
 .sideBar_list {
     margin-top: 1rem;
 }

@@ -1,9 +1,10 @@
 'use client'
-import Button from '@/app/components/dashboard/components/button/Button';
 import PageLoader from '@/app/components/loader/pageLoader';
+import useDeleteItem from '@/app/hooks/useDeleteItem';
 import useIndexData from '@/app/hooks/useIndexData'
 import Link from 'next/link';
 import React, { useEffect } from 'react'
+import { FaEdit, FaTrash } from 'react-icons/fa';
 
 export default function page() {
 
@@ -12,6 +13,20 @@ export default function page() {
   useEffect(()=>{
      indexData(slotUrl)
   },[])
+  
+  const {handleDeleteData,deleteLoading} = useDeleteItem();
+   function handleDelete (id){
+      const url = process.env.BACKEND_URL + `api/product-slots/${id}`
+      
+      handleDeleteData(url,id)
+      setData(
+        {
+          ...data,
+          data:data.data.filter((slot)=> slot.id !=id)
+        }
+        )
+      
+   }
 
   if(loading){
     return <PageLoader />
@@ -19,7 +34,7 @@ export default function page() {
   return (
     <div className='container-fluid my-5'>
       <Link href="/dashboard/slots/add">
-         <Button className='mb-3'>Create Slot</Button>
+         <button className='dashboard-btn mb-3'>Create Slot</button>
       </Link>
          <table className="table table-bordered">
       <thead>
@@ -29,6 +44,7 @@ export default function page() {
           <th className="text-center">Priority</th>
           <th className="text-center">Products</th>
           <th className="text-center">Categories</th>
+          <th className="text-center">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -39,19 +55,24 @@ export default function page() {
             </td>
           </tr>
         ) : (
-          data.data.map((slot) => (
-            <tr >
-              <td className="text-center">1fd</td>
-              <td className="text-center">1fd</td>
-              <td className="text-center">1fd</td>
-              <td className="text-center">1fd</td>
+          data.data.map((slot,index) => (
+            <tr key={slot.id}>
+              <td className="text-center">{index+1}</td>
+              <td className="text-center">{slot.slot_name}</td>
+              <td className="text-center">{slot.priority}</td>
+              
+                  <td className="text-center">  {slot?.slot_details?.map((product) => product?.product?.title).filter(Boolean).join(', ')}</td>
+               
+               
+                  <td className="text-center">  {slot?.slot_details?.map((category) => category?.category?.name).filter(Boolean).join(', ')} </td>
+               
               <td className="text-center">
                 <span className="d-flex gap-3 justify-content-center ">
-                  <Link >
+                  <Link href=''>
                     <FaEdit className="text-dark"/>
                   </Link>
-                  {/* onClick={() => handleDelete(size.id)} style={{cursor:'pointer'}} */}
-                  <FaTrash className="text-danger mt-2" />
+                  
+                  <FaTrash className="text-danger mt-2" onClick={() => handleDelete(slot.id)} style={{cursor:'pointer'}} />
                 </span>
               </td>
             </tr>

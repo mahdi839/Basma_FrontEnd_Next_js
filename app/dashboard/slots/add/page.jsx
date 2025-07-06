@@ -13,13 +13,7 @@ export default function SlotForm() {
   const [categoryInput, setCategoryInput] = useState('');
   const [productInput, setProductInput] = useState('');
   const [productLimit, setProductLimit] = useState(8);
-  const [formData,setFormData]=useState({
-    'slot_name':'',
-    'priority':'',
-    'product_id':[],
-    'category_id':[],
-    'limit':''
-  })
+  
 
   const handleAddCategory = () => {
     if (categoryInput && productLimit &&  !selectedCategories.some(c => c.categoryInput === categoryInput)) {
@@ -112,9 +106,24 @@ export default function SlotForm() {
       setSelectedProducts([]);
       setSlotType('');
       setProductLimit(8);
+      // Reset input fields
+      setCategoryInput('');
+      setProductInput('');
+      handleCancel()
     }
+  
   };
 
+    function handleCancel (e){
+      
+      setCategoryInput('');
+      setProductInput('')
+      setSelectedCategories([]);
+      setSelectedProducts([]);
+      setSlotType('');
+      setProductLimit(8);
+    }
+   
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-3">
       <div className="card shadow-lg rounded-3 border-0 w-100" style={{ maxWidth: '800px' }}>
@@ -324,16 +333,16 @@ export default function SlotForm() {
             {/* Submit Button */}
             <div className="mt-5 pt-3 border-top">
               <div className="d-flex gap-2 justify-content-center">
-                <Button type="button"  >
+                <button className='dashboard-cancel-btn' type="button" onClick={handleCancel} >
                   Cancel
-                </Button>
-                <Button 
+                </button>
+                <button 
                     type="submit" 
-                    className="px-4" 
+                    className="dashboard-btn" 
                     disabled={isStoring}
                 >
                     Save Slot
-                </Button>
+                </button>
               </div>
             </div>
           </form>
