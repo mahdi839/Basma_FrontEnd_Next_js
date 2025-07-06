@@ -11,7 +11,7 @@ export default function Pagination({page,setPage,pagination}) {
       const pages = [];
       for(let i=1;i<=pagination.last_page;i++){
          pages.push(
-            <li className='page-item'>  <button key={i} className={`page-link  ${i==pagination.current_page?"bg-info text-white":""}`}
+            <li className='page-item'>  <button key={i} className={`page-link  ${i==pagination.current_page?"pagination-bg text-white":""}`}
             onClick={()=> gotoPage(i)}>
            {i}
        </button> </li>

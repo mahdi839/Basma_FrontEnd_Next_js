@@ -75,3 +75,6 @@
     color: white ;
     outline: none;
 }
+.pagination-bg{
+    background: var(--primary-color);
+}
