@@ -3,16 +3,18 @@ import PageLoader from '@/app/components/loader/pageLoader';
 import useDeleteItem from '@/app/hooks/useDeleteItem';
 import useIndexData from '@/app/hooks/useIndexData'
 import Link from 'next/link';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import Pagination from '../orders/components/Pagination';
 
 export default function page() {
+  const [page, setPage] = useState(1);
 
   const {indexData,loading,data,setData,pagination,setPagination} = useIndexData();
-  const slotUrl = process.env.BACKEND_URL + `api/product-slots`;
+  const slotUrl = process.env.BACKEND_URL + `api/product-slots?page=${page}`;
   useEffect(()=>{
      indexData(slotUrl)
-  },[])
+  },[page])
   
   const {handleDeleteData,deleteLoading} = useDeleteItem();
    function handleDelete (id){
@@ -81,6 +83,13 @@ export default function page() {
       </tbody>
     </table>
 
+ {pagination.last_page > 1 && (
+        <Pagination 
+          page={page}
+          setPage={setPage}
+          pagination={pagination}
+        />
+      )}
     </div>
   )
 }
