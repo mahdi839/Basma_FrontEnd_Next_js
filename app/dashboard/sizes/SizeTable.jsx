@@ -6,33 +6,17 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import useDeleteItem from "@/app/hooks/useDeleteItem";
 export default function SizeTable({ initialSizes }) {
   const [sizes, setSizes] = useState(initialSizes); // Manage state
 
+  const {handleDeleteData} = useDeleteItem()
   async function handleDelete(id) {
     const url = process.env.BACKEND_URL + `api/sizes/${id}`
-    const result = await Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#d33",
-        cancelButtonColor: "#3085d6",
-        confirmButtonText: " Delete",
-      });
-  
-      if (!result.isConfirmed) return;
-
-    try {
-      await axios.delete(url);
-      
+    handleDeleteData(url)
       // Remove deleted size from the state without page reload
       setSizes(sizes.filter((size) => size.id !== id));
 
-      toast.success("Deleted Successfully");
-    } catch (err) {
-      toast.error(err.response?.data?.message || "An Error Occurred");
-    }
   }
 
   return (

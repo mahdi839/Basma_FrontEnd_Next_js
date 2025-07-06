@@ -20,7 +20,7 @@ export default function page() {
    function handleDelete (id){
       const url = process.env.BACKEND_URL + `api/product-slots/${id}`
       
-      handleDeleteData(url,id)
+      handleDeleteData(url)
       setData(
         {
           ...data,
