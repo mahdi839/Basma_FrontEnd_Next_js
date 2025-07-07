@@ -31,7 +31,7 @@ export default function NavSearch() {
              
              
                 <ul className={style.category_list}>
-                {category.map((categ)=>(
+                {category?.map((categ)=>(
                   <li key={categ.id}>
                   <a href={`/frontEnd/${categ.slug}`}>{categ.name}</a>
                 </li>
