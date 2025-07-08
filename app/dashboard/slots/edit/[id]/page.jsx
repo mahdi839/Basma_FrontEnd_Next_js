@@ -1,7 +1,8 @@
 'use client'
 import useGetSingleData from '@/app/hooks/useGetSingleData';
 import useIndexData from '@/app/hooks/useIndexData';
-import { useParams } from 'next/navigation'
+import useUpdateData from '@/app/hooks/useUpdateData';
+import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 export default function page() {
@@ -14,7 +15,7 @@ export default function page() {
       const [productLimit, setProductLimit] = useState(8);
       const [slotName, setSlotName] = useState('');
        const [priority, setPriority] = useState(1);
-    
+     const router = useRouter();
     
       const handleAddCategory = () => {
         if (categoryInput && productLimit &&  !selectedCategories.some(c => c.categoryInput === categoryInput)) {
@@ -108,9 +109,32 @@ export default function page() {
 
 
   
-
+   const {updateData} = useUpdateData()
    function handleSubmit (e){
-      
+      e.preventDefault();
+    const payload = {
+      slot_name: slotName,
+      priority,
+      product_id:  selectedProducts.map(Number) ,
+       
+      category_id: selectedCategories.map(cat => Number(cat.categoryInput)) ,
+        
+      limit: slotType === 'category' ? Number(productLimit) : null
+    };
+    const updateUrl = process.env.BACKEND_URL + `api/product-slots/${id}`;
+    const redirectUrl = '/dashboard/slots';
+    updateData(updateUrl, payload, "Slot updated successfully",redirectUrl);
+    setCategoryInput('');
+    setProductInput('')
+    setSelectedCategories([]);
+    setSelectedProducts([]);
+    setSlotType('');
+    setProductLimit(8);
+    setSlotName('');
+    setPriority(1);
+    handleCancel()
+    // Redirect to slots index page after successful update
+   
    }
     
   return (

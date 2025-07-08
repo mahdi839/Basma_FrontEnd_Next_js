@@ -2,6 +2,8 @@
 import Button from '@/app/components/dashboard/components/button/Button';
 import useIndexData from '@/app/hooks/useIndexData';
 import useStoreData from '@/app/hooks/useStoreData';
+import { useRouter } from 'next/navigation';
+
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -13,7 +15,7 @@ export default function SlotForm() {
   const [categoryInput, setCategoryInput] = useState('');
   const [productInput, setProductInput] = useState('');
   const [productLimit, setProductLimit] = useState(8);
-  
+  const router = useRouter();
 
   const handleAddCategory = () => {
     if (categoryInput && productLimit &&  !selectedCategories.some(c => c.categoryInput === categoryInput)) {
@@ -111,7 +113,7 @@ export default function SlotForm() {
       setProductInput('');
       handleCancel()
     }
-  
+    router.push('/dashboard/slots');
   };
 
     function handleCancel (e){

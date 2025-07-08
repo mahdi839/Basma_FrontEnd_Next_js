@@ -1,7 +1,6 @@
 "use client"
 import axios from 'axios'
 import React, { useState } from 'react'
-import { toast } from 'react-toastify'
 import Swal from 'sweetalert2'
 
 export default function useStoreData() {
@@ -17,7 +16,12 @@ export default function useStoreData() {
                'Authorization': `Bearer ${token}`
             }
         });
-        toast.success(successMsg)
+         Swal.fire({
+            title:successMsg,
+            icon:'success',
+            showConfirmButton:false,
+            timer:1500
+        })
       }catch(err){
         if (err.response?.status === 422) {
           // Laravel validation errors
