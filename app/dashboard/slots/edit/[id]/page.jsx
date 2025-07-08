@@ -117,7 +117,7 @@ export default function page() {
       priority,
       product_id:  selectedProducts.map(Number) ,
       categories: selectedCategories.map(cat => ({
-      id: Number(cat.categoryInput),
+      category_id: Number(cat.categoryInput),
       limit: Number(cat.productLimit)
   }))
     };

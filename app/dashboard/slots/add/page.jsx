@@ -88,11 +88,17 @@ export default function SlotForm() {
       slot_name: e.target.slot_name.value,
       priority: parseInt(e.target.priority.value),
       product_id:  selectedProducts.map(Number) ,
-      categories: selectedCategories.map(cat => ({
-      id: Number(cat.categoryInput),
-      limit: Number(cat.productLimit)
-      }))
+      
     };
+    
+
+    if (selectedCategories.length > 0) {
+  payload.categories = selectedCategories.map(cat => ({
+    category_id: Number(cat.categoryInput),
+    limit: Number(cat.productLimit)
+  }));
+}
+    
 
     // Submit to backend
     const success = await storeData(

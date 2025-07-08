@@ -64,7 +64,13 @@ export default function page() {
               <td className="text-center">{slot.priority}</td>
               
                   <td className="text-center">  {slot?.slot_details?.map((product) => product?.product?.title).filter(Boolean).join(', ')}</td>
-                  <td className="text-center">  {slot?.slot_details?.map((category) => category?.category?.name).filter(Boolean).join(', ')} </td>
+                  <td className="text-center">
+                    {slot?.slot_details
+                      ?.filter(detail => detail?.category)  // Only category slots
+                      ?.map(detail => `${detail.category.name} (Limit: ${detail.limit})`)
+                      .join(', ')
+                    }
+                  </td>
                
               <td className="text-center">
                 <span className="d-flex gap-3 justify-content-center ">
