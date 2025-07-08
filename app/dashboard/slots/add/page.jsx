@@ -88,10 +88,10 @@ export default function SlotForm() {
       slot_name: e.target.slot_name.value,
       priority: parseInt(e.target.priority.value),
       product_id:  selectedProducts.map(Number) ,
-       
-      category_id: selectedCategories.map(cat => Number(cat.categoryInput)) ,
-        
-      limit: slotType === 'category' ? Number(productLimit) : null
+      categories: selectedCategories.map(cat => ({
+      id: Number(cat.categoryInput),
+      limit: Number(cat.productLimit)
+      }))
     };
 
     // Submit to backend

@@ -116,10 +116,10 @@ export default function page() {
       slot_name: slotName,
       priority,
       product_id:  selectedProducts.map(Number) ,
-       
-      category_id: selectedCategories.map(cat => Number(cat.categoryInput)) ,
-        
-      limit: slotType === 'category' ? Number(productLimit) : null
+      categories: selectedCategories.map(cat => ({
+      id: Number(cat.categoryInput),
+      limit: Number(cat.productLimit)
+  }))
     };
     const updateUrl = process.env.BACKEND_URL + `api/product-slots/${id}`;
     const redirectUrl = '/dashboard/slots';
