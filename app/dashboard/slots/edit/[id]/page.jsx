@@ -276,8 +276,21 @@ export default function page() {
                             </span>
                             <span className="fw-medium"> <strong>Category:</strong> {getCategoryName(category.categoryInput)} </span>
                           </div>
-                          <div className='d-flex align-items-center'>
-                            <span className="fw-medium"> <strong> Limit:</strong>{category.productLimit}</span>
+                            {/* Add editable limit input */}
+                          <div className="d-flex align-items-center gap-2">
+                            <strong>Limit:</strong>
+                            <input
+                              type="number"
+                              min="1"
+                              value={category.productLimit}
+                              onChange={(e) => {
+                                const updated = [...selectedCategories];
+                                updated[index].productLimit = e.target.value;
+                                setSelectedCategories(updated);
+                              }}
+                              className="form-control form-control-sm"
+                              style={{ width: '80px' }}
+                            />
                           </div>
                           <button 
                             type="button" 

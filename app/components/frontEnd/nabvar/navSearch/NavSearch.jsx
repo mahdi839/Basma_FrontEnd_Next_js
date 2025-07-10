@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { FaArrowRight, FaBars, FaPhone } from 'react-icons/fa';
 import style from "../hero.module.css"
+import Link from 'next/link';
 export default function NavSearch() {
     const [category,setCategory] = useState([]);
      async function fetchCategories (){
@@ -33,7 +34,7 @@ export default function NavSearch() {
                 <ul className={style.category_list}>
                 {category?.map((categ)=>(
                   <li key={categ.id}>
-                  <a href={`/frontEnd/${categ.slug}`}>{categ.name}</a>
+                  <Link href={`/frontEnd/${categ.slug}`}>{categ.name}</Link>
                 </li>
                 ))}
               </ul>

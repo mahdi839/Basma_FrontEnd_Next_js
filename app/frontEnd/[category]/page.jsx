@@ -1,5 +1,5 @@
 import { getData } from "@/lib/api"
-import CtgProductsLogic from "./components/ctgProductsLogic"
+import CtgProductsLogic from "./components/CtgProductsLogic"
 import Link from "next/link"
 
 export default async function page({ params }) {
