@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import Link from "next/link";
 import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
@@ -7,9 +7,8 @@ import OptionDiv from './OptionDiv';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-export default function ProductCard({products,showOptionDiv,setShowOptionDiv,selectedSizes,handleSizeSelect,handleAddToCart}) {
+export default function ProductCard({products,showOptionDiv,sliderRef, setShowOptionDiv,selectedSizes,handleSizeSelect,handleAddToCart}) {
      let baseUrl = process.env.BACKEND_URL;
-     const sliderRef = useRef(null);
       const settings = {
     infinite: true,
     speed: 500,

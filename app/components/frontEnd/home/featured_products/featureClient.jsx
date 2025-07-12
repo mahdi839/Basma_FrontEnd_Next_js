@@ -197,6 +197,7 @@ function FeatureClient({ products }) {
             selectedSizes = {selectedSizes}
             handleSizeSelect = {handleSizeSelect}
             handleAddToCart = {handleAddToCart}
+             sliderRef={sliderRef} 
            />
       
         ):(
