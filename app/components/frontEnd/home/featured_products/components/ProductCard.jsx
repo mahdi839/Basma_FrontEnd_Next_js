@@ -7,7 +7,8 @@ import OptionDiv from './OptionDiv';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-export default function ProductCard({products,showOptionDiv,sliderRef, setShowOptionDiv,selectedSizes,handleSizeSelect,handleAddToCart}) {
+import { GrAidOption } from 'react-icons/gr';
+export default function ProductCard({products,showOptionDiv,sliderRef, setShowOptionDiv,selectedSizes,handleSizeSelect,handleAddToCart,handleOptionDiv}) {
      let baseUrl = process.env.BACKEND_URL;
       const settings = {
     infinite: true,

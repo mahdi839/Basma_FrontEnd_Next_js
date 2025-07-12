@@ -197,9 +197,9 @@ function FeatureClient({ products }) {
             selectedSizes = {selectedSizes}
             handleSizeSelect = {handleSizeSelect}
             handleAddToCart = {handleAddToCart}
+            handleOptionDiv= {handleOptionDiv}
              sliderRef={sliderRef} 
            />
-      
         ):(
           <>
            {products?.data?.map((product, index) => (
