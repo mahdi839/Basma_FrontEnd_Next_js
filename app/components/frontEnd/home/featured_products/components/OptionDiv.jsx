@@ -3,7 +3,7 @@ import { FaTimes } from 'react-icons/fa'
 
 export default function OptionDiv({showOptionDiv,setShowOptionDiv,selectedSizes,handleSizeSelect,product,handleAddToCart}) {
   return (
-    showOptionDiv.productId === product.id && showOptionDiv.status === true && (
+    showOptionDiv.productId === product?.id && showOptionDiv.status === true && (
         <div className="position-absolute option-div d-flex flex-column justify-content-center">
           <button
             className="position-absolute close-btn bg-transparent border-0"
