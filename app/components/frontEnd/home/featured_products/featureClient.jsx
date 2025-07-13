@@ -1,15 +1,10 @@
 "use client";
 import React, { useEffect, useState, useRef, } from "react";
-import Image from "next/image";
-import { CiSearch } from "react-icons/ci";
-import { FaCartArrowDown, FaStar, FaStarHalfAlt, FaChevronLeft, FaChevronRight, FaSpinner } from 'react-icons/fa';
-import Link from "next/link";
+import {  FaChevronLeft, FaChevronRight} from 'react-icons/fa';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { GrAidOption } from "react-icons/gr";
 import { toast } from "react-toastify";
-import OptionDiv from "./components/OptionDiv";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from '@/redux/slices/CartSlice';
 import Swal from "sweetalert2";
@@ -20,7 +15,7 @@ import ProductCard from "./components/ProductCard";
 function FeatureClient({ products }) {
 
   const [isLoading, setIsLoading] = useState(true)
-  const sliderRef = useRef(null);
+  const sliderRefs = useRef([]);
   const [showOptionDiv, setShowOptionDiv] = useState({
     productId: null,
     status: false
@@ -39,7 +34,7 @@ function FeatureClient({ products }) {
       toast.error(products.error)
     }
 
-
+    sliderRefs.current = sliderRefs.current.slice(0, products?.length || 0);
   }, [products]);
 
 
@@ -147,72 +142,64 @@ function FeatureClient({ products }) {
   return (
     <div className="container my-5 py-4">
       <div className="row position-relative">
+        {products &&
+          products.map((slot, slotIndex) => {
+            // Initialize ref if it doesn't exist
+            if (!sliderRefs.current[slotIndex]) {
+              sliderRefs.current[slotIndex] = React.createRef();
+            }
 
-    {
-      products && products.map((slot)=>(
-        <>
-           {/* Header with navigation buttons */}
-        <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
-          <h2 className="featured-heading font-weight-bold mb-0" style={{ fontSize: '24px', fontWeight: '600', color: '#222' }}>
-            {slot.slot_name}
-          </h2>
-          
-             <div className="d-flex gap-2">
-            <button
-              className=" d-flex align-items-center justify-content-center slider-nav-btn"
-              style={{ width: '36px', height: '36px' }}
-              onClick={() => sliderRef.current.slickPrev()}
-            >
-              <FaChevronLeft className="slider-arrow" style={{ fontSize: '14px' }} />
-            </button>
-            <button
-              className=" p-2 d-flex align-items-center justify-content-center slider-nav-btn"
-              style={{ width: '36px', height: '36px', borderColor: '#e1e1e1' }}
-              onClick={() => sliderRef.current.slickNext()}
-            >
-              <FaChevronRight className="slider-arrow" />
-            </button>
-          </div>
-        
-         
-        </div>
+            return (
+              <React.Fragment key={slot.id || slotIndex}>
+                {/* Header with navigation buttons */}
+                <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
+                  <h2 className="featured-heading font-weight-bold mb-0" style={{ fontSize: '24px', fontWeight: '600', color: '#222' }}>
+                    {slot.slot_name}
+                  </h2>
+                  
+                  <div className="d-flex gap-2">
+                    <button
+                      className="d-flex align-items-center justify-content-center slider-nav-btn"
+                      style={{ width: '36px', height: '36px' }}
+                      // Connect to this specific slider
+                      onClick={() => sliderRefs.current[slotIndex]?.current?.slickPrev()}
+                    >
+                      <FaChevronLeft className="slider-arrow" style={{ fontSize: '14px' }} />
+                    </button>
+                    <button
+                      className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
+                      style={{ width: '36px', height: '36px', borderColor: '#e1e1e1' }}
+                      // Connect to this specific slider
+                      onClick={() => sliderRefs.current[slotIndex]?.current?.slickNext()}
+                    >
+                      <FaChevronRight className="slider-arrow" />
+                    </button>
+                  </div>
+                </div>
 
-        {/* Full-width HR line with colored portion */}
-        <div className="col-12 position-relative mb-4 ml-3 mt-2 overflow-hidden">
-          <hr className="feature-hr m-0" />
-          <div style={{
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            width: '100px',
-            height: '2px',
-            backgroundColor: '#e83e8c',
-            zIndex: '1'
-          }}></div>
-        </div>
-        {slot.slot_details?.map((detail)=>(
-          <ProductCard 
-            slotProducts={detail?.products}
-            slotCategoryProducts={detail?.category?.products}
+                <Slider 
+                  ref={sliderRefs.current[slotIndex]} 
+                  {...settings} 
+                  className="w-100"
+                >
+                  {slot.slot_details?.map((detail, detailIndex) => (
+                    <ProductCard 
+                      key={detail.id || detailIndex}
+                      slotProducts={detail?.product}
             showOptionDiv = {showOptionDiv}
             setShowOptionDiv = {setShowOptionDiv}
             selectedSizes = {selectedSizes}
             handleSizeSelect = {handleSizeSelect}
             handleAddToCart = {handleAddToCart}
             handleOptionDiv= {handleOptionDiv}
-             sliderRef={sliderRef} 
+            
            />
         ))}
-           
-        
-        </>
-      ))
-    }
-     
-        
+        </Slider>
+        </React.Fragment>
+            );
+          })}
       </div>
-
-
     </div>
   );
 }
