@@ -9,20 +9,14 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 export default function SlotForm() {
-  const [slotType, setSlotType] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [categoryInput, setCategoryInput] = useState('');
+
   const [productInput, setProductInput] = useState('');
-  const [productLimit, setProductLimit] = useState(8);
+
   const router = useRouter();
 
-  const handleAddCategory = () => {
-    if (categoryInput && productLimit &&  !selectedCategories.some(c => c.categoryInput === categoryInput)) {
-      setSelectedCategories([...selectedCategories, {'categoryInput':categoryInput,'productLimit':productLimit}]);
-      setCategoryInput('');
-    }
-  };
+  
 
   const handleAddProduct = () => {
     if (productInput && !selectedProducts.includes(productInput)) {
@@ -31,11 +25,7 @@ export default function SlotForm() {
     }
   };
 
-  const handleRemoveCategory = (index) => {
-    const updated = [...selectedCategories];
-    updated.splice(index, 1);
-    setSelectedCategories(updated);
-  };
+  
 
   const handleRemoveProduct = (index) => {
     const updated = [...selectedProducts];
@@ -49,12 +39,7 @@ export default function SlotForm() {
         indexData(ProductsUrl)
      },[])
 
-      // Find category name by ID
-  const getCategoryName = (id) => {
-    const category = data?.data?.categories?.find(cat => cat.id == id);
-    return category ? category.name : `Category (ID: ${id})`;
-  };
-
+ 
   // Find product name by ID
   const getProductName = (id) => {
     const product = data?.data?.products?.find(prod => prod.id == id);
@@ -65,23 +50,7 @@ export default function SlotForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Frontend validation
-    if (slotType === 'category' && selectedCategories.length === 0) {
-      Swal.fire({
-        'title': 'No category Selected!',
-        'text':'Please add at least one category',
-        'icon': 'error'
-      });
-      return;
-    }
-    if (slotType === 'manual' && selectedProducts.length === 0) {
-        Swal.fire({
-            title: 'No Products Selected',
-            text: 'Please add at least one product before continuing.',
-            icon: 'error'
-          });
-      return;
-    }
+  
 
     // Prepare data for API
     const payload = {
@@ -92,12 +61,7 @@ export default function SlotForm() {
     };
     
 
-    if (selectedCategories.length > 0) {
-  payload.categories = selectedCategories.map(cat => ({
-    category_id: Number(cat.categoryInput),
-    limit: Number(cat.productLimit)
-  }));
-}
+   
     
 
     // Submit to backend
@@ -110,12 +74,12 @@ export default function SlotForm() {
     // Reset form on success
     if (success) {
       e.target.reset();
-      setSelectedCategories([]);
+   
       setSelectedProducts([]);
-      setSlotType('');
+   
       setProductLimit(8);
       // Reset input fields
-      setCategoryInput('');
+     
       setProductInput('');
       handleCancel()
     }
@@ -124,12 +88,11 @@ export default function SlotForm() {
 
     function handleCancel (e){
       
-      setCategoryInput('');
+  
       setProductInput('')
-      setSelectedCategories([]);
+     
       setSelectedProducts([]);
       setSlotType('');
-      setProductLimit(8);
     }
    
   return (
@@ -176,116 +139,11 @@ export default function SlotForm() {
                   </label>
                 </div>
               </div>
-              
-              {/* Slot Type */}
-              <div className="col-12">
-                <label className="form-label fw-medium text-primary">
-                  Slot Type
-                </label>
-                <div className="d-flex gap-3">
-                  {['category', 'manual'].map((type) => (
-                    <div key={type} className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="slotType"
-                        id={type}
-                        checked={slotType === type}
-                        onChange={() => setSlotType(type)}
-                      />
-                      <label className="form-check-label text-capitalize" htmlFor={type}>
-                        {type === 'category' ? 'Category' : 'Manual Product'}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-                {/* Product Limit (only for category slot type) */}
-                {slotType === 'category' && (
-                <div className="col-12">
-                  <div className="form-floating">
-                    <input
-                      type="number"
-                      className="form-control border-secondary"
-                      id="productLimit"
-                      placeholder="e.g. 10"
-                      min="1"
-                      max="100"
-                      value={productLimit}
-                      onChange={(e) => setProductLimit(e.target.value)}
-                      required
-                    />
-                    <label htmlFor="productLimit" className="text-muted">
-                      Product Limit
-                    </label>
-                    <div className="form-text text-muted small mt-1">
-                      Maximum number of products to display from selected categories
-                    </div>
-                  </div>
-                </div>
-              )}
+             
               
               
-              {/* Category Selection */}
-              {slotType === 'category' && (
-                <div className="col-12">
-                  <div className="border rounded-3 p-3 shadow-sm">
-                    <label className="form-label fw-medium text-primary mb-3">
-                      Add Categories
-                    </label>
-                    
-                    <div className="input-group mb-3">
-                      <select 
-                        className="form-select border-secondary"
-                        value={categoryInput}
-                        onChange={(e) => setCategoryInput(e.target.value)}
-                      >
-                        <option value="" disabled>Select category</option>
-                       {
-                         data?.data?.categories?.map((category)=>(
-                            <option value={category.id}>{category.name}</option>
-                         ))
-                       }
-                      
-                      </select>
-                      <button 
-                        type="button" 
-                        className="btn btn-outline-primary"
-                        onClick={handleAddCategory}
-                      >
-                        Save
-                      </button>
-                    </div>
-                    
-                    <div className="mt-3">
-                      {selectedCategories.map((category, index) => (
-                        <div key={index} className="d-flex align-items-center justify-content-between bg-light p-3 mb-2 rounded-2 shadow-sm">
-                          <div className="d-flex align-items-center">
-                            <span className="badge bg-info me-2">
-                              {index + 1}
-                            </span>
-                            <span className="fw-medium"> <strong>Category:</strong> {getCategoryName(category.categoryInput)} </span>
-                          </div>
-                          <div className='d-flex align-items-center'>
-                            <span className="fw-medium"> <strong> Limit:</strong>{category.productLimit}</span>
-                          </div>
-                          <button 
-                            type="button" 
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleRemoveCategory(index)}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
               
-              {/* Product Selection */}
-              {slotType === 'manual' && (
+           
                 <div className="col-12">
                   <div className="border rounded-3 p-3 shadow-sm">
                     <label className="form-label fw-medium text-primary mb-3">
@@ -335,7 +193,7 @@ export default function SlotForm() {
                     </div>
                   </div>
                 </div>
-              )}
+           
             </div>
             
             {/* Submit Button */}
