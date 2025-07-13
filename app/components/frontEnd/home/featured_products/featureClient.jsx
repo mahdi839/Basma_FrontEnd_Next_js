@@ -152,11 +152,13 @@ function FeatureClient({ products }) {
             return (
               <React.Fragment key={slot.id || slotIndex}>
                 {/* Header with navigation buttons */}
+                
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
                   <h2 className="featured-heading font-weight-bold mb-0" style={{ fontSize: '24px', fontWeight: '600', color: '#222' }}>
                     {slot.slot_name}
                   </h2>
-                  
+                  {
+              slot.slot_details?.length >=4 && (
                   <div className="d-flex gap-2">
                     <button
                       className="d-flex align-items-center justify-content-center slider-nav-btn"
@@ -175,27 +177,55 @@ function FeatureClient({ products }) {
                       <FaChevronRight className="slider-arrow" />
                     </button>
                   </div>
+              )}
+                  
                 </div>
-
+             
+            {
+              slot.slot_details?.length >=4 && (
                 <Slider 
-                  ref={sliderRefs.current[slotIndex]} 
-                  {...settings} 
-                  className="w-100"
-                >
-                  {slot.slot_details?.map((detail, detailIndex) => (
-                    <ProductCard 
-                      key={detail.id || detailIndex}
-                      slotProducts={detail?.product}
-            showOptionDiv = {showOptionDiv}
-            setShowOptionDiv = {setShowOptionDiv}
-            selectedSizes = {selectedSizes}
-            handleSizeSelect = {handleSizeSelect}
-            handleAddToCart = {handleAddToCart}
-            handleOptionDiv= {handleOptionDiv}
-            
-           />
-        ))}
-        </Slider>
+                ref={sliderRefs.current[slotIndex]} 
+                {...settings} 
+                className="w-100"
+              >
+                {slot.slot_details?.map((detail, detailIndex) => (
+                  <ProductCard 
+                    key={detail.id || detailIndex}
+                    slotProducts={detail?.product}
+                    showOptionDiv = {showOptionDiv}
+                    setShowOptionDiv = {setShowOptionDiv}
+                    selectedSizes = {selectedSizes}
+                    handleSizeSelect = {handleSizeSelect}
+                    handleAddToCart = {handleAddToCart}
+                    handleOptionDiv= {handleOptionDiv}
+                    
+                  />
+                ))}
+           </Slider>
+              )
+            }
+
+           {
+              slot.slot_details?.length <4 && (
+               
+                slot.slot_details?.map((detail, detailIndex) => (
+                  <div className="col-lg-3 col-md-4 col-sm-6">
+                  <ProductCard 
+                    key={detail.id || detailIndex}
+                    slotProducts={detail?.product}
+                    showOptionDiv = {showOptionDiv}
+                    setShowOptionDiv = {setShowOptionDiv}
+                    selectedSizes = {selectedSizes}
+                    handleSizeSelect = {handleSizeSelect}
+                    handleAddToCart = {handleAddToCart}
+                    handleOptionDiv= {handleOptionDiv}
+                    
+                  />
+                  </div>
+                ))
+             
+              )
+           }
         </React.Fragment>
             );
           })}
