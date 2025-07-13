@@ -6,23 +6,14 @@ import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
 export default function page() {
-    const [slotType, setSlotType] = useState('');
+    
     const {id} = useParams()
-     const [selectedCategories, setSelectedCategories] = useState([]);
       const [selectedProducts, setSelectedProducts] = useState([]);
-      const [categoryInput, setCategoryInput] = useState('');
       const [productInput, setProductInput] = useState('');
-      const [productLimit, setProductLimit] = useState(8);
       const [slotName, setSlotName] = useState('');
        const [priority, setPriority] = useState(1);
      const router = useRouter();
     
-      const handleAddCategory = () => {
-        if (categoryInput && productLimit &&  !selectedCategories.some(c => c.categoryInput === categoryInput)) {
-          setSelectedCategories([...selectedCategories, {'categoryInput':categoryInput,'productLimit':productLimit}]);
-          setCategoryInput('');
-        }
-      };
     
       const handleAddProduct = () => {
         if (productInput && !selectedProducts.includes(productInput)) {
@@ -31,12 +22,7 @@ export default function page() {
         }
       };
     
-      const handleRemoveCategory = (index) => {
-        const updated = [...selectedCategories];
-        updated.splice(index, 1);
-        setSelectedCategories(updated);
-      };
-    
+
       const handleRemoveProduct = (index) => {
         const updated = [...selectedProducts];
         updated.splice(index, 1);
@@ -44,10 +30,6 @@ export default function page() {
       };
 
        // Find category name by ID
-  const getCategoryName = (id) => {
-    const category = data?.data?.categories?.find(cat => cat.id == id);
-    return category ? category.name : `Category (ID: ${id})`;
-  };
 
   // Find product name by ID
   const getProductName = (id) => {
@@ -66,16 +48,7 @@ export default function page() {
        },[])
 
        useEffect(() => {
-        if (singleData?.data?.slot_details) {
-          const categories = singleData.data.slot_details
-            .filter(slotD => slotD?.category)
-            .map(slotD => ({
-              categoryInput: slotD.category.id, // use ID, not name, for input!
-              productLimit: slotD.limit || 8,
-            }));
       
-          setSelectedCategories(categories);
-        }
 
         if (singleData?.data?.slot_details) {
             const products = singleData.data.slot_details
@@ -87,24 +60,18 @@ export default function page() {
             setSelectedProducts(products);
           }
       
-        if (singleData?.data?.slot_type) {
-          setSlotType(singleData.data.slot_type);
-        }
         if (singleData?.data) {
             setSlotName(singleData.data.slot_name || '');
             setPriority(singleData.data.priority || 1);
           }
       }, [singleData]);
 
-  console.log(singleData)
+  
   function handleCancel (e){
       
-    setCategoryInput('');
     setProductInput('')
-    setSelectedCategories([]);
     setSelectedProducts([]);
-    setSlotType('');
-    setProductLimit(8);
+  
   }
 
 
@@ -116,20 +83,14 @@ export default function page() {
       slot_name: slotName,
       priority,
       product_id:  selectedProducts.map(Number) ,
-      categories: selectedCategories.map(cat => ({
-      category_id: Number(cat.categoryInput),
-      limit: Number(cat.productLimit)
-  }))
     };
     const updateUrl = process.env.BACKEND_URL + `api/product-slots/${id}`;
     const redirectUrl = '/dashboard/slots';
     updateData(updateUrl, payload, "Slot updated successfully",redirectUrl);
-    setCategoryInput('');
+   
     setProductInput('')
-    setSelectedCategories([]);
+
     setSelectedProducts([]);
-    setSlotType('');
-    setProductLimit(8);
     setSlotName('');
     setPriority(1);
     handleCancel()
@@ -185,129 +146,10 @@ export default function page() {
                   </label>
                 </div>
               </div>
-              
-              {/* Slot Type */}
-              <div className="col-12">
-                <label className="form-label fw-medium text-primary">
-                  Slot Type
-                </label>
-                <div className="d-flex gap-3">
-                  {['category', 'manual'].map((type) => (
-                    <div key={type} className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="slotType"
-                        id={type}
-                        checked={slotType === type}
-                        onChange={() => setSlotType(type)}
-                      />
-                      <label className="form-check-label text-capitalize" htmlFor={type}>
-                        {type === 'category' ? 'Category' : 'Manual Product'}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-                {/* Product Limit (only for category slot type) */}
-                {slotType === 'category' && (
-                <div className="col-12">
-                  <div className="form-floating">
-                    <input
-                      type="number"
-                      className="form-control border-secondary"
-                      id="productLimit"
-                      placeholder="e.g. 10"
-                      min="1"
-                      max="100"
-                      value={singleData?.data?.slot_details[0]?.limit || productLimit}
-                      onChange={(e) => setProductLimit(e.target.value)}
-                      required
-                    />
-                    <label htmlFor="productLimit" className="text-muted">
-                      Product Limit
-                    </label>
-                    <div className="form-text text-muted small mt-1">
-                      Maximum number of products to display from selected categories
-                    </div>
-                  </div>
-                </div>
-              )}
+           
               
               
-              {/* Category Selection */}
-              {slotType === 'category' && (
-                <div className="col-12">
-                  <div className="border rounded-3 p-3 shadow-sm">
-                    <label className="form-label fw-medium text-primary mb-3">
-                      Add Categories
-                    </label>
-                    
-                    <div className="input-group mb-3">
-                      <select 
-                        className="form-select border-secondary"
-                        value={categoryInput}
-                        onChange={(e) => setCategoryInput(e.target.value)}
-                      >
-                        <option value="" disabled>Select category</option>
-                       {
-                         data?.data?.categories?.map((category)=>(
-                            <option value={category.id}>{category.name}</option>
-                         ))
-                       }
-                      
-                      </select>
-                      <button 
-                        type="button" 
-                        className="btn btn-outline-primary"
-                        onClick={handleAddCategory}
-                      >
-                        Save
-                      </button>
-                    </div>
-                    
-                    <div className="mt-3">
-                      {selectedCategories.map((category, index) => (
-                        <div key={index} className="d-flex align-items-center justify-content-between bg-light p-3 mb-2 rounded-2 shadow-sm">
-                          <div className="d-flex align-items-center">
-                            <span className="badge bg-info me-2">
-                              {index + 1}
-                            </span>
-                            <span className="fw-medium"> <strong>Category:</strong> {getCategoryName(category.categoryInput)} </span>
-                          </div>
-                            {/* Add editable limit input */}
-                          <div className="d-flex align-items-center gap-2">
-                            <strong>Limit:</strong>
-                            <input
-                              type="number"
-                              min="1"
-                              value={category.productLimit}
-                              onChange={(e) => {
-                                const updated = [...selectedCategories];
-                                updated[index].productLimit = e.target.value;
-                                setSelectedCategories(updated);
-                              }}
-                              className="form-control form-control-sm"
-                              style={{ width: '80px' }}
-                            />
-                          </div>
-                          <button 
-                            type="button" 
-                            className="btn btn-sm btn-outline-danger"
-                            onClick={() => handleRemoveCategory(index)}
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* Product Selection */}
-              {slotType === 'manual' && (
+            
                 <div className="col-12">
                   <div className="border rounded-3 p-3 shadow-sm">
                     <label className="form-label fw-medium text-primary mb-3">
@@ -357,7 +199,7 @@ export default function page() {
                     </div>
                   </div>
                 </div>
-              )}
+           
             </div>
             
             {/* Submit Button */}
