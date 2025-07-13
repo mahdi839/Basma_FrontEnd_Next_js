@@ -157,6 +157,7 @@ function FeatureClient({ products }) {
                   <h2 className="featured-heading font-weight-bold mb-0" style={{ fontSize: '24px', fontWeight: '600', color: '#222' }}>
                     {slot.slot_name}
                   </h2>
+                  
                   {
               slot.slot_details?.length >=4 && (
                   <div className="d-flex gap-2">
@@ -180,6 +181,19 @@ function FeatureClient({ products }) {
               )}
                   
                 </div>
+
+          <div className="col-12 position-relative mb-4 ml-3 mt-2 overflow-hidden">
+          <hr className="feature-hr m-0" />
+          <div style={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            width: '100px',
+            height: '5px',
+            backgroundColor: '#e83e8c',
+            zIndex: '1'
+          }}></div>
+        </div>
              
             {
               slot.slot_details?.length >=4 && (
