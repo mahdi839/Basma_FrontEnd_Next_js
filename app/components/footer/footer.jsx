@@ -4,7 +4,7 @@ import Image from "next/image";
 import { FaFacebook,FaInstagram,FaYoutube,FaWhatsappSquare } from "react-icons/fa";
 export default function Footer() {
   return (
-    <div className="d-full bg-black">
+    <div className="d-full bg-black overlay-top">
       <div className="container  py-5 ">
         <div className="row ml-5">
           <div className="address col-md-4 footer-text ">
