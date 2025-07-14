@@ -759,11 +759,7 @@ ol {
 	color: var(--primary-color);
 }
 
-button{
-	border: 1px solid var(--primary-color);
-	background: white;
-	font-family: 'Inter', sans-serif;
-}
+
 
 .product_desc .order_now {
 	background: rgb(10, 42, 85);
@@ -920,27 +916,14 @@ button{
 	color: var(--primary-color);
 }
 
-.card-footer button {
-	border: 1px solid var(--primary-color);
-}
+
 
 .slider-nav-btn {
 	border: none;
 	outline: none;
 }
 
-/* Hide footer by default on large screens */
-.product-card .add-to-cart-footer.d-lg-block {
-	opacity: 0;
-	visibility: hidden;
-	transition: opacity 0.3s ease, visibility 0.3s ease;
-}
 
-/* Show on hover */
-.product-card:hover .add-to-cart-footer.d-lg-block {
-	opacity: 1;
-	visibility: visible;
-}
 
 .sale-badge {
 	font-size: 12px;
@@ -1173,3 +1156,31 @@ table tr td{
 .bg-soft-coral {
   background-color: #fef9f7;
 }
+
+         
+         
+
+         .btn-grad {background-image: linear-gradient(to right, #DB3340 0%, #b95044  51%, #d8477c  100%)}
+         .btn-grad {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+            text-align: center;
+			margin: 10px;
+			padding: 5px 10px;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+			border: none;
+			outline: none;
+    
+          }
+
+          .btn-grad:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+          }
+         

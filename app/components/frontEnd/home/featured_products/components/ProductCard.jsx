@@ -114,7 +114,7 @@ export default function ProductCard({slot_details,slotProducts,showOptionDiv,set
                     <GrAidOption className="me-2" />
                     Select options
                   </button> :
-                    <button className="bg-transparent w-100 rounded-0" onClick={()=>handleAddToCart(slotProducts)}>
+                    <button className="btn-grad w-100 rounded-0" onClick={()=>handleAddToCart(slotProducts)}>
                       <FaCartArrowDown className="me-2" />
                       Add to cart
                     </button>}
@@ -128,7 +128,7 @@ export default function ProductCard({slot_details,slotProducts,showOptionDiv,set
                     <GrAidOption className="me-2" />
                     Select options
                   </button>) :
-                    (<button className="bg-transparent w-100 rounded-0" onClick={()=>handleAddToCart(slotProducts)}>
+                    (<button className="btn-grad w-100 rounded-0" onClick={()=>handleAddToCart(slotProducts)}>
                       <FaCartArrowDown className="me-2" />
                       Add to cart
                     </button>)}
