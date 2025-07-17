@@ -160,7 +160,7 @@ function FeatureClient({ products }) {
                   
                   {
               slot.slot_details?.length >=4 && (
-                  <div className="d-flex gap-2">
+                  <div className="d-flex gap-2 mb-1">
                     <button
                       className="d-flex align-items-center justify-content-center slider-nav-btn"
                       style={{ width: '36px', height: '36px' }}
@@ -182,7 +182,7 @@ function FeatureClient({ products }) {
                   
                 </div>
 
-          <div className="col-12 position-relative mb-4 ml-3 mt-2 overflow-hidden">
+          <div className="col-12 position-relative  ml-3 mt-0 overflow-hidden">
           <hr className="feature-hr m-0" />
           <div style={{
             position: 'absolute',
