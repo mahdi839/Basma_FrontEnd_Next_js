@@ -21,11 +21,7 @@ export default function ProductCard({
     <div className={`px-2 my-5`}>
       <div
         className="card product-div  p-2 bg-white h-100 product-card position-relative"
-        style={{
-          borderRadius: "0",
-          transition: "all 0.3s ease",
-          boxShadow: "0 0 10px rgba(0,0,0,0.03)",
-        }}
+       
       >
         {/* Product Image */}
 
@@ -136,7 +132,7 @@ export default function ProductCard({
 
         <div
           className="card-footer bg-transparent border-0 pt-0 pb-3  add-to-cart-footer d-lg-none d-block"
-          style={{ zIndex: "10" }}
+          
         >
           {slotProducts?.sizes?.length > 1 ? (
             <button
@@ -160,7 +156,7 @@ export default function ProductCard({
 
         <div
           className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block "
-          style={{ zIndex: "10" }}
+          
         >
           {slotProducts?.sizes?.length > 1 ? (
             <button

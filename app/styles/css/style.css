@@ -502,7 +502,7 @@ ol {
 -----------------------*/
 
 .hero {
-	padding-bottom: 50px;
+	padding-bottom: 30px;
 }
 
 .hero.hero-normal {
@@ -718,6 +718,14 @@ ol {
 
 .card {
 	position: relative;
+}
+.card-footer{
+	z-index: 10;
+}
+ .product-div{
+	border-radius: 0;
+	transition: all 0.3s ease;
+	box-shadow: 0 0 10px rgba(0,0,0,0.03);
 }
 
 .product-option {

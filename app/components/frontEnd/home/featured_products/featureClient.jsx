@@ -140,7 +140,7 @@ function FeatureClient({ products }) {
    }
    
   return (
-    <div className="container my-5 py-4 ">
+    <div className="container mb-5 mt-0 py-2 ">
       <div className="row position-relative">
         {products &&
           products.map((slot, slotIndex) => {
