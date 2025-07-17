@@ -27,7 +27,7 @@ export default function ProductCard({
 
         <div
           className="position-relative overflow-hidden product-image-container"
-          style={{ paddingTop: "100%", backgroundColor: "#f9f9f9" }}
+          
         >
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
             <Image
@@ -38,44 +38,26 @@ export default function ProductCard({
                   ? baseUrl + slotProducts?.images[0]?.image
                   : "/img/product/dress-1.png"
               }
-              className="position-absolute w-100 h-100 object-fit-cover p-3"
+              className="position-absolute w-100 h-100 object-fit-cover p-3 product-image"
               alt={slotProducts?.title}
-              style={{ top: "0", left: "0", transition: "transform 0.3s ease" }}
+              
             />
           </Link>
           {/* Product Actions */}
           {showOptionDiv.status === false && (
             <div
               className="quick-add-btn product-actions position-absolute d-flex flex-column "
-              style={{ zIndex: 10 }}
+              
             >
               <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
                 <button
                   className="  rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
-                  style={{
-                    width: "36px",
-                    height: "36px",
-                    border: "1px solid var(--primary-colo)",
-                    zIndex: "99",
-                  }}
+                
                 >
-                  <CiSearch className="fs-5" style={{ color: "#000" }} />
+                  <CiSearch className="fs-5 "  />
                 </button>
               </Link>
-              <button
-                className="    rounded-circle p-2 action-btn d-flex justify-content-center"
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  border: "1px solid var(--primary-colo",
-                }}
-              >
-                <FaCartArrowDown
-                  className="fs-5"
-                  style={{ color: "#000" }}
-                  onClick={() => handleAddToCart(slotProducts)}
-                />
-              </button>
+             
             </div>
           )}
 
@@ -88,16 +70,7 @@ export default function ProductCard({
             <Link
               href={`/frontEnd/product-page/${slotProducts?.id}`}
               className="text-decoration-none text-dark product-title"
-              style={{
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#222",
-                transition: "color 0.2s ease",
-                display: "-webkit-box",
-                WebkitLineClamp: "1",
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
+            
             >
               {slotProducts?.title}
             </Link>
@@ -105,24 +78,17 @@ export default function ProductCard({
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
             <p
               className="text-muted small mb-2 product-subtitle"
-              style={{
-                fontSize: "13px",
-                color: "#888",
-                display: "-webkit-box",
-                WebkitLineClamp: "1",
-                WebkitBoxOrient: "vertical",
-                overflow: "hidden",
-              }}
+              
             >
               {slotProducts?.sub_title}
             </p>
           </Link>
 
-          <div className="d-flex justify-content-between align-items-center mt-2">
+          <div className="d-flex  justify-content-between align-items-center mt-2">
             <div>
               <span
                 className="text-dark fw-bold product-price"
-                style={{ fontSize: "16px", fontWeight: "600" }}
+               
               >
                 ৳{slotProducts?.sizes[0]?.pivot.price || slotProducts?.price}
               </span>
