@@ -88,7 +88,6 @@ export default function ProductCard({
             <div>
               <span
                 className="text-dark fw-bold product-price"
-               
               >
                 ৳{slotProducts?.sizes[0]?.pivot.price || slotProducts?.price}
               </span>

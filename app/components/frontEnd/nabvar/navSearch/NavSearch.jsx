@@ -7,6 +7,7 @@ import style from "../hero.module.css"
 import Link from 'next/link';
 export default function NavSearch() {
     const [category,setCategory] = useState([]);
+    const [isClient,setIsClient] =useState(false)
      async function fetchCategories (){
       const url = process.env.BACKEND_URL + 'api/categories'
         try{
@@ -19,19 +20,20 @@ export default function NavSearch() {
     
       useEffect(()=>{
          fetchCategories()
+         setIsClient(true)
       },[])
   return (
     <div className="row">
           <div className="col-lg-3">
-            <div className={`${style.category_main} hero__categories`}>
-              <div  className={`${style.category_dropdown} hero__categories__all`} >
+            <div className={`${isClient?style.category_main:null} hero__categories`}>
+              <div  className={`${isClient?style.category_dropdown:null} hero__categories__all`} >
                 <FaBars className="fa fa-bars hero_category_icon"  />
                 <span>All Categories</span>
-                <FaArrowRight style={{ position: 'absolute', right: '18px', top: '17px', color: '#ffffff', fontSize: '18px' }} />
+                
               </div>
              
              
-                <ul className={style.category_list}>
+                <ul className={isClient?style.category_list:null}>
                 {category?.map((categ)=>(
                   <li key={categ.id}>
                   <Link href={`/frontEnd/${categ.slug}`}>{categ.name}</Link>
