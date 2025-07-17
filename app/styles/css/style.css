@@ -759,11 +759,7 @@ ol {
 	color: var(--primary-color);
 }
 
-button{
-	border: 1px solid var(--primary-color);
-	background: white;
-	font-family: 'Inter', sans-serif;
-}
+
 
 .product_desc .order_now {
 	background: rgb(10, 42, 85);
@@ -920,27 +916,14 @@ button{
 	color: var(--primary-color);
 }
 
-.card-footer button {
-	border: 1px solid var(--primary-color);
-}
+
 
 .slider-nav-btn {
 	border: none;
 	outline: none;
 }
 
-/* Hide footer by default on large screens */
-.product-card .add-to-cart-footer.d-lg-block {
-	opacity: 0;
-	visibility: hidden;
-	transition: opacity 0.3s ease, visibility 0.3s ease;
-}
 
-/* Show on hover */
-.product-card:hover .add-to-cart-footer.d-lg-block {
-	opacity: 1;
-	visibility: visible;
-}
 
 .sale-badge {
 	font-size: 12px;
@@ -1074,6 +1057,21 @@ button{
 	animation: fadeIn 0.3s ease-in;
 }
 
+.add-to-cart-footer-lg {
+	position: absolute;
+	bottom: 0;
+	right: 5px;
+	transform: translateX(-50%) translateY(20px);
+	opacity: 0;
+	transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+	z-index: 10;
+  }
+  
+  .product-card:hover .add-to-cart-footer-lg {
+	opacity: 1;
+	transform: translateX(-10%) translateY(0);
+  }
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -1162,18 +1160,49 @@ table tr td{
 .loader-icon{
 	color: var(--primary-color);
 }
-.overlay-top::before,
-.overlay-bottom::after {
-  position: absolute;
-  content: "";
-  width: 100%;
-  height: 85px;
-  left: 0;
-  z-index: 1;
+
+
+.gradient-bg {
+  background-image: 
+   radial-gradient(circle at 20% 80%, rgba(255, 220, 190, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 245, 238, 0.35) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 210, 180, 0.15) 0%, transparent 50%);
 }
 
-.overlay-top::before {
-  top: 0;
-  background: url(/public/img/footer_overlay_image/overlay-top.png) top center no-repeat;
-  background-size: contain;
+.bg-soft-coral {
+  background-color: #fef9f7;
 }
+
+         
+         
+
+         .btn-grad {background-image: linear-gradient(to right, #DB3340 0%, #b95044  51%, #d8477c  100%)}
+         .btn-grad {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+            text-align: center;
+			margin: 10px;
+			padding: 5px 10px;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+			border: none;
+			outline: none;
+			white-space: nowrap;
+    
+          }
+
+          .btn-grad:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+          }
+
+		  .product-card {
+			position: relative;
+			overflow: hidden;
+		  }
+         
