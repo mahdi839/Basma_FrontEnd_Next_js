@@ -1,5 +1,6 @@
 'use client'
-import React, { useState } from "react";
+import useIndexData from "@/app/hooks/useIndexData";
+import React, { useEffect, useState } from "react";
 
 export default function page() {
     const [formData,setFormData] = useState({
@@ -8,6 +9,14 @@ export default function page() {
         'category_id':'',
         'images':[]
     })
+
+   const {indexData,loading,data,setData,} = useIndexData();
+   const categoryIndeUrl = process.env.BACKEND_URL + `api/categories`;
+   useEffect(()=>{
+    indexData(categoryIndeUrl);
+   },[])
+
+   console.log(data)
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-3">
       <div
@@ -26,7 +35,7 @@ export default function page() {
             <div className="row g-4">
               {/* Slot Name */}
               <div className="col-md-6">
-                <div className="form-floating">
+                <div className="">
                   <select
                   name="type"
                     className="form-select border-secondary"
@@ -44,7 +53,7 @@ export default function page() {
               </div>
 
               <div className="col-md-6">
-                <div className="form-floating">
+                <div className="">
                   <select
                     className="form-select border-secondary"
                     name="category_id"
@@ -53,7 +62,12 @@ export default function page() {
                     <option value="" disabled>
                       Select category
                     </option>
-                      <option value='hero'>Hero Section</option>
+                    {
+                      data?.data?.map((category)=>(
+                        <option key={category.id} value={category.id}>{category.name}</option>
+                      ))
+                    }
+                      
                   </select>
                   
                 </div>
