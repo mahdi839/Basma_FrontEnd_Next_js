@@ -5,6 +5,7 @@ import {  FaProductHunt, FaShippingFast, FaShoppingBag} from "react-icons/fa";
 import { RiKanbanView2 } from "react-icons/ri";
 import { IoIosResize } from "react-icons/io";
 import { BiSolidCategory } from "react-icons/bi";
+import { PiFlagBanner } from "react-icons/pi";
 import SideBarItem from "../components/sidebarItem/SideBarItem";
 import { IoOptionsOutline } from "react-icons/io5";
 export default function SideBar() {
@@ -21,6 +22,7 @@ export default function SideBar() {
        <SideBarItem href="/dashboard/slots" Icon={IoOptionsOutline} label='Home Page Slots'/>
        <SideBarItem href="/dashboard/orders" Icon={FaShoppingBag} label='Orders'/>
        <SideBarItem href="/dashboard/shipping" Icon={FaShippingFast} label='Shipping Cost'/>
+       <SideBarItem href="/dashboard/banners" Icon={PiFlagBanner} label='Banners'/>
        <SideBarItem href="/"   Icon={RiKanbanView2} label='My Website' />
       </div>
     </div>
