@@ -49,8 +49,6 @@ export default function SlotForm() {
   const { storeData, loading: isStoring } = useStoreData();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-  
 
     // Prepare data for API
     const payload = {
