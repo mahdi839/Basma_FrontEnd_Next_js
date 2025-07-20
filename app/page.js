@@ -1,5 +1,5 @@
 import Hero from "./components/frontEnd/home/hero/hero";
-import Feature from "./components/frontEnd/home/featured_products/feature";
+import Feature from "./components/frontEnd/home/slots/feature";
 import FrontEndLayout from "./components/layouts/FrontEndLayout";
 
 

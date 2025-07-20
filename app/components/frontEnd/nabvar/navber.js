@@ -40,11 +40,6 @@ export default function Navbar() {
         <div className="humberger__menu__cart">
           <ul>
             <li>
-              <Link href="">
-                <FaHeart className="fa fa-heart" /> <span>1</span>
-              </Link>
-            </li>
-            <li>
               <Link href="/frontEnd/cart">
                 <FaShoppingBag className="fa fa-shopping-bag" /> <span>{isClient && cartCount}</span>
 
@@ -55,126 +50,17 @@ export default function Navbar() {
           Cart Total: <span>{isClient?CartItemsPrice:0} Tk</span>
           </div>
         </div>
-        <div className="humberger__menu__widget">
         
-
-          <div className="header__top__right__auth dropdown">
-            <Link href="#">
-              <FaUser
-                className="fa fa-user dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              />{" "}
-              Login
-            </Link>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li>
-                <a className="dropdown-item" href="#">
-                  Action
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#">
-                  Another action
-                </a>
-              </li>
-              <li>
-                <a className="dropdown-item" href="#">
-                  Something else here
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <nav className="humberger__menu__nav mobile-menu">
-          <ul>
-            <li className="active">
-              <Link href="/">Home</Link>
-            </li>
-            <li>
-              <Link href="/shop">Shop</Link>
-            </li>
-            <li>
-              <Link href="#">Pages</Link>
-              <ul className="header__menu__dropdown">
-                <li>
-                  <Link href="./shop-details.html">Shop Details</Link>
-                </li>
-                <li>
-                  <Link href="./shoping-cart.html">Shoping Cart</Link>
-                </li>
-                <li>
-                  <Link href="./checkout.html">Check Out</Link>
-                </li>
-                <li>
-                  <Link href="./blog-details.html">Blog Details</Link>
-                </li>
-              </ul>
-            </li>
-            <li>
-              <Link href="./blog.html">Blog</Link>
-            </li>
-            <li>
-              <Link href="./contact.html">Contact</Link>
-            </li>
-          </ul>
-        </nav>
-        <div id="mobile-menu-wrap"></div>
-        <div className="header__top__right__social">
-          <Link href="#">
-            <i className="fa fa-facebook"></i>
-          </Link>
-          <Link href="#">
-            <i className="fa fa-twitter"></i>
-          </Link>
-          <Link href="#">
-            <i className="fa fa-linkedin"></i>
-          </Link>
-          <Link href="#">
-            <i className="fa fa-pinterest-p"></i>
-          </Link>
-        </div>
-        <div className="humberger__menu__contact">
-          <ul>
-            <li>
-              <FaEnvelope className="fa fa-envelope" /> hello@colorlib.com
-            </li>
-          </ul>
-        </div>
       </div>
 
       <header className="header">
         <div className="header__top">
           <div className="container">
             <div className="row">
-              <div className="col-lg-6 col-md-6">
-                <div className="header__top__left">
-                  <ul>
-                    <li>
-                      <FaEnvelope className="fa fa-envelope" /> hello@colorlib.com
-                    </li>
-                    <li></li>
-                  </ul>
-                </div>
-              </div>
-              <div className="col-lg-6 col-md-6">
+              
+              <div className="col-lg-6 col-md-6 d-none d-md-block">
                 <div className="header__top__right">
-                  <div className="header__top__right__social">
-                    <Link href="#">
-                      <FaFacebook className="fa fa-facebook" />
-                    </Link>
-                    <Link href="#">
-                      <FaTwitter className="fa fa-twitter" />
-                    </Link>
-                    <Link href="#">
-                      <FaLinkedin className="fa fa-linkedin" />
-                    </Link>
-                    <Link href="#">
-                      <FaPinterest className="fa fa-pinterest-p" />
-                    </Link>
-                  </div>
+                  
                 
                   
                   <div className="header__top__right__auth  dropdown">
@@ -207,7 +93,7 @@ export default function Navbar() {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-6">
+            <div className="col-lg-6 d-none d-md-block">
               <nav className="header__menu">
                 <ul>
                   <li className="active">
@@ -219,18 +105,10 @@ export default function Navbar() {
                 </ul>
               </nav>
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-3 d-none d-md-block">
               <div className="header__cart">
                 <ul>
-                  <li>
-                    <Link href="#">
-                      <FaHeart
-                        className="fa fa-heart"
-                        style={{ color: "black", fontSize: "20px" }}
-                      />
-                      <span>1</span>
-                    </Link>
-                  </li>
+                 
                   <li>
                     <Link href="/frontEnd/cart">
                       <FaShoppingBag
@@ -241,7 +119,7 @@ export default function Navbar() {
                     </Link>
                   </li>
                 </ul>
-                <div className="header__cart__price">
+                <div className="header__cart__price d-none d-md-block">
                 Cart Total: <span>{isClient? CartItemsPrice : 0} Tk</span>
                 </div>
               </div>

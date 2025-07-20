@@ -1,17 +1,13 @@
 "use client"
 
 import React, { useEffect, useState,} from "react";
-import Image from "next/image";
-import { FaCartArrowDown } from 'react-icons/fa';
-import Link from "next/link";
-import { GrAidOption } from "react-icons/gr";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from '@/redux/slices/CartSlice';
 import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
-import OptionDiv from '@/app/components/frontEnd/home/featured_products/components/OptionDiv';
-import ProductCard from "@/app/components/frontEnd/home/featured_products/components/ProductCard";
+
+import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard";
 export default function CtgProductsLogic({products,category}) {
   
 const [isLoading, setIsLoading] = useState(true)

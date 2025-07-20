@@ -24,7 +24,8 @@ export default function NavSearch() {
       },[])
   return (
     <div className="row">
-          <div className="col-lg-3">
+       {/* medium to large screen design start */}
+          <div className="col-lg-3 d-none d-md-block">
             <div className={`${isClient?style.category_main:null} hero__categories`}>
               <div  className={`${isClient?style.category_dropdown:null} hero__categories__all`} >
                 <FaBars className="fa fa-bars hero_category_icon"  />
@@ -34,7 +35,7 @@ export default function NavSearch() {
              
              
                 <ul className={isClient?style.category_list:null}>
-                {category?.map((categ)=>(
+                {category?.data?.map((categ)=>(
                   <li key={categ.id}>
                   <Link href={`/frontEnd/${categ.slug}`}>{categ.name}</Link>
                 </li>
@@ -43,7 +44,7 @@ export default function NavSearch() {
               
             </div>
           </div>
-          <div className="col-lg-9">
+          <div className="col-lg-9 d-none d-md-block">
             <div className="hero__search">
               <div className="hero__search__form">
                 <form action="#">
@@ -68,6 +69,7 @@ export default function NavSearch() {
               </div>
             </div>
           </div>
+           {/* medium to large screen design end */}
         </div>
   )
 }
