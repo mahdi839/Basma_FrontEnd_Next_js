@@ -1264,4 +1264,19 @@ table tr td{
 			position: relative;
 			overflow: hidden;
 		  }
+
+		  @media screen and (max-width: 768px) {
+			 .header__logo{
+				text-align: center;
+				
+			 }
+			 .header__logo img{
+				width: 200px;
+				height: auto;
+			 }
+
+			 .humberger_menu__icon{
+				
+			 }
+		  }
          

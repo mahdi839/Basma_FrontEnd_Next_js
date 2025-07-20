@@ -1,6 +1,6 @@
 "use client"
-import React, { useEffect, useState } from "react";
-import { FaArrowLeft, FaArrowRight, FaBars, FaChevronLeft, FaChevronRight, FaPhone } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaChevronLeft, FaChevronRight,} from "react-icons/fa";
 
 import style from '../../nabvar/hero.module.css'
 export default function Hero() {
