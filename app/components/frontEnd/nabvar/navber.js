@@ -24,7 +24,7 @@ export default function Navbar() {
   const cartCount = useSelector((state) => state.cart.count);
   const cartItems = useSelector((state) => state.cart.items);
   const [isClient, setIsClient] = useState(false);
-
+  const [isShowCollaps, setIsShowCollaps] = useState(false);
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -33,9 +33,16 @@ export default function Navbar() {
     (total, item) => total + item.totalPrice,
     0
   );
+
+  function handleCollaps (){
+    setIsShowCollaps(true)
+  }
+  function handleCollapsCancel (){
+    setIsShowCollaps(false)
+  }
   return (
     <div className="position-relative">
-      <div className="humberger__menu__overlay"></div>
+      
       <div className="humberger__menu__wrapper">
         <div className="humberger__menu__cart">
           <ul>
@@ -108,7 +115,7 @@ export default function Navbar() {
           <div className="row">
             {/* mobile menu start */}
             <div className="d-flex d-md-none justify-content-around align-items-center my-3">
-              <div className="mobile_humberger_icon">
+              <div className="mobile_humberger_icon" onClick={handleCollaps}>
                 <IoMenuOutline size={20} />
               </div>
 
@@ -175,24 +182,26 @@ export default function Navbar() {
               </div>
             </div>
           </div>
-          <div className="humberger__open">
+          <div className="humberger__open" >
             <FaBars className="fa fa-bars" />
           </div>
           <NavSearch />
         </div>
       </header>
       {/* mobile collaps menu start */}
-      <div className={`${style.collaps_div}`}>
-        <div className={`${style.collaps_cancel_div}`}>
-          <ImCancelCircle size={22} />
+      
+        <div className={`${style.collaps_div} ${isShowCollaps ? style.show_col_menu : style.hide_col_menu}`}>
+          <div className={`${style.collaps_cancel_div}`}  onClick={handleCollapsCancel}>
+            <ImCancelCircle size={22} />
+          </div>
+          <div className={`${style.menu_category_main}`}>
+            <div className={`${style.menu_category_sub}`}>
+              <div className={`${style.menu_category_label}`}>Category</div>
+              <div className={`${style.menu_category_label}`}>Menu</div>
+            </div>
+          </div>
         </div>
-        <div className={`${style.menu_category_main}`}>
-           <div className={`${style.menu_category_sub}`}>
-               <div className={`${style.menu_category_label}`}>Category</div>
-               <div className={`${style.menu_category_label}`}>Menu</div>
-           </div>
-        </div>
-      </div>
+    
       {/* mobile collaps menu end */}
     </div>
   );
