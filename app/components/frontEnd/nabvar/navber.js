@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -7,62 +7,61 @@ import {
   FaUser,
   FaBars,
   FaShoppingBag,
-  FaHeart,
   FaFacebook,
   FaTwitter,
   FaLinkedin,
   FaPinterest,
-  
 } from "react-icons/fa";
 import { IoMenuOutline } from "react-icons/io5";
 import LogButtons from "./LogButtons";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import NavSearch from "./navSearch/NavSearch";
-
+import style from "./hero.module.css";
+import { ImCancelCircle } from "react-icons/im";
 
 export default function Navbar() {
- const cartCount =  useSelector(state=>state.cart.count)
- const cartItems = useSelector((state=>state.cart.items))
- const [isClient, setIsClient] = useState(false);
+  const cartCount = useSelector((state) => state.cart.count);
+  const cartItems = useSelector((state) => state.cart.items);
+  const [isClient, setIsClient] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     setIsClient(true);
-  },[])
+  }, []);
 
- 
-
-
- let CartItemsPrice = cartItems.reduce((total,item)=>total+item.totalPrice,0)
+  let CartItemsPrice = cartItems.reduce(
+    (total, item) => total + item.totalPrice,
+    0
+  );
   return (
-    <div>
+    <div className="position-relative">
       <div className="humberger__menu__overlay"></div>
       <div className="humberger__menu__wrapper">
         <div className="humberger__menu__cart">
           <ul>
             <li>
               <Link href="/frontEnd/cart">
-                <FaShoppingBag className="fa fa-shopping-bag" /> <span>{isClient && cartCount}</span>
-
+                <FaShoppingBag className="fa fa-shopping-bag" />{" "}
+                <span>{isClient && cartCount}</span>
               </Link>
             </li>
           </ul>
           <div className="header__cart__price">
-          Cart Total: <span>{isClient?CartItemsPrice:0} Tk</span>
+            Cart Total: <span>{isClient ? CartItemsPrice : 0} Tk</span>
           </div>
         </div>
-        
       </div>
 
       <header className="header">
         <div className="header__top">
           <div className="container">
             <div className="row">
-               <div className="col-lg-6 col-md-6">
+              <div className="col-lg-6 col-md-6">
                 <div className="header__top__left d-none d-md-block">
                   <ul>
                     <li>
-                      <FaEnvelope className="fa fa-envelope" /> hello@colorlib.com
+                      <FaEnvelope className="fa fa-envelope" />{" "}
+                      hello@colorlib.com
                     </li>
                     <li></li>
                   </ul>
@@ -70,7 +69,7 @@ export default function Navbar() {
               </div>
               <div className="col-lg-6 col-md-6 d-none d-md-block">
                 <div className="header__top__right">
-                    <div className="header__top__right__social">
+                  <div className="header__top__right__social">
                     <Link href="#">
                       <FaFacebook className="fa fa-facebook" />
                     </Link>
@@ -84,8 +83,7 @@ export default function Navbar() {
                       <FaPinterest className="fa fa-pinterest-p" />
                     </Link>
                   </div>
-                
-                  
+
                   <div className="header__top__right__auth  dropdown">
                     <FaUser
                       className="fa fa-user  dropdown-toggle"
@@ -98,8 +96,7 @@ export default function Navbar() {
                       className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
-                     <LogButtons />
-                      
+                      <LogButtons />
                     </ul>
                   </div>
                 </div>
@@ -111,33 +108,31 @@ export default function Navbar() {
           <div className="row">
             {/* mobile menu start */}
             <div className="d-flex d-md-none justify-content-around align-items-center my-3">
-
               <div className="mobile_humberger_icon">
                 <IoMenuOutline size={20} />
               </div>
 
               <div className="mobile_logo">
-                  <Link href="/">
+                <Link href="/">
                   <Image src="/img/logo3.png" alt="" width={200} height={40} />
                 </Link>
               </div>
 
               <div>
-                 <FaUser
-                      className="fa fa-user  dropdown-toggle"
-                      type="button"
-                      id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    />
-                    <ul
-                      className="dropdown-menu"
-                      aria-labelledby="dropdownMenuButton1"
-                    >
-                     <LogButtons />
-                    </ul>
+                <FaUser
+                  className="fa fa-user  dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                />
+                <ul
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton1"
+                >
+                  <LogButtons />
+                </ul>
               </div>
-
             </div>
             {/* mobile menu end */}
             <div className="col-lg-3 d-none d-md-block">
@@ -161,21 +156,21 @@ export default function Navbar() {
             </div>
             <div className="col-lg-3 d-none d-md-block">
               <div className="header__cart">
-                
                 <div className="header__cart__price d-none d-md-block">
                   <ul>
-                 
-                  <li>
-                    <Link href="/frontEnd/cart">
-                      <FaShoppingBag
-                        className="fa fa-shopping-bag"
-                        style={{ color: "black", fontSize: "20px" }}
-                      />
-                      <span className="text-white">{isClient ? cartCount : 0}</span>
-                    </Link>
-                  </li>
-                </ul>
-                Cart Total: <span>{isClient? CartItemsPrice : 0} Tk</span>
+                    <li>
+                      <Link href="/frontEnd/cart">
+                        <FaShoppingBag
+                          className="fa fa-shopping-bag"
+                          style={{ color: "black", fontSize: "20px" }}
+                        />
+                        <span className="text-white">
+                          {isClient ? cartCount : 0}
+                        </span>
+                      </Link>
+                    </li>
+                  </ul>
+                  Cart Total: <span>{isClient ? CartItemsPrice : 0} Tk</span>
                 </div>
               </div>
             </div>
@@ -183,9 +178,22 @@ export default function Navbar() {
           <div className="humberger__open">
             <FaBars className="fa fa-bars" />
           </div>
-         <NavSearch />
+          <NavSearch />
         </div>
       </header>
+      {/* mobile collaps menu start */}
+      <div className={`${style.collaps_div}`}>
+        <div className={`${style.collaps_cancel_div}`}>
+          <ImCancelCircle size={22} />
+        </div>
+        <div className={`${style.menu_category_main}`}>
+           <div className={`${style.menu_category_sub}`}>
+               <div className={`${style.menu_category_label}`}>Category</div>
+               <div className={`${style.menu_category_label}`}>Menu</div>
+           </div>
+        </div>
+      </div>
+      {/* mobile collaps menu end */}
     </div>
   );
 }
