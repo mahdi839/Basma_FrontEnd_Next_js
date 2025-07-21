@@ -73,7 +73,6 @@
 }
 .arrow_left{
   font-size: 1rem;
-  
   color: black;
   top: 50%;
   left: 10px;
@@ -84,12 +83,23 @@
   .hero__item {
     height: 250px;
   }
+  .arrow_right{
+    font-size: 0.8rem;
+  }
+
+  .arrow_left{
+    font-size: 0.8rem;
+  }
   .arrow_div_right{
     right: 5px;
+    height: 30px;
+    width: 30px;
   }
 
   .arrow_div_left{
     left: 5px;
+    height: 30px;
+    width: 30px;
   }
  
 }
