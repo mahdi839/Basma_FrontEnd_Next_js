@@ -25,6 +25,7 @@ export default function Navbar() {
   const cartItems = useSelector((state) => state.cart.items);
   const [isClient, setIsClient] = useState(false);
   const [isShowCollaps, setIsShowCollaps] = useState(false);
+  const [ isShowCollapsMenu, setIsShowCollapsMenu ] = useState('category');
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -39,6 +40,9 @@ export default function Navbar() {
   }
   function handleCollapsCancel (){
     setIsShowCollaps(false)
+  }
+  function handleCollaps_menu(menu) {
+    setIsShowCollapsMenu(menu)
   }
   return (
     <div className="position-relative">
@@ -196,8 +200,8 @@ export default function Navbar() {
           </div>
           <div className={`${style.menu_category_main}`}>
             <div className={`${style.menu_category_sub}`}>
-              <div className={`${style.menu_category_label}`}>Category</div>
-              <div className={`${style.menu_category_label}`}>Menu</div>
+              <div className={`${style.menu_category_label_one} `} onClick={()=>handleCollaps_menu('category')}> <span className={`${isShowCollapsMenu === 'category'? style.collaps_border_one:''}`}>Category</span> </div>
+              <div className={`${style.menu_category_label_two}`} onClick={()=>handleCollaps_menu('menu')}><span className={`${isShowCollapsMenu ==='menu'? style.collaps_border_two : ''}`}>Menu</span></div>
             </div>
           </div>
         </div>
