@@ -7,22 +7,10 @@ import style from "../hero.module.css"
 import Link from 'next/link';
 import NavCategories from '../components/NavCategories';
 export default function NavSearch() {
-    const [category,setCategory] = useState([]);
-    const [isClient,setIsClient] =useState(false)
-     async function fetchCategories (){
-      const url = process.env.BACKEND_URL + 'api/categories'
-        try{
-          const data = await axios.get(url)
-          setCategory(data.data)
-        }catch(err){
-          toast.error(err.message)
-        }
-      }
-    
-      useEffect(()=>{
-         fetchCategories()
-         setIsClient(true)
-      },[])
+  const [isClient,setIsClient] =useState(false)
+    useEffect(()=>{
+            setIsClient(true)
+         },[])
   return (
     <div className="row">
        {/* medium to large screen design start */}
@@ -33,14 +21,9 @@ export default function NavSearch() {
                 <span>All Categories</span>
                 
               </div>
-             
-             
-              <NavCategories 
-               style={style}
-                isClient={isClient}
-                category={category}
-              />
-              
+               <ul className={isClient?style.category_list:null}>
+              <NavCategories />
+               </ul>
             </div>
           </div>
           <div className="col-lg-9 d-none d-md-block">

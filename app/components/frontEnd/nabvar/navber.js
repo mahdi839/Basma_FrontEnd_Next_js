@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import NavSearch from "./navSearch/NavSearch";
 import style from "./hero.module.css";
 import { ImCancelCircle } from "react-icons/im";
+import NavCategories from "./components/NavCategories";
 
 export default function Navbar() {
   const cartCount = useSelector((state) => state.cart.count);
@@ -204,9 +205,9 @@ export default function Navbar() {
               <div className={`${style.menu_category_label_two}`} onClick={()=>handleCollaps_menu('menu')}><span className={`${isShowCollapsMenu ==='menu'? style.collaps_border_two : ''}`}>Menu</span></div>
             </div>
             <div>
-              {/* {isShowCollapsMenu === 'category' && (
-
-              )} */}
+              {isShowCollapsMenu === 'category' && (
+               <NavCategories />
+              )}
             </div>
           </div>
         </div>
