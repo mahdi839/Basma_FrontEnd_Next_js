@@ -5,6 +5,7 @@ import axios from "axios";
 import { FaArrowRight, FaBars, FaPhone } from 'react-icons/fa';
 import style from "../hero.module.css"
 import Link from 'next/link';
+import NavCategories from '../components/NavCategories';
 export default function NavSearch() {
     const [category,setCategory] = useState([]);
     const [isClient,setIsClient] =useState(false)
@@ -34,13 +35,11 @@ export default function NavSearch() {
               </div>
              
              
-                <ul className={isClient?style.category_list:null}>
-                {category?.data?.map((categ)=>(
-                  <li key={categ.id}>
-                  <Link href={`/frontEnd/${categ.slug}`}>{categ.name}</Link>
-                </li>
-                ))}
-              </ul>
+              <NavCategories 
+               style={style}
+                isClient={isClient}
+                category={category}
+              />
               
             </div>
           </div>

@@ -203,6 +203,11 @@ export default function Navbar() {
               <div className={`${style.menu_category_label_one} `} onClick={()=>handleCollaps_menu('category')}> <span className={`${isShowCollapsMenu === 'category'? style.collaps_border_one:''}`}>Category</span> </div>
               <div className={`${style.menu_category_label_two}`} onClick={()=>handleCollaps_menu('menu')}><span className={`${isShowCollapsMenu ==='menu'? style.collaps_border_two : ''}`}>Menu</span></div>
             </div>
+            <div>
+              {/* {isShowCollapsMenu === 'category' && (
+
+              )} */}
+            </div>
           </div>
         </div>
     
