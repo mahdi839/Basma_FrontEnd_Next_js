@@ -695,6 +695,15 @@ ol {
 	margin-bottom: 35px;
 }
 
+.hero_slider_img{
+	max-width: 100%;
+	height: auto;
+	max-height: 400px;
+	margin-bottom: 2rem;
+}
+
+/* featured */
+
 .featured_heading {
 	position: relative;
 	display: inline-block;
