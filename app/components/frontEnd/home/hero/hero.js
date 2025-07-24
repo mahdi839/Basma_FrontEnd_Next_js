@@ -10,11 +10,11 @@ export default function Hero() {
   var settings = {
     dots: false,
     infinite: true,
-    speed: 500,
+    speed: 1100,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true, // 👈 Enables autoplay
-    autoplaySpeed: 4000,
+    autoplaySpeed: 6000,
     nextArrow: (
       <div className={style.arrow_div_right}>
         <FaChevronRight className={style.arrow_right} />
