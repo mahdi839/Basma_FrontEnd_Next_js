@@ -1,22 +1,47 @@
 "use client";
 import useIndexData from "@/app/hooks/useIndexData";
 import useStoreData from "@/app/hooks/useStoreData";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export default function Page() {
   const [formData, setFormData] = useState({
     link: "",
     type: "",
+    products_slots_id: "",
     category_id: "",
     images: [],
   });
-
+  const [slot, setSlot] = useState(null);
   const { indexData, loading, data, setData } = useIndexData();
   const categoryIndeUrl = process.env.BACKEND_URL + `api/categories`;
+  const slotUrl = process.env.BACKEND_URL + `api/product-slots`;
+
+  async function getSlotData() {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.get(slotUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSlot(response.data.data);
+    } catch (err) {
+      Swal.fire({
+        title: "Oops! Please Check",
+        text: err.response?.data?.message || err.message,
+        icon: "error",
+      });
+    }
+  }
+
   useEffect(() => {
     indexData(categoryIndeUrl);
+    getSlotData();
   }, []);
 
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -43,7 +68,6 @@ export default function Page() {
       "Banner created successfully"
     );
 
-   
     setFormData({
       link: "",
       type: "",
@@ -51,7 +75,6 @@ export default function Page() {
       images: [],
     });
 
-   
     document.getElementById("images").value = null;
   };
 
@@ -74,7 +97,7 @@ export default function Page() {
               {/* Slot Name */}
               <div
                 className={`${
-                  formData.type === "category" ? "col-md-6" : "col-md-12"
+                  formData.type === "category"||'slot' ? "col-md-6" : "col-md-12"
                 }`}
               >
                 <div className="">
@@ -115,6 +138,29 @@ export default function Page() {
                   </div>
                 </div>
               )}
+
+              {formData.type === "slot" && (
+                <div className="col-md-6">
+                  <div className="">
+                    <select
+                      className="form-select border-secondary"
+                      name="products_slots_id"
+                      value={formData.products_slots_id}
+                      onChange={handleChange}
+                    >
+                      <option value="" disabled>
+                        Select Slot
+                      </option>
+                      {slot?.map((singleSlot) => (
+                        <option key={singleSlot.id} value={singleSlot.id}>
+                          {singleSlot.slot_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
               {/* images */}
               <div className="col-md-6">
                 <div className="form">
