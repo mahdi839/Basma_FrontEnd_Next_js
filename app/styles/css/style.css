@@ -1265,6 +1265,10 @@ table tr td{
 			overflow: hidden;
 		  }
 
+		  @media screen and (max-width: 1024px) {
+			
+		 }
+
 		  @media screen and (max-width: 768px) {
 			 .header__logo{
 				text-align: center;
@@ -1275,8 +1279,6 @@ table tr td{
 				height: auto;
 			 }
 
-			 .humberger_menu__icon{
-				
-			 }
+			
 		  }
          

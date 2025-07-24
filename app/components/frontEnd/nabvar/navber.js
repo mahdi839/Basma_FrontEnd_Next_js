@@ -69,7 +69,7 @@ export default function Navbar() {
           <div className="container">
             <div className="row">
               <div className="col-lg-6 col-md-6">
-                <div className="header__top__left d-none d-md-block">
+                <div className="header__top__left d-none d-xl-block">
                   <ul>
                     <li>
                       <FaEnvelope className="fa fa-envelope" />{" "}
@@ -79,7 +79,7 @@ export default function Navbar() {
                   </ul>
                 </div>
               </div>
-              <div className="col-lg-6 col-md-6 d-none d-md-block">
+              <div className="col-lg-6 col-md-6 d-none d-xl-block">
                 <div className="header__top__right">
                   <div className="header__top__right__social">
                     <Link href="#">
@@ -119,7 +119,7 @@ export default function Navbar() {
         <div className="container">
           <div className="row">
             {/* mobile menu start */}
-            <div className="d-flex d-md-none justify-content-around align-items-center my-3">
+            <div className="d-flex d-xl-none justify-content-around align-items-center my-3">
               <div className="mobile_humberger_icon" onClick={handleCollaps}>
                 <IoMenuOutline size={20} />
               </div>
@@ -147,14 +147,14 @@ export default function Navbar() {
               </div>
             </div>
             {/* mobile menu end */}
-            <div className="col-lg-3 d-none d-md-block">
+            <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo">
                 <Link href="/">
                   <Image src="/img/logo3.png" alt="" width={250} height={50} />
                 </Link>
               </div>
             </div>
-            <div className="col-lg-6 d-none d-md-block">
+            <div className="col-lg-6 d-none d-xl-block">
               <nav className="header__menu">
                 <ul>
                   <li className="active">
@@ -166,9 +166,9 @@ export default function Navbar() {
                 </ul>
               </nav>
             </div>
-            <div className="col-lg-3 d-none d-md-block">
+            <div className="col-lg-3 d-none d-xl-block">
               <div className="header__cart">
-                <div className="header__cart__price d-none d-md-block">
+                <div className="header__cart__price d-none d-xl-block">
                   <ul>
                     <li>
                       <Link href="/frontEnd/cart">

@@ -1,10 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { toast } from "react-toastify";
-import axios from "axios";
-import { FaArrowRight, FaBars, FaPhone } from 'react-icons/fa';
+import {FaBars, FaPhone } from 'react-icons/fa';
 import style from "../hero.module.css"
-import Link from 'next/link';
 import NavCategories from '../components/NavCategories';
 export default function NavSearch() {
   const [isClient,setIsClient] =useState(false)
@@ -14,7 +11,7 @@ export default function NavSearch() {
   return (
     <div className="row">
        {/* medium to large screen design start */}
-          <div className="col-lg-3 d-none d-md-block">
+          <div className="col-lg-3 d-none d-xl-block">
             <div className={`${isClient?style.category_main:null} hero__categories`}>
               <div  className={`${isClient?style.category_dropdown:null} hero__categories__all`} >
                 <FaBars className="fa fa-bars hero_category_icon"  />
@@ -26,7 +23,7 @@ export default function NavSearch() {
                </ul>
             </div>
           </div>
-          <div className="col-lg-9 d-none d-md-block">
+          <div className="col-lg-9 d-none d-xl-block">
             <div className="hero__search">
               <div className="hero__search__form">
                 <form action="#">
