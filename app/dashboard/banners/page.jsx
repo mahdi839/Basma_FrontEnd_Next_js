@@ -41,7 +41,6 @@ export default function Page() {
     getSlotData();
   }, []);
 
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -58,7 +57,14 @@ export default function Page() {
     const payload = new FormData();
     payload.append("link", formData.link);
     payload.append("type", formData.type);
-    payload.append("category_id", formData.category_id);
+    if (formData.type === "slot") {
+      payload.append("products_slots_id", formData.products_slots_id);
+    }
+
+    if (formData.type === "category") {
+      payload.append("category_id", formData.category_id);
+    }
+
     for (let i = 0; i < formData.images.length; i++) {
       payload.append(`images[${i}]`, formData.images[i]);
     }
@@ -97,7 +103,9 @@ export default function Page() {
               {/* Slot Name */}
               <div
                 className={`${
-                  formData.type === "category"||'slot' ? "col-md-6" : "col-md-12"
+                  formData.type === "category" || "slot"
+                    ? "col-md-6"
+                    : "col-md-12"
                 }`}
               >
                 <div className="">
@@ -187,7 +195,6 @@ export default function Page() {
                     placeholder="Give link"
                     name="link"
                     value={formData.link}
-                    required
                     onChange={handleChange}
                   />
                 </div>
