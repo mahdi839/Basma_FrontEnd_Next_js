@@ -41,6 +41,8 @@ export default function CategoryTable({ categories }) {
          // Update state to remove deleted category
          setGetCategories(prev => prev.filter(category => category.id !== id));
     }
+
+    
     return (
         <table className="table table-bordered">
             <thead>
@@ -52,14 +54,14 @@ export default function CategoryTable({ categories }) {
                 </tr>
             </thead>
             <tbody>
-                {getCategories.length === 0 ? (
+                {getCategories.data.length === 0 ? (
                     <tr>
                         <td colSpan="3" className="text-center text-danger">
                             No Categories Available
                         </td>
                     </tr>
                 ) : (
-                    getCategories.map((category) => (
+                    getCategories.data.map((category) => (
                         <tr key={category.id}>
                             <td className="text-center">{category.id}</td>
                             <td className="text-center">{category.name}</td>

@@ -19,12 +19,14 @@ import { useEffect, useState } from "react";
 import NavSearch from "./navSearch/NavSearch";
 import style from "./hero.module.css";
 import { ImCancelCircle } from "react-icons/im";
+import NavCategories from "./components/NavCategories";
 
 export default function Navbar() {
   const cartCount = useSelector((state) => state.cart.count);
   const cartItems = useSelector((state) => state.cart.items);
   const [isClient, setIsClient] = useState(false);
   const [isShowCollaps, setIsShowCollaps] = useState(false);
+  const [ isShowCollapsMenu, setIsShowCollapsMenu ] = useState('category');
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -39,6 +41,9 @@ export default function Navbar() {
   }
   function handleCollapsCancel (){
     setIsShowCollaps(false)
+  }
+  function handleCollaps_menu(menu) {
+    setIsShowCollapsMenu(menu)
   }
   return (
     <div className="position-relative">
@@ -196,8 +201,25 @@ export default function Navbar() {
           </div>
           <div className={`${style.menu_category_main}`}>
             <div className={`${style.menu_category_sub}`}>
-              <div className={`${style.menu_category_label}`}>Category</div>
-              <div className={`${style.menu_category_label}`}>Menu</div>
+              <div className={`${style.menu_category_label_one} `} onClick={()=>handleCollaps_menu('category')}> <span className={`${isShowCollapsMenu === 'category'? style.collaps_border_one:''}`}>Category</span> </div>
+              <div className={`${style.menu_category_label_two}`} onClick={()=>handleCollaps_menu('menu')}><span className={`${isShowCollapsMenu ==='menu'? style.collaps_border_two : ''}`}>Menu</span></div>
+            </div>
+            <div className={`${style.collaps_category_list_div}`}>
+              {isShowCollapsMenu === 'category' && (
+                <ul className={` my-3 ${style.collaps_category_list}`}>
+                  <NavCategories  onClick={handleCollapsCancel}  />
+                </ul>
+              )}
+              {isShowCollapsMenu === 'menu' &&(
+                 <ul className={` my-3 ${style.collaps_category_list}`}>
+                  <li >
+                    <Link href='/' onClick={()=>handleCollapsCancel ()}>Home</Link>
+                  </li>
+                  <li>
+                    <Link onClick={()=>handleCollapsCancel ()} href='/about'>About Us</Link>
+                  </li>
+               </ul>
+              )}
             </div>
           </div>
         </div>
