@@ -15,6 +15,16 @@ export default function Hero() {
     slidesToScroll: 1,
     autoplay: true, // 👈 Enables autoplay
     autoplaySpeed: 4000,
+    nextArrow: (
+      <div className={style.arrow_div_right}>
+        <FaChevronRight className={style.arrow_right} />
+      </div>
+    ),
+    prevArrow: (
+      <div className={style.arrow_div_left}>
+        <FaChevronLeft className={style.arrow_left} />
+      </div>
+    ),
   };
 
   return (

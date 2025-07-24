@@ -37,20 +37,7 @@
   background-position: top center;
 }
 
-.arrow_div_right {
-  height: 40px;
-  width: 40px;
-  border-radius: 50%;
-  background: #e9e6e6;
-  position: absolute;
-  top: 50%;
-  right: -15px;
-  z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-}
+
 
 .arrow_div_left {
   height: 40px;
@@ -202,23 +189,19 @@
   }
 
   .arrow_right {
-    font-size: 0.8rem;
+    display: none;
   }
 
   .arrow_left {
-    font-size: 0.8rem;
+    display: none;
   }
 
   .arrow_div_right {
-    right: 5px;
-    height: 30px;
-    width: 30px;
+    display: none;
   }
 
   .arrow_div_left {
-    left: 5px;
-    height: 30px;
-    width: 30px;
+    display: none;
   }
 
 }
