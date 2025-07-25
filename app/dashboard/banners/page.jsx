@@ -48,7 +48,7 @@ export default function page() {
           <th className="text-center">Slot</th>
           <th className="text-center">Category</th>
           <th className="text-center">Image</th>
-          {/* <th className="text-center">Actions</th> */}
+          <th className="text-center">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -70,15 +70,15 @@ export default function page() {
               <td className="text-center">  {banner?.banner_mages?.map((img)=>(
                 <Image className='ml-2 rounded' src={`${process.env.BACKEND_URL}storage/${img.path}`} width={50} height={50} />
               ))}</td>
-              {/* <td className="text-center">
+              <td className="text-center">
                 <span className="d-flex gap-3 justify-content-center ">
-                  <Link href={`/dashboard/slots/edit/${slot.id}`}>
+                  <Link href={`/dashboard/banners/edit/${banner.id}`}>
                     <FaEdit className="text-dark"/>
                   </Link>
                   
-                  <FaTrash className="text-danger mt-2" onClick={() => handleDelete(slot.id)} style={{cursor:'pointer'}} />
+                  <FaTrash className="text-danger mt-2" onClick={() => handleDelete(banner.id)} style={{cursor:'pointer'}} />
                 </span>
-              </td> */}
+              </td>
             </tr>
           ))
         )}
