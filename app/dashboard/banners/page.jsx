@@ -54,7 +54,7 @@ export default function page() {
       <tbody>
         {data.data.length === 0 ? (
           <tr>
-            <td colSpan="5" className="text-center text-danger">
+            <td colSpan="7" className="text-center text-danger">
               No Banner Available
             </td>
           </tr>
@@ -65,9 +65,9 @@ export default function page() {
               <td className="text-center">{banner.link}</td>
               <td className="text-center">{banner.type}</td>
               
-              <td className="text-center">  {banner?.slot?.slot_name}</td>
+              <td className="text-center">  {banner?.slot?.slot_name??"N/A"}</td>
               <td className="text-center">  {banner?.category?.name?? "N/A"}</td>
-              <td className="text-center">  {banner?.banner_mages?.map((img)=>(
+              <td className="text-center">  {banner?.banner_images?.map((img)=>(
                 <Image className='ml-2 rounded' src={`${process.env.BACKEND_URL}storage/${img.path}`} width={50} height={50} />
               ))}</td>
               <td className="text-center">
