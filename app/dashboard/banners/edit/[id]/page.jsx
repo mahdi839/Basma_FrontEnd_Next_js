@@ -4,8 +4,9 @@ import axios from "axios";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { MdCancel } from "react-icons/md";
 import Swal from "sweetalert2";
-
+import './style.css'
 export default function page() {
   const { id } = useParams();
   const { showData, loading, data } = useShowData();
@@ -16,6 +17,7 @@ export default function page() {
     products_slots_id: "",
     category_id: "",
     images: [],
+    delete_images:[]
   });
   const slotUrl = process.env.BACKEND_URL + `api/product-slots`;
   async function getSlotData() {
@@ -48,7 +50,8 @@ export default function page() {
         type: data.type || "",
         products_slots_id: data.products_slots_id || "",
         category_id: data.category_id || "",
-        images: data.images || [],
+        images: data.banner_images || [],
+        delete_images:[]
       });
     }
   }, [data]);
@@ -61,6 +64,14 @@ export default function page() {
       [name]: value,
     }));
   };
+
+  const handleDeleteImage = (imgId)=>{
+     setFormData((prev)=>({
+       ...prev,
+       images: prev.images.filter(img=>img.id !== imgId),
+       delete_images: [...prev.delete_images,imgId]
+     }))
+  }
 
   const handleChangeFileChange = () => {};
 
@@ -165,13 +176,16 @@ export default function page() {
                     onChange={handleChangeFileChange}
                   />
                    <div className="d-flex gap-3 mt-2">
-                      {data?.banner_images?.map((img) => (
-                        <Image
+                      {formData.images?.map((img) => (
+                       <div className="bannger_img_div" key={img.id}>
+                         <Image
                           className="ml-2 rounded "
                           src={`${process.env.BACKEND_URL}storage/${img.path}`}
                           width={50}
                           height={50}
                         />
+                        <MdCancel className="banner_img_cancel_icon" onClick={()=>handleDeleteImage(img.id)}/>
+                       </div>
                       ))}
               </div>
                 </div>

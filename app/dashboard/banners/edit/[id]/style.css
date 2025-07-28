@@ -1,0 +1,10 @@
+.bannger_img_div{
+    position: relative;
+}
+.banner_img_cancel_icon{
+    position: absolute;
+    top: -2px;
+    right: -3px;
+    color: red;
+    cursor: pointer;
+}
