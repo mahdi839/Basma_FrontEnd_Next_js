@@ -1274,6 +1274,10 @@ table tr td{
 			overflow: hidden;
 		  }
 
+		  .global_shopping_icon{
+			color: var(--primary-color);
+		  }
+
 		  @media screen and (max-width: 1024px) {
 			
 		 }
