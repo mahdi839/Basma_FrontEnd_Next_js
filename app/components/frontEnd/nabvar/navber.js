@@ -50,14 +50,7 @@ export default function Navbar() {
       
       <div className="humberger__menu__wrapper">
         <div className="humberger__menu__cart">
-          <ul>
-            <li>
-              <Link href="/frontEnd/cart">
-                <FaShoppingBag className="fa fa-shopping-bag" />{" "}
-                <span>{isClient && cartCount}</span>
-              </Link>
-            </li>
-          </ul>
+         
           <div className="header__cart__price">
             Cart Total: <span>{isClient ? CartItemsPrice : 0} Tk</span>
           </div>
@@ -169,19 +162,7 @@ export default function Navbar() {
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__cart">
                 <div className="header__cart__price d-none d-xl-block">
-                  <ul>
-                    <li>
-                      <Link href="/frontEnd/cart">
-                        <FaShoppingBag
-                          className="fa fa-shopping-bag"
-                          style={{ color: "black", fontSize: "20px" }}
-                        />
-                        <span className="text-white">
-                          {isClient ? cartCount : 0}
-                        </span>
-                      </Link>
-                    </li>
-                  </ul>
+                
                   Cart Total: <span>{isClient ? CartItemsPrice : 0} Tk</span>
                 </div>
               </div>
