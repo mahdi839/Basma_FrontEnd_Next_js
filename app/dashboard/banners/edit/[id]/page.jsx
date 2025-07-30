@@ -6,7 +6,8 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { MdCancel } from "react-icons/md";
 import Swal from "sweetalert2";
-import './style.css'
+import "./style.css";
+import useUpdateData from "@/app/hooks/useUpdateData";
 export default function page() {
   const { id } = useParams();
   const { showData, loading, data } = useShowData();
@@ -16,8 +17,9 @@ export default function page() {
     type: "",
     products_slots_id: "",
     category_id: "",
-    images: [],
-    delete_images:[]
+    existingImages: [],
+    newImages: [],
+    delete_images: [],
   });
   const slotUrl = process.env.BACKEND_URL + `api/product-slots`;
   async function getSlotData() {
@@ -47,11 +49,12 @@ export default function page() {
     if (data) {
       setFormData({
         link: data.link || "",
-        type: data.type || "",
+        type: data.type || "hero", 
         products_slots_id: data.products_slots_id || "",
         category_id: data.category_id || "",
-        images: data.banner_images || [],
-        delete_images:[]
+        existingImages: data.banner_images || [],
+        newImages: [],
+        delete_images: [],
       });
     }
   }, [data]);
@@ -65,17 +68,54 @@ export default function page() {
     }));
   };
 
-  const handleDeleteImage = (imgId)=>{
-     setFormData((prev)=>({
-       ...prev,
-       images: prev.images.filter(img=>img.id !== imgId),
-       delete_images: [...prev.delete_images,imgId]
-     }))
-  }
+  const handleDeleteImage = (imgId) => {
+    setFormData((prev) => ({
+      ...prev,
+      existingImages: prev.existingImages.filter((img) => img.id !== imgId),
+      delete_images: [...prev.delete_images, imgId],
+    }));
+  };
 
-  const handleChangeFileChange = () => {};
+  const handleChangeFileChange = (e) => {
+    setFormData({ ...formData, newImages: e.target.files });
+  };
 
-  const handleSubmit = () => {};
+  const { updateData } = useUpdateData();
+
+  const handleSubmit = async (e) => {
+    let updateurl = process.env.BACKEND_URL + `api/banners/${id}`;
+    e.preventDefault();
+    let payload = new FormData();
+    payload.append("link", formData.link);
+    payload.append("type", formData.type);
+
+    if (formData.type === "slot") {
+      payload.append("products_slots_id", formData.products_slots_id);
+    }
+
+    if (formData.type === "category") {
+      payload.append("category_id", formData.category_id);
+    }
+
+    for (let i = 0; i < formData.newImages.length; i++) {
+      payload.append(`images[${i}]`, formData.newImages[i]);
+    }
+
+    for (let i = 0; i < formData.delete_images.length; i++) {
+      payload.append(`delete_images[${i}]`, formData.delete_images[i]);
+    }
+    console.log("Submitting payload:");
+    for (let pair of payload.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+   await updateData(
+      updateurl,
+      payload,
+      "Successfully Updated",
+      "/dashboard/banners"
+    );
+  };
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-3">
@@ -96,7 +136,7 @@ export default function page() {
               {/* Slot Name */}
               <div
                 className={`${
-                  formData.type === "category" || "slot"
+                  formData.type === "category" || formData.type === "slot"
                     ? "col-md-6"
                     : "col-md-12"
                 }`}
@@ -172,22 +212,25 @@ export default function page() {
                     placeholder="Select Image"
                     name="images"
                     multiple={formData.type == "hero"}
-                    required
+                    required={formData.existingImages.length < 1}
                     onChange={handleChangeFileChange}
                   />
-                   <div className="d-flex gap-3 mt-2">
-                      {formData.images?.map((img) => (
-                       <div className="bannger_img_div" key={img.id}>
-                         <Image
+                  <div className="d-flex gap-3 mt-2">
+                    {formData.existingImages?.map((img) => (
+                      <div className="bannger_img_div" key={img.id}>
+                        <Image
                           className="ml-2 rounded "
                           src={`${process.env.BACKEND_URL}storage/${img.path}`}
                           width={50}
                           height={50}
                         />
-                        <MdCancel className="banner_img_cancel_icon" onClick={()=>handleDeleteImage(img.id)}/>
-                       </div>
-                      ))}
-              </div>
+                        <MdCancel
+                          className="banner_img_cancel_icon"
+                          onClick={() => handleDeleteImage(img.id)}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -205,8 +248,6 @@ export default function page() {
                   />
                 </div>
               </div>
-
-             
             </div>
 
             {/* Submit Button */}

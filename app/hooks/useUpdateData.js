@@ -14,7 +14,8 @@ export default function useUpdateData() {
         try{
           await axios.put(url,data,{
               headers:{
-                 'Authorization': `Bearer ${token}`
+                 'Authorization': `Bearer ${token}`,
+                  'Content-Type': 'multipart/form-data'
               }
           });
            Swal.fire({
