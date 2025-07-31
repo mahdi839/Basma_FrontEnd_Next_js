@@ -47,13 +47,28 @@ export default function Page() {
   };
 
   const handleChangeFileChange = (e) => {
-    setFormData({ ...formData, images: e.target.files });
+     // Convert FileList to Array
+  const filesArray = Array.from(e.target.files);
+  setFormData({ ...formData, images: filesArray });
   };
+
 
   const { storeData, loading: storeLoading } = useStoreData();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+      // Validation: Check if images are selected
+  if (!formData.images || formData.images.length === 0) {
+    Swal.fire({
+      title: "Error",
+      text: "Please select at least one image",
+      icon: "error",
+    });
+    return;
+  }
+
+
     const payload = new FormData();
     payload.append("link", formData.link);
     payload.append("type", formData.type);
@@ -65,9 +80,16 @@ export default function Page() {
       payload.append("category_id", formData.category_id);
     }
 
-    for (let i = 0; i < formData.images.length; i++) {
-      payload.append(`images[${i}]`, formData.images[i]);
-    }
+     // Append each file individually
+  formData.images.forEach((file, index) => {
+    payload.append(`images[${index}]`, file);
+  });
+
+    console.log("FormData contents:");
+  for (let [key, value] of payload.entries()) {
+    console.log(key, value);
+  }
+
     await storeData(
       process.env.BACKEND_URL + "api/banners",
       payload,
