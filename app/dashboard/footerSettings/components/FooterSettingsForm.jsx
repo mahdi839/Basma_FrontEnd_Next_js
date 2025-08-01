@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import useStoreData from "@/app/hooks/useStoreData";
 import useUpdateData from "@/app/hooks/useUpdateData";
 import useShowData from "@/app/hooks/useShowData";
@@ -23,7 +22,7 @@ export default function FooterSettingsForm() {
   const [recordId, setRecordId] = useState(null);
 
   useEffect(() => {
-   showData(process.env.BACKEND_URL+"api/footer-settings/1");
+    showData(process.env.BACKEND_URL + "api/footer-settings/1");
   }, []);
 
   useEffect(() => {
@@ -35,8 +34,13 @@ export default function FooterSettingsForm() {
         company_phone: data.company_phone || "",
       });
       setRecordId(data.id);
+
+      const backendUrl = process.env.BACKEND_URL.endsWith("/")
+        ? process.env.BACKEND_URL.slice(0, -1)
+        : process.env.BACKEND_URL;
+
       if (data.logo_path) {
-        setPreviewUrl(data.logo_path);
+        setPreviewUrl(backendUrl + data.logo_path);
       }
     }
   }, [data]);
@@ -71,16 +75,20 @@ export default function FooterSettingsForm() {
 
     if (recordId) {
       await updateData(
-        ` ${process.env.BACKEND_URL}api/footer-settings/${recordId}`,
+        `${process.env.BACKEND_URL}api/footer-settings/${recordId}`,
         payload,
         "Footer settings updated!",
         ""
       );
     } else {
-      await storeData(process.env.BACKEND_URL+"api/footer-settings", payload, "Footer settings saved!");
+      await storeData(
+        process.env.BACKEND_URL + "api/footer-settings",
+        payload,
+        "Footer settings saved!"
+      );
     }
 
-    showData(process.env.BACKEND_URL+"api/footer-settings/1");
+    showData(process.env.BACKEND_URL + "api/footer-settings/1");
   };
 
   if (fetchLoading) {
@@ -92,68 +100,103 @@ export default function FooterSettingsForm() {
   }
 
   return (
-    <form className="container mt-4" onSubmit={handleSubmit} encType="multipart/form-data">
-      <h3 className="mb-4">Footer Settings</h3>
-
-      {/* Logo Upload */}
-      <div className="mb-3">
-        <label className="form-label">Company Logo</label>
-        <input type="file" className="form-control" onChange={handleFileChange} />
-        {previewUrl && (
-          <img src={previewUrl} alt="Logo Preview" className="mt-2" style={{ maxWidth: "200px", height: "auto" }} />
-        )}
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Company Description</label>
-        <textarea
-          name="company_description"
-          className="form-control"
-          value={formData.company_description}
-          onChange={handleInputChange}
-        ></textarea>
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Company Address</label>
-        <input
-          type="text"
-          name="company_address"
-          className="form-control"
-          value={formData.company_address}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Company Email</label>
-        <input
-          type="email"
-          name="company_email"
-          className="form-control"
-          value={formData.company_email}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Company Phone</label>
-        <input
-          type="text"
-          name="company_phone"
-          className="form-control"
-          value={formData.company_phone}
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="btn btn-primary"
-        disabled={storeLoading || updateLoading}
+    <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-3">
+      <div
+        className="card shadow-lg rounded-3 border-0 w-100"
+        style={{ maxWidth: "700px" }}
       >
-        {storeLoading || updateLoading ? "Saving..." : "Save"}
-      </button>
-    </form>
+        <div
+          className="card-header text-white py-3 rounded-top-3"
+          style={{ background: "#7d59bf" }}
+        >
+          <h5 className="mb-0 text-center">Footer Settings</h5>
+        </div>
+
+        <div className="card-body p-4">
+          <form
+            onSubmit={handleSubmit}
+            encType="multipart/form-data"
+            autoComplete="off"
+          >
+            {/* Logo Upload */}
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Company Logo</label>
+              <input
+                type="file"
+                className="form-control"
+                onChange={handleFileChange}
+              />
+              {previewUrl && (
+                <img
+                  src={previewUrl}
+                  alt="Logo Preview"
+                  className="mt-2 rounded"
+                  style={{ maxWidth: "200px", height: "auto" }}
+                />
+              )}
+            </div>
+
+            {/* Company Description */}
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Company Description</label>
+              <textarea
+                name="company_description"
+                className="form-control"
+                value={formData.company_description}
+                onChange={handleInputChange}
+                rows={4}
+              ></textarea>
+            </div>
+
+            {/* Company Address */}
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Company Address</label>
+              <input
+                type="text"
+                name="company_address"
+                className="form-control"
+                value={formData.company_address}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {/* Company Email */}
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Company Email</label>
+              <input
+                type="email"
+                name="company_email"
+                className="form-control"
+                value={formData.company_email}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {/* Company Phone */}
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Company Phone</label>
+              <input
+                type="text"
+                name="company_phone"
+                className="form-control"
+                value={formData.company_phone}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            {/* Submit Button */}
+            <div className="mt-4 pt-2 border-top">
+              <button
+                type="submit"
+                className="btn btn-primary w-100"
+                disabled={storeLoading || updateLoading}
+              >
+                {storeLoading || updateLoading ? "Saving..." : "Save"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   );
 }

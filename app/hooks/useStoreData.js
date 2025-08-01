@@ -47,6 +47,9 @@ export default function useStoreData() {
                 })
         }
       }
+      finally{
+        setLoading(false);
+      }
   }
 
   return {storeData,loading}
