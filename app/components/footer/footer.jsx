@@ -12,16 +12,17 @@ export default function Footer() {
     <section className="bg-warning-subtle py-5 position-relative overflow-hidden">
       <img
         className="position-absolute bottom-0 start-0"
-        src="/img/footer/footer_wave_img.png"
+        src="/img/footer/footer_wave_img2.png"
         alt=""
       />
+      
 
       <div className="container position-relative">
         <div className="row mb-5">
           <div className="col-lg-2 mb-4 mb-lg-0">
-            <a className="d-inline-block mb-3" href="#">
+            <Link className="d-inline-block mb-3" href="#">
               <img src="/images/logo.svg" alt="" />
-            </a>
+            </Link>
           </div>
 
           <div className="col-md-7 col-lg-6 mb-4 mb-lg-0">
@@ -30,28 +31,28 @@ export default function Footer() {
                 <h5 className="fw-bold mb-3">Platform</h5>
                 <ul className="list-unstyled">
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block mb-2"
                       href="#"
                     >
                       Solutions
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block mb-2"
                       href="#"
                     >
                       How it works
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block"
                       href="#"
                     >
                       Pricing
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -59,28 +60,28 @@ export default function Footer() {
                 <h5 className="fw-bold mb-3">Resources</h5>
                 <ul className="list-unstyled">
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block mb-2"
                       href="#"
                     >
                       Blog
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block mb-2"
                       href="#"
                     >
                       Help Center
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block"
                       href="#"
                     >
                       Support
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -88,36 +89,36 @@ export default function Footer() {
                 <h5 className="fw-bold mb-3">Company</h5>
                 <ul className="list-unstyled">
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block mb-2"
                       href="#"
                     >
                       About
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block mb-2"
                       href="#"
                     >
                       Our Mission
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block mb-2"
                       href="#"
                     >
                       Careers
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       className="text-secondary text-decoration-none d-block"
                       href="#"
                     >
                       Contact
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -138,12 +139,12 @@ export default function Footer() {
                   className="form-control mb-2 rounded-pill"
                   placeholder="Your e-mail..."
                 />
-                <a
+                <Link
                   href="#"
                   className="btn btn-warning text-success fw-semibold rounded-pill"
                 >
                   Get in touch
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -157,8 +158,11 @@ export default function Footer() {
             <Link href="#" className="text-dark me-3">
               <FaInstagram size={25} />
             </Link>
-            <Link href="#" className="text-dark">
+            <Link href="#" className="text-dark me-3">
               <FaWhatsappSquare size={25} />
+            </Link>
+             <Link href="#" className="text-dark">
+              <FaYoutube size={25} />
             </Link>
           </div>
        
