@@ -194,11 +194,11 @@ export default function Products({ product }) {
             {/* Description Tab */}
             {activeTab === "desc" && (
               <div className="description-content animated-fade">
-                <div className="content-card">
-                  <h3 className="section-title mb-4">Product Details</h3>
-                  <p className="description-text">
+                <div className="content-card d-flex justify-content-between">
+                 
+                  <div className="description-text">
                     {product.description}
-                  </p>
+                  </div>
 
                   {product?.video_url && (
                     <div className="video-container mt-4 w-full">
@@ -220,9 +220,11 @@ export default function Products({ product }) {
             {activeTab === "faq" && (
               <div className="faq-content animated-fade">
                 <div className="content-card">
-                  <h3 className="section-title mb-4">Frequently Asked Questions</h3>
+                  
                   <div className="accordion-list">
-                    {product?.faqs?.map((faq) => (
+                    
+                    {product?.faqs.length>0? (
+                      product?.faqs?.map((faq) => (
                       <div
                         className={`accordion-item ${show === faq.id ? "active" : ""}`}
                         key={faq.id}
@@ -244,7 +246,8 @@ export default function Products({ product }) {
                           </div>
                         )}
                       </div>
-                    ))}
+                    ))
+                    ):<div className="text-center text-danger">No FAQs found.</div>}
                   </div>
                 </div>
               </div>
