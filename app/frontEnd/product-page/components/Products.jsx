@@ -65,6 +65,8 @@ export default function Products({ product }) {
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
+  
+
   function handleAddToCart (id,type){
     let existingProduct = cartItems.find(item=>item.id ===id);
     if(existingProduct){
@@ -130,10 +132,12 @@ export default function Products({ product }) {
           <div className="product_desc col-6 ">
             <div className="ms-5">
               <p className="fw-bold">{product?.title}</p>
-              <h5 className="product_price">{price || product?.sizes[0]?.pivot.price}</h5>
+              <h5 className="product_price">৳ {product.price || product?.sizes[0]?.pivot.price}</h5>
               <div className="flex justify-content-center align-items-center mt-3 size-div">
-                <span className="me-3 fw-bold">Select</span>
-                {product.sizes.map((size, index) => (
+                {product.sizes.length>0 &&(
+                  <span className="me-3 fw-bold">Select</span>
+                )}
+                {product.sizes?.map((size, index) => (
                   <div className="d-flex d-inline" key={size.id}>
                     <input className="me-3 " id="m" type="radio" name="size" value={size.id} onChange={selectSize} defaultChecked={index === 0} />
                     <label htmlFor="m" className="me-3 fw-bold">
@@ -151,8 +155,8 @@ export default function Products({ product }) {
             </div>
             <div className="d-flex gap-2 ms-5">
               
-                <button className="outline-none  px-3 py-1" onClick={()=>handleAddToCart(product.id,"add")}>Add To Cart</button>
-                <button className="outline-none  px-3 py-1" onClick={()=>handleAddToCart(product.id,"order")}>
+                <button className="btn-grad px-3 py-1 rounded-0" onClick={()=>handleAddToCart(product.id,"add")}>Add To Cart</button>
+                <button className="btn-grad px-3 py-1 rounded-0" onClick={()=>handleAddToCart(product.id,"order")}>
                 <span className="pe-1">
                   <FaFirstOrder />
                 </span>

@@ -6,7 +6,7 @@ import { FaCartArrowDown } from "react-icons/fa";
 import OptionDiv from "./OptionDiv";
 
 import { GrAidOption } from "react-icons/gr";
-export default function ProductCard({
+const ProductCard = React.memo(function ProductCard({
   slotProducts,
   showOptionDiv,
   setShowOptionDiv,
@@ -157,4 +157,5 @@ export default function ProductCard({
       </div>
     </div>
   );
-}
+});
+export default ProductCard;
