@@ -20,6 +20,7 @@ import NavSearch from "./navSearch/NavSearch";
 import style from "./hero.module.css";
 import { ImCancelCircle } from "react-icons/im";
 import NavCategories from "./components/NavCategories";
+import useIndexData from "@/app/hooks/useIndexData";
 
 export default function Navbar() {
   const cartCount = useSelector((state) => state.cart.count);
@@ -30,6 +31,11 @@ export default function Navbar() {
   useEffect(() => {
     setIsClient(true);
   }, []);
+ 
+  const {indexData,loading,data,setData} = useIndexData()
+  useEffect(()=>{
+    indexData(process.env.BACKEND_URL + 'api/footer-settings')
+  },[])
 
   let CartItemsPrice = cartItems.reduce(
     (total, item) => total + item.totalPrice,
@@ -45,6 +51,8 @@ export default function Navbar() {
   function handleCollaps_menu(menu) {
     setIsShowCollapsMenu(menu)
   }
+
+  console.log(process.env.BACKEND_URL+data.logo_path)
   return (
     <div className="position-relative">
       
@@ -143,7 +151,7 @@ export default function Navbar() {
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo">
                 <Link href="/">
-                  <Image src="/img/logo3.png" alt="" width={250} height={50} />
+                  <Image src={`${process.env.BACKEND_URL}${data.logo_path}`} alt="" width={250} height={50} />
                 </Link>
               </div>
             </div>
