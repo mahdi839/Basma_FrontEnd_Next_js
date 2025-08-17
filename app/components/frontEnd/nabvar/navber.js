@@ -21,6 +21,7 @@ import style from "./hero.module.css";
 import { ImCancelCircle } from "react-icons/im";
 import NavCategories from "./components/NavCategories";
 import useIndexData from "@/app/hooks/useIndexData";
+import axios from "axios";
 
 export default function Navbar() {
   const cartCount = useSelector((state) => state.cart.count);
@@ -28,14 +29,29 @@ export default function Navbar() {
   const [isClient, setIsClient] = useState(false);
   const [isShowCollaps, setIsShowCollaps] = useState(false);
   const [ isShowCollapsMenu, setIsShowCollapsMenu ] = useState('category');
+  const [footerData, setFooterData] = useState(null);
+  const [logoUrl, setLogoUrl] = useState(null);
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  async function fetchFooterData() {
+    let data = await axios.get(`${process.env.BACKEND_URL}api/footer-settings`)
+    setFooterData(data.data);
+  }
  
-  const {indexData,loading,data,setData} = useIndexData()
+  
   useEffect(()=>{
-    indexData(process.env.BACKEND_URL + 'api/footer-settings')
+    fetchFooterData();
   },[])
+
+ const backendUrl = process.env.BACKEND_URL.endsWith("/")
+        ? process.env.BACKEND_URL.slice(0, -1)
+        : process.env.BACKEND_URL;
+
+    
+
+
 
   let CartItemsPrice = cartItems.reduce(
     (total, item) => total + item.totalPrice,
@@ -52,7 +68,8 @@ export default function Navbar() {
     setIsShowCollapsMenu(menu)
   }
 
-  console.log(process.env.BACKEND_URL+data.logo_path)
+
+ 
   return (
     <div className="position-relative">
       
@@ -151,7 +168,7 @@ export default function Navbar() {
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo">
                 <Link href="/">
-                  <Image src={`${process.env.BACKEND_URL}${data.logo_path}`} alt="" width={250} height={50} />
+                  <Image src={`${backendUrl +  footerData?.logo_path}`} alt="" width={250} height={50} />
                 </Link>
               </div>
             </div>
