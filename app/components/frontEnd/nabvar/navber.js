@@ -45,11 +45,17 @@ export default function Navbar() {
     fetchFooterData();
   },[])
 
- const backendUrl = process.env.BACKEND_URL.endsWith("/")
-        ? process.env.BACKEND_URL.slice(0, -1)
-        : process.env.BACKEND_URL;
+ 
+   // 2. Build logoUrl only after footerData updates
+useEffect(() => {
+  if (footerData?.logo_path) {
+    const backendUrl = process.env.BACKEND_URL.endsWith("/")
+      ? process.env.BACKEND_URL.slice(0, -1)
+      : process.env.BACKEND_URL;
 
-    
+    setLogoUrl(backendUrl + footerData.logo_path);
+  }
+}, [footerData]);
 
 
 
@@ -167,9 +173,13 @@ export default function Navbar() {
             {/* mobile menu end */}
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo">
-                <Link href="/">
-                  <Image src={`${backendUrl +  footerData?.logo_path}`} alt="" width={250} height={50} />
+                {
+                  logoUrl && 
+                   <Link href="/">
+                  <Image src={logoUrl} alt="" width={250} height={50} />
                 </Link>
+                }
+               
               </div>
             </div>
             <div className="col-lg-6 d-none d-xl-block">
