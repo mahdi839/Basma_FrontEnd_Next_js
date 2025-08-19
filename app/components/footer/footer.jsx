@@ -31,6 +31,8 @@ export default async function Footer() {
     ? process.env.BACKEND_URL.slice(0, -1)
     : process.env.BACKEND_URL;
 
+    const currentYear = new Date().getFullYear();
+
   return (
     <footer className="bg-warning-subtle position-relative overflow-hidden pt-5">
       {/* Top curve */}
@@ -39,13 +41,13 @@ export default async function Footer() {
         <div className="row g-4">
           {/* Logo Section */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <Link href="#" className="d-inline-block mb-4">
+            
               <div className="bg-white p-2 rounded shadow-sm d-inline-block">
                 <Link href="/">
                   <Image src={backendUrl+data.logo_path} alt="" width={200} height={40} />
                 </Link>
               </div>
-            </Link>
+           
             <p className="text-muted mb-4">{data?.company_description}</p>
             <div className="d-flex gap-3">
               <Link href="#" className="text-dark fs-5">
@@ -162,7 +164,7 @@ export default async function Footer() {
         {/* Copyright */}
         <div className="d-flex flex-wrap align-items-center justify-content-center pb-3">
           <p className="text-muted mb-0 me-3">
-            &copy; {new Date().getFullYear()} My Company. All rights reserved.
+            &copy; {currentYear} My Company. All rights reserved.
           </p>
         </div>
       </div>
