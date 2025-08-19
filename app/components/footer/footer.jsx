@@ -12,24 +12,37 @@ import { CiLocationOn, CiMail } from "react-icons/ci";
 import axios from "axios";
 
 export default async function Footer() {
-  console.log("✅ Footer component rendering on server...");
   const footerData = await fetch(
     `${process.env.BACKEND_URL}api/footer-settings`,
     {
       cache: "no-store",
     }
   );
+
   if (!footerData.ok) {
     console.log("Error fetching footer data");
   }
 
   const data = await footerData.json();
-  console.log(data);
 
   // Always define backendUrl once
   const backendUrl = process.env.BACKEND_URL.endsWith("/")
     ? process.env.BACKEND_URL.slice(0, -1)
     : process.env.BACKEND_URL;
+
+  const socialLinksData = await fetch(
+    `${process.env.BACKEND_URL}api/social-links-first`,
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (!socialLinksData.ok) {
+    console.log("Error fetching footer data");
+  }
+  const socialData = await socialLinksData.json();
+
+  console.log("Social Links Data:", socialData);
 
   const currentYear = new Date().getFullYear();
 
@@ -48,23 +61,32 @@ export default async function Footer() {
                   alt=""
                   width={91} // desired width on the page
                   height={80} // same as width for square logo
-                  style={{ maxWidth: "100%", height: "auto" ,background:'transparent'}}
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                    background: "transparent",
+                  }}
                 />
               </Link>
             </div>
 
             <p className="text-muted mb-4">{data?.company_description}</p>
             <div className="d-flex gap-3">
-              <Link href="#" className="text-dark fs-5">
+              <Link href={socialData?.facebook} className="text-dark fs-5">
                 <FaFacebook />
               </Link>
-              <Link href="#" className="text-dark fs-5">
+              <Link href={socialData?.instagram} className="text-dark fs-5">
                 <FaInstagram />
               </Link>
-              <Link href="#" className="text-dark fs-5">
+              <a
+                href={`https://wa.me/${data?.company_phone}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-dark fs-5"
+              >
                 <FaWhatsappSquare />
-              </Link>
-              <Link href="#" className="text-dark fs-5">
+              </a>
+              <Link href={socialData?.youtube} className="text-dark fs-5">
                 <FaYoutube />
               </Link>
             </div>
