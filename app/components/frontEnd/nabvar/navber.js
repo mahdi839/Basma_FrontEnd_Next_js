@@ -175,9 +175,15 @@ useEffect(() => {
               <div className="header__logo">
                 {
                   logoUrl && 
-                   <Link href="/">
-                  <Image src={logoUrl} alt="" width={250} height={50} />
-                </Link>
+                  <Link href="/">
+                    <Image
+                      src={logoUrl}
+                      alt="Logo"
+                       width={91}           // desired width on the page
+                        height={80}          // same as width for square logo
+                        style={{ maxWidth: '100%', height: 'auto' }}
+                    />
+                  </Link>
                 }
                
               </div>

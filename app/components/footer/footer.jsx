@@ -26,12 +26,12 @@ export default async function Footer() {
   const data = await footerData.json();
   console.log(data);
 
-   // Always define backendUrl once
+  // Always define backendUrl once
   const backendUrl = process.env.BACKEND_URL.endsWith("/")
     ? process.env.BACKEND_URL.slice(0, -1)
     : process.env.BACKEND_URL;
 
-    const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-warning-subtle position-relative overflow-hidden pt-5">
@@ -41,13 +41,18 @@ export default async function Footer() {
         <div className="row g-4">
           {/* Logo Section */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            
-              <div className="bg-white p-2 rounded shadow-sm d-inline-block">
-                <Link href="/">
-                  <Image src={backendUrl+data.logo_path} alt="" width={200} height={40} />
-                </Link>
-              </div>
-           
+            <div className="bg-white p-2 rounded shadow-sm d-inline-block">
+              <Link href="/">
+                <Image
+                  src={backendUrl + data.logo_path}
+                  alt=""
+                  width={91} // desired width on the page
+                  height={80} // same as width for square logo
+                  style={{ maxWidth: "100%", height: "auto" ,background:'transparent'}}
+                />
+              </Link>
+            </div>
+
             <p className="text-muted mb-4">{data?.company_description}</p>
             <div className="d-flex gap-3">
               <Link href="#" className="text-dark fs-5">
@@ -71,10 +76,7 @@ export default async function Footer() {
             <ul className="list-unstyled text-muted">
               <li className="mb-3 d-flex">
                 <CiLocationOn className="text-dark mt-1 me-3 fs-5" />
-                <span>
-                 {data?.company_address}
-                 
-                </span>
+                <span>{data?.company_address}</span>
               </li>
               <li className="mb-3 d-flex">
                 <FaPhone className="text-dark mt-1 me-3 fs-5" />
