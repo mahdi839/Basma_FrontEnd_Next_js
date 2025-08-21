@@ -104,10 +104,8 @@ export default function page() {
     for (let i = 0; i < formData.delete_images.length; i++) {
       payload.append(`delete_images[${i}]`, formData.delete_images[i]);
     }
-    console.log("Submitting payload:");
-    for (let pair of payload.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    
+  
 
    await updateData(
       updateurl,

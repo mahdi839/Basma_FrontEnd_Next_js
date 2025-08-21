@@ -9,7 +9,7 @@ export default async function Feature() {
   }catch(err){
     data = {error:err.message}
   }
-console.log(data)
+
   
   return (
     <FeatureClient products={data} />

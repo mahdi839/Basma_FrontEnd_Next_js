@@ -19,9 +19,7 @@ export default async function Footer() {
     }
   );
 
-  if (!footerData.ok) {
-    console.log("Error fetching footer data");
-  }
+  
 
   const data = await footerData.json();
 
@@ -37,12 +35,10 @@ export default async function Footer() {
     }
   );
 
-  if (!socialLinksData.ok) {
-    console.log("Error fetching footer data");
-  }
+ 
   const socialData = await socialLinksData.json();
 
-  console.log("Social Links Data:", socialData);
+ 
 
   const currentYear = new Date().getFullYear();
 
