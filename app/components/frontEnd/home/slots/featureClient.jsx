@@ -204,7 +204,7 @@ function FeatureClient({ products,slotData }) {
                       if (item.slot.slot_name === slot.slot_name) {
                         return (
                           <Link key={item.id} href={item.link} className="text-decoration-none text-dark mt-3">
-                            <Image src={`${process.env.BACKEND_URL}storage/${item.banner_images[0].path}`} width={1200} height={175}/>
+                            <img src={`${process.env.BACKEND_URL}storage/${item.banner_images[0].path}`} style={{width:'100%',height:'auto'}}/>
                           </Link>
                         );
                       }
