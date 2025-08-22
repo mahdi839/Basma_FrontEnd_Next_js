@@ -25,6 +25,7 @@ export default function SideBar() {
        <SideBarItem href="/dashboard/shipping" Icon={FaShippingFast} label='Shipping Cost'/>
        <SideBarItem href="/dashboard/banners" Icon={PiFlagBanner} label='Banners'/>
        <SideBarItem href="/dashboard/footerSettings"   Icon={IoIosSettings} label='Settings' />
+       <SideBarItem href="/dashboard/about_us"   Icon={IoIosSettings} label='about us' />
         <SideBarItem href="/dashboard/socialLinks"   Icon={MdOutlineSocialDistance} label='Social Links' />
        <SideBarItem href="/"   Icon={RiKanbanView2} label='My Website' />
        
