@@ -1,7 +1,7 @@
 import React from "react";
 import "../../layouts/dashboard.css";
 import { BsLayoutTextSidebar } from "react-icons/bs";
-import {  FaProductHunt, FaShippingFast, FaShoppingBag} from "react-icons/fa";
+import {  FaInfoCircle, FaProductHunt, FaShippingFast, FaShoppingBag} from "react-icons/fa";
 import { RiKanbanView2 } from "react-icons/ri";
 import { IoIosResize,IoIosSettings } from "react-icons/io";
 import { BiSolidCategory } from "react-icons/bi";
@@ -24,8 +24,8 @@ export default function SideBar() {
        <SideBarItem href="/dashboard/orders" Icon={FaShoppingBag} label='Orders'/>
        <SideBarItem href="/dashboard/shipping" Icon={FaShippingFast} label='Shipping Cost'/>
        <SideBarItem href="/dashboard/banners" Icon={PiFlagBanner} label='Banners'/>
+       <SideBarItem href="/dashboard/about_us"  Icon={FaInfoCircle}  label='about us' /> 
        <SideBarItem href="/dashboard/footerSettings"   Icon={IoIosSettings} label='Settings' />
-       <SideBarItem href="/dashboard/about_us"   Icon={IoIosSettings} label='about us' />
         <SideBarItem href="/dashboard/socialLinks"   Icon={MdOutlineSocialDistance} label='Social Links' />
        <SideBarItem href="/"   Icon={RiKanbanView2} label='My Website' />
        
