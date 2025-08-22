@@ -4,7 +4,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Slider from "react-slick";
 import Image from "next/image";
 import style from "../../nabvar/hero.module.css";
-export default function Hero() {
+export default function Hero({ data }) {
   const bgImages = ["/img/banner/banner-3.png", "/img/banner/banner-4.png"];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   var settings = {

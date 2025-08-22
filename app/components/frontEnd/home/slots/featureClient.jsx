@@ -10,9 +10,10 @@ import { addToCart } from '@/redux/slices/CartSlice';
 import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
+import Link from "next/link";
+import Image from "next/image";
 
-
-function FeatureClient({ products }) {
+function FeatureClient({ products,slotData }) {
 
   const [isLoading, setIsLoading] = useState(true)
   const sliderRefs = useRef([]);
@@ -154,10 +155,11 @@ function FeatureClient({ products }) {
                 {/* Header with navigation buttons */}
                 
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
-                  <h2 className="featured-heading font-weight-bold mb-0" style={{ fontSize: '24px', fontWeight: '600', color: '#222' }}>
+                  <h2 className="featured-heading font-weight-bold mb-0 " style={{ fontSize: '24px', fontWeight: '600', color: '#222' }}>
                     {slot.slot_name}
                   </h2>
-                  
+                   
+               
                   {
               slot.slot_details?.length >=4 && (
                   <div className="d-flex gap-2 mb-1">
@@ -182,6 +184,8 @@ function FeatureClient({ products }) {
                   
                 </div>
 
+                
+
           <div className="col-12 position-relative  ml-3 mt-0 overflow-hidden">
           <hr className="feature-hr m-0" />
           <div style={{
@@ -194,6 +198,18 @@ function FeatureClient({ products }) {
             zIndex: '1'
           }}></div>
         </div>
+
+           {
+                    slotData.map((item) => {
+                      if (item.slot.slot_name === slot.slot_name) {
+                        return (
+                          <Link key={item.id} href={item.link} className="text-decoration-none text-dark mt-3">
+                            <Image src={`${process.env.BACKEND_URL}storage/${item.banner_images[0].path}`} width={1200} height={175}/>
+                          </Link>
+                        );
+                      }
+                  }
+                )}
              
             {
               slot.slot_details?.length >=4 && (

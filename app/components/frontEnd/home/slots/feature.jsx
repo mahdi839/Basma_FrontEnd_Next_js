@@ -2,7 +2,7 @@ import { getData } from '@/lib/api'
 import React from 'react'
 import FeatureClient from './featureClient'
 
-export default async function Feature() {
+export default async function Feature({slotData}) {
   let data =[]
   try{
     data = await getData('api/product-slots_index/frontEndIndex')
@@ -12,6 +12,6 @@ export default async function Feature() {
 
   
   return (
-    <FeatureClient products={data} />
+    <FeatureClient products={data} slotData={slotData} />
   )
 }
