@@ -153,8 +153,20 @@ function FeatureClient({ products,slotData }) {
             return (
               <React.Fragment key={slot.id || slotIndex}>
                 {/* Header with navigation buttons */}
-                
+                  {
+                    slotData.map((item) => {
+                      if (item.slot.slot_name === slot.slot_name) {
+                        return (
+                          <Link key={item.id} href={item.link} className="text-decoration-none text-dark my-3">
+                            <img src={`${process.env.BACKEND_URL}storage/${item.banner_images[0].path}`} style={{width:'100%',height:'auto'}}/>
+                          </Link>
+                        );
+                      }
+                  }
+                )}
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
+                  
+                  
                   <h2 className="featured-heading font-weight-bold mb-0 " style={{ fontSize: '24px', fontWeight: '600', color: '#222' }}>
                     {slot.slot_name}
                   </h2>
@@ -199,17 +211,7 @@ function FeatureClient({ products,slotData }) {
           }}></div>
         </div>
 
-           {
-                    slotData.map((item) => {
-                      if (item.slot.slot_name === slot.slot_name) {
-                        return (
-                          <Link key={item.id} href={item.link} className="text-decoration-none text-dark mt-3">
-                            <img src={`${process.env.BACKEND_URL}storage/${item.banner_images[0].path}`} style={{width:'100%',height:'auto'}}/>
-                          </Link>
-                        );
-                      }
-                  }
-                )}
+         
              
             {
               slot.slot_details?.length >=4 && (
