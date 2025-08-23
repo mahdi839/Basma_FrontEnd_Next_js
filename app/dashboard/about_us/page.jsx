@@ -6,7 +6,7 @@ import useStoreData from "@/app/hooks/useStoreData";
 import useUpdateData from "@/app/hooks/useUpdateData";
 import useShowData from "@/app/hooks/useShowData";
 import Loading from "@/app/loading";
-import "react-quill/dist/quill.snow.css"; // react-quill styles
+import "react-quill/dist/quill.snow.css"; 
 
 // Dynamically import ReactQuill (important for Next.js SSR)
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });

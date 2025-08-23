@@ -195,7 +195,10 @@ useEffect(() => {
                     <Link href="/">Home</Link>
                   </li>
                   <li>
-                    <Link href="./shop-grid.html">Shop</Link>
+                    <Link href="/shop">Shop</Link>
+                  </li>
+                   <li>
+                    <Link href="/frontEnd/about_us">About Us</Link>
                   </li>
                 </ul>
               </nav>
