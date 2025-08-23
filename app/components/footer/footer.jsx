@@ -37,9 +37,6 @@ export default async function Footer() {
 
  
   const socialData = await socialLinksData.json();
-
- 
-
   const currentYear = new Date().getFullYear();
 
   return (

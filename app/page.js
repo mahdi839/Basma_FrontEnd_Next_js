@@ -11,7 +11,7 @@ export default async function Home() {
     const heroData = []
     const BannerCatData = []
 
-    for(let i=0;i<data.length;i++){
+    for(let i=0;i<data?.length;i++){
        if(data[i].type === 'slot'){
          slotData.push(data[i])
        }
