@@ -103,11 +103,10 @@ export default function page() {
                       Select Status
                     </option>
                     <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="shipped">Shipped</option>
+                    <option value="placed">Placed</option>
                     <option value="delivered">Delivered</option>
+                    <option value="cancel">Cancel</option>
                   </select>
-                 
                 </div>
               </div>
 
