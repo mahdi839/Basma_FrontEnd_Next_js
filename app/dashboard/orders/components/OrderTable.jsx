@@ -124,7 +124,6 @@ export default function OrderTable({
           </div>
           
           {/* District Filter */}
-          {/* District Filter */}
           <div className="col-md-3 mt-2">
             <label className="form-label small mb-1">District</label>
             <District
@@ -144,7 +143,7 @@ export default function OrderTable({
           </div>
           
           {/* Action Buttons */}
-          <div className="col-md-6 mt-2 d-flex justify-content-end">
+          <div className="col-md-3 d-flex align-items-end">
             <button 
               className="btn btn-primary me-2"
               onClick={handleApply}

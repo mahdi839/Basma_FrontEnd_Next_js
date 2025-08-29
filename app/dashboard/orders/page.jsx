@@ -4,6 +4,7 @@ import useIndexData from '@/app/hooks/useIndexData'
 import React, { useEffect, useState } from 'react'
 import OrderTable from './components/OrderTable'
 import Pagination from './components/Pagination'
+import Link from 'next/link'
 
 export default function page() {
     const [page, setPage] = useState(1);
@@ -130,9 +131,11 @@ export default function page() {
   return (
     <div className="container-fluid py-4">
      <div className='d-flex justify-content-between'>
+       <Link href="/dashboard/orders/createOrder">
        <Button className="mb-3">
         Create Order
       </Button>
+      </Link>
        <Button 
          className="mb-3"
          onClick={handleDownloadCSV}
