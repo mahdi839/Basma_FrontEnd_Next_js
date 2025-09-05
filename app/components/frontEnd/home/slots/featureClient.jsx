@@ -137,7 +137,7 @@ function FeatureClient({ products, slotData }) {
   }
 
   return (
-    <div className="container mb-5 mt-0 py-2 ">
+    <div className="container mb-3 mb-md-5 mt-0 py-2 ">
       <div className="row position-relative">
         {products &&
           products.map((slot, slotIndex) => {
@@ -155,7 +155,7 @@ function FeatureClient({ products, slotData }) {
                       <Link
                         key={item.id}
                         href={item.link}
-                        className="text-decoration-none text-dark my-3"
+                        className="text-decoration-none text-dark my-3 my-md-5"
                       >
                         <img
                           src={`${process.env.BACKEND_URL}storage/${item.banner_images[0].path}`}
@@ -167,12 +167,7 @@ function FeatureClient({ products, slotData }) {
                 })}
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
                   <h2
-                    className="featured-heading font-weight-bold mb-0 "
-                    style={{
-                      fontSize: "24px",
-                      fontWeight: "600",
-                      color: "#222",
-                    }}
+                    className="featured-heading font-weight-bold mb-0"
                   >
                     {slot.slot_name}
                   </h2>
@@ -218,7 +213,7 @@ function FeatureClient({ products, slotData }) {
                       top: "0",
                       left: "0",
                       width: "100px",
-                      height: "5px",
+                      height: "7px",
                       backgroundColor: "#e83e8c",
                       zIndex: "1",
                     }}

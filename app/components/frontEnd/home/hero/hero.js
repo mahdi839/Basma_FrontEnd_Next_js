@@ -28,10 +28,7 @@ export default function Hero({ data }) {
   };
 
   return (
-    <div className="container  ">
-      {/* ${style.hero__item} ${style.set_bg}`}  style={{
-              backgroundImage: `url(${bgImages[currentImageIndex]})`,} */}
-
+    <div className="container">
       <Slider {...settings}>
         {
           data?.banner_images?.map((slidImg) => (

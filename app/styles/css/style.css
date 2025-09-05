@@ -1298,6 +1298,13 @@ color: #2c3e50;
   margin: 1.5rem 0;
 }
 
+.featured-heading {
+  font-size: 24px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0; /* mirrors mb-0 if you want it here */
+}
+
 @media screen and (max-width: 768px) {
 	.header__logo{
 	text-align: center;
