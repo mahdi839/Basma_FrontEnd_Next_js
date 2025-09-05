@@ -18,7 +18,7 @@ const ProductCard = React.memo(function ProductCard({
   let baseUrl = process.env.BACKEND_URL;
 
   return (
-    <div className={`px-2 my-5`}>
+    <div className={`px-md-2 my-5`}>
       <div
         className="card product-div  p-2 bg-white h-100 product-card position-relative"
        

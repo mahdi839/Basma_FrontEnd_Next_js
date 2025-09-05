@@ -240,8 +240,10 @@ function FeatureClient({ products,slotData }) {
            {
               slot.slot_details?.length <4 && (
                
-                slot.slot_details?.map((detail, detailIndex) => (
-                  <div className="col-lg-3 col-md-4 col-sm-6">
+               <div className="row">
+                {
+                   slot.slot_details?.map((detail, detailIndex) => (
+                  <div className=" col-6 col-lg-3 col-md-4">
                   <ProductCard 
                     key={detail.id || detailIndex}
                     slotProducts={detail?.product}
@@ -255,6 +257,8 @@ function FeatureClient({ products,slotData }) {
                   />
                   </div>
                 ))
+                }
+               </div>
              
               )
            }

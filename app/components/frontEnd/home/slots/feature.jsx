@@ -9,7 +9,6 @@ export default async function Feature({slotData}) {
   }catch(err){
     data = {error:err.message}
   }
-
   
   return (
     <FeatureClient products={data} slotData={slotData} />
