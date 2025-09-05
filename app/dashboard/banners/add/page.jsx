@@ -2,6 +2,7 @@
 import useIndexData from "@/app/hooks/useIndexData";
 import useStoreData from "@/app/hooks/useStoreData";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
@@ -17,7 +18,7 @@ export default function Page() {
   const { indexData, loading, data, setData } = useIndexData();
   const categoryIndeUrl = process.env.BACKEND_URL + `api/categories`;
   const slotUrl = process.env.BACKEND_URL + `api/product-slots`;
-
+  const router = useRouter()
   async function getSlotData() {
     const token = localStorage.getItem("token");
     try {
@@ -104,6 +105,7 @@ export default function Page() {
     });
 
     document.getElementById("images").value = null;
+    router.push('/dashboard/banners')
   };
 
   return (
@@ -227,7 +229,7 @@ export default function Page() {
             <div className="mt-5 pt-3 border-top col-12">
               <div className="d-flex gap-2 justify-content-center">
                 <button type="submit" className="dashboard-btn">
-                  Save
+                  {storeLoading?'Saving...':'Save'}
                 </button>
               </div>
             </div>
