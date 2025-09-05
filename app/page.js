@@ -22,11 +22,10 @@ export default async function Home() {
          BannerCatData.push(data[i])
        }
     }
-
     
   return ( 
      <FrontEndLayout>
-     <Hero data={data} />
+     <Hero data={heroData[0]} />
      <Feature slotData={slotData}/>
      </FrontEndLayout>
   );
