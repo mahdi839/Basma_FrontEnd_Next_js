@@ -14,20 +14,19 @@ const ProductCard = React.memo(function ProductCard({
   handleSizeSelect,
   handleAddToCart,
   handleOptionDiv,
+  slotDetails
 }) {
   let baseUrl = process.env.BACKEND_URL;
 
   return (
-    <div className={`px-md-2 my-5`}>
+    <div className={`${slotDetails.length >=4?'px-2':''} my-3 my-md-5`}>
       <div
         className="card product-div  p-2 bg-white h-100 product-card position-relative"
        
       >
         {/* Product Image */}
-
         <div
           className="position-relative overflow-hidden product-image-container"
-          
         >
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
             <Image
