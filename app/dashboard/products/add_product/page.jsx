@@ -93,7 +93,7 @@ export default function ProductUploadForm() {
             data.append('image[]', image);
         });
 
-        
+
 
         // Handle categories
         formData.categories.forEach((category, index) => {
@@ -109,7 +109,11 @@ export default function ProductUploadForm() {
             data.append(`question[${index}]`, faq.question);
             data.append(`answer[${index}]`, faq.answer);
         });
-        const token = localStorage.getItem('token');
+        let token = null;
+
+        if (typeof window !== "undefined") {
+            token = localStorage.getItem("token");
+        }
         try {
             await axios.post('http://127.0.0.1:8000/api/products', data, {
                 headers: {

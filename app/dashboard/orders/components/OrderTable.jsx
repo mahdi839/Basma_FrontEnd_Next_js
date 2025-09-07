@@ -41,9 +41,13 @@ export default function OrderTable({
       [name]: selectedOption ? selectedOption.value : "",
     }));
   };
-  
+
   async function handleStatus(e, orderId) {
-    const token = localStorage.getItem("token");
+    let token = null;
+
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token");
+    }
 
     if (!token) {
       toast.error("No auth token found");

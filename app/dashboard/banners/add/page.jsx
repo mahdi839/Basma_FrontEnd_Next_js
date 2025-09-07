@@ -20,7 +20,11 @@ export default function Page() {
   const slotUrl = process.env.BACKEND_URL + `api/product-slots`;
   const router = useRouter()
   async function getSlotData() {
-    const token = localStorage.getItem("token");
+    let token = null;
+
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token");
+    }
     try {
       const response = await axios.get(slotUrl, {
         headers: {
@@ -48,9 +52,9 @@ export default function Page() {
   };
 
   const handleChangeFileChange = (e) => {
-     // Convert FileList to Array
-  const filesArray = Array.from(e.target.files);
-  setFormData({ ...formData, images: filesArray });
+    // Convert FileList to Array
+    const filesArray = Array.from(e.target.files);
+    setFormData({ ...formData, images: filesArray });
   };
 
 
@@ -59,15 +63,15 @@ export default function Page() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-      // Validation: Check if images are selected
-  if (!formData.images || formData.images.length === 0) {
-    Swal.fire({
-      title: "Error",
-      text: "Please select at least one image",
-      icon: "error",
-    });
-    return;
-  }
+    // Validation: Check if images are selected
+    if (!formData.images || formData.images.length === 0) {
+      Swal.fire({
+        title: "Error",
+        text: "Please select at least one image",
+        icon: "error",
+      });
+      return;
+    }
 
 
     const payload = new FormData();
@@ -81,15 +85,15 @@ export default function Page() {
       payload.append("category_id", formData.category_id);
     }
 
-     // Append each file individually
-  formData.images.forEach((file, index) => {
-    payload.append(`images[${index}]`, file);
-  });
+    // Append each file individually
+    formData.images.forEach((file, index) => {
+      payload.append(`images[${index}]`, file);
+    });
 
     console.log("FormData contents:");
-  for (let [key, value] of payload.entries()) {
-    console.log(key, value);
-  }
+    for (let [key, value] of payload.entries()) {
+      console.log(key, value);
+    }
 
     await storeData(
       process.env.BACKEND_URL + "api/banners",
@@ -126,11 +130,10 @@ export default function Page() {
             <div className="row g-4">
               {/* Slot Name */}
               <div
-                className={`${
-                  formData.type === "category" || "slot"
-                    ? "col-md-6"
-                    : "col-md-12"
-                }`}
+                className={`${formData.type === "category" || "slot"
+                  ? "col-md-6"
+                  : "col-md-12"
+                  }`}
               >
                 <div className="">
                   <select
@@ -229,7 +232,7 @@ export default function Page() {
             <div className="mt-5 pt-3 border-top col-12">
               <div className="d-flex gap-2 justify-content-center">
                 <button type="submit" className="dashboard-btn">
-                  {storeLoading?'Saving...':'Save'}
+                  {storeLoading ? 'Saving...' : 'Save'}
                 </button>
               </div>
             </div>

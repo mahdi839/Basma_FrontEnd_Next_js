@@ -12,19 +12,23 @@ export default function page() {
 
     async function storeCategory(e) {
         const url = process.env.BACKEND_URL + 'api/categories'
-        const token = localStorage.getItem('token')
+        let token = null;
+
+        if (typeof window !== "undefined") {
+            token = localStorage.getItem("token");
+        }
         e.preventDefault();
         setLoading(true)
         try {
-            const res = await axios.post(url, {name:category}, {
+            const res = await axios.post(url, { name: category }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            toast.success("successfully added") 
-             window.location.href = "/dashboard/category"
+            toast.success("successfully added")
+            window.location.href = "/dashboard/category"
         } catch (err) {
-          toast.error(err.message)
+            toast.error(err.message)
         } finally {
             setLoading(false)
         }

@@ -9,9 +9,13 @@ import { FaArrowRight } from "react-icons/fa";
 
 export default function ProductTable({ productData }) {
     const [products, setProducts] = useState(productData);
-    
 
-    let token = localStorage.getItem('token')
+
+    let token = null;
+
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem("token");
+    }
     function formatCreatedAt(dateString) {
         const date = new Date(dateString);
         const day = date.getDate();
@@ -55,7 +59,7 @@ export default function ProductTable({ productData }) {
         }
     }
 
-    
+
 
     return (
         <div className="card">
@@ -96,8 +100,8 @@ export default function ProductTable({ productData }) {
                                             Created: {formatCreatedAt(product.created_at)}
                                         </small>
                                     </td>
-                                    <td> {product.category?.map((category)=>(
-                                        
+                                    <td> {product.category?.map((category) => (
+
                                         <div className="mb-2">
                                             <span class="badge bg-info text-white">{category.name}</span>
                                         </div>

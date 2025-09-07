@@ -12,16 +12,20 @@ export default function ProductFilter({ value, onChange, required = false }) {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem("token");
+        let token = null;
+
+        if (typeof window !== "undefined") {
+          token = localStorage.getItem("token");
+        }
         const response = await axios.get(
-          process.env.BACKEND_URL + 'api/products', 
+          process.env.BACKEND_URL + 'api/products',
           {
             headers: {
               Authorization: `Bearer ${token}`
             }
           }
         );
-        
+
         if (response.data && response.data.data) {
           const options = response.data.data.map(product => ({
             value: product.title,
@@ -35,7 +39,7 @@ export default function ProductFilter({ value, onChange, required = false }) {
         setLoading(false);
       }
     };
-    
+
     fetchProducts();
   }, []);
 

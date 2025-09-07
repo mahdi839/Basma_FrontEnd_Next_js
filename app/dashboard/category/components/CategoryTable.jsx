@@ -9,7 +9,11 @@ export default function CategoryTable({ categories }) {
     const [getCategories, setGetCategories] = useState(categories);
 
     async function handleDelete(id) {
-        const token = localStorage.getItem('token')
+        let token = null;
+
+        if (typeof window !== "undefined") {
+            token = localStorage.getItem("token");
+        }
         const url = process.env.BACKEND_URL + `api/categories/${id}`
         const result = await Swal.fire({
             title: "Are you sure?",
@@ -38,11 +42,11 @@ export default function CategoryTable({ categories }) {
         } catch (err) {
             toast.error(err.message)
         }
-         // Update state to remove deleted category
-         setGetCategories(prev => prev.filter(category => category.id !== id));
+        // Update state to remove deleted category
+        setGetCategories(prev => prev.filter(category => category.id !== id));
     }
 
-    
+
     return (
         <table className="table table-bordered">
             <thead>

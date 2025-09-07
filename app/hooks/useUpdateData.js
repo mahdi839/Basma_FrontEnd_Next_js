@@ -8,16 +8,20 @@ export default function useUpdateData() {
     const [loading, setLoading] = useState(false)
     const router = useRouter();
     const [errors, setErrors] = useState({});
-    
+
     const updateData = async (url, data, successMsg, redirectUrl) => {
-        const token = localStorage.getItem('token')
+        let token = null;
+
+        if (typeof window !== "undefined") {
+            token = localStorage.getItem("token");
+        }
         setLoading(true)
-        
+
         try {
             // Use POST method with _method override for FormData with files
             if (data instanceof FormData) {
                 data.append('_method', 'PUT');
-                
+
                 await axios.post(url, data, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -41,12 +45,12 @@ export default function useUpdateData() {
                 timer: 1500
             })
             router.push(redirectUrl);
-            
+
         } catch (err) {
             if (err.response?.status === 422) {
                 // Laravel validation errors
                 setErrors(err.response.data.errors);
-                
+
                 // Show general error in toast
                 const firstError = Object.values(err.response.data.errors)[0][0];
                 Swal.fire({
@@ -54,13 +58,13 @@ export default function useUpdateData() {
                     'text': firstError,
                     'icon': 'error'
                 })
-                
+
             } else {
                 const errorMessage =
                     err.response?.data?.message ||
                     err.response?.data?.error ||
                     err.message;
-                
+
                 Swal.fire({
                     'title': 'Oops! Please Check',
                     'text': errorMessage,
@@ -71,6 +75,6 @@ export default function useUpdateData() {
             setLoading(false)
         }
     }
-    
+
     return { updateData, loading, errors }
 }
