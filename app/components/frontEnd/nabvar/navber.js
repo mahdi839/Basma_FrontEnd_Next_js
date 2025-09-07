@@ -20,6 +20,8 @@ import NavSearch from "./navSearch/NavSearch";
 import style from "./hero.module.css";
 import { ImCancelCircle } from "react-icons/im";
 import NavCategories from "./components/NavCategories";
+import useIndexData from "@/app/hooks/useIndexData";
+import axios from "axios";
 
 export default function Navbar() {
   const cartCount = useSelector((state) => state.cart.count);
@@ -27,9 +29,35 @@ export default function Navbar() {
   const [isClient, setIsClient] = useState(false);
   const [isShowCollaps, setIsShowCollaps] = useState(false);
   const [ isShowCollapsMenu, setIsShowCollapsMenu ] = useState('category');
+  const [footerData, setFooterData] = useState(null);
+  const [logoUrl, setLogoUrl] = useState(null);
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  async function fetchFooterData() {
+    let data = await axios.get(`${process.env.BACKEND_URL}api/footer-settings`)
+    setFooterData(data.data);
+  }
+ 
+  
+  useEffect(()=>{
+    fetchFooterData();
+  },[])
+
+ 
+   // 2. Build logoUrl only after footerData updates
+useEffect(() => {
+  if (footerData?.logo_path) {
+    const backendUrl = process.env.BACKEND_URL.endsWith("/")
+      ? process.env.BACKEND_URL.slice(0, -1)
+      : process.env.BACKEND_URL;
+
+    setLogoUrl(backendUrl + footerData.logo_path);
+  }
+}, [footerData]);
+
+
 
   let CartItemsPrice = cartItems.reduce(
     (total, item) => total + item.totalPrice,
@@ -45,6 +73,9 @@ export default function Navbar() {
   function handleCollaps_menu(menu) {
     setIsShowCollapsMenu(menu)
   }
+
+
+ 
   return (
     <div className="position-relative">
       
@@ -142,9 +173,19 @@ export default function Navbar() {
             {/* mobile menu end */}
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo">
-                <Link href="/">
-                  <Image src="/img/logo3.png" alt="" width={250} height={50} />
-                </Link>
+                {
+                  logoUrl && 
+                  <Link href="/">
+                    <Image
+                      src={logoUrl}
+                      alt="Logo"
+                       width={80}           // desired width on the page
+                        height={65}          // same as width for square logo
+                        style={{ maxWidth: '100%', height: 'auto' }}
+                    />
+                  </Link>
+                }
+               
               </div>
             </div>
             <div className="col-lg-6 d-none d-xl-block">
@@ -154,7 +195,10 @@ export default function Navbar() {
                     <Link href="/">Home</Link>
                   </li>
                   <li>
-                    <Link href="./shop-grid.html">Shop</Link>
+                    <Link href="/shop">Shop</Link>
+                  </li>
+                   <li>
+                    <Link href="/frontEnd/about_us">About Us</Link>
                   </li>
                 </ul>
               </nav>

@@ -35,7 +35,7 @@ export default function ProductUploadForm() {
         fetchSizes();
         const fetchCategories = async () => {
             try {
-                const response = await axios.get(`${baseUrl}api/categories`);
+                const response = await axios.get(`${baseUrl}api/frontend/categories`);
                 setCategories(response.data);
             } catch (error) {
                 toast.error(error.message)

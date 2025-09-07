@@ -185,7 +185,7 @@ export default function Products({ product }) {
               className={`tab-btn ${activeTab === "terms" ? "active" : ""}`}
               onClick={() => showTab("terms")}
             >
-              ADDITIONAL INFORMATION
+              Product Video
             </button>
           </div>
 
@@ -194,24 +194,13 @@ export default function Products({ product }) {
             {/* Description Tab */}
             {activeTab === "desc" && (
               <div className="description-content animated-fade">
-                <div className="content-card d-flex justify-content-between">
+                <div className="content-card d-flex justify-content-center align-items-center flex-column">
                  
                   <div className="description-text">
                     {product.description}
                   </div>
 
-                  {product?.video_url && (
-                    <div className="video-container mt-4 w-full">
-                      <div className="video-wrapper">
-                        <iframe
-                          className="youtube-embed"
-                          src={`https://www.youtube.com/embed/${getYoutubeVideoId(product.video_url)}`}
-                          title="Product Video"
-                          allowFullScreen
-                        />
-                      </div>
-                    </div>
-                  )}
+                 
                 </div>
               </div>
             )}
@@ -255,14 +244,18 @@ export default function Products({ product }) {
 
             {/* Terms Tab */}
             {activeTab === "terms" && (
-              <div className="terms-content animated-fade">
+              <div className="terms-content animated-fade ">
                 <div className="content-card">
-                  <h3 className="section-title mb-4">Additional Information</h3>
-                  <div className="terms-text">
-                    <p>
-                      {/* Your terms content here */}
-                    </p>
-                  </div>
+                   {product?.video_url && (
+                    
+                        <iframe
+                          className="youtube-embed"
+                          src={`https://www.youtube.com/embed/${getYoutubeVideoId(product.video_url)}`}
+                          title="Product Video"
+                          allowFullScreen
+                        />
+                    
+                  )}
                 </div>
               </div>
             )}

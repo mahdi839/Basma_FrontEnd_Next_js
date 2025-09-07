@@ -4,7 +4,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Slider from "react-slick";
 import Image from "next/image";
 import style from "../../nabvar/hero.module.css";
-export default function Hero() {
+export default function Hero({ data }) {
   const bgImages = ["/img/banner/banner-3.png", "/img/banner/banner-4.png"];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   var settings = {
@@ -33,26 +33,17 @@ export default function Hero() {
               backgroundImage: `url(${bgImages[currentImageIndex]})`,} */}
 
       <Slider {...settings}>
-        <Image
-          className="hero_slider_img"
-          src="/img/banner/banner-3.png"
-          width={1200} // Actual image width
-          height={400}
-          alt="Banner"
-        />
-        <Image
-          className="hero_slider_img"
-          src="/img/banner/banner-4.png"
-          width={1200} // Actual image width
-          height={400}
-          style={{ width: "100%", height: "auto" }}
-          alt="Banner"
-        />
-        {/* <div className={style.arrow_div_right}> <FaChevronLeft  className={`${style.arrow_right}`} onClick={()=>handleSlider('right')}/>
-            </div>
-           <div className={style.arrow_div_left}>
-           <FaChevronRight className={`${style.arrow_left}`} onClick={()=>handleSlider('left')} /> 
-           </div> */}
+        {
+          data?.banner_images?.map((slidImg) => (
+            <Image
+              className="hero_slider_img"
+              src={`${process.env.BACKEND_URL}storage/${slidImg.path}`} style={{width:'100%',height:'auto'}}
+              width={1200} // Actual image width
+              height={400}
+              alt="Banner"
+            />
+          ))
+        }
       </Slider>
     </div>
   );

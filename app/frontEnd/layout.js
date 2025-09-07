@@ -3,8 +3,10 @@ import Navbar from "@/app/components/frontEnd/nabvar/navber";
 import Footer from "@/app/components/footer/footer";
 import CartIcon from "../components/frontEnd/components/CartIcon";
 import ScrollToTop from "../components/frontEnd/scrollToTop/ScrollToTop";
+import { getData } from "@/lib/api";
 
 export default function FrontEndLayout({ children }) {
+  
   return (
     <div className="frontEndLayout">
       <Navbar />
