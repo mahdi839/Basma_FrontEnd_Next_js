@@ -4,17 +4,15 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'http',
-        hostname: '127.0.0.1',
-        port: '8000',
+        hostname: 'api.ibtikarbd.com', // your live API
         pathname: '/**',
       },
     ],
   },
   env: {
-    BACKEND_URL: "http://127.0.0.1:8000/",
+    BACKEND_URL: "https://api.ibtikarbd.com/", // use live API
   },
   eslint: {
-    // This disables ESLint errors from blocking the production build
     ignoreDuringBuilds: true,
   },
 };
