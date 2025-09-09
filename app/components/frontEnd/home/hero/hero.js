@@ -26,7 +26,6 @@ export default function Hero({ data }) {
       </div>
     ),
   };
-  console.log(`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${data.banner_images[0].path}`)
   return (
     <div className="container  ">
       {/* ${style.hero__item} ${style.set_bg}`}  style={{
