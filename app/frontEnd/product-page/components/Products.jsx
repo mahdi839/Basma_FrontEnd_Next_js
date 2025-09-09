@@ -18,8 +18,8 @@ export default function Products({ product }) {
   const [isLoading, setIsLoading] = useState(true);
   const [price, setPrice] = useState(0)
   let dispatch = useDispatch()
-  let cartItems = useSelector(state=>state.cart.items)
-  let baseUrl = process.env.BACKEND_URL;
+  let cartItems = useSelector(state => state.cart.items)
+  let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter()
   useEffect(() => {
     if (product) {
@@ -33,7 +33,7 @@ export default function Products({ product }) {
     }
   }, [product])
 
- 
+
 
   function showImage(id) {
     const clickedImg = product.images.find((img) => img.id == id);
@@ -46,14 +46,14 @@ export default function Products({ product }) {
   function showAccording(id) {
     setShow((prev) => (prev == id ? 0 : id));
   }
- let selectedSize = ""
+  let selectedSize = ""
   let selectSize = (e) => {
     let sizeId = e.target.value;
-     selectedSize = product.sizes.find(size => size.id == sizeId)
+    selectedSize = product.sizes.find(size => size.id == sizeId)
     setPrice(seletedSize.pivot.price)
   }
 
-  
+
 
   const getYoutubeVideoId = (url) => {
     if (!url) return null;
@@ -65,32 +65,32 @@ export default function Products({ product }) {
     return (match && match[2].length === 11) ? match[2] : null;
   };
 
-  
 
-  function handleAddToCart (id,type){
-    let existingProduct = cartItems.find(item=>item.id ===id);
-    if(existingProduct){
+
+  function handleAddToCart(id, type) {
+    let existingProduct = cartItems.find(item => item.id === id);
+    if (existingProduct) {
       Swal.fire({
         title: "Already in the cart",
         text: "This product is already in your cart",
         icon: "info",
         confirmButtonText: "Ok",
-        confirmButtonColor:"#DB3340"
+        confirmButtonColor: "#DB3340"
       })
       return;
     }
 
     dispatch(addToCart({
-          id: product.id,
-          title: product.title,
-          size: selectedSize ?? "",
-          price: product.sizes[0]?.pivot?.price?? product.price,
-          image: baseUrl+product.images?.[0]?.image || ""
-        }));
-        toast.success("Added to cart!");
-        if(type==="order"){
-           router.push("/frontEnd/checkout")
-         }
+      id: product.id,
+      title: product.title,
+      size: selectedSize ?? "",
+      price: product.sizes[0]?.pivot?.price ?? product.price,
+      image: baseUrl + product.images?.[0]?.image || ""
+    }));
+    toast.success("Added to cart!");
+    if (type === "order") {
+      router.push("/frontEnd/checkout")
+    }
   }
   return (
     <>
@@ -134,7 +134,7 @@ export default function Products({ product }) {
               <p className="fw-bold">{product?.title}</p>
               <h5 className="product_price">৳ {product.price || product?.sizes[0]?.pivot.price}</h5>
               <div className="flex justify-content-center align-items-center mt-3 size-div">
-                {product.sizes.length>0 &&(
+                {product.sizes.length > 0 && (
                   <span className="me-3 fw-bold">Select</span>
                 )}
                 {product.sizes?.map((size, index) => (
@@ -154,16 +154,16 @@ export default function Products({ product }) {
               </p>
             </div>
             <div className="d-flex gap-2 ms-5">
-              
-                <button className="btn-grad px-3 py-1 rounded-0" onClick={()=>handleAddToCart(product.id,"add")}>Add To Cart</button>
-                <button className="btn-grad px-3 py-1 rounded-0" onClick={()=>handleAddToCart(product.id,"order")}>
+
+              <button className="btn-grad px-3 py-1 rounded-0" onClick={() => handleAddToCart(product.id, "add")}>Add To Cart</button>
+              <button className="btn-grad px-3 py-1 rounded-0" onClick={() => handleAddToCart(product.id, "order")}>
                 <span className="pe-1">
                   <FaFirstOrder />
                 </span>
                 Order Now
               </button>
             </div>
-           
+
           </div>
         </div>
         <div className="desc_tab_container">
@@ -195,12 +195,12 @@ export default function Products({ product }) {
             {activeTab === "desc" && (
               <div className="description-content animated-fade">
                 <div className="content-card d-flex justify-content-center align-items-center flex-column">
-                 
+
                   <div className="description-text">
                     {product.description}
                   </div>
 
-                 
+
                 </div>
               </div>
             )}
@@ -209,34 +209,34 @@ export default function Products({ product }) {
             {activeTab === "faq" && (
               <div className="faq-content animated-fade">
                 <div className="content-card">
-                  
+
                   <div className="accordion-list">
-                    
-                    {product?.faqs.length>0? (
+
+                    {product?.faqs.length > 0 ? (
                       product?.faqs?.map((faq) => (
-                      <div
-                        className={`accordion-item ${show === faq.id ? "active" : ""}`}
-                        key={faq.id}
-                      >
                         <div
-                          className="accordion-header"
-                          onClick={() => showAccording(faq.id)}
+                          className={`accordion-item ${show === faq.id ? "active" : ""}`}
+                          key={faq.id}
                         >
-                          <div className="d-flex justify-content-between align-items-center">
-                            <h4 className="question-text">{faq.question}</h4>
-                            <span className="accordion-icon">
-                              {show === faq.id ? <IoIosArrowDown /> : <IoIosArrowUp />}
-                            </span>
+                          <div
+                            className="accordion-header"
+                            onClick={() => showAccording(faq.id)}
+                          >
+                            <div className="d-flex justify-content-between align-items-center">
+                              <h4 className="question-text">{faq.question}</h4>
+                              <span className="accordion-icon">
+                                {show === faq.id ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                              </span>
+                            </div>
                           </div>
+                          {show === faq.id && (
+                            <div className="accordion-body">
+                              <p className="answer-text">{faq.answer}</p>
+                            </div>
+                          )}
                         </div>
-                        {show === faq.id && (
-                          <div className="accordion-body">
-                            <p className="answer-text">{faq.answer}</p>
-                          </div>
-                        )}
-                      </div>
-                    ))
-                    ):<div className="text-center text-danger">No FAQs found.</div>}
+                      ))
+                    ) : <div className="text-center text-danger">No FAQs found.</div>}
                   </div>
                 </div>
               </div>
@@ -246,15 +246,15 @@ export default function Products({ product }) {
             {activeTab === "terms" && (
               <div className="terms-content animated-fade ">
                 <div className="content-card">
-                   {product?.video_url && (
-                    
-                        <iframe
-                          className="youtube-embed"
-                          src={`https://www.youtube.com/embed/${getYoutubeVideoId(product.video_url)}`}
-                          title="Product Video"
-                          allowFullScreen
-                        />
-                    
+                  {product?.video_url && (
+
+                    <iframe
+                      className="youtube-embed"
+                      src={`https://www.youtube.com/embed/${getYoutubeVideoId(product.video_url)}`}
+                      title="Product Video"
+                      allowFullScreen
+                    />
+
                   )}
                 </div>
               </div>

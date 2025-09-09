@@ -10,7 +10,7 @@ import Button from "@/app/components/dashboard/components/button/Button";
 export default function CreateOrderPage() {
   const { storeData, loading: submitting } = useStoreData();
   const { showData, data, loading } = useShowData();
-  
+
   // Form states
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -19,7 +19,7 @@ export default function CreateOrderPage() {
   const [shippingCost, setShippingCost] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("");
   const [deliveryNotes, setDeliveryNotes] = useState("");
-  
+
   // Cart state
   const [cart, setCart] = useState([
     { id: "", title: "", size: "", unitPrice: 0, qty: 1, totalPrice: 0 }
@@ -27,7 +27,7 @@ export default function CreateOrderPage() {
 
   // Fetch products on component mount
   useEffect(() => {
-    showData(process.env.BACKEND_URL + "api/orders/create");
+    showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/orders/create");
   }, []);
 
   // Handle district change
@@ -56,10 +56,10 @@ export default function CreateOrderPage() {
   // Handle size selection
   const handleSizeSelect = (index, sizeData) => {
     if (!sizeData) return;
-    
+
     // Parse size data (format: "sizeId|sizeName|price")
     const [sizeId, sizeName, price] = sizeData.split('|');
-    
+
     const updatedCart = [...cart];
     updatedCart[index] = {
       ...updatedCart[index],
@@ -78,11 +78,11 @@ export default function CreateOrderPage() {
 
     // Auto-calculate total price
     if (field === "qty") {
-      updatedCart[index].totalPrice = 
+      updatedCart[index].totalPrice =
         (Number(updatedCart[index].unitPrice) || 0) * (Number(value) || 0);
     }
     if (field === "unitPrice") {
-      updatedCart[index].totalPrice = 
+      updatedCart[index].totalPrice =
         (Number(value) || 0) * (Number(updatedCart[index].qty) || 0);
     }
 
@@ -136,8 +136,8 @@ export default function CreateOrderPage() {
       cart: validCartItems
     };
 
-    await storeData(process.env.BACKEND_URL + "api/orders", payload, "Order Created Successfully");
-    
+    await storeData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/orders", payload, "Order Created Successfully");
+
     // Reset form after successful submission
     if (!submitting) {
       setName("");
@@ -173,7 +173,7 @@ export default function CreateOrderPage() {
         <div className="row justify-content-center">
           <div className="col-12 col-xl-10">
             <div className="card shadow-lg border-0 rounded-3 overflow-hidden">
-              
+
               {/* Header */}
               <div className="card-header text-white py-4" style={{ background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}>
                 <div className="d-flex align-items-center">
@@ -187,7 +187,7 @@ export default function CreateOrderPage() {
 
               <div className="card-body p-4">
                 <div className="row g-4">
-                  
+
                   {/* Customer Information Section */}
                   <div className="col-12">
                     <div className="card border-0 bg-light">
@@ -285,19 +285,19 @@ export default function CreateOrderPage() {
                           </button>
                         </div>
                       </div>
-                      
+
                       <div className="card-body">
                         <div className="row g-3">
                           {cart.map((item, index) => {
                             const selectedProduct = data?.data?.products?.find(p => p.id === item.id);
                             const availableSizes = getAvailableSizes(item.id);
-                            
+
                             return (
                               <div key={index} className="col-12">
                                 <div className="card border border-secondary rounded-3">
                                   <div className="card-body p-3">
                                     <div className="row g-3 align-items-end">
-                                      
+
                                       {/* Product Selection */}
                                       <div className="col-md-3">
                                         <label className="form-label fw-semibold small">Product *</label>
@@ -360,7 +360,7 @@ export default function CreateOrderPage() {
                                           type="number"
                                           className="form-control border-2"
                                           placeholder="0"
-                                          value={availableSizes?.pivot?.price??item.unitPrice}
+                                          value={availableSizes?.pivot?.price ?? item.unitPrice}
                                           onChange={(e) => {
                                             handleCartChange(index, "unitPrice", e.target.value);
                                             const total = (Number(e.target.value) || 0) * (Number(item.qty) || 0);
@@ -404,7 +404,7 @@ export default function CreateOrderPage() {
                                       <div className="col-md-1">
                                         {cart.length > 1 && (
                                           <button
-                                          className="border-0 "
+                                            className="border-0 "
                                             onClick={() => removeProductRow(index)}
                                           >
                                             <MdDelete size={22} className="text-danger border-none" />
@@ -429,7 +429,7 @@ export default function CreateOrderPage() {
                         <h6 className="fw-bold mb-3">
                           <i className="fas fa-calculator me-2"></i>Order Summary
                         </h6>
-                        
+
                         <div className="row g-3">
                           <div className="col-md-4">
                             <label className="form-label fw-semibold text-white">Shipping Cost *</label>
@@ -447,7 +447,7 @@ export default function CreateOrderPage() {
                               />
                             </div>
                           </div>
-                          
+
                           <div className="col-md-4">
                             <label className="form-label fw-semibold text-white">Subtotal</label>
                             <div className="input-group">
@@ -460,7 +460,7 @@ export default function CreateOrderPage() {
                               />
                             </div>
                           </div>
-                          
+
                           <div className="col-md-4">
                             <label className="form-label fw-semibold text-white">Grand Total</label>
                             <div className="input-group">

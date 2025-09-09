@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 export default function Page() {
 
     const { indexData, setData, data, loading } = useIndexData()
-    const url = process.env.BACKEND_URL + "api/shipping-costs"
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "api/shipping-costs"
 
     useEffect(() => {
         indexData(url)
@@ -24,7 +24,7 @@ export default function Page() {
         if (typeof window !== "undefined") {
             token = localStorage.getItem("token");
         }
-        const url = process.env.BACKEND_URL + `api/shipping-costs/${id}`
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + `api/shipping-costs/${id}`
         const result = await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",

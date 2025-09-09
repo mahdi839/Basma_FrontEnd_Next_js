@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { FaLock,FaMoneyBill } from "react-icons/fa";
+import { FaLock, FaMoneyBill } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "@/redux/slices/CartSlice";
 import Link from "next/link";
@@ -23,7 +23,7 @@ function CheckoutPage() {
     district: '',
     payment_method: 'cash',
     delivery_notes: '',
-    cart:cartItems,
+    cart: cartItems,
     shipping_cost: ''
   });
 
@@ -32,26 +32,26 @@ function CheckoutPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  
-  const {fetchSingleData,loading,data}= useGetSingleData()
-  const latestApiUrl = process.env.BACKEND_URL + "api/shipping-costs-latest"
-  useEffect(()=>{
+
+  const { fetchSingleData, loading, data } = useGetSingleData()
+  const latestApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/shipping-costs-latest"
+  useEffect(() => {
     fetchSingleData(latestApiUrl)
-  },[])
-  useEffect(()=>{
-   
+  }, [])
+  useEffect(() => {
+
     if (data && formData.district) {
       const isDhaka = formData.district === 'dhaka';
-  
+
       if (data.inside_dhaka && data.outside_dhaka) {
         setShippingAmount(isDhaka ? data.inside_dhaka : data.outside_dhaka);
       } else if (data.one_shipping_cost) {
         setShippingAmount(data.one_shipping_cost);
-      }else {
+      } else {
         setShippingAmount(0); // fallback
       }
     }
-  },[data, formData.district])
+  }, [data, formData.district])
 
   const handleDistrictChange = (selectedOption) => {
     setFormData((prev) => ({
@@ -59,22 +59,22 @@ function CheckoutPage() {
       district: selectedOption?.value || "",
     }));
   };
-  const {storeData} = useStoreData();
+  const { storeData } = useStoreData();
   const handleSubmit = (e) => {
     e.preventDefault();
     // Update shipping_cost in formData before sending
-  const updatedFormData = {
-    ...formData,
-    shipping_cost: shippingAmount,
+    const updatedFormData = {
+      ...formData,
+      shipping_cost: shippingAmount,
+    };
+
+    const storeOrderUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/orders";
+    storeData(storeOrderUrl, updatedFormData, 'Thank you for your purchase! Order placed successfully.');
+    dispatch(clearCart())
+    route.push("/")
+
   };
 
-  const storeOrderUrl = process.env.BACKEND_URL + "api/orders";
-  storeData(storeOrderUrl, updatedFormData, 'Thank you for your purchase! Order placed successfully.');
-   dispatch(clearCart())
-   route.push("/")
-
-  };
-  
   return (
     <div className="container py-5">
       <div className="row">
@@ -83,7 +83,7 @@ function CheckoutPage() {
             <div className="card-header py-3">
               <h5 className="mb-0">Checkout Details</h5>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="card-body">
               {/* Personal Information */}
               <div className="mb-4">
@@ -91,9 +91,9 @@ function CheckoutPage() {
                 <div className="row g-3">
                   <div className="col-md-6">
                     <label htmlFor="name" className="form-label"> Name</label>
-                    <input 
-                      type="text" 
-                      className="form-control" 
+                    <input
+                      type="text"
+                      className="form-control"
                       id="name"
                       name="name"
                       value={formData.name}
@@ -101,13 +101,13 @@ function CheckoutPage() {
                       required
                     />
                   </div>
-                 
-                 
+
+
                   <div className="col-md-6">
                     <label htmlFor="phone" className="form-label">Phone</label>
-                    <input 
-                      type="tel" 
-                      className="form-control" 
+                    <input
+                      type="tel"
+                      className="form-control"
                       id="phone"
                       name="phone"
                       value={formData.phone}
@@ -120,61 +120,61 @@ function CheckoutPage() {
 
               {/* Shipping Address */}
               <div className="mb-4">
-  <h5 className="mb-3">Shipping Address</h5>
-  <div className="row g-3 mb-3">
-    <div className="col-md-12">
-      
-      <div className="mb-3">
-        <label htmlFor="district" className="form-label">District</label>
-        <District 
-          value={formData.district}
-          onChange={handleDistrictChange}
-          required
-        />
-      </div>
-    </div>
-  </div>
-  <div className="mb-3">
-    <label htmlFor="address" className="form-label">Address</label>
-    <input 
-      type="text" 
-      className="form-control" 
-      id="address"
-      name="address"
-      value={formData.address}
-      onChange={handleChange}
-      required
-    />
-  </div>
+                <h5 className="mb-3">Shipping Address</h5>
+                <div className="row g-3 mb-3">
+                  <div className="col-md-12">
 
-    {/* Notes Field */}
-    <div className="mb-3">
-    <label htmlFor="notes" className="form-label">Delivery Notes (Optional)</label>
-    <textarea
-      className="form-control"
-      id="delivery_notes"
-      name="delivery_notes"
-      rows="3"
-      placeholder=""
-      value={formData.delivery_notes}
-      onChange={handleChange}
-    ></textarea>
-    <div className="form-text">E.g., building location, landmark, or preferred delivery time</div>
-  </div>
- 
-</div>
+                    <div className="mb-3">
+                      <label htmlFor="district" className="form-label">District</label>
+                      <District
+                        value={formData.district}
+                        onChange={handleDistrictChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="address" className="form-label">Address</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                {/* Notes Field */}
+                <div className="mb-3">
+                  <label htmlFor="notes" className="form-label">Delivery Notes (Optional)</label>
+                  <textarea
+                    className="form-control"
+                    id="delivery_notes"
+                    name="delivery_notes"
+                    rows="3"
+                    placeholder=""
+                    value={formData.delivery_notes}
+                    onChange={handleChange}
+                  ></textarea>
+                  <div className="form-text">E.g., building location, landmark, or preferred delivery time</div>
+                </div>
+
+              </div>
 
               {/* Payment Method */}
               <div className="mb-4">
                 <h5 className="mb-3">Payment Method</h5>
                 <div className="d-flex flex-column gap-3">
-                
+
                   <div className="form-check border rounded p-3">
-                    <input 
-                      className="form-check-input" 
-                      type="radio" 
-                      name="paymentMethod" 
-                      id="cash" 
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="paymentMethod"
+                      id="cash"
                       value={formData.cash}
                       checked={formData.payment_method === 'cash'}
                       onChange={handleChange}
@@ -186,7 +186,7 @@ function CheckoutPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="d-flex justify-content-between mt-4">
                 <Link href="/cart" className="btn btn-outline-secondary">
                   Back to Cart
@@ -220,7 +220,7 @@ function CheckoutPage() {
                     <span>{item.totalPrice} TK</span>
                   </li>
                 ))}
-                
+
                 <li className="list-group-item d-flex justify-content-between align-items-center px-0 border-bottom-0">
                   <span>Subtotal</span>
                   <span>{totalPrice} TK</span>
@@ -239,8 +239,8 @@ function CheckoutPage() {
                 <div className="d-flex">
                   <div className="flex-shrink-0 me-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
-                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                     </svg>
                   </div>
                   <div>

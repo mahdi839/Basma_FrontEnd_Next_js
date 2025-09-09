@@ -16,8 +16,8 @@ export default function Page() {
   });
   const [slot, setSlot] = useState(null);
   const { indexData, loading, data, setData } = useIndexData();
-  const categoryIndeUrl = process.env.BACKEND_URL + `api/categories`;
-  const slotUrl = process.env.BACKEND_URL + `api/product-slots`;
+  const categoryIndeUrl = process.env.NEXT_PUBLIC_BACKEND_URL + `api/categories`;
+  const slotUrl = process.env.NEXT_PUBLIC_BACKEND_URL + `api/product-slots`;
   const router = useRouter()
   async function getSlotData() {
     let token = null;
@@ -96,7 +96,7 @@ export default function Page() {
     }
 
     await storeData(
-      process.env.BACKEND_URL + "api/banners",
+      process.env.NEXT_PUBLIC_BACKEND_URL + "api/banners",
       payload,
       "Banner created successfully"
     );

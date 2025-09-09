@@ -5,7 +5,7 @@ import useStoreData from "@/app/hooks/useStoreData";
 import useUpdateData from "@/app/hooks/useUpdateData";
 import useShowData from "@/app/hooks/useShowData";
 import Loading from "@/app/loading";
-import "react-quill/dist/quill.snow.css"; 
+import "react-quill/dist/quill.snow.css";
 
 // Dynamically import ReactQuill (important for Next.js SSR)
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -26,7 +26,7 @@ export default function AboutUsForm() {
 
   // Fetch existing AboutUs data
   useEffect(() => {
-    showData(process.env.BACKEND_URL + "api/about-us");
+    showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/about-us");
   }, []);
 
   useEffect(() => {
@@ -37,9 +37,9 @@ export default function AboutUsForm() {
       });
       setRecordId(data.id || null);
 
-      const backendUrl = process.env.BACKEND_URL.endsWith("/")
-        ? process.env.BACKEND_URL.slice(0, -1)
-        : process.env.BACKEND_URL;
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL.endsWith("/")
+        ? process.env.NEXT_PUBLIC_BACKEND_URL.slice(0, -1)
+        : process.env.NEXT_PUBLIC_BACKEND_URL;
 
       if (data.image) {
         setPreviewUrl(backendUrl + "/storage/" + data.image);
@@ -82,20 +82,20 @@ export default function AboutUsForm() {
 
     if (recordId) {
       await updateData(
-        `${process.env.BACKEND_URL}api/about-us/${recordId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/about-us/${recordId}`,
         payload,
         "About Us updated!",
         ""
       );
     } else {
       await storeData(
-        process.env.BACKEND_URL + "api/about-us",
+        process.env.NEXT_PUBLIC_BACKEND_URL + "api/about-us",
         payload,
         "About Us saved!"
       );
     }
 
-    showData(process.env.BACKEND_URL + "api/about-us");
+    showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/about-us");
   };
 
   if (fetchLoading) {

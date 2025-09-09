@@ -9,9 +9,9 @@ const nextConfig = {
       },
     ],
   },
-  env: {
-    BACKEND_URL: "https://api.ibtikarbd.com/", // use live API
-  },
+  // env: {
+  //   BACKEND_URL: "https://api.ibtikarbd.com/", // use live API
+  // },
   eslint: {
     ignoreDuringBuilds: true,
   },

@@ -39,7 +39,7 @@ export default function ProductTable({ productData }) {
         if (!result.isConfirmed) return;
 
         try {
-            const baseUrl = process.env.BACKEND_URL;
+            const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
             await axios.delete(`${baseUrl}api/products/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -83,7 +83,7 @@ export default function ProductTable({ productData }) {
                                     <td>
                                         {product.images?.length > 0 ? (
                                             <img
-                                                src={`${process.env.BACKEND_URL}${product.images[0].image}`}
+                                                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.images[0].image}`}
                                                 alt="Product thumbnail"
                                                 className="img-thumbnail"
                                                 style={{ width: "80px", height: "80px", objectFit: "cover" }}

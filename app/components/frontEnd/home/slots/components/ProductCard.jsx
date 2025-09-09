@@ -15,19 +15,19 @@ const ProductCard = React.memo(function ProductCard({
   handleAddToCart,
   handleOptionDiv,
 }) {
-  let baseUrl = process.env.BACKEND_URL;
+  let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   return (
     <div className={`px-md-2 my-5`}>
       <div
         className="card product-div  p-2 bg-white h-100 product-card position-relative"
-       
+
       >
         {/* Product Image */}
 
         <div
           className="position-relative overflow-hidden product-image-container"
-          
+
         >
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
             <Image
@@ -40,24 +40,24 @@ const ProductCard = React.memo(function ProductCard({
               }
               className="position-absolute w-100 h-100 object-fit-cover p-3 product-image"
               alt={slotProducts?.title}
-              
+
             />
           </Link>
           {/* Product Actions */}
           {showOptionDiv.status === false && (
             <div
               className="quick-add-btn product-actions position-absolute d-flex flex-column "
-              
+
             >
               <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
                 <button
                   className="  rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
-                
+
                 >
-                  <CiSearch className="fs-5 "  />
+                  <CiSearch className="fs-5 " />
                 </button>
               </Link>
-             
+
             </div>
           )}
 
@@ -70,7 +70,7 @@ const ProductCard = React.memo(function ProductCard({
             <Link
               href={`/frontEnd/product-page/${slotProducts?.id}`}
               className="text-decoration-none text-dark product-title"
-            
+
             >
               {slotProducts?.title}
             </Link>
@@ -78,7 +78,7 @@ const ProductCard = React.memo(function ProductCard({
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
             <p
               className="text-muted small mb-2 product-subtitle"
-              
+
             >
               {slotProducts?.sub_title}
             </p>
@@ -97,7 +97,7 @@ const ProductCard = React.memo(function ProductCard({
 
         <div
           className="card-footer bg-transparent border-0 pt-0 pb-3  add-to-cart-footer d-lg-none d-block"
-          
+
         >
           {slotProducts?.sizes?.length > 1 ? (
             <button
@@ -121,7 +121,7 @@ const ProductCard = React.memo(function ProductCard({
 
         <div
           className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block "
-          
+
         >
           {slotProducts?.sizes?.length > 1 ? (
             <button

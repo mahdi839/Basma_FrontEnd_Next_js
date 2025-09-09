@@ -133,8 +133,8 @@ export default function ProductUpdateForm({
 
         try {
             const url = isEditMode
-                ? `${process.env.BACKEND_URL}api/products/${productId}`
-                : `${process.env.BACKEND_URL}api/products`;
+                ? `${process.env.NEXT_PUBLIC_BACKEND_URL}api/products/${productId}`
+                : `${process.env.NEXT_PUBLIC_BACKEND_URL}api/products`;
 
             await axios.post(url, data, {
                 headers: {
@@ -156,7 +156,7 @@ export default function ProductUpdateForm({
                 !image.markedForDelete && (
                     <div key={image.id} className="position-relative d-inline-block me-2">
                         <img
-                            src={`${process.env.BACKEND_URL}${image.image}`}
+                            src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${image.image}`}
                             alt="Existing"
                             className="img-thumbnail"
                             style={{ width: '100px', height: '100px' }}

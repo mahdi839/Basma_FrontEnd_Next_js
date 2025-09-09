@@ -13,29 +13,29 @@ import axios from "axios";
 
 export default async function Footer() {
   const footerData = await fetch(
-    `${process.env.BACKEND_URL}api/footer-settings`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}api/footer-settings`,
     {
       cache: "no-store",
     }
   );
 
-  
+
 
   const data = await footerData.json();
 
   // Always define backendUrl once
-  const backendUrl = process.env.BACKEND_URL.endsWith("/")
-    ? process.env.BACKEND_URL.slice(0, -1)
-    : process.env.BACKEND_URL;
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL.endsWith("/")
+    ? process.env.NEXT_PUBLIC_BACKEND_URL.slice(0, -1)
+    : process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const socialLinksData = await fetch(
-    `${process.env.BACKEND_URL}api/social-links-first`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}api/social-links-first`,
     {
       cache: "no-store",
     }
   );
 
- 
+
   const socialData = await socialLinksData.json();
   const currentYear = new Date().getFullYear();
 

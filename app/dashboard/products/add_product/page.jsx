@@ -21,7 +21,7 @@ export default function ProductUploadForm() {
         categories: []
     });
 
-    const baseUrl = process.env.BACKEND_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     // Fetch available sizes
     useEffect(() => {
         const fetchSizes = async () => {

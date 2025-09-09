@@ -22,7 +22,7 @@ export default function FooterSettingsForm() {
   const [recordId, setRecordId] = useState(null);
 
   useEffect(() => {
-    showData(process.env.BACKEND_URL + "api/footer-settings/1");
+    showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/footer-settings/1");
   }, []);
 
   useEffect(() => {
@@ -35,9 +35,9 @@ export default function FooterSettingsForm() {
       });
       setRecordId(data.id);
 
-      const backendUrl = process.env.BACKEND_URL.endsWith("/")
-        ? process.env.BACKEND_URL.slice(0, -1)
-        : process.env.BACKEND_URL;
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL.endsWith("/")
+        ? process.env.NEXT_PUBLIC_BACKEND_URL.slice(0, -1)
+        : process.env.NEXT_PUBLIC_BACKEND_URL;
 
       if (data.logo_path) {
         setPreviewUrl(backendUrl + data.logo_path);
@@ -75,20 +75,20 @@ export default function FooterSettingsForm() {
 
     if (recordId) {
       await updateData(
-        `${process.env.BACKEND_URL}api/footer-settings/${recordId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/footer-settings/${recordId}`,
         payload,
         "Footer settings updated!",
         ""
       );
     } else {
       await storeData(
-        process.env.BACKEND_URL + "api/footer-settings",
+        process.env.NEXT_PUBLIC_BACKEND_URL + "api/footer-settings",
         payload,
         "Footer settings saved!"
       );
     }
 
-    showData(process.env.BACKEND_URL + "api/footer-settings/1");
+    showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/footer-settings/1");
   };
 
   if (fetchLoading) {

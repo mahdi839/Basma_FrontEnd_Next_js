@@ -18,7 +18,7 @@ export default function ProductFilter({ value, onChange, required = false }) {
           token = localStorage.getItem("token");
         }
         const response = await axios.get(
-          process.env.BACKEND_URL + 'api/products',
+          process.env.NEXT_PUBLIC_BACKEND_URL + 'api/products',
           {
             headers: {
               Authorization: `Bearer ${token}`

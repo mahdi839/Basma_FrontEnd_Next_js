@@ -11,7 +11,7 @@ export default function page() {
     const router = useRouter()
 
     async function storeCategory(e) {
-        const url = process.env.BACKEND_URL + 'api/categories'
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + 'api/categories'
         let token = null;
 
         if (typeof window !== "undefined") {

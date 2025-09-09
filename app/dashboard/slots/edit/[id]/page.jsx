@@ -40,9 +40,9 @@ export default function page() {
     error,
   } = useGetSingleData();
   const { indexData, loading, data, setData } = useIndexData();
-  const ProductsUrl = process.env.BACKEND_URL + `api/slots_products/create`;
+  const ProductsUrl = process.env.NEXT_PUBLIC_BACKEND_URL + `api/slots_products/create`;
   const singleDataUrl =
-    process.env.BACKEND_URL + `api/product-slots/edit/${id}`;
+    process.env.NEXT_PUBLIC_BACKEND_URL + `api/product-slots/edit/${id}`;
   useEffect(() => {
     indexData(ProductsUrl);
     fetchSingleData(singleDataUrl);
@@ -78,7 +78,7 @@ export default function page() {
       priority,
       product_id: selectedProducts.map(Number),
     };
-    const updateUrl = process.env.BACKEND_URL + `api/product-slots/${id}`;
+    const updateUrl = process.env.NEXT_PUBLIC_BACKEND_URL + `api/product-slots/${id}`;
     const redirectUrl = "/dashboard/slots";
     updateData(updateUrl, payload, "Slot updated successfully", redirectUrl);
 
@@ -215,7 +215,7 @@ export default function page() {
                 <button
                   type="submit"
                   className="dashboard-btn"
-                  // disabled={isStoring}
+                // disabled={isStoring}
                 >
                   Save Slot
                 </button>

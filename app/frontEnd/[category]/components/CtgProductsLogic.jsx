@@ -15,7 +15,7 @@ export default function CtgProductsLogic({ products, category }) {
     status: false,
   });
   const [selectedSizes, setSelectedSizes] = useState("");
-  const baseUrl = process.env.BACKEND_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
 

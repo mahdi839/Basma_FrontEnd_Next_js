@@ -17,7 +17,7 @@ export default function Admin_Log_in() {
 
 
     try {
-      const response = await axios.post(`${process.env.BACKEND_URL}api/logIn`, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/logIn`, {
         email,
         password,
       });
@@ -27,7 +27,7 @@ export default function Admin_Log_in() {
         if (typeof window !== "undefined") {
           localStorage.setItem("token", response.data.token);
         }
-        
+
         toast.success("successfully log in");
         router.push('/dashboard')
       }

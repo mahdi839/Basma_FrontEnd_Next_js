@@ -28,7 +28,7 @@ export default function Navbar() {
   const cartItems = useSelector((state) => state.cart.items);
   const [isClient, setIsClient] = useState(false);
   const [isShowCollaps, setIsShowCollaps] = useState(false);
-  const [ isShowCollapsMenu, setIsShowCollapsMenu ] = useState('category');
+  const [isShowCollapsMenu, setIsShowCollapsMenu] = useState('category');
   const [footerData, setFooterData] = useState(null);
   const [logoUrl, setLogoUrl] = useState(null);
   useEffect(() => {
@@ -36,26 +36,26 @@ export default function Navbar() {
   }, []);
 
   async function fetchFooterData() {
-    let data = await axios.get(`${process.env.BACKEND_URL}api/footer-settings`)
+    let data = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/footer-settings`)
     setFooterData(data.data);
   }
- 
-  
-  useEffect(()=>{
+
+
+  useEffect(() => {
     fetchFooterData();
-  },[])
+  }, [])
 
- 
-   // 2. Build logoUrl only after footerData updates
-useEffect(() => {
-  if (footerData?.logo_path) {
-    const backendUrl = process.env.BACKEND_URL.endsWith("/")
-      ? process.env.BACKEND_URL.slice(0, -1)
-      : process.env.BACKEND_URL;
 
-    setLogoUrl(backendUrl + footerData.logo_path);
-  }
-}, [footerData]);
+  // 2. Build logoUrl only after footerData updates
+  useEffect(() => {
+    if (footerData?.logo_path) {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL.endsWith("/")
+        ? process.env.NEXT_PUBLIC_BACKEND_URL.slice(0, -1)
+        : process.env.NEXT_PUBLIC_BACKEND_URL;
+
+      setLogoUrl(backendUrl + footerData.logo_path);
+    }
+  }, [footerData]);
 
 
 
@@ -64,24 +64,24 @@ useEffect(() => {
     0
   );
 
-  function handleCollaps (){
+  function handleCollaps() {
     setIsShowCollaps(true)
   }
-  function handleCollapsCancel (){
+  function handleCollapsCancel() {
     setIsShowCollaps(false)
   }
   function handleCollaps_menu(menu) {
     setIsShowCollapsMenu(menu)
   }
 
+console.log(footerData?.logo_path)
 
- 
   return (
     <div className="position-relative">
-      
+
       <div className="humberger__menu__wrapper">
         <div className="humberger__menu__cart">
-         
+
           <div className="header__cart__price">
             Cart Total: <span>{isClient ? CartItemsPrice : 0} Tk</span>
           </div>
@@ -174,18 +174,18 @@ useEffect(() => {
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo">
                 {
-                  logoUrl && 
+                  logoUrl &&
                   <Link href="/">
                     <Image
                       src={logoUrl}
                       alt="Logo"
-                       width={80}           // desired width on the page
-                        height={65}          // same as width for square logo
-                        style={{ maxWidth: '100%', height: 'auto' }}
+                      width={80}           // desired width on the page
+                      height={65}          // same as width for square logo
+                      style={{ maxWidth: '100%', height: 'auto' }}
                     />
                   </Link>
                 }
-               
+
               </div>
             </div>
             <div className="col-lg-6 d-none d-xl-block">
@@ -197,7 +197,7 @@ useEffect(() => {
                   <li>
                     <Link href="/shop">Shop</Link>
                   </li>
-                   <li>
+                  <li>
                     <Link href="/frontEnd/about_us">About Us</Link>
                   </li>
                 </ul>
@@ -206,7 +206,7 @@ useEffect(() => {
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__cart">
                 <div className="header__cart__price d-none d-xl-block">
-                
+
                   Cart Total: <span>{isClient ? CartItemsPrice : 0} Tk</span>
                 </div>
               </div>
@@ -219,36 +219,36 @@ useEffect(() => {
         </div>
       </header>
       {/* mobile collaps menu start */}
-      
-        <div className={`${style.collaps_div} ${isShowCollaps ? style.show_col_menu : style.hide_col_menu}`}>
-          <div className={`${style.collaps_cancel_div}`}  onClick={handleCollapsCancel}>
-            <ImCancelCircle size={22} />
+
+      <div className={`${style.collaps_div} ${isShowCollaps ? style.show_col_menu : style.hide_col_menu}`}>
+        <div className={`${style.collaps_cancel_div}`} onClick={handleCollapsCancel}>
+          <ImCancelCircle size={22} />
+        </div>
+        <div className={`${style.menu_category_main}`}>
+          <div className={`${style.menu_category_sub}`}>
+            <div className={`${style.menu_category_label_one} `} onClick={() => handleCollaps_menu('category')}> <span className={`${isShowCollapsMenu === 'category' ? style.collaps_border_one : ''}`}>Category</span> </div>
+            <div className={`${style.menu_category_label_two}`} onClick={() => handleCollaps_menu('menu')}><span className={`${isShowCollapsMenu === 'menu' ? style.collaps_border_two : ''}`}>Menu</span></div>
           </div>
-          <div className={`${style.menu_category_main}`}>
-            <div className={`${style.menu_category_sub}`}>
-              <div className={`${style.menu_category_label_one} `} onClick={()=>handleCollaps_menu('category')}> <span className={`${isShowCollapsMenu === 'category'? style.collaps_border_one:''}`}>Category</span> </div>
-              <div className={`${style.menu_category_label_two}`} onClick={()=>handleCollaps_menu('menu')}><span className={`${isShowCollapsMenu ==='menu'? style.collaps_border_two : ''}`}>Menu</span></div>
-            </div>
-            <div className={`${style.collaps_category_list_div}`}>
-              {isShowCollapsMenu === 'category' && (
-                <ul className={` my-3 ${style.collaps_category_list}`}>
-                  <NavCategories  onClick={handleCollapsCancel}  />
-                </ul>
-              )}
-              {isShowCollapsMenu === 'menu' &&(
-                 <ul className={` my-3 ${style.collaps_category_list}`}>
-                  <li >
-                    <Link href='/' onClick={()=>handleCollapsCancel ()}>Home</Link>
-                  </li>
-                  <li>
-                    <Link onClick={()=>handleCollapsCancel ()} href='/about'>About Us</Link>
-                  </li>
-               </ul>
-              )}
-            </div>
+          <div className={`${style.collaps_category_list_div}`}>
+            {isShowCollapsMenu === 'category' && (
+              <ul className={` my-3 ${style.collaps_category_list}`}>
+                <NavCategories onClick={handleCollapsCancel} />
+              </ul>
+            )}
+            {isShowCollapsMenu === 'menu' && (
+              <ul className={` my-3 ${style.collaps_category_list}`}>
+                <li >
+                  <Link href='/' onClick={() => handleCollapsCancel()}>Home</Link>
+                </li>
+                <li>
+                  <Link onClick={() => handleCollapsCancel()} href='/about'>About Us</Link>
+                </li>
+              </ul>
+            )}
           </div>
         </div>
-    
+      </div>
+
       {/* mobile collaps menu end */}
     </div>
   );

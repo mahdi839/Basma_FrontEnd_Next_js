@@ -56,7 +56,7 @@ export default function OrderTable({
     let updatedStatus = e.target.value;
     try {
       await axios.post(
-        process.env.BACKEND_URL + `api/order_status/${orderId}`,
+        process.env.NEXT_PUBLIC_BACKEND_URL + `api/order_status/${orderId}`,
         { status: updatedStatus },
         {
           headers: {

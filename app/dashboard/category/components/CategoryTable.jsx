@@ -14,7 +14,7 @@ export default function CategoryTable({ categories }) {
         if (typeof window !== "undefined") {
             token = localStorage.getItem("token");
         }
-        const url = process.env.BACKEND_URL + `api/categories/${id}`
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + `api/categories/${id}`
         const result = await Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",

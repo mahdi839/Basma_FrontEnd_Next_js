@@ -8,7 +8,7 @@ export default function page({ params }) {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     let { id } = params;
-    const url = process.env.BACKEND_URL + `api/categories/${id}`
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + `api/categories/${id}`
     let token = null;
 
     if (typeof window !== "undefined") {

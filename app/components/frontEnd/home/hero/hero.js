@@ -26,7 +26,7 @@ export default function Hero({ data }) {
       </div>
     ),
   };
-console.log(`${process.env.BACKEND_URL}storage/${data.banner_images[0].path}`)
+  console.log(`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${data.banner_images[0].path}`)
   return (
     <div className="container  ">
       {/* ${style.hero__item} ${style.set_bg}`}  style={{
@@ -34,11 +34,11 @@ console.log(`${process.env.BACKEND_URL}storage/${data.banner_images[0].path}`)
 
       <Slider {...settings}>
         {
-          data?.banner_images?.map((index,slidImg) => (
+          data?.banner_images?.map((index, slidImg) => (
             <Image
               key={index}
               className="hero_slider_img"
-              src={`${process.env.BACKEND_URL}storage/${slidImg.path}`} 
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${slidImg.path}`}
               width={1200} // Actual image width
               height={400}
               alt="Banner"
