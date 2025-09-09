@@ -9,104 +9,167 @@ import {
   FaPhone,
 } from "react-icons/fa";
 import { CiLocationOn, CiMail } from "react-icons/ci";
-import axios from "axios";
 
 export default async function Footer() {
-  const footerData = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}api/footer-settings`,
-    {
-      cache: "no-store",
-    }
-  );
-
-
-
-  const data = await footerData.json();
+  let data = {};
+  let socialData = {};
 
   // Always define backendUrl once
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL.endsWith("/")
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.endsWith("/")
     ? process.env.NEXT_PUBLIC_BACKEND_URL.slice(0, -1)
-    : process.env.NEXT_PUBLIC_BACKEND_URL;
+    : process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
-  const socialLinksData = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}api/social-links-first`,
-    {
-      cache: "no-store",
+  try {
+    // Fetch footer data with error handling
+    const footerResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}api/footer-settings`,
+      {
+        next: { revalidate: 60 } ,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!footerResponse.ok) {
+      console.error(`Footer API failed: ${footerResponse.status} ${footerResponse.statusText}`);
+    } else {
+      const responseText = await footerResponse.text();
+      if (responseText) {
+        try {
+          data = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error("Failed to parse footer data:", parseError);
+          console.log("Response text:", responseText);
+        }
+      }
     }
-  );
+  } catch (error) {
+    console.error("Error fetching footer data:", error);
+  }
 
+  try {
+    // Fetch social links data with error handling
+    const socialResponse = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}api/social-links-first`,
+      {
+        cache: "no-store",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-  const socialData = await socialLinksData.json();
+    if (!socialResponse.ok) {
+      console.error(`Social links API failed: ${socialResponse.status} ${socialResponse.statusText}`);
+    } else {
+      const responseText = await socialResponse.text();
+      if (responseText) {
+        try {
+          socialData = JSON.parse(responseText);
+        } catch (parseError) {
+          console.error("Failed to parse social data:", parseError);
+          console.log("Response text:", responseText);
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching social data:", error);
+  }
+
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-warning-subtle position-relative overflow-hidden pt-5">
-      {/* Top curve */}
-
       <div className="container position-relative py-4">
         <div className="row g-4">
           {/* Logo Section */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
             <div className="bg-white p-2 rounded shadow-sm d-inline-block">
               <Link href="/">
-                <Image
-                  src={backendUrl + data.logo_path}
-                  alt=""
-                  width={91} // desired width on the page
-                  height={80} // same as width for square logo
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    background: "transparent",
-                  }}
-                />
+                {data.logo_path ? (
+                  <Image
+                    src={backendUrl + data.logo_path}
+                    alt="Company Logo"
+                    width={91}
+                    height={80}
+                    style={{
+                      maxWidth: "100%",
+                      height: "auto",
+                      background: "transparent",
+                    }}
+                  />
+                ) : (
+                  <div className="d-flex align-items-center justify-content-center" style={{width: 91, height: 80}}>
+                    <span>Logo</span>
+                  </div>
+                )}
               </Link>
             </div>
 
-            <p className="text-muted mb-4">{data?.company_description}</p>
+            <p className="text-muted mb-4">
+              {data?.company_description || "Your company description here"}
+            </p>
+            
             <div className="d-flex gap-3">
-              <Link href={socialData?.facebook} className="text-dark fs-5">
-                <FaFacebook />
-              </Link>
-              <Link href={socialData?.instagram} className="text-dark fs-5">
-                <FaInstagram />
-              </Link>
-              <a
-                href={`https://wa.me/${data?.company_phone}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-dark fs-5"
-              >
-                <FaWhatsappSquare />
-              </a>
-              <Link href={socialData?.youtube} className="text-dark fs-5">
-                <FaYoutube />
-              </Link>
+              {socialData?.facebook && (
+                <Link href={socialData.facebook} className="text-dark fs-5">
+                  <FaFacebook />
+                </Link>
+              )}
+              {socialData?.instagram && (
+                <Link href={socialData.instagram} className="text-dark fs-5">
+                  <FaInstagram />
+                </Link>
+              )}
+              {data?.company_phone && (
+                <a
+                  href={`https://wa.me/${data.company_phone}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-dark fs-5"
+                >
+                  <FaWhatsappSquare />
+                </a>
+              )}
+              {socialData?.youtube && (
+                <Link href={socialData.youtube} className="text-dark fs-5">
+                  <FaYoutube />
+                </Link>
+              )}
             </div>
           </div>
 
           {/* Store Information */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <h5 className="fw-bold mb-4  pb-2">Store Information</h5>
+            <h5 className="fw-bold mb-4 pb-2">Store Information</h5>
             <ul className="list-unstyled text-muted">
-              <li className="mb-3 d-flex">
-                <CiLocationOn className="text-dark mt-1 me-3 fs-5" />
-                <span>{data?.company_address}</span>
-              </li>
-              <li className="mb-3 d-flex">
-                <FaPhone className="text-dark mt-1 me-3 fs-5" />
-                <span>{data?.company_phone}</span>
-              </li>
-              <li className="d-flex">
-                <CiMail className="text-dark mt-1 me-3 fs-5" />
-                <span>{data?.company_email}</span>
-              </li>
+              {data?.company_address && (
+                <li className="mb-3 d-flex">
+                  <CiLocationOn className="text-dark mt-1 me-3 fs-5" />
+                  <span>{data.company_address}</span>
+                </li>
+              )}
+              {data?.company_phone && (
+                <li className="mb-3 d-flex">
+                  <FaPhone className="text-dark mt-1 me-3 fs-5" />
+                  <span>{data.company_phone}</span>
+                </li>
+              )}
+              {data?.company_email && (
+                <li className="d-flex">
+                  <CiMail className="text-dark mt-1 me-3 fs-5" />
+                  <span>{data.company_email}</span>
+                </li>
+              )}
             </ul>
           </div>
 
           {/* Account Links */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <h5 className="fw-bold mb-4  pb-2">My Account</h5>
+            <h5 className="fw-bold mb-4 pb-2">My Account</h5>
             <ul className="list-unstyled text-muted">
               <li className="mb-2">
                 <Link
@@ -137,7 +200,7 @@ export default async function Footer() {
 
           {/* Useful Links */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <h5 className="fw-bold mb-4  pb-2">Useful Links</h5>
+            <h5 className="fw-bold mb-4 pb-2">Useful Links</h5>
             <ul className="list-unstyled text-muted">
               <li className="mb-2">
                 <Link
@@ -181,7 +244,7 @@ export default async function Footer() {
         {/* Copyright */}
         <div className="d-flex flex-wrap align-items-center justify-content-center pb-3">
           <p className="text-muted mb-0 me-3">
-            &copy; {currentYear} My Company. All rights reserved.
+            &copy; {currentYear} {data?.company_name || "My Company"}. All rights reserved.
           </p>
         </div>
       </div>
