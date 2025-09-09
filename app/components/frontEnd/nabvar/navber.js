@@ -74,8 +74,6 @@ export default function Navbar() {
     setIsShowCollapsMenu(menu)
   }
 
-console.log(footerData?.logo_path)
-
   return (
     <div className="position-relative">
 
@@ -87,6 +85,7 @@ console.log(footerData?.logo_path)
           </div>
         </div>
       </div>
+
 
       <header className="header">
         <div className="header__top">
