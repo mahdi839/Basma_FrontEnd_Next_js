@@ -61,56 +61,76 @@ export default function Page() {
   const { storeData, loading: storeLoading } = useStoreData();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    // Validation: Check if images are selected
-    if (!formData.images || formData.images.length === 0) {
-      Swal.fire({
-        title: "Error",
-        text: "Please select at least one image",
-        icon: "error",
-      });
-      return;
-    }
-
-
-    const payload = new FormData();
-    payload.append("link", formData.link);
-    payload.append("type", formData.type);
-    if (formData.type === "slot") {
-      payload.append("products_slots_id", formData.products_slots_id);
-    }
-
-    if (formData.type === "category") {
-      payload.append("category_id", formData.category_id);
-    }
-
-    // Append each file individually
-    formData.images.forEach((file, index) => {
-      payload.append(`images[${index}]`, file);
+  if (!formData.images || formData.images.length === 0) {
+    Swal.fire({
+      title: "Error",
+      text: "Please select at least one image",
+      icon: "error",
     });
+    return;
+  }
 
-    console.log("FormData contents:");
-    for (let [key, value] of payload.entries()) {
-      console.log(key, value);
-    }
+  const payload = new FormData();
+  payload.append("link", formData.link);
+  payload.append("type", formData.type);
 
-    await storeData(
+  if (formData.type === "slot") {
+    payload.append("products_slots_id", formData.products_slots_id);
+  }
+
+  if (formData.type === "category") {
+    payload.append("category_id", formData.category_id);
+  }
+
+  // ✅ Correct way: append files individually (no array syntax needed)
+  formData.images.forEach((file) => {
+    payload.append("images[]", file);
+  });
+
+  console.log("FormData contents:");
+  for (let [key, value] of payload.entries()) {
+    console.log(key, value);
+  }
+
+  let token = null;
+  if (typeof window !== "undefined") {
+    token = localStorage.getItem("token");
+  }
+
+  try {
+    await axios.post(
       process.env.NEXT_PUBLIC_BACKEND_URL + "api/banners",
       payload,
-      "Banner created successfully"
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // ✅ Required
+        },
+      }
     );
+
+    Swal.fire("Success", "Banner created successfully", "success");
 
     setFormData({
       link: "",
       type: "",
       category_id: "",
+      products_slots_id: "",
       images: [],
     });
 
     document.getElementById("images").value = null;
-    router.push('/dashboard/banners')
-  };
+    router.push("/dashboard/banners");
+  } catch (err) {
+    Swal.fire({
+      title: "Error",
+      text: err.response?.data?.message || err.message,
+      icon: "error",
+    });
+  }
+};
 
   return (
     <div className="d-flex align-items-center justify-content-center min-vh-100 bg-light p-3">

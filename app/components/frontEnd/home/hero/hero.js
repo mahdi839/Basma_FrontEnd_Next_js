@@ -33,7 +33,7 @@ export default function Hero({ data }) {
 
       <Slider {...settings}>
         {
-          data?.banner_images?.map((index, slidImg) => (
+          data?.banner_images?.map((slidImg,index) => (
             <Image
               key={index}
               className="hero_slider_img"
