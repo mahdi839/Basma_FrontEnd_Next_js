@@ -90,7 +90,7 @@ export default async function Footer() {
             <div className=" p-2 rounded d-inline-block">
               <Link href="/">
                 {data.logo_path ? (
-                  <Image
+                  <img
                   className="desktop_logo"
                     src={backendUrl + data.logo_path}
                     alt="Company Logo"
