@@ -87,19 +87,13 @@ export default async function Footer() {
         <div className="row g-4">
           {/* Logo Section */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <div className="bg-white p-2 rounded shadow-sm d-inline-block">
+            <div className=" p-2 rounded d-inline-block">
               <Link href="/">
                 {data.logo_path ? (
                   <Image
+                  className="desktop_logo"
                     src={backendUrl + data.logo_path}
                     alt="Company Logo"
-                    width={91}
-                    height={80}
-                    style={{
-                      maxWidth: "100%",
-                      height: "auto",
-                      background: "transparent",
-                    }}
                   />
                 ) : (
                   <div className="d-flex align-items-center justify-content-center" style={{width: 91, height: 80}}>
