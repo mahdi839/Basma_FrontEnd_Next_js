@@ -114,8 +114,9 @@ export default function ProductUploadForm() {
         if (typeof window !== "undefined") {
             token = localStorage.getItem("token");
         }
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + 'api/products'
         try {
-            await axios.post('http://127.0.0.1:8000/api/products', data, {
+            await axios.post(url, data, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data' // Important for file uploads
