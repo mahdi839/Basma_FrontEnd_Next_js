@@ -1,11 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
+     remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '8000',
+      },
       {
         protocol: 'https',
-        hostname: 'api.ibtikarbd.com', // your live API
-        pathname: '/**',
+        hostname: 'api.yourdomain.com', // production API domain
       },
     ],
   },

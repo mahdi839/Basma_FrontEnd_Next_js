@@ -8,7 +8,7 @@ export default function NavCategories({ onClick }) {
   const [category, setCategory] = useState([]);
 
   async function fetchCategories() {
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + 'api/categories'
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL+'api/categories'
     try {
       const data = await axios.get(url)
       setCategory(data.data)

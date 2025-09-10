@@ -20,7 +20,6 @@ import NavSearch from "./navSearch/NavSearch";
 import style from "./hero.module.css";
 import { ImCancelCircle } from "react-icons/im";
 import NavCategories from "./components/NavCategories";
-import useIndexData from "@/app/hooks/useIndexData";
 import axios from "axios";
 
 export default function Navbar() {
@@ -73,8 +72,6 @@ export default function Navbar() {
   function handleCollaps_menu(menu) {
     setIsShowCollapsMenu(menu)
   }
-
-console.log(footerData?.logo_path)
 
   return (
     <div className="position-relative">

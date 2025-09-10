@@ -37,7 +37,6 @@ export default async function AboutUsPage() {
                     className="img-fluid rounded shadow-lg"
                     style={{ maxHeight: "400px", width: "100%", objectFit: "cover" }}
                   />
-
                 </div>
               </div>
             )}
