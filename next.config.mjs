@@ -9,7 +9,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'api.yourdomain.com', // production API domain
+        hostname: 'api.ibtikarbd.com', // production API domain
       },
     ],
   },
