@@ -167,7 +167,7 @@ function FeatureClient({ products, slotData }) {
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
 
 
-                  <h2 className="featured-heading font-weight-bold mb-0 " style={{ fontSize: '24px', fontWeight: '600', color: '#222' }}>
+                  <h2 className="featured-heading font-weight-bold mb-0  fs-5 fs-md-3 fs-lg-2 fs-xl-1" style={{ fontWeight: '600', color: '#222' }}>
                     {slot.slot_name}
                   </h2>
 
@@ -177,15 +177,15 @@ function FeatureClient({ products, slotData }) {
                       <div className="d-flex gap-2 mb-1">
                         <button
                           className="d-flex align-items-center justify-content-center slider-nav-btn"
-                          style={{ width: '36px', height: '36px' }}
+                         
                           // Connect to this specific slider
                           onClick={() => sliderRefs.current[slotIndex]?.current?.slickPrev()}
                         >
-                          <FaChevronLeft className="slider-arrow" style={{ fontSize: '14px' }} />
+                          <FaChevronLeft className="slider-arrow"  />
                         </button>
                         <button
                           className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
-                          style={{ width: '36px', height: '36px', borderColor: '#e1e1e1' }}
+                          
                           // Connect to this specific slider
                           onClick={() => sliderRefs.current[slotIndex]?.current?.slickNext()}
                         >

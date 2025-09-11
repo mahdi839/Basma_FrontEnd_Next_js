@@ -1303,6 +1303,10 @@ color: #2c3e50;
 	background: transparent;
 }
 
+.slider-nav-btn{
+	width: 36px;
+	height: 36px;
+}
 
 
 @media screen and (max-width: 768px) {
@@ -1317,6 +1321,11 @@ color: #2c3e50;
   .btn-grad{
 	margin: 5px;
   }
+
+  .slider-nav-btn{
+	width: 26px;
+	height: 26px;
+}
 
 }
          
