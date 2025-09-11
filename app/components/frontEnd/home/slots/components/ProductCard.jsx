@@ -45,7 +45,7 @@ const ProductCard = React.memo(function ProductCard({
             />
           </Link>
           {/* Product Actions */}
-          {showOptionDiv.status === false && (
+         
             <div
               className="quick-add-btn product-actions position-absolute d-flex flex-column "
 
@@ -60,7 +60,7 @@ const ProductCard = React.memo(function ProductCard({
               </Link>
 
             </div>
-          )}
+          
 
           {/* Quick add to cart button (shown on hover) */}
         </div>

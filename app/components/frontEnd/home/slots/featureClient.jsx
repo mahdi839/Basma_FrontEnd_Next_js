@@ -101,7 +101,10 @@ function FeatureClient({ products, slotData }) {
   }
 
   function handleAddToCart(product) {
-    setShowOptionDiv(false)
+    setShowOptionDiv({
+      ...showOptionDiv,
+      status:false
+    })
 
     let existingCart = cartItems.find(existProduct => existProduct.id === product.id)
     if (existingCart) {
