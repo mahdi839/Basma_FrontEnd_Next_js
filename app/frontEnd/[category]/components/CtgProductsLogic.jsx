@@ -101,7 +101,7 @@ export default function CtgProductsLogic({ products, category }) {
     <div className="container">
       <div className="row position-relative">
         {products?.map((product, index) => (
-          <div className="col-lg-3 col-md-4 col-sm-6" key={product.id}>
+          <div className="col-6 col-lg-3 col-md-4 " key={product.id}>
             <ProductCard
               slotProducts={product}
               showOptionDiv={showOptionDiv}
