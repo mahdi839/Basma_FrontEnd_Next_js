@@ -87,7 +87,7 @@ export default async function Footer() {
         <div className="row g-4">
           {/* Logo Section */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <div className=" p-2 rounded d-inline-block">
+            <div className=" rounded d-inline-block">
               <Link href="/">
                 {data.logo_path ? (
                   <img

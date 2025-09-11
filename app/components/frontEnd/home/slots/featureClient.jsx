@@ -177,7 +177,6 @@ function FeatureClient({ products, slotData }) {
                       <div className="d-flex gap-2 mb-1">
                         <button
                           className="d-flex align-items-center justify-content-center slider-nav-btn"
-                         
                           // Connect to this specific slider
                           onClick={() => sliderRefs.current[slotIndex]?.current?.slickPrev()}
                         >
