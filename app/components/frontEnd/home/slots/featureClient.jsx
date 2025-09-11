@@ -69,7 +69,7 @@ function FeatureClient({ products, slotData }) {
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 2,
           slidesToScroll: 1,
 
         }
@@ -230,7 +230,7 @@ function FeatureClient({ products, slotData }) {
                           handleSizeSelect={handleSizeSelect}
                           handleAddToCart={handleAddToCart}
                           handleOptionDiv={handleOptionDiv}
-
+                          slotLength = {slot.slot_details?.length}
                         />
                       ))}
                     </Slider>

@@ -14,11 +14,12 @@ const ProductCard = React.memo(function ProductCard({
   handleSizeSelect,
   handleAddToCart,
   handleOptionDiv,
+  slotLength
 }) {
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   return (
-    <div className={`px-md-2 my-5`}>
+    <div className={`${slotLength>=4?"px-2":''} my-5`}>
       <div
         className="card product-div  p-2 bg-white h-100 product-card position-relative"
 
