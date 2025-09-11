@@ -17,12 +17,17 @@ export default function Hero({ data }) {
     autoplaySpeed: 6000,
     nextArrow: (
       <div className={style.arrow_div_right}>
-        <FaChevronRight className={style.arrow_right} />
+        {
+          data?.banner_images.length>0?<FaChevronRight className={style.arrow_right} />:''
+        }
+        
       </div>
     ),
     prevArrow: (
       <div className={style.arrow_div_left}>
-        <FaChevronLeft className={style.arrow_left} />
+       {
+         data?.banner_images.length>0? <FaChevronLeft className={style.arrow_left} />:''
+       }
       </div>
     ),
   };
