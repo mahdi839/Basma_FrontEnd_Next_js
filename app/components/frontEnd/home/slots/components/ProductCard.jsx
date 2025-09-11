@@ -126,7 +126,7 @@ const ProductCard = React.memo(function ProductCard({
           {slotProducts?.sizes?.length > 1 ? (
             <button
               type="button"
-              className="bg-transparent w-100 rounded-0"
+              className="btn-grad w-100 rounded-0"
               onClick={(e) => handleOptionDiv(e, slotProducts?.id)}
             >
               <GrAidOption className="me-2" />
