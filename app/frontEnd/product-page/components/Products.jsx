@@ -4,10 +4,12 @@ import Image from "next/image";
 import { FaFirstOrder, FaMinus, FaPhone, FaPlus } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
+import Zoom from "react-medium-image-zoom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import "react-medium-image-zoom/dist/styles.css";
 
 export default function Products({ product }) {
   const [imgUrl, setImgUrl] = useState("");
@@ -19,7 +21,7 @@ export default function Products({ product }) {
   let cartItems = useSelector(state => state.cart.items)
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter()
-  
+
   useEffect(() => {
     if (product) {
       setIsLoading(false)
@@ -40,11 +42,11 @@ export default function Products({ product }) {
   function showTab(id) {
     setActiveTab(id);
   }
-  
+
   function showAccording(id) {
     setShow((prev) => (prev == id ? 0 : id));
   }
-  
+
   let selectedSize = ""
   let selectSize = (e) => {
     let sizeId = e.target.value;
@@ -84,7 +86,7 @@ export default function Products({ product }) {
       router.push("/frontEnd/checkout")
     }
   }
-  
+
   return (
     <>
       <div className="container product-page-container">
@@ -93,14 +95,13 @@ export default function Products({ product }) {
           <div className="product_image col-12 col-md-6 mb-4 mb-md-0">
             <div className="main_image mb-3 mb-md-4 text-center">
               <div className="image-container">
-                <Image
-                  src={imgUrl ? imgUrl : baseUrl + product?.images?.[0]?.image}
-                  className="card-img-top"
-                  alt="product image"
-                  width={500}
-                  height={400}
-                  priority
-                />
+                <Zoom>
+                  <img
+                    src={imgUrl ? imgUrl : baseUrl + product?.images?.[0]?.image}
+                    className="card-img-top"
+                    alt="product image"
+                  />
+                </Zoom>
               </div>
             </div>
             <div className="sub_image d-flex gap-2 gap-md-3 justify-content-center align-items-center flex-wrap">
@@ -111,7 +112,7 @@ export default function Products({ product }) {
                   onClick={() => showImage(img.id)}
                 >
                   <Image
-                  className="pl-2"
+                    className="pl-2"
                     src={baseUrl + img.image}
                     alt="product thumbnail"
                     width={80}
@@ -121,27 +122,27 @@ export default function Products({ product }) {
               ))}
             </div>
           </div>
-          
+
           {/* Product Description */}
           <div className="product_desc col-12 col-md-6">
             <div className="ms-md-5">
               <h1 className="product-title fw-bold mb-3">{product?.title}</h1>
               <h3 className="product-price mb-4">৳ {price || product.price || product?.sizes[0]?.pivot.price}</h3>
-              
+
               {product.sizes.length > 0 && (
                 <div className="size-selector mb-4">
                   <span className="size-label me-3 fw-bold">Select Size:</span>
                   <div className="size-options d-flex flex-wrap gap-2">
                     {product.sizes?.map((size, index) => (
                       <div className="form-check" key={size.id}>
-                        <input 
-                          className="form-check-input" 
-                          id={`size-${size.id}`} 
-                          type="radio" 
-                          name="size" 
-                          value={size.id} 
-                          onChange={selectSize} 
-                          defaultChecked={index === 0} 
+                        <input
+                          className="form-check-input"
+                          id={`size-${size.id}`}
+                          type="radio"
+                          name="size"
+                          value={size.id}
+                          onChange={selectSize}
+                          defaultChecked={index === 0}
                         />
                         <label className="form-check-label fw-bold" htmlFor={`size-${size.id}`}>
                           {size.size}
@@ -151,11 +152,11 @@ export default function Products({ product }) {
                   </div>
                 </div>
               )}
-              
+
               <p className="product-description mb-4">
                 {product.description}
               </p>
-              
+
               <div className="action-buttons d-flex gap-2 flex-wrap">
                 <button className="btn-grad px-3 py-2 rounded-0" onClick={() => handleAddToCart(product.id, "add")}>
                   Add To Cart
@@ -170,7 +171,7 @@ export default function Products({ product }) {
             </div>
           </div>
         </div>
-        
+
         {/* Product Tabs */}
         <div className="desc_tab_container mt-4 mt-md-5">
           {/* Tabs Header */}
@@ -266,7 +267,7 @@ export default function Products({ product }) {
         </div>
       </div>
 
-    
+
     </>
   );
 }
