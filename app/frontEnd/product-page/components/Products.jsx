@@ -9,8 +9,6 @@ import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
-
-
 export default function Products({ product }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
@@ -21,6 +19,7 @@ export default function Products({ product }) {
   let cartItems = useSelector(state => state.cart.items)
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter()
+  
   useEffect(() => {
     if (product) {
       setIsLoading(false)
@@ -33,8 +32,6 @@ export default function Products({ product }) {
     }
   }, [product])
 
-
-
   function showImage(id) {
     const clickedImg = product.images.find((img) => img.id == id);
     setImgUrl(baseUrl + clickedImg.image);
@@ -43,29 +40,24 @@ export default function Products({ product }) {
   function showTab(id) {
     setActiveTab(id);
   }
+  
   function showAccording(id) {
     setShow((prev) => (prev == id ? 0 : id));
   }
+  
   let selectedSize = ""
   let selectSize = (e) => {
     let sizeId = e.target.value;
     selectedSize = product.sizes.find(size => size.id == sizeId)
-    setPrice(seletedSize.pivot.price)
+    setPrice(selectedSize.pivot.price)
   }
-
-
 
   const getYoutubeVideoId = (url) => {
     if (!url) return null;
-
-    // Handle different YouTube URL formats
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
-
     return (match && match[2].length === 11) ? match[2] : null;
   };
-
-
 
   function handleAddToCart(id, type) {
     let existingProduct = cartItems.find(item => item.id === id);
@@ -92,83 +84,97 @@ export default function Products({ product }) {
       router.push("/frontEnd/checkout")
     }
   }
+  
   return (
     <>
-      <div className="container">
-        <div className="row my-5">
-          <div className="product_image col-6 d-flex flex-column ">
-            <div className="main_image mb-4 " style={{ background: "#0202" }}>
-              <Image
-                src={imgUrl ? imgUrl : baseUrl + product?.images?.[0].image}
-                className="card-img-top"
-                alt="product image"
-                width={500}
-                height={400}
-              />
+      <div className="container product-page-container">
+        <div className="row my-4 my-md-5">
+          {/* Product Images */}
+          <div className="product_image col-12 col-md-6 mb-4 mb-md-0">
+            <div className="main_image mb-3 mb-md-4 text-center">
+              <div className="image-container">
+                <Image
+                  src={imgUrl ? imgUrl : baseUrl + product?.images?.[0]?.image}
+                  className="card-img-top"
+                  alt="product image"
+                  width={500}
+                  height={400}
+                  priority
+                />
+              </div>
             </div>
-            <div className="sub_image d-flex gap-3 justify-content-center align-content-center">
+            <div className="sub_image d-flex gap-2 gap-md-3 justify-content-center align-items-center flex-wrap">
               {product?.images?.map((img) => (
                 <div
                   key={img.id}
-                  style={{
-                    width: "8rem",
-                    border: "1px solid #0101",
-                    padding: "1rem",
-                    cursor: "pointer",
-                  }}
+                  className="thumbnail"
+                  onClick={() => showImage(img.id)}
                 >
                   <Image
+                  className="pl-2"
                     src={baseUrl + img.image}
-                    className=""
-                    alt="product image"
-                    width={100}
-                    height={100}
-                    onClick={() => showImage(img.id)}
+                    alt="product thumbnail"
+                    width={80}
+                    height={80}
                   />
                 </div>
               ))}
             </div>
           </div>
-          <div className="product_desc col-6 ">
-            <div className="ms-5">
-              <p className="fw-bold">{product?.title}</p>
-              <h5 className="product_price">৳ {product.price || product?.sizes[0]?.pivot.price}</h5>
-              <div className="flex justify-content-center align-items-center mt-3 size-div">
-                {product.sizes.length > 0 && (
-                  <span className="me-3 fw-bold">Select</span>
-                )}
-                {product.sizes?.map((size, index) => (
-                  <div className="d-flex d-inline" key={size.id}>
-                    <input className="me-3 " id="m" type="radio" name="size" value={size.id} onChange={selectSize} defaultChecked={index === 0} />
-                    <label htmlFor="m" className="me-3 fw-bold">
-                      {size.size}
-                    </label>
+          
+          {/* Product Description */}
+          <div className="product_desc col-12 col-md-6">
+            <div className="ms-md-5">
+              <h1 className="product-title fw-bold mb-3">{product?.title}</h1>
+              <h3 className="product-price mb-4">৳ {price || product.price || product?.sizes[0]?.pivot.price}</h3>
+              
+              {product.sizes.length > 0 && (
+                <div className="size-selector mb-4">
+                  <span className="size-label me-3 fw-bold">Select Size:</span>
+                  <div className="size-options d-flex flex-wrap gap-2">
+                    {product.sizes?.map((size, index) => (
+                      <div className="form-check" key={size.id}>
+                        <input 
+                          className="form-check-input" 
+                          id={`size-${size.id}`} 
+                          type="radio" 
+                          name="size" 
+                          value={size.id} 
+                          onChange={selectSize} 
+                          defaultChecked={index === 0} 
+                        />
+                        <label className="form-check-label fw-bold" htmlFor={`size-${size.id}`}>
+                          {size.size}
+                        </label>
+                      </div>
+                    ))}
                   </div>
-
-                ))}
-
-
-              </div>
-              <p className="pt-2">
+                </div>
+              )}
+              
+              <p className="product-description mb-4">
                 {product.description}
               </p>
+              
+              <div className="action-buttons d-flex gap-2 flex-wrap">
+                <button className="btn-grad px-3 py-2 rounded-0" onClick={() => handleAddToCart(product.id, "add")}>
+                  Add To Cart
+                </button>
+                <button className="btn-grad px-3 py-2 rounded-0" onClick={() => handleAddToCart(product.id, "order")}>
+                  <span className="pe-1">
+                    <FaFirstOrder />
+                  </span>
+                  Order Now
+                </button>
+              </div>
             </div>
-            <div className="d-flex gap-2 ms-5">
-
-              <button className="btn-grad px-3 py-1 rounded-0" onClick={() => handleAddToCart(product.id, "add")}>Add To Cart</button>
-              <button className="btn-grad px-3 py-1 rounded-0" onClick={() => handleAddToCart(product.id, "order")}>
-                <span className="pe-1">
-                  <FaFirstOrder />
-                </span>
-                Order Now
-              </button>
-            </div>
-
           </div>
         </div>
-        <div className="desc_tab_container">
+        
+        {/* Product Tabs */}
+        <div className="desc_tab_container mt-4 mt-md-5">
           {/* Tabs Header */}
-          <div className="tabs-header d-flex justify-content-center gap-3 mb-4">
+          <div className="tabs-header d-flex flex-wrap justify-content-center gap-2 gap-md-3 mb-4">
             <button
               className={`tab-btn ${activeTab === "desc" ? "active" : ""}`}
               onClick={() => showTab("desc")}
@@ -194,13 +200,10 @@ export default function Products({ product }) {
             {/* Description Tab */}
             {activeTab === "desc" && (
               <div className="description-content animated-fade">
-                <div className="content-card d-flex justify-content-center align-items-center flex-column">
-
+                <div className="content-card p-3 p-md-4">
                   <div className="description-text">
                     {product.description}
                   </div>
-
-
                 </div>
               </div>
             )}
@@ -208,53 +211,53 @@ export default function Products({ product }) {
             {/* FAQ Tab */}
             {activeTab === "faq" && (
               <div className="faq-content animated-fade">
-                <div className="content-card">
-
+                <div className="content-card p-3 p-md-4">
                   <div className="accordion-list">
-
-                    {product?.faqs.length > 0 ? (
-                      product?.faqs?.map((faq) => (
+                    {product?.faqs?.length > 0 ? (
+                      product.faqs.map((faq) => (
                         <div
                           className={`accordion-item ${show === faq.id ? "active" : ""}`}
                           key={faq.id}
                         >
                           <div
-                            className="accordion-header"
+                            className="accordion-header p-3"
                             onClick={() => showAccording(faq.id)}
                           >
                             <div className="d-flex justify-content-between align-items-center">
-                              <h4 className="question-text">{faq.question}</h4>
+                              <h4 className="question-text m-0">{faq.question}</h4>
                               <span className="accordion-icon">
                                 {show === faq.id ? <IoIosArrowDown /> : <IoIosArrowUp />}
                               </span>
                             </div>
                           </div>
                           {show === faq.id && (
-                            <div className="accordion-body">
-                              <p className="answer-text">{faq.answer}</p>
+                            <div className="accordion-body p-3">
+                              <p className="answer-text m-0">{faq.answer}</p>
                             </div>
                           )}
                         </div>
                       ))
-                    ) : <div className="text-center text-danger">No FAQs found.</div>}
+                    ) : <div className="text-center text-danger p-3">No FAQs found.</div>}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Terms Tab */}
+            {/* Video Tab */}
             {activeTab === "terms" && (
-              <div className="terms-content animated-fade ">
-                <div className="content-card">
-                  {product?.video_url && (
-
-                    <iframe
-                      className="youtube-embed"
-                      src={`https://www.youtube.com/embed/${getYoutubeVideoId(product.video_url)}`}
-                      title="Product Video"
-                      allowFullScreen
-                    />
-
+              <div className="terms-content animated-fade">
+                <div className="content-card p-3 p-md-4">
+                  {product?.video_url ? (
+                    <div className="video-container ratio ratio-16x9">
+                      <iframe
+                        className="youtube-embed"
+                        src={`https://www.youtube.com/embed/${getYoutubeVideoId(product.video_url)}`}
+                        title="Product Video"
+                        allowFullScreen
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-center text-danger">No video available.</div>
                   )}
                 </div>
               </div>
@@ -262,6 +265,8 @@ export default function Products({ product }) {
           </div>
         </div>
       </div>
+
+    
     </>
   );
 }
