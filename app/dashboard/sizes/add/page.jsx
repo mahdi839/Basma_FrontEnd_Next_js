@@ -13,6 +13,7 @@ export default function Page() {
     e.preventDefault();
     const sizeUrl = process.env.NEXT_PUBLIC_BACKEND_URL + 'api/sizes';
     storeData(sizeUrl, { size }, "Size added successfully");
+    router.push('/dashboard/sizes')
   }
 
 
