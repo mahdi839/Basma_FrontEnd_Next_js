@@ -86,8 +86,8 @@ export default async function Footer() {
       <div className="container position-relative py-4">
         <div className="row g-4">
           {/* Logo Section */}
-          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <div className=" rounded d-inline-block">
+          <div className="col-md-6 col-lg-3 mb-1 mb-lg-4 mb-lg-0 footer_logo_section">
+            <div className=" rounded  footer_logo_div">
               <Link href="/">
                 {data.logo_path ? (
                   <img
@@ -103,7 +103,7 @@ export default async function Footer() {
               </Link>
             </div>
 
-            <p className="text-muted mb-4">
+            <p className="text-muted mb-2 mb-lg-4 ">
               {data?.company_description || "Your company description here"}
             </p>
             
@@ -137,12 +137,12 @@ export default async function Footer() {
           </div>
 
           {/* Store Information */}
-          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <h5 className="fw-bold mb-4 pb-2">Store Information</h5>
+          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0 pt-2 pt-lg-0 footer_store_info">
+            <h5 className="fw-bold mb-2 mb-md-4 pb-2">Store Information</h5>
             <ul className="list-unstyled text-muted">
               {data?.company_address && (
                 <li className="mb-3 d-flex">
-                  <CiLocationOn className="text-dark mt-1 me-3 fs-5" />
+                  <CiLocationOn className="text-dark mt-1 me-md-3 fs-5" />
                   <span>{data.company_address}</span>
                 </li>
               )}
@@ -162,7 +162,7 @@ export default async function Footer() {
           </div>
 
           {/* Account Links */}
-          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
+          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0 footer_account">
             <h5 className="fw-bold mb-4 pb-2">My Account</h5>
             <ul className="list-unstyled text-muted">
               <li className="mb-2">
@@ -193,7 +193,7 @@ export default async function Footer() {
           </div>
 
           {/* Useful Links */}
-          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
+          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0 footer_links">
             <h5 className="fw-bold mb-4 pb-2">Useful Links</h5>
             <ul className="list-unstyled text-muted">
               <li className="mb-2">

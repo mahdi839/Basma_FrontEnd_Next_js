@@ -1476,6 +1476,20 @@ table tr td {
 		width: 200px;
 		height: 200px;
 	}
+
+	.footer_logo_section,.footer_store_info,.footer_account,.footer_links{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.list-unstyled{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
 }
 
 @media (max-width: 576px) {
