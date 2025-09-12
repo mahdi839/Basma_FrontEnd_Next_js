@@ -21,7 +21,6 @@ export default function Products({ product }) {
   let cartItems = useSelector(state => state.cart.items)
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter()
-
   useEffect(() => {
     if (product) {
       setIsLoading(false)
@@ -63,10 +62,21 @@ export default function Products({ product }) {
 
   function handleAddToCart(id, type) {
     let existingProduct = cartItems.find(item => item.id === id);
-    if (existingProduct) {
+    if (existingProduct && type === 'add') {
       Swal.fire({
         title: "Already in the cart",
         text: "This product is already in your cart",
+        icon: "info",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#DB3340"
+      })
+      return;
+    }
+
+    if (product.sizes.length > 1 && !selectedSize) {
+      Swal.fire({
+        title: "Size Required",
+        text: "Please Select A Size",
         icon: "info",
         confirmButtonText: "Ok",
         confirmButtonColor: "#DB3340"
