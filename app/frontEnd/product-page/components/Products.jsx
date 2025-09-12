@@ -142,7 +142,7 @@ export default function Products({ product }) {
                           name="size"
                           value={size.id}
                           onChange={selectSize}
-                          defaultChecked={index === 0}
+                          defaultChecked={cartItems.some((cartItem)=>cartItem.id === product.id && cartItem.size == size.id)|| index ===0}
                         />
                         <label className="form-check-label fw-bold" htmlFor={`size-${size.id}`}>
                           {size.size}
