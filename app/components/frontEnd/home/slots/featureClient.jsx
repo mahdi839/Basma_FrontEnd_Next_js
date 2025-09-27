@@ -1,11 +1,6 @@
 "use client";
-<<<<<<< HEAD
-import React, { useEffect, useState, useRef } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-=======
 import React, { useEffect, useState, useRef, } from "react";
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
->>>>>>> 6f1b78e121dd73d7e110c57233e3be1283b9ee23
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -19,12 +14,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 function FeatureClient({ products, slotData }) {
-<<<<<<< HEAD
-  const [isLoading, setIsLoading] = useState(true);
-=======
 
   const [isLoading, setIsLoading] = useState(true)
->>>>>>> 6f1b78e121dd73d7e110c57233e3be1283b9ee23
   const sliderRefs = useRef([]);
   const [showOptionDiv, setShowOptionDiv] = useState({
     productId: null,
@@ -32,17 +23,10 @@ function FeatureClient({ products, slotData }) {
   });
   const [selectedSizes, setSelectedSizes] = useState("");
 
-<<<<<<< HEAD
-  let baseUrl = process.env.BACKEND_URL;
-  const dispatch = useDispatch();
-  const cartCount = useSelector((state) => state.cart.count);
-  const cartItems = useSelector((state) => state.cart.items);
-=======
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch()
   const cartCount = useSelector(state => state.cart.count);
   const cartItems = useSelector(state => state.cart.items)
->>>>>>> 6f1b78e121dd73d7e110c57233e3be1283b9ee23
   useEffect(() => {
     if (products) {
       setIsLoading(false);
