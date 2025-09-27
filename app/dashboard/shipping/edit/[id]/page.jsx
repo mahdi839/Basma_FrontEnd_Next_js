@@ -9,30 +9,30 @@ import { FaSpinner } from 'react-icons/fa';
 
 export default function Page() {
     const [shippingType, setShippingType] = useState('');
-    const {fetchSingleData,data,loading} = useGetSingleData()
+    const { fetchSingleData, data, loading } = useGetSingleData()
     const [storeShipping, setStoreShipping] = useState({
-        inside_dhaka:"",
+        inside_dhaka: "",
         outside_dhaka: "",
         one_shipping_cost: ""
     });
     const params = useParams();
     const id = params.id
-   const {updateData} = useUpdateData()
-   
-    const url = process.env.BACKEND_URL + `api/shipping-costs/${id}`
-    
-    useEffect(()=>{
+    const { updateData } = useUpdateData()
+
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + `api/shipping-costs/${id}`
+
+    useEffect(() => {
         fetchSingleData(url)
-    },[id])
-     // Update state when data loads
-     useEffect(() => {
+    }, [id])
+    // Update state when data loads
+    useEffect(() => {
         if (data) {
             setStoreShipping({
                 inside_dhaka: data.inside_dhaka || "",
                 outside_dhaka: data.outside_dhaka || "",
                 one_shipping_cost: data.one_shipping_cost || ""
             });
-            
+
             // Set shipping type based on existing data
             if (data.one_shipping_cost) {
                 setShippingType('one');
@@ -41,28 +41,28 @@ export default function Page() {
             }
         }
     }, [data]);
-    function handleShipping (e){
-        const {name,value} = e.target;
-        setStoreShipping((prev)=>({
+    function handleShipping(e) {
+        const { name, value } = e.target;
+        setStoreShipping((prev) => ({
             ...prev,
-            [name]:value
-        }) )
+            [name]: value
+        }))
     }
-    async function  submitShipping(e) {
+    async function submitShipping(e) {
         e.preventDefault();
-        await updateData(url,storeShipping)
+        await updateData(url, storeShipping)
     }
 
     if (loading) {
         return (
             <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="spinner-border text-danger" role="status">
-              <span className="visually-hidden">Loading...</span>
+                <div className="spinner-border text-danger" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
             </div>
-          </div>
         );
-      }
-      
+    }
+
     return (
         <div className="d-flex justify-content-center align-items-center vh-100">
             <div className="card shadow-lg p-4" style={{ width: "400px" }}>
@@ -96,9 +96,9 @@ export default function Page() {
                                     id="insideDhaka"
                                     name='inside_dhaka'
                                     placeholder="Enter cost for Inside Dhaka"
-                                    value={storeShipping.inside_dhaka??""}
+                                    value={storeShipping.inside_dhaka ?? ""}
                                     onChange={handleShipping}
-                                    
+
                                 />
                             </div>
                             <div className="form-group mb-3">
@@ -109,9 +109,9 @@ export default function Page() {
                                     id="outsideDhaka"
                                     name='outside_dhaka'
                                     placeholder="Enter cost for Outside Dhaka"
-                                    value={storeShipping.outside_dhaka??""}
+                                    value={storeShipping.outside_dhaka ?? ""}
                                     onChange={handleShipping}
-                                    
+
                                 />
                             </div>
                         </>
@@ -126,9 +126,9 @@ export default function Page() {
                                 id="oneShipping"
                                 name='one_shipping_cost'
                                 placeholder="Enter shipping cost"
-                                value={storeShipping.one_shipping_cost ??""}
+                                value={storeShipping.one_shipping_cost ?? ""}
                                 onChange={handleShipping}
-                                
+
                             />
                         </div>
                     )}

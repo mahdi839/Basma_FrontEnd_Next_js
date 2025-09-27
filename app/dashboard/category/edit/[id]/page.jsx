@@ -8,8 +8,12 @@ export default function page({ params }) {
     const [data, setData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     let { id } = params;
-    const url = process.env.BACKEND_URL + `api/categories/${id}`
-    const token = localStorage.getItem("token")
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + `api/categories/${id}`
+    let token = null;
+
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem("token");
+    }
     useEffect(() => {
         async function fetchCategory() {
             try {
@@ -22,24 +26,24 @@ export default function page({ params }) {
         }
         if (id) fetchCategory()
     }, [id])
-   
-    function handleChange (e){
-      setData({...data, name: e.target.value})
+
+    function handleChange(e) {
+        setData({ ...data, name: e.target.value })
     }
-    async function editCategory (e){
+    async function editCategory(e) {
         e.preventDefault()
         setIsLoading(true)
-        try{
-            const res = await axios.put(url,{name: data.name},{
-                headers:{
-                    'Authorization':`Bearer ${token}`
+        try {
+            const res = await axios.put(url, { name: data.name }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
             })
             toast.success("Updated Successfully!")
             window.location.href = "/dashboard/category"
-        }catch(err){
+        } catch (err) {
             toast.error(err.message)
-        }finally{
+        } finally {
             setIsLoading(false)
         }
     }

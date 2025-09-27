@@ -21,7 +21,7 @@ export default function page() {
     newImages: [],
     delete_images: [],
   });
-  const slotUrl = process.env.BACKEND_URL + `api/product-slots`;
+  const slotUrl = process.env.NEXT_PUBLIC_BACKEND_URL + `api/product-slots`;
   async function getSlotData() {
     const token = localStorage.getItem("token");
     try {
@@ -39,7 +39,7 @@ export default function page() {
       });
     }
   }
-  const url = process.env.BACKEND_URL + `api/banners/${id}`;
+  const url = process.env.NEXT_PUBLIC_BACKEND_URL + `api/banners/${id}`;
   useEffect(() => {
     showData(url);
     getSlotData();
@@ -49,7 +49,7 @@ export default function page() {
     if (data) {
       setFormData({
         link: data.link || "",
-        type: data.type || "hero", 
+        type: data.type || "hero",
         products_slots_id: data.products_slots_id || "",
         category_id: data.category_id || "",
         existingImages: data.banner_images || [],
@@ -83,7 +83,7 @@ export default function page() {
   const { updateData } = useUpdateData();
 
   const handleSubmit = async (e) => {
-    let updateurl = process.env.BACKEND_URL + `api/banners/${id}`;
+    let updateurl = process.env.NEXT_PUBLIC_BACKEND_URL + `api/banners/${id}`;
     e.preventDefault();
     let payload = new FormData();
     payload.append("link", formData.link);
@@ -104,10 +104,10 @@ export default function page() {
     for (let i = 0; i < formData.delete_images.length; i++) {
       payload.append(`delete_images[${i}]`, formData.delete_images[i]);
     }
-    
-  
 
-   await updateData(
+
+
+    await updateData(
       updateurl,
       payload,
       "Successfully Updated",
@@ -133,11 +133,10 @@ export default function page() {
             <div className="row g-4">
               {/* Slot Name */}
               <div
-                className={`${
-                  formData.type === "category" || formData.type === "slot"
+                className={`${formData.type === "category" || formData.type === "slot"
                     ? "col-md-6"
                     : "col-md-12"
-                }`}
+                  }`}
               >
                 <div className="">
                   <select
@@ -218,7 +217,7 @@ export default function page() {
                       <div className="bannger_img_div" key={img.id}>
                         <Image
                           className="ml-2 rounded "
-                          src={`${process.env.BACKEND_URL}storage/${img.path}`}
+                          src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img.path}`}
                           width={50}
                           height={50}
                         />

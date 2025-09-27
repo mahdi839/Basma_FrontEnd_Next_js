@@ -8,16 +8,18 @@ export default function LogButtons() {
   const router = useRouter()
   const [token,setToken] = useState(null)
   useEffect(() => {
-    
+    if (typeof window !== 'undefined') {
     let myToken = localStorage.getItem('token')
     setToken(myToken)
-
+    }
   }, []);
 
    const logOut = (e)=>{
       e.preventDefault()
+      if (typeof window !== 'undefined') {
       localStorage.removeItem("token")
       setToken(null)
+      }
       router.push('/log_in')
    }
 

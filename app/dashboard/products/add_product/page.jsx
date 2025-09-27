@@ -21,7 +21,7 @@ export default function ProductUploadForm() {
         categories: []
     });
 
-    const baseUrl = process.env.BACKEND_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     // Fetch available sizes
     useEffect(() => {
         const fetchSizes = async () => {
@@ -93,7 +93,7 @@ export default function ProductUploadForm() {
             data.append('image[]', image);
         });
 
-        
+
 
         // Handle categories
         formData.categories.forEach((category, index) => {
@@ -109,9 +109,14 @@ export default function ProductUploadForm() {
             data.append(`question[${index}]`, faq.question);
             data.append(`answer[${index}]`, faq.answer);
         });
-        const token = localStorage.getItem('token');
+        let token = null;
+
+        if (typeof window !== "undefined") {
+            token = localStorage.getItem("token");
+        }
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + 'api/products'
         try {
-            await axios.post('http://127.0.0.1:8000/api/products', data, {
+            await axios.post(url, data, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data' // Important for file uploads

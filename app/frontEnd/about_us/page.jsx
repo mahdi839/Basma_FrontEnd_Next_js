@@ -32,12 +32,11 @@ export default async function AboutUsPage() {
               <div className="col-lg-6 mt-4 mt-lg-0">
                 <div className="about-image-container position-relative">
                   <img
-                    src={`${process.env.BACKEND_URL}storage/${aboutUs.image}`}
+                    src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${aboutUs.image}`}
                     alt={aboutUs.title}
                     className="img-fluid rounded shadow-lg"
                     style={{ maxHeight: "400px", width: "100%", objectFit: "cover" }}
                   />
-                  
                 </div>
               </div>
             )}
@@ -50,7 +49,7 @@ export default async function AboutUsPage() {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-10">
-              <div 
+              <div
                 className="about-content fs-5 lh-lg"
                 dangerouslySetInnerHTML={{ __html: aboutUs.content }}
               ></div>
@@ -69,7 +68,7 @@ export default async function AboutUsPage() {
                 <div key={index} className="col-md-4 mb-4">
                   <div className="card h-100 border-0 shadow-sm">
                     <img
-                      src={`${process.env.BACKEND_URL}storage/${member.image}`}
+                      src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${member.image}`}
                       className="card-img-top"
                       alt={member.name}
                       style={{ height: "250px", objectFit: "cover" }}

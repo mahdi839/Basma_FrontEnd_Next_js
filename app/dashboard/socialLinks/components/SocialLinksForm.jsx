@@ -22,10 +22,10 @@ export default function SocialLinksForm() {
 
   // Fetch existing social links on mount
   useEffect(() => {
-    showData(process.env.BACKEND_URL + "api/social-links-first"); 
+    showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/social-links-first");
   }, []);
 
-  
+
   useEffect(() => {
     if (data) {
       setFormData({
@@ -55,21 +55,21 @@ export default function SocialLinksForm() {
     // Choose store or update based on presence of recordId
     if (recordId) {
       await updateData(
-        `${process.env.BACKEND_URL}api/social-links/${recordId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/social-links/${recordId}`,
         formData,
         "Social links updated!",
         ""
       );
     } else {
       await storeData(
-        process.env.BACKEND_URL + "api/social-links",
+        process.env.NEXT_PUBLIC_BACKEND_URL + "api/social-links",
         formData,
         "Social links saved!"
       );
     }
 
     // Refetch to update the form
-    showData(process.env.BACKEND_URL + "api/social-links-first");
+    showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/social-links-first");
   };
 
   if (fetchLoading) {

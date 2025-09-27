@@ -14,15 +14,15 @@ const ProductCard = React.memo(function ProductCard({
   handleSizeSelect,
   handleAddToCart,
   handleOptionDiv,
-  slotDetails
+  slotLength
 }) {
-  let baseUrl = process.env.BACKEND_URL;
+  let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   return (
-    <div className={`${slotDetails.length >=4?'px-2':''} my-3`}>
+    <div className={`${slotLength >= 4 ? "px-2" : ''} my-3 my-md-5`}>
       <div
         className="card product-div  p-2 bg-white h-100 product-card position-relative"
-       
+
       >
         {/* Product Image */}
         <div
@@ -39,26 +39,26 @@ const ProductCard = React.memo(function ProductCard({
               }
               className="position-absolute w-100 h-100 object-fit-cover p-3 product-image"
               alt={slotProducts?.title}
-              
+
             />
           </Link>
           {/* Product Actions */}
-          {showOptionDiv.status === false && (
+         
             <div
               className="quick-add-btn product-actions position-absolute d-flex flex-column "
-              
+
             >
               <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
                 <button
                   className="  rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
-                
+
                 >
-                  <CiSearch className="fs-5 "  />
+                  <CiSearch className="fs-5 " />
                 </button>
               </Link>
-             
+
             </div>
-          )}
+          
 
           {/* Quick add to cart button (shown on hover) */}
         </div>
@@ -69,7 +69,7 @@ const ProductCard = React.memo(function ProductCard({
             <Link
               href={`/frontEnd/product-page/${slotProducts?.id}`}
               className="text-decoration-none text-dark product-title"
-            
+
             >
               {slotProducts?.title}
             </Link>
@@ -77,7 +77,7 @@ const ProductCard = React.memo(function ProductCard({
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
             <p
               className="text-muted small mb-2 product-subtitle"
-              
+
             >
               {slotProducts?.sub_title}
             </p>
@@ -95,8 +95,7 @@ const ProductCard = React.memo(function ProductCard({
         </div>
 
         <div
-          className="card-footer bg-transparent border-0 pt-0 pb-3  add-to-cart-footer d-lg-none d-block"
-          
+          className="card-footer bg-transparent border-0 pt-0   add-to-cart-footer d-lg-none d-block"
         >
           {slotProducts?.sizes?.length > 1 ? (
             <button
@@ -120,12 +119,12 @@ const ProductCard = React.memo(function ProductCard({
 
         <div
           className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block "
-          
+
         >
           {slotProducts?.sizes?.length > 1 ? (
             <button
               type="button"
-              className="bg-transparent w-100 rounded-0"
+              className="btn-grad w-100 rounded-0"
               onClick={(e) => handleOptionDiv(e, slotProducts?.id)}
             >
               <GrAidOption className="me-2" />

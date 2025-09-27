@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
 const useGetSingleData = () => {
@@ -7,24 +7,28 @@ const useGetSingleData = () => {
   const [error, setError] = useState(null);
 
 
-    const fetchSingleData = async (url) => {
-        const token = localStorage.getItem("token");
-      try {
-        const response = await axios.get(url,{
-            headers:{
-               Authorization: `Bearer ${token}`
-            }
-          });
-        setData(response.data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchSingleData = async (url) => {
+    let token = null;
+
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token");
+    }
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setData(response.data);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
-  return {fetchSingleData, data, loading, error };
+  return { fetchSingleData, data, loading, error };
 };
 
 export default useGetSingleData;

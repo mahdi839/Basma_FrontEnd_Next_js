@@ -1,6 +1,11 @@
 "use client";
+<<<<<<< HEAD
 import React, { useEffect, useState, useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+=======
+import React, { useEffect, useState, useRef, } from "react";
+import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+>>>>>>> 6f1b78e121dd73d7e110c57233e3be1283b9ee23
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -14,7 +19,12 @@ import Link from "next/link";
 import Image from "next/image";
 
 function FeatureClient({ products, slotData }) {
+<<<<<<< HEAD
   const [isLoading, setIsLoading] = useState(true);
+=======
+
+  const [isLoading, setIsLoading] = useState(true)
+>>>>>>> 6f1b78e121dd73d7e110c57233e3be1283b9ee23
   const sliderRefs = useRef([]);
   const [showOptionDiv, setShowOptionDiv] = useState({
     productId: null,
@@ -22,10 +32,17 @@ function FeatureClient({ products, slotData }) {
   });
   const [selectedSizes, setSelectedSizes] = useState("");
 
+<<<<<<< HEAD
   let baseUrl = process.env.BACKEND_URL;
   const dispatch = useDispatch();
   const cartCount = useSelector((state) => state.cart.count);
   const cartItems = useSelector((state) => state.cart.items);
+=======
+  let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const dispatch = useDispatch()
+  const cartCount = useSelector(state => state.cart.count);
+  const cartItems = useSelector(state => state.cart.items)
+>>>>>>> 6f1b78e121dd73d7e110c57233e3be1283b9ee23
   useEffect(() => {
     if (products) {
       setIsLoading(false);
@@ -92,23 +109,26 @@ function FeatureClient({ products, slotData }) {
   }
 
   function handleSizeSelect(e) {
-    setSelectedSizes(e.target.value);
+    setSelectedSizes(e.target.value)
   }
 
   function handleAddToCart(product) {
-    setShowOptionDiv(false);
+    setShowOptionDiv({
+      ...showOptionDiv,
+      status:false
+    })
 
-    let existingCart = cartItems.find(
-      (existProduct) => existProduct.id === product.id
-    );
+    let existingCart = cartItems.find(existProduct => existProduct.id === product.id)
     if (existingCart) {
-      Swal.fire({
-        title: "Already in the cart",
-        text: "This product is already in your cart",
-        icon: "info",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
+      Swal.fire(
+        {
+          title: "Already in the cart",
+          text: "This product is already in your cart",
+          icon: "info",
+          confirmButtonText: "Ok",
+          confirmButtonColor: "#DB3340"
+        }
+      )
       return;
     }
 
@@ -118,22 +138,21 @@ function FeatureClient({ products, slotData }) {
         title: "Please Select A Size",
         icon: "warning",
         confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
+        confirmButtonColor: "#DB3340"
+      })
       return;
     }
-    dispatch(
-      addToCart({
-        id: product.id,
-        title: product.title,
-        size: selectedSizes ?? "",
-        price: product.sizes[0]?.pivot?.price ?? product.price,
-        image: baseUrl + product.images?.[0]?.image || "",
-      })
-    );
+    dispatch(addToCart({
+      id: product.id,
+      title: product.title,
+      size: selectedSizes ?? "",
+      price: product.sizes[0]?.pivot?.price ?? product.price,
+      image: baseUrl + product.images?.[0]?.image || ""
+    }));
 
     setSelectedSizes(""); // Reset selection
     toast.success("Added to cart!");
+
   }
 
   return (
@@ -149,103 +168,73 @@ function FeatureClient({ products, slotData }) {
             return (
               <React.Fragment key={slot.id || slotIndex}>
                 {/* Header with navigation buttons */}
-                {slotData.map((item) => {
-                  if (item.slot.slot_name === slot.slot_name) {
-                    return (
-                      <Link
-                        key={item.id}
-                        href={item.link}
-                        className="text-decoration-none text-dark my-3 my-md-5"
-                      >
-                        <img
-                          src={`${process.env.BACKEND_URL}storage/${item.banner_images[0].path}`}
-                          style={{ width: "100%", height: "auto" }}
-                        />
-                      </Link>
-                    );
+                {
+                  slotData.map((item) => {
+                    if (item.slot.slot_name === slot.slot_name) {
+                      return (
+                        <Link key={item.id} href={item.link} className="text-decoration-none text-dark my-3">
+                          <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${item.banner_images[0].path}`} style={{ width: '100%', height: 'auto' }} />
+                        </Link>
+                      );
+                    }
                   }
-                })}
+                  )}
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
-                  <h2
-                    className="featured-heading font-weight-bold mb-0"
-                  >
+
+
+                  <h2 className="featured-heading font-weight-bold mb-0  fs-5 fs-md-3 fs-lg-2 fs-xl-1" style={{ fontWeight: '600', color: '#222' }}>
                     {slot.slot_name}
                   </h2>
 
-                  {slot.slot_details?.length >= 4 && (
-                    <div className="d-flex gap-2 mb-1">
-                      <button
-                        className="d-flex align-items-center justify-content-center slider-nav-btn"
-                        style={{ width: "36px", height: "36px" }}
-                        // Connect to this specific slider
-                        onClick={() =>
-                          sliderRefs.current[slotIndex]?.current?.slickPrev()
-                        }
-                      >
-                        <FaChevronLeft
-                          className="slider-arrow"
-                          style={{ fontSize: "14px" }}
-                        />
-                      </button>
-                      <button
-                        className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
-                        style={{
-                          width: "36px",
-                          height: "36px",
-                          borderColor: "#e1e1e1",
-                        }}
-                        // Connect to this specific slider
-                        onClick={() =>
-                          sliderRefs.current[slotIndex]?.current?.slickNext()
-                        }
-                      >
-                        <FaChevronRight className="slider-arrow" />
-                      </button>
-                    </div>
-                  )}
+
+                  {
+                    slot.slot_details?.length >= 4 && (
+                      <div className="d-flex gap-2 mb-1">
+                        <button
+                          className="d-flex align-items-center justify-content-center slider-nav-btn"
+                          // Connect to this specific slider
+                          onClick={() => sliderRefs.current[slotIndex]?.current?.slickPrev()}
+                        >
+                          <FaChevronLeft className="slider-arrow"  />
+                        </button>
+                        <button
+                          className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
+                          
+                          // Connect to this specific slider
+                          onClick={() => sliderRefs.current[slotIndex]?.current?.slickNext()}
+                        >
+                          <FaChevronRight className="slider-arrow" />
+                        </button>
+                      </div>
+                    )}
+
                 </div>
+
+
 
                 <div className="col-12 position-relative  ml-3 mt-0 overflow-hidden">
                   <hr className="feature-hr m-0" />
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      left: "0",
-                      width: "100px",
-                      height: "7px",
-                      backgroundColor: "#e83e8c",
-                      zIndex: "1",
-                    }}
-                  ></div>
+                  <div style={{
+                    position: 'absolute',
+                    top: '0',
+                    left: '0',
+                    width: '100px',
+                    height: '5px',
+                    backgroundColor: '#e83e8c',
+                    zIndex: '1'
+                  }}></div>
                 </div>
 
-                {slot.slot_details?.length >= 4 && (
-                  <Slider
-                    ref={sliderRefs.current[slotIndex]}
-                    {...settings}
-                    className="w-100"
-                  >
-                    {slot.slot_details?.map((detail, detailIndex) => (
-                      <ProductCard
-                        key={detail.id || detailIndex}
-                        slotProducts={detail?.product}
-                        showOptionDiv={showOptionDiv}
-                        setShowOptionDiv={setShowOptionDiv}
-                        selectedSizes={selectedSizes}
-                        handleSizeSelect={handleSizeSelect}
-                        handleAddToCart={handleAddToCart}
-                        handleOptionDiv={handleOptionDiv}
-                        slotDetails={slot.slot_details}
-                      />
-                    ))}
-                  </Slider>
-                )}
 
-                {slot.slot_details?.length < 4 && (
-                  <div className="row">
-                    {slot.slot_details?.map((detail, detailIndex) => (
-                      <div className=" col-6 col-lg-3 col-md-4">
+
+                {
+                  slot.slot_details?.length >= 4 && (
+                    <Slider
+                      ref={sliderRefs.current[slotIndex]}
+                      {...settings}
+                      className="w-100"
+                    >
+                      {slot.slot_details?.map((detail, detailIndex) => (
                         <ProductCard
                           key={detail.id || detailIndex}
                           slotProducts={detail?.product}
@@ -255,12 +244,38 @@ function FeatureClient({ products, slotData }) {
                           handleSizeSelect={handleSizeSelect}
                           handleAddToCart={handleAddToCart}
                           handleOptionDiv={handleOptionDiv}
-                          slotDetails={slot.slot_details}
+                          slotLength = {slot.slot_details?.length}
                         />
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </Slider>
+                  )
+                }
+
+                {
+                  slot.slot_details?.length < 4 && (
+
+                    <div className="row">
+                      {
+                        slot.slot_details?.map((detail, detailIndex) => (
+                          <div className=" col-6 col-lg-3 col-md-4">
+                            <ProductCard
+                              key={detail.id || detailIndex}
+                              slotProducts={detail?.product}
+                              showOptionDiv={showOptionDiv}
+                              setShowOptionDiv={setShowOptionDiv}
+                              selectedSizes={selectedSizes}
+                              handleSizeSelect={handleSizeSelect}
+                              handleAddToCart={handleAddToCart}
+                              handleOptionDiv={handleOptionDiv}
+
+                            />
+                          </div>
+                        ))
+                      }
+                    </div>
+
+                  )
+                }
               </React.Fragment>
             );
           })}

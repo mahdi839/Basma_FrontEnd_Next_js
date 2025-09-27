@@ -41,9 +41,13 @@ export default function OrderTable({
       [name]: selectedOption ? selectedOption.value : "",
     }));
   };
-  
+
   async function handleStatus(e, orderId) {
-    const token = localStorage.getItem("token");
+    let token = null;
+
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token");
+    }
 
     if (!token) {
       toast.error("No auth token found");
@@ -52,7 +56,7 @@ export default function OrderTable({
     let updatedStatus = e.target.value;
     try {
       await axios.post(
-        process.env.BACKEND_URL + `api/order_status/${orderId}`,
+        process.env.NEXT_PUBLIC_BACKEND_URL + `api/order_status/${orderId}`,
         { status: updatedStatus },
         {
           headers: {

@@ -10,12 +10,12 @@ import useDeleteItem from "@/app/hooks/useDeleteItem";
 export default function SizeTable({ initialSizes }) {
   const [sizes, setSizes] = useState(initialSizes); // Manage state
 
-  const {handleDeleteData} = useDeleteItem()
+  const { handleDeleteData } = useDeleteItem()
   async function handleDelete(id) {
-    const url = process.env.BACKEND_URL + `api/sizes/${id}`
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + `api/sizes/${id}`
     handleDeleteData(url)
-      // Remove deleted size from the state without page reload
-      setSizes(sizes.filter((size) => size.id !== id));
+    // Remove deleted size from the state without page reload
+    setSizes(sizes.filter((size) => size.id !== id));
 
   }
 
@@ -43,9 +43,9 @@ export default function SizeTable({ initialSizes }) {
               <td className="text-center">
                 <span className="d-flex gap-3 justify-content-center ">
                   <Link href={`/dashboard/sizes/edit/${size.id}`}>
-                    <FaEdit className="text-dark"/>
+                    <FaEdit className="text-dark" />
                   </Link>
-                  <FaTrash className="text-danger mt-2" onClick={() => handleDelete(size.id)} style={{cursor:'pointer'}}/>
+                  <FaTrash className="text-danger mt-2" onClick={() => handleDelete(size.id)} style={{ cursor: 'pointer' }} />
                 </span>
               </td>
             </tr>

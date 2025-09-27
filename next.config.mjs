@@ -1,17 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    remotePatterns: [
+     remotePatterns: [
       {
         protocol: 'http',
         hostname: '127.0.0.1',
         port: '8000',
-        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.ibtikarbd.com', // production API domain
       },
     ],
   },
-  env: {
-    BACKEND_URL: "http://127.0.0.1:8000/",
+  // env: {
+  //   BACKEND_URL: "https://api.ibtikarbd.com/", // use live API
+  // },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 

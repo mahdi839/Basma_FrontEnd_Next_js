@@ -10,20 +10,24 @@ export default function Admin_Log_in() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
- 
-  
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-   
+
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/logIn", {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/logIn`, {
         email,
         password,
       });
 
       if (response.data.status) {
-        localStorage.setItem("token", response.data.token);
+
+        if (typeof window !== "undefined") {
+          localStorage.setItem("token", response.data.token);
+        }
+
         toast.success("successfully log in");
         router.push('/dashboard')
       }

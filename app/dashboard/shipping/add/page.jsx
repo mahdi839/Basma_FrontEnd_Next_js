@@ -7,23 +7,23 @@ import React, { useState } from 'react'
 export default function Page() {
     const [shippingType, setShippingType] = useState('');
     const [storeShipping, setStoreShipping] = useState({
-        inside_dhaka:"",
+        inside_dhaka: "",
         outside_dhaka: "",
         one_shipping_cost: ""
     });
-   const {storeData,loading} = useStoreData()
-    const url = process.env.BACKEND_URL + "api/shipping-costs"
+    const { storeData, loading } = useStoreData()
+    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "api/shipping-costs"
 
-    function handleShipping (e){
-        const {name,value} = e.target;
-        setStoreShipping((prev)=>({
+    function handleShipping(e) {
+        const { name, value } = e.target;
+        setStoreShipping((prev) => ({
             ...prev,
-            [name]:value
-        }) )
+            [name]: value
+        }))
     }
-    async function  submitShipping(e) {
+    async function submitShipping(e) {
         e.preventDefault();
-        await storeData(url,storeShipping)
+        await storeData(url, storeShipping)
     }
 
     return (
@@ -61,7 +61,7 @@ export default function Page() {
                                     placeholder="Enter cost for Inside Dhaka"
                                     value={setStoreShipping.inside_dhaka}
                                     onChange={handleShipping}
-                                    
+
                                 />
                             </div>
                             <div className="form-group mb-3">
@@ -74,7 +74,7 @@ export default function Page() {
                                     placeholder="Enter cost for Outside Dhaka"
                                     value={setStoreShipping.outside_dhaka}
                                     onChange={handleShipping}
-                                    
+
                                 />
                             </div>
                         </>
@@ -91,7 +91,7 @@ export default function Page() {
                                 placeholder="Enter shipping cost"
                                 value={setStoreShipping.one_shipping_cost}
                                 onChange={handleShipping}
-                                
+
                             />
                         </div>
                     )}

@@ -32,8 +32,7 @@ export default function OptionDiv({showOptionDiv,setShowOptionDiv,selectedSizes,
 
             <button
              onClick={()=>handleAddToCart(product)}
-              className="btn btn-dark w-100 btn-sm"
-             
+              className="btn-grad w-100 btn-sm"
             >
               ADD TO CART
             </button>

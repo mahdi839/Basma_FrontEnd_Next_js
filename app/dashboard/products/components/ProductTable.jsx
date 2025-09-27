@@ -9,9 +9,13 @@ import { FaArrowRight } from "react-icons/fa";
 
 export default function ProductTable({ productData }) {
     const [products, setProducts] = useState(productData);
-    
 
-    let token = localStorage.getItem('token')
+
+    let token = null;
+
+    if (typeof window !== "undefined") {
+        token = localStorage.getItem("token");
+    }
     function formatCreatedAt(dateString) {
         const date = new Date(dateString);
         const day = date.getDate();
@@ -35,7 +39,7 @@ export default function ProductTable({ productData }) {
         if (!result.isConfirmed) return;
 
         try {
-            const baseUrl = process.env.BACKEND_URL;
+            const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
             await axios.delete(`${baseUrl}api/products/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -55,7 +59,7 @@ export default function ProductTable({ productData }) {
         }
     }
 
-    
+
 
     return (
         <div className="card">
@@ -79,7 +83,7 @@ export default function ProductTable({ productData }) {
                                     <td>
                                         {product.images?.length > 0 ? (
                                             <img
-                                                src={`${process.env.BACKEND_URL}${product.images[0].image}`}
+                                                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}${product.images[0].image}`}
                                                 alt="Product thumbnail"
                                                 className="img-thumbnail"
                                                 style={{ width: "80px", height: "80px", objectFit: "cover" }}
@@ -96,8 +100,8 @@ export default function ProductTable({ productData }) {
                                             Created: {formatCreatedAt(product.created_at)}
                                         </small>
                                     </td>
-                                    <td> {product.category?.map((category)=>(
-                                        
+                                    <td> {product.category?.map((category) => (
+
                                         <div className="mb-2">
                                             <span class="badge bg-info text-white">{category.name}</span>
                                         </div>

@@ -15,7 +15,7 @@ export default function CtgProductsLogic({ products, category }) {
     status: false,
   });
   const [selectedSizes, setSelectedSizes] = useState("");
-  const baseUrl = process.env.BACKEND_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
 
@@ -101,7 +101,7 @@ export default function CtgProductsLogic({ products, category }) {
     <div className="container">
       <div className="row position-relative">
         {products?.map((product, index) => (
-          <div className="col-lg-3 col-md-4 col-sm-6" key={product.id}>
+          <div className="col-6 col-lg-3 col-md-4 " key={product.id}>
             <ProductCard
               slotProducts={product}
               showOptionDiv={showOptionDiv}

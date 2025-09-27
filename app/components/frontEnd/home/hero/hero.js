@@ -17,24 +17,29 @@ export default function Hero({ data }) {
     autoplaySpeed: 6000,
     nextArrow: (
       <div className={style.arrow_div_right}>
-        <FaChevronRight className={style.arrow_right} />
+        {
+          data?.banner_images.length>0?<FaChevronRight className={style.arrow_right} />:''
+        }
+        
       </div>
     ),
     prevArrow: (
       <div className={style.arrow_div_left}>
-        <FaChevronLeft className={style.arrow_left} />
+       {
+         data?.banner_images.length>0? <FaChevronLeft className={style.arrow_left} />:''
+       }
       </div>
     ),
   };
-
   return (
     <div className="container">
       <Slider {...settings}>
         {
-          data?.banner_images?.map((slidImg) => (
+          data?.banner_images?.map((slidImg,index) => (
             <Image
+              key={index}
               className="hero_slider_img"
-              src={`${process.env.BACKEND_URL}storage/${slidImg.path}`} style={{width:'100%',height:'auto'}}
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${slidImg.path}`}
               width={1200} // Actual image width
               height={400}
               alt="Banner"
