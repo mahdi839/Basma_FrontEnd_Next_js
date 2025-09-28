@@ -8,7 +8,7 @@ export default async function Page() {
   try {
     sizes = await getSizes();
   } catch (err) {
-    return <p className="text-center text-danger">Error loading sizes.</p>;
+    console.error("Error fetching sizes:", err);
   }
 
   return (
