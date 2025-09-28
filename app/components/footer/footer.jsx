@@ -54,7 +54,7 @@ export default async function Footer() {
     const socialResponse = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}api/social-links-first`,
       {
-        cache: "no-store",
+        next: { revalidate: 60 },
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
