@@ -51,7 +51,7 @@ export default async function AboutUsPage() {
             <div className="col-lg-10">
               <div
                 className="about-content fs-5 lh-lg"
-                dangerouslySetInnerHTML={{ __html: aboutUs.content }}
+                dangerouslySetInnerHTML={{ __html: aboutUs?.content??"" }}
               ></div>
             </div>
           </div>
