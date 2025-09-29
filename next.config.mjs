@@ -10,6 +10,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'api.ibtikarbd.com', // production API domain
+         pathname: '/storage/**',
       },
     ],
   },
