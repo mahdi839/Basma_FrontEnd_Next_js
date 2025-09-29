@@ -43,7 +43,10 @@ export default function CategoryTable({ categories }) {
             toast.error(err.message)
         }
         // Update state to remove deleted category
-        setGetCategories(prev => prev.filter(category => category.id !== id));
+        setGetCategories(prev => ({
+            ...prev,
+            data: prev.data.filter(category => category.id !== id)
+        }));
     }
 
 
@@ -58,14 +61,14 @@ export default function CategoryTable({ categories }) {
                 </tr>
             </thead>
             <tbody>
-                {getCategories.data.length === 0 ? (
+                {getCategories?.data?.length === 0 ? (
                     <tr>
                         <td colSpan="3" className="text-center text-danger">
                             No Categories Available
                         </td>
                     </tr>
                 ) : (
-                    getCategories.data.map((category) => (
+                    getCategories?.data?.map((category) => (
                         <tr key={category.id}>
                             <td className="text-center">{category.id}</td>
                             <td className="text-center">{category.name}</td>

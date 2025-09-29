@@ -3,7 +3,6 @@ import CategoryTable from './components/CategoryTable'
 import Button from '@/app/components/dashboard/components/button/Button'
 import Link from 'next/link'
 import { getData } from '@/lib/api';
-import { toast } from 'react-toastify';
 
 export default async function page() {
     let categories = [];
