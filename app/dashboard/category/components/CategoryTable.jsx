@@ -49,7 +49,6 @@ export default function CategoryTable({ categories }) {
         }));
     }
 
-
     return (
         <table className="table table-bordered">
             <thead>
