@@ -26,7 +26,7 @@ export default function page() {
                 }
             })
             toast.success("successfully added")
-            window.location.href = "/dashboard/category"
+             router.push("/dashboard/category");
         } catch (err) {
             toast.error(err.message)
         } finally {
