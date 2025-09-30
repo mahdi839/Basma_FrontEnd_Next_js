@@ -11,7 +11,6 @@ import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
-import Image from "next/image";
 
 function FeatureClient({ products, slotData }) {
 
