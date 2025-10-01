@@ -39,7 +39,7 @@ const ProductCard = React.memo(function ProductCard({
               }
               className="position-absolute w-100 h-100 object-fit-cover p-3 product-image"
               alt={slotProducts?.title}
-
+              unoptimized={true}
             />
           </Link>
           {/* Product Actions */}
