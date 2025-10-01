@@ -56,6 +56,7 @@ export default function CategoryTable({ categories }) {
                     <th className="text-center">Id</th>
                     <th className="text-center">Category Name</th>
                     <th className="text-center">Slug</th>
+                    <th className="text-center">Home Category</th>
                     <th className="text-center">Actions</th>
                 </tr>
             </thead>
@@ -72,6 +73,7 @@ export default function CategoryTable({ categories }) {
                             <td className="text-center">{category.id}</td>
                             <td className="text-center">{category.name}</td>
                             <td className="text-center">{category.slug}</td>
+                            <td className={`text-center`}><span className={`${category.home_category ? "bg-info p-2  text-white" : "bg-danger p-2 rounded text-white"}`}>{category.home_category ? "On" : "Off"}</span></td>
                             <td className="text-center">
                                 <span className="d-flex gap-3 justify-content-center ">
                                     <Link href={`/dashboard/category/edit/${category.id}`}>
