@@ -12,7 +12,7 @@ import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
 
-function FeatureClient({ products, slotData }) {
+function FeatureClient({ homeCategories, slotData }) {
 
   const [isLoading, setIsLoading] = useState(true)
   const sliderRefs = useRef([]);
@@ -27,15 +27,15 @@ function FeatureClient({ products, slotData }) {
   const cartCount = useSelector(state => state.cart.count);
   const cartItems = useSelector(state => state.cart.items)
   useEffect(() => {
-    if (products) {
+    if (homeCategories) {
       setIsLoading(false);
     }
-    if (products?.error) {
-      toast.error(products.error);
+    if (homeCategories?.error) {
+      toast.error(homeCategories.error);
     }
 
-    sliderRefs.current = sliderRefs.current.slice(0, products?.length || 0);
-  }, [products]);
+    sliderRefs.current = sliderRefs.current.slice(0, homeCategories?.length || 0);
+  }, [homeCategories]);
 
   // Slider settings with autoplay
   const settings = {
@@ -75,12 +75,12 @@ function FeatureClient({ products, slotData }) {
     return <DynamicLoader />;
   }
 
-  if (products?.error) {
-    return <div className="text-center my-5">Error: {products.error}</div>;
+  if (homeCategories?.error) {
+    return <div className="text-center my-5">Error: {homeCategories.error}</div>;
   }
 
-  if (!products?.length) {
-    return <div className="text-center my-5">No products found</div>;
+  if (!homeCategories?.length) {
+    return <div className="text-center my-5">No categories found</div>;
   }
 
   function handleOptionDiv(e, productid) {
@@ -141,8 +141,8 @@ function FeatureClient({ products, slotData }) {
   return (
     <div className="container mb-3 mb-md-5 mt-0 py-2 ">
       <div className="row position-relative">
-        {products &&
-          products.map((slot, slotIndex) => {
+        {homeCategories &&
+          homeCategories.map((slot, slotIndex) => {
             // Initialize ref if it doesn't exist
             if (!sliderRefs.current[slotIndex]) {
               sliderRefs.current[slotIndex] = React.createRef();
@@ -151,7 +151,7 @@ function FeatureClient({ products, slotData }) {
             return (
               <React.Fragment key={slot.id || slotIndex}>
                 {/* Header with navigation buttons */}
-                {
+                {/* {
                   slotData.map((item) => {
                     if (item.slot.slot_name === slot.slot_name) {
                       return (
@@ -161,17 +161,17 @@ function FeatureClient({ products, slotData }) {
                       );
                     }
                   }
-                  )}
+                  )} */}
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
 
 
                   <h2 className="featured-heading font-weight-bold mb-0  fs-5 fs-md-3 fs-lg-2 fs-xl-1" style={{ fontWeight: '600', color: '#222' }}>
-                    {slot.slot_name}
+                    {slot.name}
                   </h2>
 
 
                   {
-                    slot.slot_details?.length >= 4 && (
+                    slot.products?.length >= 4 && (
                       <div className="d-flex gap-2 mb-1">
                         <button
                           className="d-flex align-items-center justify-content-center slider-nav-btn"
@@ -211,16 +211,16 @@ function FeatureClient({ products, slotData }) {
 
 
                 {
-                  slot.slot_details?.length >= 4 && (
+                  slot.products?.length >= 4 && (
                     <Slider
                       ref={sliderRefs.current[slotIndex]}
                       {...settings}
                       className="w-100"
                     >
-                      {slot.slot_details?.map((detail, detailIndex) => (
+                      {slot.products?.map((product, productIndex) => (
                         <ProductCard
-                          key={detail.id || detailIndex}
-                          slotProducts={detail?.product}
+                          key={product.id || productIndex}
+                          slotProducts={product?.product}
                           showOptionDiv={showOptionDiv}
                           setShowOptionDiv={setShowOptionDiv}
                           selectedSizes={selectedSizes}
@@ -235,15 +235,15 @@ function FeatureClient({ products, slotData }) {
                 }
 
                 {
-                  slot.slot_details?.length < 4 && (
+                  slot.products?.length < 4 && (
 
                     <div className="row">
                       {
-                        slot.slot_details?.map((detail, detailIndex) => (
+                        slot.products?.map((product, productIndex) => (
                           <div className=" col-6 col-lg-3 col-md-4">
                             <ProductCard
-                              key={detail.id || detailIndex}
-                              slotProducts={detail?.product}
+                              key={product.id || productIndex}
+                              slotProducts={product}
                               showOptionDiv={showOptionDiv}
                               setShowOptionDiv={setShowOptionDiv}
                               selectedSizes={selectedSizes}

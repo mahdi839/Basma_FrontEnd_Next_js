@@ -9,8 +9,8 @@ export default async function Feature({slotData}) {
   }catch(err){
     data = {error:err.message}
   }
-  
+  console.log(data)
   return (
-    <FeatureClient products={data} slotData={slotData} />
+    <FeatureClient homeCategories={data} slotData={slotData} />
   )
 }
