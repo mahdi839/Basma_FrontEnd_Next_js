@@ -6,7 +6,10 @@ import React, { useState } from 'react'
 import { toast } from "react-toastify";
 
 export default function page() {
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState({
+        name: "",
+        home_category: ""
+    });
     const [loading, setLoading] = useState(false);
     const router = useRouter()
 
@@ -20,13 +23,13 @@ export default function page() {
         e.preventDefault();
         setLoading(true)
         try {
-            const res = await axios.post(url, { name: category }, {
+            const res = await axios.post(url, { name: category.name, home_category: category.home_category }, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
             toast.success("successfully added")
-             router.push("/dashboard/category");
+            router.push("/dashboard/category");
         } catch (err) {
             toast.error(err.message)
         } finally {
@@ -41,8 +44,14 @@ export default function page() {
                 <form onSubmit={storeCategory}>
                     <div className="form-group">
                         <label htmlFor="size" className="fw-bold">Size:</label>
-                        <input type="text" className="form-control" id="category" name="category" placeholder="Enter category" onChange={(e) => setCategory(e.target.value)} />
+                        <input type="text" className="form-control" id="category" name="category" placeholder="Enter category" onChange={(e) => setCategory({ ...category, name: e.target.value })} />
                     </div>
+                    <select className="form-select" name="home_category" id=""
+                        onChange={(e) => setCategory({ ...category, home_category: e.target.value })}>
+                        <option value=""> Home Category</option>
+                        <option value="1">On</option>
+                        <option value="0">Off</option>
+                    </select>
                     <button type="submit" className="dashboard-btn w-100 mt-3">{loading ? "Adding..." : "Add category"}</button>
                 </form>
             </div>
