@@ -27,6 +27,14 @@ export default function ProductUpdateForm({
         faqs: [],
         categories: []
     });
+    const [token, setToken] = useState(null);
+
+     // Read token on client only
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setToken(localStorage.getItem("token"));
+    }
+  }, []);
 
     useEffect(() => {
         if (isEditMode && initialData) {
@@ -50,7 +58,7 @@ export default function ProductUpdateForm({
             setExistingImages(initialData.images || []);
             setUseSinglePrice(!initialData.sizes?.length);
         }
-        setCategories(categoryData)
+         setCategories(categoryData?.data || categoryData || []);
     }, [isEditMode, initialData]);
 
     // Handlers
@@ -85,7 +93,7 @@ export default function ProductUpdateForm({
             faqs: [...formData.faqs, { question: '', answer: '', id: null }]
         });
     };
-    const token = localStorage.getItem('token');
+  
 
     const handleSubmit = async (e) => {
         e.preventDefault();
