@@ -157,9 +157,9 @@ function FeatureClient({ homeCategories, BannerCatData }) {
               <React.Fragment key={slot.id || slotIndex}>
                      {/* Header with navigation buttons */}
                 {
-                  slot?.banner?.banner_images?.map((img) => {
+                 slot.products.length > 0 && slot?.banner?.banner_images?.map((img) => {
                       return (
-                        <Link key={img.id} href={slot.banner.link} className="text-decoration-none text-dark my-3">
+                        <Link key={img.id} href={slot?.banner?.link??""} className="text-decoration-none text-dark my-3">
                           <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`} style={{ width: '100%', height: 'auto' }} />
                         </Link>
                       );
@@ -223,6 +223,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                   >
                     {slot.products?.map((product, productIndex) => (
                       <ProductCard
+                        className={slot.products.length >= 4 ? "mx-2" : ""} 
                         key={product.id || productIndex}
                         slotProducts={product}
                         showOptionDiv={showOptionDiv}
