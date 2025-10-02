@@ -957,7 +957,7 @@ ol {
 
 .product-title {
 	font-size: 14px;
-	font-weight: 500;
+	font-weight: 600;
 	color: #222;
 	transition: color 0.2s ease;
 	display: -webkit-box;
@@ -1352,10 +1352,7 @@ table tr td {
 	border-color: var(--primary-color);
 }
 
-.product-title {
-	font-size: 1.8rem;
-	color: #333;
-}
+
 
 .product-price {
 	color: var(--primary-color);
@@ -1450,9 +1447,6 @@ table tr td {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-	.product-title {
-		font-size: 1.5rem;
-	}
 
 	.product-price {
 		font-size: 1.5rem;
@@ -1508,9 +1502,7 @@ table tr td {
 }
 
 @media (max-width: 576px) {
-	.product-title {
-		font-size: 1.3rem;
-	}
+	
 
 	.size-label {
 		display: block;

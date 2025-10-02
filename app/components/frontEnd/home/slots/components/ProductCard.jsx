@@ -65,19 +65,17 @@ const ProductCard = React.memo(function ProductCard({
 
         {/* Product Body */}
         <div className="card-body px-3 pb-2 pt-3">
-          <h5 className="card-title mb-1">
+          <p className=" mb-1">
             <Link
               href={`/frontEnd/product-page/${slotProducts?.id}`}
               className="text-decoration-none text-dark product-title"
-
             >
               {slotProducts?.title}
             </Link>
-          </h5>
+          </p>
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
             <p
               className="text-muted small mb-2 product-subtitle"
-
             >
               {slotProducts?.sub_title}
             </p>
