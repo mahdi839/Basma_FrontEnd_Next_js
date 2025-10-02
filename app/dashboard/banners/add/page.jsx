@@ -166,7 +166,6 @@ export default function Page() {
                       Select Type
                     </option>
                     <option value="hero">Hero Section Slider</option>
-                    <option value="slot">Slot</option>
                     <option value="category">Category</option>
                   </select>
                 </div>
