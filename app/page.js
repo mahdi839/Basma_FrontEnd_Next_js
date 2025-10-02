@@ -23,12 +23,12 @@ export default async function Home() {
        }
     }
     console.log("hi")
-    console.log(heroData)
+    console.log(BannerCatData)
     console.log("hi")
   return ( 
      <FrontEndLayout>
      <Hero data={heroData[0]} />
-     <Feature slotData={slotData}/>
+     <Feature BannerCatData={BannerCatData} />
      </FrontEndLayout>
   );
 }

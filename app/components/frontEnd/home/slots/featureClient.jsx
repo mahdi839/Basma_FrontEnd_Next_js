@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState, useRef, } from "react";
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import React, { useEffect, useState, useRef } from "react";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -12,9 +12,8 @@ import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
 
-function FeatureClient({ homeCategories, slotData }) {
-
-  const [isLoading, setIsLoading] = useState(true)
+function FeatureClient({ homeCategories, BannerCatData }) {
+  const [isLoading, setIsLoading] = useState(true);
   const sliderRefs = useRef([]);
   const [showOptionDiv, setShowOptionDiv] = useState({
     productId: null,
@@ -23,9 +22,9 @@ function FeatureClient({ homeCategories, slotData }) {
   const [selectedSizes, setSelectedSizes] = useState("");
 
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const dispatch = useDispatch()
-  const cartCount = useSelector(state => state.cart.count);
-  const cartItems = useSelector(state => state.cart.items)
+  const dispatch = useDispatch();
+  const cartCount = useSelector((state) => state.cart.count);
+  const cartItems = useSelector((state) => state.cart.items);
   useEffect(() => {
     if (homeCategories) {
       setIsLoading(false);
@@ -34,7 +33,10 @@ function FeatureClient({ homeCategories, slotData }) {
       toast.error(homeCategories.error);
     }
 
-    sliderRefs.current = sliderRefs.current.slice(0, homeCategories?.length || 0);
+    sliderRefs.current = sliderRefs.current.slice(
+      0,
+      homeCategories?.length || 0
+    );
   }, [homeCategories]);
 
   // Slider settings with autoplay
@@ -76,7 +78,9 @@ function FeatureClient({ homeCategories, slotData }) {
   }
 
   if (homeCategories?.error) {
-    return <div className="text-center my-5">Error: {homeCategories.error}</div>;
+    return (
+      <div className="text-center my-5">Error: {homeCategories.error}</div>
+    );
   }
 
   if (!homeCategories?.length) {
@@ -92,26 +96,26 @@ function FeatureClient({ homeCategories, slotData }) {
   }
 
   function handleSizeSelect(e) {
-    setSelectedSizes(e.target.value)
+    setSelectedSizes(e.target.value);
   }
 
   function handleAddToCart(product) {
     setShowOptionDiv({
       ...showOptionDiv,
-      status:false
-    })
+      status: false,
+    });
 
-    let existingCart = cartItems.find(existProduct => existProduct.id === product.id)
+    let existingCart = cartItems.find(
+      (existProduct) => existProduct.id === product.id
+    );
     if (existingCart) {
-      Swal.fire(
-        {
-          title: "Already in the cart",
-          text: "This product is already in your cart",
-          icon: "info",
-          confirmButtonText: "Ok",
-          confirmButtonColor: "#DB3340"
-        }
-      )
+      Swal.fire({
+        title: "Already in the cart",
+        text: "This product is already in your cart",
+        icon: "info",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#DB3340",
+      });
       return;
     }
 
@@ -121,21 +125,22 @@ function FeatureClient({ homeCategories, slotData }) {
         title: "Please Select A Size",
         icon: "warning",
         confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340"
-      })
+        confirmButtonColor: "#DB3340",
+      });
       return;
     }
-    dispatch(addToCart({
-      id: product.id,
-      title: product.title,
-      size: selectedSizes ?? "",
-      price: product.sizes[0]?.pivot?.price ?? product.price,
-      image: baseUrl + product.images?.[0]?.image || ""
-    }));
+    dispatch(
+      addToCart({
+        id: product.id,
+        title: product.title,
+        size: selectedSizes ?? "",
+        price: product.sizes[0]?.pivot?.price ?? product.price,
+        image: baseUrl + product.images?.[0]?.image || "",
+      })
+    );
 
     setSelectedSizes(""); // Reset selection
     toast.success("Added to cart!");
-
   }
 
   return (
@@ -150,115 +155,106 @@ function FeatureClient({ homeCategories, slotData }) {
 
             return (
               <React.Fragment key={slot.id || slotIndex}>
-                {/* Header with navigation buttons */}
-                {/* {
-                  slotData.map((item) => {
-                    if (item.slot.slot_name === slot.slot_name) {
+                     {/* Header with navigation buttons */}
+                {
+                  slot?.banner?.banner_images?.map((img) => {
                       return (
-                        <Link key={item.id} href={item.link} className="text-decoration-none text-dark my-3">
-                          <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${item.banner_images[0].path}`} style={{ width: '100%', height: 'auto' }} />
+                        <Link key={img.id} href={slot.banner.link} className="text-decoration-none text-dark my-3">
+                          <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`} style={{ width: '100%', height: 'auto' }} />
                         </Link>
                       );
-                    }
                   }
-                  )} */}
+                  )}
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
-
-
-                  <h2 className="featured-heading font-weight-bold mb-0  fs-5 fs-md-3 fs-lg-2 fs-xl-1" style={{ fontWeight: '600', color: '#222' }}>
-                    {slot.name}
-                  </h2>
-
-
-                  {
-                    slot.products?.length >= 4 && (
-                      <div className="d-flex gap-2 mb-1">
-                        <button
-                          className="d-flex align-items-center justify-content-center slider-nav-btn"
-                          // Connect to this specific slider
-                          onClick={() => sliderRefs.current[slotIndex]?.current?.slickPrev()}
-                        >
-                          <FaChevronLeft className="slider-arrow"  />
-                        </button>
-                        <button
-                          className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
-                          
-                          // Connect to this specific slider
-                          onClick={() => sliderRefs.current[slotIndex]?.current?.slickNext()}
-                        >
-                          <FaChevronRight className="slider-arrow" />
-                        </button>
-                      </div>
-                    )}
-
-                </div>
-
-
-
-                <div className="col-12 position-relative  ml-3 mt-0 overflow-hidden">
-                  <hr className="feature-hr m-0" />
-                  <div style={{
-                    position: 'absolute',
-                    top: '0',
-                    left: '0',
-                    width: '100px',
-                    height: '5px',
-                    backgroundColor: '#e83e8c',
-                    zIndex: '1'
-                  }}></div>
-                </div>
-
-
-
-                {
-                  slot.products?.length >= 4 && (
-                    <Slider
-                      ref={sliderRefs.current[slotIndex]}
-                      {...settings}
-                      className="w-100"
+                  {slot.products.length > 0 && (
+                    <h2
+                      className="featured-heading font-weight-bold mb-0  fs-5 fs-md-3 fs-lg-2 fs-xl-1"
+                      style={{ fontWeight: "600", color: "#222" }}
                     >
-                      {slot.products?.map((product, productIndex) => (
+                      {slot.name}
+                    </h2>
+                  )}
+
+                  {slot.products?.length >= 4 && (
+                    <div className="d-flex gap-2 mb-1">
+                      <button
+                        className="d-flex align-items-center justify-content-center slider-nav-btn"
+                        // Connect to this specific slider
+                        onClick={() =>
+                          sliderRefs.current[slotIndex]?.current?.slickPrev()
+                        }
+                      >
+                        <FaChevronLeft className="slider-arrow" />
+                      </button>
+                      <button
+                        className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
+                        // Connect to this specific slider
+                        onClick={() =>
+                          sliderRefs.current[slotIndex]?.current?.slickNext()
+                        }
+                      >
+                        <FaChevronRight className="slider-arrow" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                {slot.products.length > 0 && (
+                  <div className="col-12 position-relative  ml-3 mt-0 overflow-hidden">
+                    <hr className="feature-hr m-0" />
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "0",
+                        left: "0",
+                        width: "100px",
+                        height: "5px",
+                        backgroundColor: "#e83e8c",
+                        zIndex: "1",
+                      }}
+                    ></div>
+                  </div>
+                )}
+
+                {slot.products?.length >= 4 && (
+                  <Slider
+                    ref={sliderRefs.current[slotIndex]}
+                    {...settings}
+                    className="w-100"
+                  >
+                    {slot.products?.map((product, productIndex) => (
+                      <ProductCard
+                        key={product.id || productIndex}
+                        slotProducts={product?.product}
+                        showOptionDiv={showOptionDiv}
+                        setShowOptionDiv={setShowOptionDiv}
+                        selectedSizes={selectedSizes}
+                        handleSizeSelect={handleSizeSelect}
+                        handleAddToCart={handleAddToCart}
+                        handleOptionDiv={handleOptionDiv}
+                        slotLength={slot.slot_details?.length}
+                      />
+                    ))}
+                  </Slider>
+                )}
+
+                {slot.products?.length < 4 && (
+                  <div className="row">
+                    {slot.products?.map((product, productIndex) => (
+                      <div className=" col-6 col-lg-3 col-md-4">
                         <ProductCard
                           key={product.id || productIndex}
-                          slotProducts={product?.product}
+                          slotProducts={product}
                           showOptionDiv={showOptionDiv}
                           setShowOptionDiv={setShowOptionDiv}
                           selectedSizes={selectedSizes}
                           handleSizeSelect={handleSizeSelect}
                           handleAddToCart={handleAddToCart}
                           handleOptionDiv={handleOptionDiv}
-                          slotLength = {slot.slot_details?.length}
                         />
-                      ))}
-                    </Slider>
-                  )
-                }
-
-                {
-                  slot.products?.length < 4 && (
-
-                    <div className="row">
-                      {
-                        slot.products?.map((product, productIndex) => (
-                          <div className=" col-6 col-lg-3 col-md-4">
-                            <ProductCard
-                              key={product.id || productIndex}
-                              slotProducts={product}
-                              showOptionDiv={showOptionDiv}
-                              setShowOptionDiv={setShowOptionDiv}
-                              selectedSizes={selectedSizes}
-                              handleSizeSelect={handleSizeSelect}
-                              handleAddToCart={handleAddToCart}
-                              handleOptionDiv={handleOptionDiv}
-
-                            />
-                          </div>
-                        ))
-                      }
-                    </div>
-
-                  )
-                }
+                      </div>
+                    ))}
+                  </div>
+                )}
               </React.Fragment>
             );
           })}
