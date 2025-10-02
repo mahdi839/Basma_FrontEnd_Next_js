@@ -35,9 +35,9 @@ const ProductCard = React.memo(function ProductCard({
               src={
                 slotProducts?.images?.[0]?.image
                   ? baseUrl + slotProducts?.images[0]?.image
-                  : "/img/product/dress-1.png"
+                  : ""
               }
-              className="position-absolute w-100 h-100 object-fit-cover p-3 product-image"
+              className="position-absolute w-100 h-100 object-fit-cover p-0 p-md-3 product-image"
               alt={slotProducts?.title}
               unoptimized={true}
             />
@@ -98,7 +98,7 @@ const ProductCard = React.memo(function ProductCard({
           {slotProducts?.sizes?.length > 1 ? (
             <button
               type="button"
-              className="bg-transparent w-100 rounded-0"
+              className="bg-transparent w-100 rounded-0 "
               onClick={(e) => handleOptionDiv(e, slotProducts?.id)}
             >
               <GrAidOption className="me-2" />
@@ -106,7 +106,7 @@ const ProductCard = React.memo(function ProductCard({
             </button>
           ) : (
             <button
-              className="btn-grad w-100 rounded-0"
+              className="btn-grad w-100 rounded-0 fs-9"
               onClick={() => handleAddToCart(slotProducts)}
             >
               <FaCartArrowDown className="me-2" />

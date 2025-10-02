@@ -79,7 +79,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
 
   if (homeCategories?.error) {
     return (
-      <div className="text-center my-5">Error: {homeCategories.error}</div>
+      <div className="text-center my-5">Error: {homeCategories.error} </div>
     );
   }
 
@@ -224,7 +224,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                     {slot.products?.map((product, productIndex) => (
                       <ProductCard
                         key={product.id || productIndex}
-                        slotProducts={product?.product}
+                        slotProducts={product}
                         showOptionDiv={showOptionDiv}
                         setShowOptionDiv={setShowOptionDiv}
                         selectedSizes={selectedSizes}
