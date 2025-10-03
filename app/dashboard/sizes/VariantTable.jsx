@@ -44,7 +44,7 @@ export default function VariantTable({ initialVariants }) {
               <td className="text-center">{v.price ?? "— (uses base_price)"}</td>
               <td className="text-center">
                 <span className="d-flex gap-3 justify-content-center">
-                  <Link href={`/dashboard/product-variants/edit/${v.id}`}>
+                  <Link href={`/dashboard/sizes/edit/${v.id}`}>
                     <FaEdit className="text-dark" />
                   </Link>
                   <FaTrash
