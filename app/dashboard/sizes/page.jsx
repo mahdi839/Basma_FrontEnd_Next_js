@@ -1,42 +1,40 @@
 'use client'
 import { useState, useEffect } from "react";
-import { getSizes } from "@/lib/GetSize";
-import SizeTable from "./SizeTable"; // Import the client component
+import VariantTable from "./VariantTable";
 import Link from "next/link";
 import Button from "@/app/components/dashboard/components/button/Button";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
+import axios from "axios";
 
 export default function Page() {
-  const [sizes, setSizes] = useState([]);
-  const [loading, setLoading] = useState(true); // To show a loading state while fetching
+  const [variants, setVariants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  async function fetchVariants() {
+    try {
+      const base = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const res = await axios.get(`${base}api/product-variants`);
+      // your controller returns { data: [], meta: {} }
+      setVariants(res.data?.data || []);
+    } catch (err) {
+      console.error("Error fetching variants:", err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getSizes(); // Fetch sizes data
-        setSizes(data); // Store data in state
-      } catch (err) {
-        console.error("Error fetching sizes:", err);
-      } finally {
-        setLoading(false); // Set loading to false after fetching
-      }
-    };
+    fetchVariants();
+  }, []);
 
-    fetchData(); // Call the fetch function on mount
-  }, []); // Empty dependency array ensures it runs only once (on mount)
-
-  if (loading) {
-    return <DynamicLoader />; // Show loading message or spinner while data is being fetched
-  }
+  if (loading) return <DynamicLoader />;
 
   return (
     <div className="container-fluid my-5">
       <Link href="/dashboard/sizes/add">
-        <Button className="mb-3">Add Size</Button>
+        <Button className="mb-3">Add Variant</Button>
       </Link>
-
-      {/* Pass sizes as props to the client component */}
-      <SizeTable initialSizes={sizes} />
+      <VariantTable initialVariants={variants} />
     </div>
   );
 }
