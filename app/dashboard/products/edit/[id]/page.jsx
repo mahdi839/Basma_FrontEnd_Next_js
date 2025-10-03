@@ -1,22 +1,20 @@
 import { getData } from "@/lib/api";
-import { getSizes } from "@/lib/GetSize";
 import ProductUpdateForm from "./components/ProductUpdateForm";
 
 export default async function EditProductPage({ params }) {
   let productData = null;
-  let sizesData = [];
   let categoryData = [];
+
   try {
-    // Fetch product data
     const productResponse = await getData(`api/products/${params.id}`);
     productData = productResponse?.data;
-    // Fetch sizes
-    sizesData = await getSizes();
-    //  fetch categories
+
+    // categories (your admin endpoint – adjust if needed)
     categoryData = await getData("api/categories");
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
+
   if (!productData) return <div>Product not found</div>;
 
   return (
@@ -25,7 +23,6 @@ export default async function EditProductPage({ params }) {
       <ProductUpdateForm
         isEditMode={true}
         initialData={productData}
-        sizesData={sizesData}
         categoryData={categoryData}
         productId={params.id}
       />

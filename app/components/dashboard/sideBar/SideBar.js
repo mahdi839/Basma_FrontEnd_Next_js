@@ -18,7 +18,7 @@ export default function SideBar() {
       </div>
       <div className="sideBar_list mt-4">
       <SideBarItem href="/dashboard/category" Icon={BiSolidCategory} label='Category'/>
-      <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Sizes'/>
+      <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Product Variants'/>
        <SideBarItem href="/dashboard/products" Icon={FaProductHunt} label='Products'/>
        <SideBarItem href="/dashboard/orders" Icon={FaShoppingBag} label='Orders'/>
        <SideBarItem href="/dashboard/shipping" Icon={FaShippingFast} label='Shipping Cost'/>
