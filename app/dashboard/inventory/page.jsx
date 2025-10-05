@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import InventoryTable from "./components/InventoryTable";
 import Button from "@/app/components/dashboard/components/button/Button";
 import Link from "next/link";
+import PageLoader from "@/app/components/loader/pageLoader";
 
 export default function Page() {
   const [stocks, setStocks] = useState(null);
@@ -45,14 +46,15 @@ export default function Page() {
     fetchStocks();
   }, [fetchStocks]);
 
+   if (loading) {
+      return <PageLoader />;
+    }
 
   return (
     <div className="container-fluid my-5">
       <Link href="/dashboard/inventory/add">
         <Button className="mb-3">Add  Stock</Button>
       </Link>
-
-      {loading && <p className="text-center">Loading...</p>}
       {!loading && error && <p className="text-center text-danger">{error}</p>}
       {!loading && !error && (
         <InventoryTable stocks={stocks || { data: [] }} />

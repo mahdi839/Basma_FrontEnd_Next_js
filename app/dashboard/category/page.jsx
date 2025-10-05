@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import CategoryTable from "./components/CategoryTable";
 import Button from "@/app/components/dashboard/components/button/Button";
 import Link from "next/link";
+import PageLoader from "@/app/components/loader/pageLoader";
 
 export default function Page() {
   const [categories, setCategories] = useState(null); // null = not loaded yet
@@ -40,16 +41,16 @@ export default function Page() {
     fetchCategories();
   }, [fetchCategories]);
 
+  if (loading) {
+    return <PageLoader />;
+  }
+
   return (
     <div className="container-fluid my-5">
       <Link href="/dashboard/category/add">
         <Button className="mb-3">Add Category</Button>
       </Link>
-
-      {loading && <p className="text-center">Loading...</p>}
-      {!loading && error && (
-        <p className="text-center text-danger">{error}</p>
-      )}
+      {!loading && error && <p className="text-center text-danger">{error}</p>}
       {!loading && !error && (
         // Pass the loaded categories into your client table
         <CategoryTable categories={categories || { data: [] }} />
