@@ -3,11 +3,11 @@ import "../../layouts/dashboard.css";
 import { BsLayoutTextSidebar } from "react-icons/bs";
 import {  FaInfoCircle, FaProductHunt, FaShippingFast, FaShoppingBag} from "react-icons/fa";
 import { RiKanbanView2 } from "react-icons/ri";
-import { IoIosResize,IoIosSettings } from "react-icons/io";
+import { IoIosSettings } from "react-icons/io";
+import { MdInventory } from "react-icons/md";
 import { BiSolidCategory } from "react-icons/bi";
 import { PiFlagBanner } from "react-icons/pi";
 import SideBarItem from "../components/sidebarItem/SideBarItem";
-import { IoOptionsOutline } from "react-icons/io5";
 import { MdOutlineSocialDistance } from "react-icons/md";
 export default function SideBar() {
   return (
@@ -18,9 +18,10 @@ export default function SideBar() {
       </div>
       <div className="sideBar_list mt-4">
       <SideBarItem href="/dashboard/category" Icon={BiSolidCategory} label='Category'/>
-      <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Product Variants'/>
+      {/* <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Sizes'/> */}
        <SideBarItem href="/dashboard/products" Icon={FaProductHunt} label='Products'/>
        <SideBarItem href="/dashboard/orders" Icon={FaShoppingBag} label='Orders'/>
+       <SideBarItem href="/dashboard/inventory" Icon={MdInventory} label='Inventory Management'/>
        <SideBarItem href="/dashboard/shipping" Icon={FaShippingFast} label='Shipping Cost'/>
        <SideBarItem href="/dashboard/banners" Icon={PiFlagBanner} label='Banners'/>
        <SideBarItem href="/dashboard/about_us"  Icon={FaInfoCircle}  label='about us' /> 
