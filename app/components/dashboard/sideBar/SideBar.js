@@ -9,6 +9,7 @@ import { BiSolidCategory } from "react-icons/bi";
 import { PiFlagBanner } from "react-icons/pi";
 import SideBarItem from "../components/sidebarItem/SideBarItem";
 import { MdOutlineSocialDistance } from "react-icons/md";
+import { AiOutlineDashboard } from "react-icons/ai";
 export default function SideBar() {
   return (
     <div className="sideBarDiv d-flex flex-column">
@@ -17,6 +18,7 @@ export default function SideBar() {
         <BsLayoutTextSidebar className="sideBarIcon" />
       </div>
       <div className="sideBar_list mt-4">
+        <SideBarItem href="/dashboard" Icon={AiOutlineDashboard } label='Dashboard'/>
       <SideBarItem href="/dashboard/category" Icon={BiSolidCategory} label='Category'/>
       {/* <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Sizes'/> */}
        <SideBarItem href="/dashboard/products" Icon={FaProductHunt} label='Products'/>
