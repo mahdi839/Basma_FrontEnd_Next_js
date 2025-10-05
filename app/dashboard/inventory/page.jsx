@@ -17,10 +17,17 @@ export default function Page() {
     try {
       const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
       const url = `${baseUrl}api/inventory-management`;
-
+      // 🧠 Get token from localStorage
+      let token = null;
+      if (typeof window !== "undefined") {
+        token = localStorage.getItem("token");
+      }
       const res = await fetch(url, {
         cache: "no-store",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : "",
+        },
       });
 
       if (!res.ok) throw new Error(`Failed to load: ${res.status}`);
@@ -33,7 +40,7 @@ export default function Page() {
       setLoading(false);
     }
   }, []);
-  
+
   useEffect(() => {
     fetchStocks();
   }, [fetchStocks]);
