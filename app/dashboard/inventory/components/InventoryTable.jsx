@@ -5,7 +5,7 @@ import Link from "next/link";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-
+import { FaEdit, FaTrash } from "react-icons/fa";
 export default function InventoryTable({ stocks = [] }) {
   // Normalize: accept either an array or { data: [...] }
   const initial = Array.isArray(stocks) ? stocks : stocks?.data ?? [];
@@ -78,14 +78,13 @@ export default function InventoryTable({ stocks = [] }) {
               <td className="text-center">
                 <span className="d-flex gap-3 justify-content-center">
                   <Link href={`/dashboard/inventory/edit/${stock.id}`}>
-                    Edit
+                    <FaEdit className="text-dark" />
                   </Link>
-                  <span
+                  <FaTrash
                     onClick={() => handleDelete(stock.id)}
-                    style={{ cursor: "pointer", color: "red" }}
-                  >
-                    Delete
-                  </span>
+                    className="text-danger mt-2"
+                    style={{ cursor: "pointer" }}
+                  />
                 </span>
               </td>
             </tr>

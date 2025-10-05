@@ -23,16 +23,16 @@ export default function Page() {
   const [saving, setSaving] = useState(false);
 
   const base = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem("token");
   // Load all products for the dropdown
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const res = await axios.get(`${base}api/products`,{
-            headers:{
-                Authorization: `Bearer ${token}`
-            }
+        const res = await axios.get(`${base}api/products`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         if (!mounted) return;
         setProducts(res.data?.data || []);
@@ -56,10 +56,10 @@ export default function Page() {
     (async () => {
       try {
         // Using index and filtering to avoid needing a new backend show-by-id right now
-        const res = await axios.get(`${base}api/inventory-management`,{
-             headers:{
-                Authorization: `Bearer ${token}`
-            }
+        const res = await axios.get(`${base}api/inventory-management`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         if (!mounted) return;
 
@@ -191,13 +191,13 @@ export default function Page() {
               required
             />
           </div>
-
-          <Button
+          <button
             type="submit"
-            className="w-100 mt-3"
+            className="dashboard-btn w-100 mt-3"
             disabled={saving}
-            text={saving ? "Updating..." : "Update Stock"}
-          />
+          >
+            {saving ? "Updating..." : " Update Stock"}
+          </button>
         </form>
       </div>
     </div>
