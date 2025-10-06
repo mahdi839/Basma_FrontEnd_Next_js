@@ -13,7 +13,7 @@ export default function OptionDiv({showOptionDiv,setShowOptionDiv,selectedSizes,
           </button>
 
           <div className="size-selector-container p-3">
-            <h6 className="text-center mb-3">SELECT SIZE</h6>
+            <h6 className="text-center mb-3">Select {product?.variants[0]?.attribute??""} </h6>
 
             <div className="mb-3">
               <select
@@ -22,9 +22,9 @@ export default function OptionDiv({showOptionDiv,setShowOptionDiv,selectedSizes,
                 onChange={(e) => handleSizeSelect(e)}
               >
                 <option value="">Choose size</option>
-                {product.sizes.map(size => (
-                  <option key={size.id} value={size.id}>
-                    {size.size} - ৳{size.pivot.price}
+                {product.variants.map(variant => (
+                  <option key={variant.id} value={variant.id}>
+                    {variant.value} - ৳{variant.price}
                   </option>
                 ))}
               </select>

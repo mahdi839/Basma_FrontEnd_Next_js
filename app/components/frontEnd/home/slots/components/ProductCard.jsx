@@ -59,8 +59,6 @@ const ProductCard = React.memo(function ProductCard({
               </Link>
 
             </div>
-          
-
           {/* Quick add to cart button (shown on hover) */}
         </div>
 
