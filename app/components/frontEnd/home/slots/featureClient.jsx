@@ -118,7 +118,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
       });
       return;
     }
-
+   
     // check if user select size or not for multiple sizes
     if (product.sizes.length > 1 && !selectedSizes) {
       Swal.fire({

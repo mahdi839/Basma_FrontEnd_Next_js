@@ -87,7 +87,7 @@ const ProductCard = React.memo(function ProductCard({
               <span
                 className="text-dark fw-bold product-price"
               >
-                ৳{slotProducts?.sizes[0]?.pivot.price || slotProducts?.price}
+                ৳{slotProducts?.variants?.[0]?.price || slotProducts?.price}
               </span>
             </div>
           </div>
@@ -96,7 +96,7 @@ const ProductCard = React.memo(function ProductCard({
         <div
           className="card-footer bg-transparent border-0 pt-0   add-to-cart-footer d-lg-none d-block"
         >
-          {slotProducts?.sizes?.length > 1 ? (
+          {slotProducts?.variants?.length > 1 ? (
             <button
               type="button"
               className="bg-transparent w-100 rounded-0 "
@@ -120,7 +120,7 @@ const ProductCard = React.memo(function ProductCard({
           className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block "
 
         >
-          {slotProducts?.sizes?.length > 1 ? (
+          {slotProducts?.variants?.length > 1 ? (
             <button
               type="button"
               className="btn-grad w-100 rounded-0"
