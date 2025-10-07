@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FaTrash, FaPlus, FaMinus, FaHeart } from "react-icons/fa";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,12 @@ function CartPage() {
 let cartItems = useSelector((state=>state.cart.items))
 let getTotalPrice = cartItems.reduce((total,item)=>total+item.totalPrice,0)
 let dispatch = useDispatch()
+const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // Wait until client hydration finishes so server & client HTML match
+    setMounted(true);
+  }, []);
 
 function handleIncreament (id){
   dispatch(increament({id}))
@@ -29,17 +35,32 @@ function handleRemove (id){
 //   window.location.href = "/checkout"
 // }
 
+  // Avoid rendering mismatched HTML before mount
+  if (!mounted) {
+    return (
+      <div className="container py-5">
+        <div className="border py-3 px-5 mb-2">
+          <h5 className="mb-0">
+            Items in Your Cart: <span className="text-danger">( 0 )</span>
+          </h5>
+        </div>
+        {/* simple placeholder skeleton */}
+        <div className="border p-4">Loading your cart…</div>
+      </div>
+    );
+  }
+
 
   return (
     <div >
      
-     <section class="h-100 ">
-  <div class="container py-5">
-    <div class="row d-flex justify-content-center my-4">
-      <div class="col-md-8">
+     <section className="h-100 ">
+  <div className="container py-5">
+    <div className="row d-flex justify-content-center my-4">
+      <div className="col-md-8">
         
-          <div class="border py-3 px-5 mb-2">
-            <h5 class="mb-0">Items in Your Cart: <span className="text-danger">( {cartItems.length} )</span> </h5>
+          <div className="border py-3 px-5 mb-2">
+            <h5 className="mb-0">Items in Your Cart: <span className="text-danger">( {cartItems.length} )</span> </h5>
           </div>
           
          {
@@ -86,7 +107,7 @@ function handleRemove (id){
   </div>
           ):  
           cartItems?.map((item) => (
-            <div className="row align-items-center border mb-2 py-3 mx-0 px-0">
+            <div className="row align-items-center border mb-2 py-3 mx-0 px-0" key={item.id}>
               {/* Product Image - Circular */}
               <div className="col-md-1 col-2 pe-0">
                 <div className="position-relative">
@@ -114,7 +135,7 @@ function handleRemove (id){
                 </h6>
                 </Link>
                 <div className="d-flex flex-column gap-2 small">
-                  {item.size&& <span className="text-muted">Size: <span className="text-dark fw-medium">{item.size}</span></span>}
+                  {item.size&& <span className="text-muted">Variant: <span className="text-dark fw-medium">{item.size}</span></span>}
                   <span 
                       className={`border-0 ${style.cursor}`}
                       onClick={() => handleRemove(item.id)}

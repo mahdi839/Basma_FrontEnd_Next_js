@@ -233,7 +233,8 @@ export default function OrderTable({
                         <div key={item.id}>
                           <strong> {`${itemIndex + 1}.`} </strong>
                           {item.title} (qty:{item.qty} x Price: {item.unitPrice}{" "}
-                          = {item.totalPrice} )
+                          = {item.totalPrice} ) -
+                          <strong>Variant:</strong> {item.size}
                         </div>
                       ))}
                     </td>
