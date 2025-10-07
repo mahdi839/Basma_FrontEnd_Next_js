@@ -49,9 +49,9 @@ export default function CtgProductsLogic({ products, category }) {
         return;
       }
 
-      if (product.sizes.length > 1 && !selectedSizes) {
+      if (product.variants.length > 1 && !selectedSizes) {
         Swal.fire({
-          title: "Please Select A Size",
+          title: `Please Select A ${product?.variants[0]?.attribute ?? "Option"}`,
           icon: "warning",
           confirmButtonText: "Ok",
           confirmButtonColor: "#DB3340",
@@ -64,7 +64,7 @@ export default function CtgProductsLogic({ products, category }) {
           id: product.id,
           title: product.title,
           size: selectedSizes ?? "",
-          price: product.sizes[0]?.pivot?.price ?? product.price,
+          price: product.variants[0]?.price ?? product.price,
           image: baseUrl + product.images?.[0]?.image || "",
         })
       );
