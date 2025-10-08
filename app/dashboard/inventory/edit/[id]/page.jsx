@@ -1,151 +1,126 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-
 import Button from "@/app/components/dashboard/components/button/Button";
+import axios from "axios";
+import { useRouter, useParams } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 
 export default function Page() {
-  const { id } = useParams(); // stock row id from the URL
-  const router = useRouter();
-
-  const [form, setForm] = useState({
+  const [stock, setStock] = useState({
     product_id: "",
     purchase_price: "",
+    product_variant_id: "",
     stock: "",
   });
   const [products, setProducts] = useState([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
-  const [loadingStock, setLoadingStock] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(true);
+
+  const router = useRouter();
+  const params = useParams();
+  const { id } = params;
 
   const base = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const token = localStorage.getItem("token");
-  // Load all products for the dropdown
+
+  // 🧠 Fetch all products
+  async function fetchProducts() {
+    try {
+      const res = await axios.get(`${base}api/products`);
+      setProducts(res.data?.data || []);
+    } catch (err) {
+      toast.error("Failed to load products.");
+    }
+  }
+
+  // 🧠 Fetch single stock info
+  async function fetchStock() {
+    try {
+      const res = await axios.get(`${base}api/inventory-management/${id}`);
+      const data = res.data;
+
+      // Set stock data
+      setStock({
+        product_id: data.product_id?.toString() || "",
+        purchase_price: data.purchase_price || "",
+        product_variant_id: data.product_variant_id?.toString() || "",
+        stock: data.stock || "",
+      });
+    } catch (err) {
+      toast.error("Failed to load stock data.");
+    }
+  }
+
+  // 🧩 Combined fetch flow
   useEffect(() => {
-    let mounted = true;
     (async () => {
-      try {
-        const res = await axios.get(`${base}api/products`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!mounted) return;
-        setProducts(res.data?.data || []);
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load products.");
-      } finally {
-        if (mounted) setLoadingProducts(false);
-      }
+      await fetchProducts();
+      await fetchStock();
+      setLoadingPage(false);
     })();
-    return () => {
-      mounted = false;
-    };
-  }, [base]);
+  }, []);
 
-  // Load the existing stock by ID
+  // 🧠 Auto-select product when stock data changes
   useEffect(() => {
-    if (!id) return;
-    let mounted = true;
+    if (products.length > 0 && stock.product_id) {
+      const prod = products.find(
+        (p) => p.id.toString() === stock.product_id.toString()
+      );
+      setSelectedProduct(prod || null);
+    }
+  }, [products, stock.product_id]);
 
-    (async () => {
-      try {
-        // Using index and filtering to avoid needing a new backend show-by-id right now
-        const res = await axios.get(`${base}api/inventory-management`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (!mounted) return;
-
-        const list = Array.isArray(res.data) ? res.data : res.data?.data || [];
-        const existing = list.find((s) => String(s.id) === String(id));
-
-        if (!existing) {
-          toast.error("Stock not found.");
-          router.back();
-          return;
-        }
-
-        setForm({
-          product_id: existing.product_id ?? existing.product?.id ?? "",
-          purchase_price: existing.purchase_price ?? "",
-          stock: existing.stock ?? "",
-        });
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to load stock.");
-        router.back();
-      } finally {
-        if (mounted) setLoadingStock(false);
-      }
-    })();
-
-    return () => {
-      mounted = false;
-    };
-  }, [base, id, router]);
-
-  const isLoading = useMemo(
-    () => loadingProducts || loadingStock,
-    [loadingProducts, loadingStock]
-  );
-
-  async function handleUpdate(e) {
+  // 🧩 Update stock
+  async function updateStock(e) {
     e.preventDefault();
-    setSaving(true);
+    setLoading(true);
 
+    const url = `${base}api/inventory-management/${id}`;
     let token = null;
     if (typeof window !== "undefined") token = localStorage.getItem("token");
 
     try {
-      await axios.put(
-        `${base}api/inventory-management/${id}`,
-        {
-          // send only fields we allow to be updated
-          product_id: form.product_id,
-          purchase_price: Number(form.purchase_price),
-          stock: parseInt(form.stock, 10),
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
+      await axios.put(url, stock, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       toast.success("Stock updated successfully!");
       router.push("/dashboard/inventory");
     } catch (err) {
-      console.error(err);
-      const msg =
-        err?.response?.data?.message ||
-        err?.response?.data?.error ||
-        "Update failed.";
-      toast.error(msg);
+      toast.error(err.response?.data?.message || "Failed to update stock.");
     } finally {
-      setSaving(false);
+      setLoading(false);
     }
   }
 
-  if (isLoading) return <DynamicLoader />;
+  // 🧠 Handle product change manually
+  function handleSelectProduct(e) {
+    const prodId = e.target.value;
+    const prod = products.find((p) => p.id.toString() === prodId);
+    setSelectedProduct(prod || null);
+    setStock({
+      ...stock,
+      product_id: prodId,
+      product_variant_id: "", // reset variant if product changes
+    });
+  }
+
+  if (loadingPage) return <DynamicLoader />;
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100">
-      <div className="card shadow-lg p-4" style={{ width: 420 }}>
-        <h4 className="text-center mb-4">Edit Stock (ID: {id})</h4>
+      <div className="card shadow-lg p-4" style={{ width: "400px" }}>
+        <h4 className="text-center mb-4">Edit Stock</h4>
 
-        <form onSubmit={handleUpdate}>
-          {/* Product Dropdown */}
+        <form onSubmit={updateStock}>
+          {/* 🧾 Product Dropdown */}
           <div className="form-group mb-3">
             <label className="fw-bold">Select Product:</label>
             <select
               className="form-control"
-              value={form.product_id}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, product_id: e.target.value }))
-              }
+              value={stock.product_id}
+              onChange={handleSelectProduct}
               required
             >
               <option value="">-- Select a Product --</option>
@@ -157,46 +132,61 @@ export default function Page() {
             </select>
           </div>
 
-          {/* Purchase Price */}
+          {/* 🧩 Variant Dropdown */}
+          {selectedProduct &&
+            selectedProduct.variants &&
+            selectedProduct.variants.length > 0 && (
+              <div className="form-group mb-3">
+                <label className="fw-bold">Select Product Variant:</label>
+                <select
+                  className="form-control"
+                  value={stock.product_variant_id}
+                  onChange={(e) =>
+                    setStock({ ...stock, product_variant_id: e.target.value })
+                  }
+                >
+                  <option value="">-- Select a Variant --</option>
+                  {selectedProduct.variants.map((variant, index) => (
+                    <option key={index} value={variant.id}>
+                      {variant.value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+          {/* 💰 Purchase Price */}
           <div className="form-group mb-3">
             <label className="fw-bold">Purchase Price:</label>
             <input
               type="number"
               className="form-control"
-              value={form.purchase_price}
+              value={stock.purchase_price}
               onChange={(e) =>
-                setForm((prev) => ({
-                  ...prev,
-                  purchase_price: e.target.value,
-                }))
+                setStock({ ...stock, purchase_price: e.target.value })
               }
-              min="0"
-              step="0.01"
               required
             />
           </div>
 
-          {/* Stock Quantity */}
+          {/* 📦 Stock Quantity */}
           <div className="form-group mb-3">
             <label className="fw-bold">Stock Quantity:</label>
             <input
               type="number"
               className="form-control"
-              value={form.stock}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, stock: e.target.value }))
-              }
-              min="0"
-              step="1"
+              value={stock.stock}
+              onChange={(e) => setStock({ ...stock, stock: e.target.value })}
               required
             />
           </div>
+
           <button
             type="submit"
             className="dashboard-btn w-100 mt-3"
-            disabled={saving}
+            disabled={loading}
           >
-            {saving ? "Updating..." : " Update Stock"}
+            {loading ? "Updating..." : "Update Stock"}
           </button>
         </form>
       </div>
