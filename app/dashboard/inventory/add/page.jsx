@@ -11,11 +11,13 @@ export default function Page() {
   const [stock, setStock] = useState({
     product_id: "",
     purchase_price: "",
+    product_variant: "",
     stock: "",
   });
   const [products, setProducts] = useState([]); // all products for dropdown
   const [loading, setLoading] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const router = useRouter();
 
   // 🧠 Fetch all products for dropdown
@@ -41,7 +43,8 @@ export default function Page() {
     e.preventDefault();
     setLoading(true);
 
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + "api/inventory-management";
+    const url =
+      process.env.NEXT_PUBLIC_BACKEND_URL + "api/inventory-management";
     let token = null;
     if (typeof window !== "undefined") token = localStorage.getItem("token");
 
@@ -58,6 +61,13 @@ export default function Page() {
     }
   }
 
+  function handleSelectProduct(e) {
+    const prodId = e.target.value;
+    const prod = products.find((p) => p.id.toString() === prodId);
+    setSelectedProduct(prod || null);
+    setStock({ ...stock, product_id: prodId });
+  }
+
   if (loadingProducts) return <DynamicLoader />;
 
   return (
@@ -72,9 +82,7 @@ export default function Page() {
             <select
               className="form-control"
               value={stock.product_id}
-              onChange={(e) =>
-                setStock({ ...stock, product_id: e.target.value })
-              }
+              onChange={(e) => handleSelectProduct(e)}
               required
             >
               <option value="">-- Select a Product --</option>
@@ -85,6 +93,30 @@ export default function Page() {
               ))}
             </select>
           </div>
+
+          {/* product variant */}
+          {selectedProduct &&
+            selectedProduct.variants &&
+            selectedProduct.variants.length > 0 && (
+              <div className="form-group mb-3">
+                <label className="fw-bold">Select Product Variant:</label>
+                <select
+                  className="form-control"
+                  value={stock.product_variant}
+                 onChange={(e) =>
+                setStock({ ...stock, product_variant: e.target.value })
+              }
+                  required
+                >
+                  <option value="">-- Select a Variant --</option>
+                  {selectedProduct.variants.map((variant,index) => (
+                    <option key={index} value={variant.value}>
+                      {variant.value}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
           {/* 💰 Purchase Price */}
           <div className="form-group mb-3">

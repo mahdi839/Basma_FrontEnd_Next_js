@@ -54,9 +54,10 @@ export default function InventoryTable({ stocks = [] }) {
     <table className="table table-bordered">
       <thead>
         <tr>
-          <th className="text-center">Id</th>
+          <th className="text-center">#</th>
           <th className="text-center">Product</th>
           <th className="text-center">Stock</th>
+          <th className="text-center">Variant</th>
           <th className="text-center">Purchase Price</th>
           <th className="text-center">Actions</th>
         </tr>
@@ -69,11 +70,12 @@ export default function InventoryTable({ stocks = [] }) {
             </td>
           </tr>
         ) : (
-          items.map((stock) => (
+          items.map((stock,index) => (
             <tr key={stock.id}>
-              <td className="text-center">{stock.id}</td>
+              <td className="text-center">{index+1}</td>
               <td className="text-center">{stock.product?.title}</td>
               <td className="text-center">{stock.stock}</td>
+              <td className="text-center">{stock.product_variant??"N/A"}</td>
               <td className="text-center">{stock.purchase_price}</td>
               <td className="text-center">
                 <span className="d-flex gap-3 justify-content-center">
