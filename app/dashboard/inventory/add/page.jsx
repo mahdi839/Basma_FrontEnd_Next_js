@@ -11,7 +11,7 @@ export default function Page() {
   const [stock, setStock] = useState({
     product_id: "",
     purchase_price: "",
-    product_variant: "",
+    product_variant_id: "",
     stock: "",
   });
   const [products, setProducts] = useState([]); // all products for dropdown
@@ -102,15 +102,15 @@ export default function Page() {
                 <label className="fw-bold">Select Product Variant:</label>
                 <select
                   className="form-control"
-                  value={stock.product_variant}
-                 onChange={(e) =>
-                setStock({ ...stock, product_variant: e.target.value })
-              }
+                  value={stock.product_variant_id}
+                  onChange={(e) =>
+                    setStock({ ...stock, product_variant_id: e.target.value })
+                  }
                   required
                 >
                   <option value="">-- Select a Variant --</option>
                   {selectedProduct.variants.map((variant,index) => (
-                    <option key={index} value={variant.value}>
+                    <option key={index} value={variant.id}>
                       {variant.value}
                     </option>
                   ))}
