@@ -234,9 +234,9 @@ export default function OrderTable({
                           <strong> {`${itemIndex + 1}.`} </strong>
                           {item.title} (qty:{item.qty} x Price: {item.unitPrice}{" "}
                           = {item.totalPrice} ) -
-                          {item.size && (
+                          {item.selected_variant && (
                             <div>
-                              <strong>Variant:</strong> {item.size}
+                              <strong>{item?.selected_variant?.attribute??""}:</strong> {item?.selected_variant?.value??""}
                             </div>
                           )}
                         </div>
