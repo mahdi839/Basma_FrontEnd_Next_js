@@ -31,7 +31,7 @@ export default function OptionDiv({
                 Choose {product?.variants[0]?.attribute ?? ""}{" "}
               </option>
               {product.variants.map((variant) => (
-                <option key={variant.id} value={variant.value}>
+                <option key={variant.id} value={variant.id}>
                   {variant.value} - ৳{variant.price}
                 </option>
               ))}
