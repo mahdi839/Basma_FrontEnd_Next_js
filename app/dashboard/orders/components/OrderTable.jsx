@@ -15,7 +15,8 @@ export default function OrderTable({
   onResetFilters,
 }) {
   const [draftFilters, setDraftFilters] = useState(filters);
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [status, setStatus] = useState(false);
   // Sync with parent filters when they change
   React.useEffect(() => {
     setDraftFilters(filters);
@@ -73,6 +74,47 @@ export default function OrderTable({
   if (loading) {
     return <PageLoader />;
   }
+
+  async function handleEntry(id) {
+    setIsLoading(true);
+    let order = orders.find(o => o.id === id);
+    if(!order){
+      toast.error("Order not found");
+      return;
+    }
+    
+  try {
+    const url = "/api/steadfast";
+    const payload = {
+      invoice: order.order || "INV-" + Date.now(),
+      recipient_name: order.name,
+      recipient_phone: order.phone,
+      recipient_address: order.address + order.district,
+      cod_amount: order.total,
+      note: order.delivery_notes?? "No notes",
+      item_description: order.order_items?.map(item => `Product Name: ${item.title} (Qty: ${item.qty}) ${item?.selected_variant?.attribute??""}-${item?.selected_variant?.value}`).join(", ") || "No items",
+      total_lot: order.order_items?.length || 1,
+      delivery_type: 0,
+    };
+
+    const { data } = await axios.post(url, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    setStatus(true);
+    toast.success("Courier entry created successfully");
+    console.log("Steadfast response:", data);
+  } catch (err) {
+    console.error(err);
+    const msg = err?.response?.data?.message || err?.message || "Failed to create courier entry";
+    toast.error(msg);
+  }finally{
+    setIsLoading(false)
+  }
+}
+
+
 
   return (
     <div className="card">
@@ -195,6 +237,7 @@ export default function OrderTable({
                 <th>Ordered Products</th>
                 <th>Order Summary</th>
                 <th>Status</th>
+                <th>Couriar Entry</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -236,7 +279,10 @@ export default function OrderTable({
                           = {item.totalPrice} ) -
                           {item.selected_variant && (
                             <div>
-                              <strong>{item?.selected_variant?.attribute??""}:</strong> {item?.selected_variant?.value??""}
+                              <strong>
+                                {item?.selected_variant?.attribute ?? ""}:
+                              </strong>{" "}
+                              {item?.selected_variant?.value ?? ""}
                             </div>
                           )}
                         </div>
@@ -267,6 +313,14 @@ export default function OrderTable({
                         <option value="placed">Placed</option>
                         <option value="pending">Pending</option>
                       </select>
+                    </td>
+                    <td>
+                      <button
+                        onClick={()=>handleEntry(order.id)}
+                        className="btn btn-sm btn-secondary"
+                      >
+                        {isLoading ? "Loading..." : status ? "Success" : "Entry"}
+                      </button>
                     </td>
                     <td>
                       <button className="btn btn-sm btn-primary">View</button>
