@@ -18,9 +18,10 @@ export default function LogButtons() {
       e.preventDefault()
       if (typeof window !== 'undefined') {
       localStorage.removeItem("token")
+      localStorage.removeItem("role")
       setToken(null)
       }
-      router.push('/log_in')
+      router.push('/frontEnd/log_in')
    }
 
   return <>

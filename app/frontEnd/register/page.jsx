@@ -88,11 +88,11 @@ export default function RegisterFormBootstrap({ onSuccessRedirect = "/frontEnd/l
   return (
     <div className="container py-4">
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
+        <div className="col-12 col-md-8 col-lg-10">
           <div className="card shadow-sm">
             <div className="card-body">
-              <h1 className="h4 mb-1">Create your account</h1>
-              <p className="text-muted mb-4">Fill in your details to get started.</p>
+              <h1 className="h4 mb-1 text-center">Create your account</h1>
+              <p className="text-muted mb-4 text-center">Fill in your details to get started.</p>
 
               {errors.length > 0 && (
                 <div className="alert alert-danger" role="alert">
