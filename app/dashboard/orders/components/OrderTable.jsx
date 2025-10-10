@@ -237,7 +237,7 @@ export default function OrderTable({
                 <th>Ordered Products</th>
                 <th>Order Summary</th>
                 <th>Status</th>
-                <th>Couriar Entry</th>
+                {/* <th>Couriar Entry</th> */}
                 <th>Actions</th>
               </tr>
             </thead>
@@ -314,14 +314,14 @@ export default function OrderTable({
                         <option value="pending">Pending</option>
                       </select>
                     </td>
-                    <td>
+                    {/* <td>
                       <button
                         onClick={()=>handleEntry(order.id)}
                         className="btn btn-sm btn-secondary"
                       >
                         {isLoading ? "Loading..." : status ? "Success" : "Entry"}
                       </button>
-                    </td>
+                    </td> */}
                     <td>
                       <button className="btn btn-sm btn-primary">View</button>
                     </td>

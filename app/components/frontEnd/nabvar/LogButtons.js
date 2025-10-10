@@ -40,15 +40,12 @@ export default function LogButtons() {
                </li>
                
                <li>
-               <Link className="dropdown-item" href="#">
+               <Link className="dropdown-item" href="/frontEnd/register">
                 <FaArrowAltCircleRight style={{ fontSize: '20px', color: '#DB3340' }}  /> <span className="ml-2">  Register </span>
                </Link>
              </li>
                 </>
                )
-
-             
-
            }
         </>;
 }
