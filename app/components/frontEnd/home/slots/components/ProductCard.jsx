@@ -97,18 +97,16 @@ const ProductCard = React.memo(function ProductCard({
           {slotProducts?.variants?.length > 1 ? (
             <button
               type="button"
-              className="bg-transparent w-100 rounded-0 "
+              className="btn-grad w-100 rounded-0"
               onClick={(e) => handleOptionDiv(e, slotProducts?.id)}
             >
-              <GrAidOption className="me-2" />
               Select options
             </button>
           ) : (
             <button
-              className="btn-grad w-100 rounded-0 fs-9"
+              className="btn-grad w-100 rounded-0 add-to-cart-btn-sm"
               onClick={() => handleAddToCart(slotProducts)}
             >
-              <FaCartArrowDown className="me-2" />
               Add to cart
             </button>
           )}

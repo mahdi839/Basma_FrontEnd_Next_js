@@ -1444,6 +1444,10 @@ table tr td {
 	background: white;
 	border-top: 1px solid #e2e8f0;
 }
+.add-to-cart-btn-sm{
+	font-size: medium;
+	font-weight: 550;
+}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

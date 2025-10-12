@@ -11,6 +11,7 @@ import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
+import Image from "next/image";
 
 function FeatureClient({ homeCategories, BannerCatData }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -160,7 +161,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                  slot.products.length > 0 && slot?.banner?.banner_images?.map((img) => {
                       return (
                         <Link key={img.id} href={slot?.banner?.link??""} className="text-decoration-none text-dark my-3">
-                          <img src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`} style={{ width: '100%', height: 'auto' }} />
+                          <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`} alt="banner image" style={{ width: '100%', height: 'auto' }} priority />
                         </Link>
                       );
                   }
@@ -241,7 +242,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                 {slot.products?.length < 4 && (
                   <div className="row">
                     {slot.products?.map((product, productIndex) => (
-                      <div className=" col-6 col-lg-3 col-md-4">
+                      <div className="col-6 col-lg-3 col-md-4">
                         <ProductCard
                           key={product.id || productIndex}
                           slotProducts={product}
