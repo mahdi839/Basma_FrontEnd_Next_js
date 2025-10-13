@@ -106,7 +106,7 @@ function CheckoutPage() {
                   <div className="col-md-6">
                     <label htmlFor="phone" className="form-label">Phone</label>
                     <input
-                      type="tel"
+                      type="number"
                       className="form-control"
                       id="phone"
                       name="phone"
