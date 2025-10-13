@@ -149,6 +149,7 @@ export default function Products({ product }) {
                   alt="product thumbnail"
                   width={80}
                   height={80}
+                  unoptimized={true}
                 />
               </button>
             ))}
