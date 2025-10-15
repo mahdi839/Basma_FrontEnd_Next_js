@@ -8,6 +8,7 @@ import District from "./components/District";
 import useGetSingleData from "@/app/hooks/useGetSingleData";
 import useStoreData from "@/app/hooks/useStoreData";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 
 function CheckoutPage() {
@@ -35,6 +36,8 @@ function CheckoutPage() {
 
   const { fetchSingleData, loading, data } = useGetSingleData()
   const latestApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/shipping-costs-latest"
+
+ 
   useEffect(() => {
     fetchSingleData(latestApiUrl)
   }, [])
@@ -61,6 +64,16 @@ function CheckoutPage() {
   };
   const { storeData } = useStoreData();
   const handleSubmit = (e) => {
+    if(cartItems.length === 0){
+      Swal.fire({
+        icon: 'error',
+        title: 'Your cart is empty',
+        text: 'Please add items to your cart before checking out.',
+        confirmButtonText: 'OK'
+      });
+      route.push("/frontEnd/cart")
+      return;
+    }
     e.preventDefault();
     // Update shipping_cost in formData before sending
     const updatedFormData = {
@@ -72,7 +85,6 @@ function CheckoutPage() {
     storeData(storeOrderUrl, updatedFormData, 'Thank you for your purchase! Order placed successfully.');
     dispatch(clearCart())
     route.push("/")
-
   };
 
   return (
