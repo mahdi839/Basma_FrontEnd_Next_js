@@ -213,7 +213,7 @@ function handleRemove (id){
             </ul>
 
             <Link href='/frontEnd/checkout' >
-              <button type="button" className="btn-lg btn-block btn-light border-0">Go to checkout</button>
+              <button disabled={cartItems.length === 0} type="button" className="btn-lg btn-block btn-light border-0">Checkout</button>
             </Link>
           </div>
         </div>
