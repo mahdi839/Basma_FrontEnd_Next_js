@@ -10,41 +10,103 @@ import useStoreData from "@/app/hooks/useStoreData";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
-
 function CheckoutPage() {
-  const cartItems = useSelector(state => state.cart.items);
-  const totalPrice = cartItems.reduce((total, item) => total + item.totalPrice, 0);
+  const cartItems = useSelector((state) => state.cart.items);
+  const totalPrice = cartItems.reduce(
+    (total, item) => total + item.totalPrice,
+    0
+  );
   const dispatch = useDispatch();
   const [shippingAmount, setShippingAmount] = useState(0);
-  const route = useRouter()
+  const route = useRouter();
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    address: '',
-    district: '',
-    payment_method: 'cash',
-    delivery_notes: '',
+    name: "",
+    phone: "",
+    address: "",
+    district: "",
+    payment_method: "cash",
+    delivery_notes: "",
     cart: cartItems,
-    shipping_cost: ''
+    shipping_cost: "",
   });
+
+  const [checkoutData, setCheckoutData] = useState({
+    name: "",
+    phone: "",
+    address: "",
+    cart_items: cartItems,
+  });
+
+  const [orderCompleted, setOrderCompleted] = useState(false);
+
+  // ✅ Track before user leaves page
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      if (!orderCompleted && cartItems.length > 0) {
+        const checkoutData = {
+          name: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+          cart_items: cartItems,
+        };
+
+        try {
+          // ✅ Use sendBeacon if supported (better for tab close)
+          if (navigator.sendBeacon) {
+            const blob = new Blob([JSON.stringify(checkoutData)], {
+              type: "application/json",
+            });
+            navigator.sendBeacon(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}api/track-abandoned-checkout`,
+              blob
+            );
+          } else {
+            // 🔁 Fallback to Axios if sendBeacon not available
+            await axios.post(
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}api/track-abandoned-checkout`,
+              checkoutData,
+              { withCredentials: true }
+            );
+          }
+        } catch (err) {
+          console.error("Abandoned checkout tracking failed:", err);
+        }
+      }
+    };
+
+    // ✅ Listen for tab close or reload
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // ✅ Handle mobile tab switch (background)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        handleBeforeUnload();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    // ✅ Cleanup on unmount
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [cartItems, formData, orderCompleted]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const { fetchSingleData, loading, data } = useGetSingleData();
+  const latestApiUrl =
+    process.env.NEXT_PUBLIC_BACKEND_URL + "api/shipping-costs-latest";
 
-  const { fetchSingleData, loading, data } = useGetSingleData()
-  const latestApiUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/shipping-costs-latest"
-
- 
   useEffect(() => {
-    fetchSingleData(latestApiUrl)
-  }, [])
+    fetchSingleData(latestApiUrl);
+  }, []);
   useEffect(() => {
-
     if (data && formData.district) {
-      const isDhaka = formData.district === 'dhaka';
+      const isDhaka = formData.district === "dhaka";
 
       if (data.inside_dhaka && data.outside_dhaka) {
         setShippingAmount(isDhaka ? data.inside_dhaka : data.outside_dhaka);
@@ -54,7 +116,7 @@ function CheckoutPage() {
         setShippingAmount(0); // fallback
       }
     }
-  }, [data, formData.district])
+  }, [data, formData.district]);
 
   const handleDistrictChange = (selectedOption) => {
     setFormData((prev) => ({
@@ -64,14 +126,14 @@ function CheckoutPage() {
   };
   const { storeData } = useStoreData();
   const handleSubmit = (e) => {
-    if(cartItems.length === 0){
+    if (cartItems.length === 0) {
       Swal.fire({
-        icon: 'error',
-        title: 'Your cart is empty',
-        text: 'Please add items to your cart before checking out.',
-        confirmButtonText: 'OK'
+        icon: "error",
+        title: "Your cart is empty",
+        text: "Please add items to your cart before checking out.",
+        confirmButtonText: "OK",
       });
-      route.push("/frontEnd/cart")
+      route.push("/frontEnd/cart");
       return;
     }
     e.preventDefault();
@@ -82,9 +144,14 @@ function CheckoutPage() {
     };
 
     const storeOrderUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/orders";
-    storeData(storeOrderUrl, updatedFormData, 'Thank you for your purchase! Order placed successfully.');
-    dispatch(clearCart())
-    route.push("/")
+    storeData(
+      storeOrderUrl,
+      updatedFormData,
+      "Thank you for your purchase! Order placed successfully."
+    );
+    setOrderCompleted(true);
+    dispatch(clearCart());
+    route.push("/");
   };
 
   return (
@@ -102,7 +169,10 @@ function CheckoutPage() {
                 <h5 className="mb-3">Personal Information</h5>
                 <div className="row g-3">
                   <div className="col-md-6">
-                    <label htmlFor="name" className="form-label"> Name</label>
+                    <label htmlFor="name" className="form-label">
+                      {" "}
+                      Name
+                    </label>
                     <input
                       type="text"
                       className="form-control"
@@ -114,9 +184,10 @@ function CheckoutPage() {
                     />
                   </div>
 
-
                   <div className="col-md-6">
-                    <label htmlFor="phone" className="form-label">Phone</label>
+                    <label htmlFor="phone" className="form-label">
+                      Phone
+                    </label>
                     <input
                       type="number"
                       className="form-control"
@@ -135,9 +206,10 @@ function CheckoutPage() {
                 <h5 className="mb-3">Shipping Address</h5>
                 <div className="row g-3 mb-3">
                   <div className="col-md-12">
-
                     <div className="mb-3">
-                      <label htmlFor="district" className="form-label">District</label>
+                      <label htmlFor="district" className="form-label">
+                        District
+                      </label>
                       <District
                         value={formData.district}
                         onChange={handleDistrictChange}
@@ -147,7 +219,9 @@ function CheckoutPage() {
                   </div>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="address" className="form-label">Address</label>
+                  <label htmlFor="address" className="form-label">
+                    Address
+                  </label>
                   <input
                     type="text"
                     className="form-control"
@@ -161,7 +235,9 @@ function CheckoutPage() {
 
                 {/* Notes Field */}
                 <div className="mb-3">
-                  <label htmlFor="notes" className="form-label">Delivery Notes (Optional)</label>
+                  <label htmlFor="notes" className="form-label">
+                    Delivery Notes (Optional)
+                  </label>
                   <textarea
                     className="form-control"
                     id="delivery_notes"
@@ -171,16 +247,17 @@ function CheckoutPage() {
                     value={formData.delivery_notes}
                     onChange={handleChange}
                   ></textarea>
-                  <div className="form-text">E.g., building location, landmark, or preferred delivery time</div>
+                  <div className="form-text">
+                    E.g., building location, landmark, or preferred delivery
+                    time
+                  </div>
                 </div>
-
               </div>
 
               {/* Payment Method */}
               <div className="mb-4">
                 <h5 className="mb-3">Payment Method</h5>
                 <div className="d-flex flex-column gap-3">
-
                   <div className="form-check border rounded p-3">
                     <input
                       className="form-check-input"
@@ -188,10 +265,13 @@ function CheckoutPage() {
                       name="paymentMethod"
                       id="cash"
                       value={formData.cash}
-                      checked={formData.payment_method === 'cash'}
+                      checked={formData.payment_method === "cash"}
                       onChange={handleChange}
                     />
-                    <label className="form-check-label d-flex align-items-center" htmlFor="cash">
+                    <label
+                      className="form-check-label d-flex align-items-center"
+                      htmlFor="cash"
+                    >
                       <FaMoneyBill className="me-2 fs-5 text-success" />
                       Cash on Delivery
                     </label>
@@ -203,7 +283,7 @@ function CheckoutPage() {
                 <Link href="/cart" className="btn btn-outline-secondary">
                   Back to Cart
                 </Link>
-                <button type="submit" className="btn btn-primary" >
+                <button type="submit" className="btn btn-primary">
                   <FaLock className="me-2" />
                   Complete Purchase
                 </button>
@@ -221,8 +301,11 @@ function CheckoutPage() {
             </div>
             <div className="card-body">
               <ul className="list-group list-group-flush mb-4">
-                {cartItems.map(item => (
-                  <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center px-0">
+                {cartItems.map((item) => (
+                  <li
+                    key={item.id}
+                    className="list-group-item d-flex justify-content-between align-items-center px-0"
+                  >
                     <div>
                       <span className="fw-medium">{item.title}</span>
                       <div className="small text-muted">
@@ -250,13 +333,21 @@ function CheckoutPage() {
               <div className="alert alert-info small mb-4">
                 <div className="d-flex">
                   <div className="flex-shrink-0 me-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-info-circle"
+                      viewBox="0 0 16 16"
+                    >
                       <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                       <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
                     </svg>
                   </div>
                   <div>
-                    Your personal data will be used to process your order and for other purposes described in our privacy policy.
+                    Your personal data will be used to process your order and
+                    for other purposes described in our privacy policy.
                   </div>
                 </div>
               </div>

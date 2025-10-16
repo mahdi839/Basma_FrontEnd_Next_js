@@ -23,6 +23,7 @@ export default function SideBar() {
       {/* <SideBarItem href="/dashboard/sizes" Icon={IoIosResize} label='Sizes'/> */}
        <SideBarItem href="/dashboard/products" Icon={FaProductHunt} label='Products'/>
        <SideBarItem href="/dashboard/orders" Icon={FaShoppingBag} label='Orders'/>
+       <SideBarItem href="/dashboard/incomplete_orders" Icon={FaShoppingBag} label='Incomplete Orders'/>
        <SideBarItem href="/dashboard/inventory" Icon={MdInventory} label='Inventory Management'/>
        <SideBarItem href="/dashboard/shipping" Icon={FaShippingFast} label='Shipping Cost'/>
        <SideBarItem href="/dashboard/banners" Icon={PiFlagBanner} label='Banners'/>
