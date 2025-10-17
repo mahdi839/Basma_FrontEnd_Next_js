@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import ProductFilter from "./ProductFilter";
 import axios from "axios";
 import { toast } from "react-toastify";
+import useFormatDate from "@/app/hooks/useFormatDate";
 
 export default function OrderTable({
   loading,
@@ -17,6 +18,7 @@ export default function OrderTable({
   const [draftFilters, setDraftFilters] = useState(filters);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState(false);
+  const { formatDate } = useFormatDate();
   // Sync with parent filters when they change
   React.useEffect(() => {
     setDraftFilters(filters);
@@ -254,7 +256,7 @@ export default function OrderTable({
                         {" "} <span className={`badge ${order.customer_type === "Repeat Customer" ? "bg-warning" : "bg-info "} text-dark`}>{order.customer_type}</span></h6>
                       <small>
                         {" "}
-                        <strong>Order Date:</strong> {order.created_at || "N/A"}
+                        <strong>Order Date:</strong> {formatDate(order.created_at || "")}
                       </small>{" "}
                       <br />
                       <small>

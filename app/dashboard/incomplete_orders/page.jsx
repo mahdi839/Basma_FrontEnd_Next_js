@@ -1,4 +1,5 @@
 "use client";
+import useFormatDate from "@/app/hooks/useFormatDate";
 import useIndexData from "@/app/hooks/useIndexData";
 import React, { useEffect, useState } from "react";
 
@@ -26,16 +27,7 @@ export default function IncompleteOrder() {
   };
 
   // 🧠 Helper to format date/time
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  const { formatDate } = useFormatDate();
 
   return (
     <div className="container-fluid py-4">
