@@ -9,6 +9,7 @@ import useGetSingleData from "@/app/hooks/useGetSingleData";
 import useStoreData from "@/app/hooks/useStoreData";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import axios from "axios";
 
 function CheckoutPage() {
   const cartItems = useSelector((state) => state.cart.items);
@@ -30,12 +31,7 @@ function CheckoutPage() {
     shipping_cost: "",
   });
 
-  const [checkoutData, setCheckoutData] = useState({
-    name: "",
-    phone: "",
-    address: "",
-    cart_items: cartItems,
-  });
+
 
   const [orderCompleted, setOrderCompleted] = useState(false);
 
