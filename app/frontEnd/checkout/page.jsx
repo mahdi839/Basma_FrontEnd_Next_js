@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaLock, FaMoneyBill } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "@/redux/slices/CartSlice";
@@ -31,67 +31,127 @@ function CheckoutPage() {
     shipping_cost: "",
   });
 
-
-
   const [orderCompleted, setOrderCompleted] = useState(false);
+  const abandonedCheckoutSent = useRef(false); // Track if already sent
+  const formInteracted = useRef(false); // Track if user interacted with form
 
-  // ✅ Track before user leaves page
-  useEffect(() => {
-    const handleBeforeUnload = async () => {
-      if (!orderCompleted && cartItems.length > 0) {
-        const checkoutData = {
-          name: formData.name,
-          phone: formData.phone,
-          address: formData.address,
-          cart_items: cartItems,
-        };
+  // Generate or retrieve session ID
+  const getSessionId = () => {
+    let sessionId = sessionStorage.getItem("checkout_session_id");
+    if (!sessionId) {
+      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      sessionStorage.setItem("checkout_session_id", sessionId);
+    }
+    return sessionId;
+  };
 
-        try {
-          // ✅ Use sendBeacon if supported (better for tab close)
-          if (navigator.sendBeacon) {
-            const blob = new Blob([JSON.stringify(checkoutData)], {
-              type: "application/json",
-            });
-            navigator.sendBeacon(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL}api/track-abandoned-checkout`,
-              blob
-            );
-          } else {
-            // 🔁 Fallback to Axios if sendBeacon not available
-            await axios.post(
-              `${process.env.NEXT_PUBLIC_BACKEND_URL}api/track-abandoned-checkout`,
-              checkoutData,
-              { withCredentials: true }
-            );
-          }
-        } catch (err) {
-          console.error("Abandoned checkout tracking failed:", err);
-        }
-      }
-    };
-
-    // ✅ Listen for tab close or reload
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    // ✅ Handle mobile tab switch (background)
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "hidden") {
-        handleBeforeUnload();
-      }
-    };
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    // ✅ Cleanup on unmount
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [cartItems, formData, orderCompleted]);
-
+  // Track form interaction
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    formInteracted.current = true; // User started filling form
   };
+
+  // Send abandoned checkout data
+  const sendAbandonedCheckout = async () => {
+    // Only send if:
+    // 1. User has items in cart
+    // 2. User has filled phone number (minimum requirement)
+    // 3. Order not completed
+    // 4. Not already sent
+    // 5. User has interacted with the form
+    if (
+      !orderCompleted &&
+      cartItems.length > 0 &&
+      formData.phone &&
+      !abandonedCheckoutSent.current &&
+      formInteracted.current
+    ) {
+      const checkoutData = {
+        name: formData.name,
+        phone: formData.phone,
+        address: formData.address,
+        cart_items: cartItems,
+      };
+
+      try {
+        const sessionId = getSessionId();
+        
+        if (navigator.sendBeacon) {
+          const blob = new Blob([JSON.stringify(checkoutData)], {
+            type: "application/json",
+          });
+          
+          // Note: sendBeacon doesn't support custom headers easily
+          // So we'll use fetch with keepalive instead
+          await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}api/track-abandoned-checkout`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Session-ID": sessionId,
+              },
+              body: JSON.stringify(checkoutData),
+              keepalive: true, // Ensures request completes even if page unloads
+            }
+          );
+        } else {
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}api/track-abandoned-checkout`,
+            checkoutData,
+            {
+              headers: {
+                "X-Session-ID": sessionId,
+              },
+              withCredentials: true,
+            }
+          );
+        }
+        
+        abandonedCheckoutSent.current = true; // Mark as sent
+        console.log("Abandoned checkout tracked");
+      } catch (err) {
+        console.error("Abandoned checkout tracking failed:", err);
+      }
+    }
+  };
+
+  // Track before user leaves page
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sendAbandonedCheckout();
+    };
+
+    // Only add listeners after user has phone number
+    if (formData.phone && formInteracted.current) {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      // Handle mobile tab switch (background)
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === "hidden") {
+          sendAbandonedCheckout();
+        }
+      };
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+      };
+    }
+  }, [cartItems, formData.phone, formData.name, formData.address, orderCompleted]);
+
+  // Debounced save - save after user stops typing for 3 seconds
+  useEffect(() => {
+    if (!formData.phone || !formInteracted.current) return;
+
+    const timer = setTimeout(() => {
+      sendAbandonedCheckout();
+    }, 3000); // 3 seconds after last input
+
+    return () => clearTimeout(timer);
+  }, [formData.phone, formData.name, formData.address]);
 
   const { fetchSingleData, loading, data } = useGetSingleData();
   const latestApiUrl =
@@ -100,6 +160,7 @@ function CheckoutPage() {
   useEffect(() => {
     fetchSingleData(latestApiUrl);
   }, []);
+
   useEffect(() => {
     if (data && formData.district) {
       const isDhaka = formData.district === "dhaka";
@@ -109,7 +170,7 @@ function CheckoutPage() {
       } else if (data.one_shipping_cost) {
         setShippingAmount(data.one_shipping_cost);
       } else {
-        setShippingAmount(0); // fallback
+        setShippingAmount(0);
       }
     }
   }, [data, formData.district]);
@@ -119,9 +180,13 @@ function CheckoutPage() {
       ...prev,
       district: selectedOption?.value || "",
     }));
+    formInteracted.current = true;
   };
+
   const { storeData } = useStoreData();
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     if (cartItems.length === 0) {
       Swal.fire({
         icon: "error",
@@ -132,20 +197,36 @@ function CheckoutPage() {
       route.push("/frontEnd/cart");
       return;
     }
-    e.preventDefault();
-    // Update shipping_cost in formData before sending
+
     const updatedFormData = {
       ...formData,
       shipping_cost: shippingAmount,
     };
 
     const storeOrderUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/orders";
+    
+    // Mark order as completed BEFORE storing
+    setOrderCompleted(true);
+    
+    // Mark abandoned checkout as converted
+    if (formData.phone) {
+      try {
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}api/mark-checkout-converted`,
+          { phone: formData.phone },
+          { withCredentials: true }
+        );
+      } catch (err) {
+        console.error("Failed to mark checkout as converted:", err);
+      }
+    }
+
     storeData(
       storeOrderUrl,
       updatedFormData,
       "Thank you for your purchase! Order placed successfully."
     );
-    setOrderCompleted(true);
+    
     dispatch(clearCart());
     route.push("/");
   };
@@ -166,7 +247,6 @@ function CheckoutPage() {
                 <div className="row g-3">
                   <div className="col-md-6">
                     <label htmlFor="name" className="form-label">
-                      {" "}
                       Name
                     </label>
                     <input
@@ -185,7 +265,7 @@ function CheckoutPage() {
                       Phone
                     </label>
                     <input
-                      type="number"
+                      type="tel"
                       className="form-control"
                       id="phone"
                       name="phone"
@@ -244,8 +324,7 @@ function CheckoutPage() {
                     onChange={handleChange}
                   ></textarea>
                   <div className="form-text">
-                    E.g., building location, landmark, or preferred delivery
-                    time
+                    E.g., building location, landmark, or preferred delivery time
                   </div>
                 </div>
               </div>
@@ -258,9 +337,9 @@ function CheckoutPage() {
                     <input
                       className="form-check-input"
                       type="radio"
-                      name="paymentMethod"
+                      name="payment_method"
                       id="cash"
-                      value={formData.cash}
+                      value="cash"
                       checked={formData.payment_method === "cash"}
                       onChange={handleChange}
                     />
@@ -276,10 +355,10 @@ function CheckoutPage() {
               </div>
 
               <div className="d-flex justify-content-between mt-4">
-                <Link href="/cart" className="btn btn-outline-secondary">
+                <Link href="/cart" className="btn btn-grad">
                   Back to Cart
                 </Link>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-grad">
                   <FaLock className="me-2" />
                   Complete Purchase
                 </button>
@@ -290,8 +369,7 @@ function CheckoutPage() {
 
         {/* Order Summary */}
         <div className="col-md-4">
-          <div className={`card shadow-sm `}>
-            <div className={``}></div>
+          <div className="card shadow-sm">
             <div className="card-header py-3">
               <h5 className="mb-0">Order Summary</h5>
             </div>
