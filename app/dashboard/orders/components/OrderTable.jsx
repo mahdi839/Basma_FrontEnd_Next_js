@@ -78,41 +78,41 @@ export default function OrderTable({
   async function handleEntry(id) {
     setIsLoading(true);
     let order = orders.find(o => o.id === id);
-    if(!order){
+    if (!order) {
       toast.error("Order not found");
       return;
     }
-    
-  try {
-    const url = "/api/steadfast";
-    const payload = {
-      invoice: order.order || "INV-" + Date.now(),
-      recipient_name: order.name,
-      recipient_phone: order.phone,
-      recipient_address: order.address + order.district,
-      cod_amount: order.total,
-      note: order.delivery_notes?? "No notes",
-      item_description: order.order_items?.map(item => `Product Name: ${item.title} (Qty: ${item.qty}) ${item?.selected_variant?.attribute??""}-${item?.selected_variant?.value}`).join(", ") || "No items",
-      total_lot: order.order_items?.length || 1,
-      delivery_type: 0,
-    };
 
-    const { data } = await axios.post(url, payload, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    setStatus(true);
-    toast.success("Courier entry created successfully");
-    console.log("Steadfast response:", data);
-  } catch (err) {
-    console.error(err);
-    const msg = err?.response?.data?.message || err?.message || "Failed to create courier entry";
-    toast.error(msg);
-  }finally{
-    setIsLoading(false)
+    try {
+      const url = "/api/steadfast";
+      const payload = {
+        invoice: order.order || "INV-" + Date.now(),
+        recipient_name: order.name,
+        recipient_phone: order.phone,
+        recipient_address: order.address + order.district,
+        cod_amount: order.total,
+        note: order.delivery_notes ?? "No notes",
+        item_description: order.order_items?.map(item => `Product Name: ${item.title} (Qty: ${item.qty}) ${item?.selected_variant?.attribute ?? ""}-${item?.selected_variant?.value}`).join(", ") || "No items",
+        total_lot: order.order_items?.length || 1,
+        delivery_type: 0,
+      };
+
+      const { data } = await axios.post(url, payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setStatus(true);
+      toast.success("Courier entry created successfully");
+      console.log("Steadfast response:", data);
+    } catch (err) {
+      console.error(err);
+      const msg = err?.response?.data?.message || err?.message || "Failed to create courier entry";
+      toast.error(msg);
+    } finally {
+      setIsLoading(false)
+    }
   }
-}
 
 
 
@@ -250,7 +250,8 @@ export default function OrderTable({
                   >
                     <td>{index + 1}</td>
                     <td>
-                      <h6 className="mb-0">Name: {order.name || "N/A"}</h6>
+                      <h6 className="mb-0">Name: {order.name || "N/A"}
+                        {" "} <span className={`badge ${order.customer_type === "Repeat Customer" ? "bg-warning" : "bg-info "} text-dark`}>{order.customer_type}</span></h6>
                       <small>
                         {" "}
                         <strong>Order Date:</strong> {order.created_at || "N/A"}
