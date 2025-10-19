@@ -9,28 +9,167 @@
 :root {
     --primary-color: #5d30af;
     --hover-color: #451b92;
+    --sidebar-width: 15rem;
+    --sidebar-closed-width: 4rem;
 }
 
 .Dashboard_layout {
     display: flex;
+    min-height: 100vh;
 }
 
 .dashboard_content {
     flex: 1;
+    padding: 1rem;
+    transition: margin-left 0.3s ease;
+    position: relative;
 }
 
+/* Sidebar Styles */
 .sideBarDiv {
-    width: 15rem; /* You can adjust this value based on your design */
     background: var(--primary-color);
     min-height: 100vh;
     height: auto;
-    padding: 1rem; /* Add some padding */
+    padding: 1rem;
+    transition: all 0.3s ease;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    overflow-x: hidden;
 }
 
+.sidebar-open {
+    width: var(--sidebar-width);
+}
+
+.sidebar-closed {
+    width: var(--sidebar-closed-width);
+}
+
+/* Sidebar Toggle Button */
+.sidebar-toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Sidebar Items */
+.sidebar-item {
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sidebar-item:hover {
+    background: var(--hover-color);
+}
+
+.sidebar-subitem {
+    margin-left: 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-label {
+    transition: opacity 0.3s ease;
+}
+
+/* Menu Groups */
+.sidebar-menu-header {
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-menu-header:hover {
+    background: var(--hover-color);
+}
+
+.sidebar-submenu {
+    margin-left: 1rem;
+    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    padding-left: 0.5rem;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .sideBarDiv {
+        transform: translateX(-100%);
+        width: var(--sidebar-width);
+    }
+
+    .sideBarDiv.sidebar-open {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .mobile-sidebar-toggle {
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem;
+        border-radius: 4px;
+        cursor: pointer;
+        z-index: 998;
+    }
+
+    .dashboard_content {
+        margin-left: 0 !important;
+        padding-top: 4rem;
+    }
+}
+
+/* Desktop Styles */
+@media (min-width: 769px) {
+    .dashboard_content {
+        margin-left: var(--sidebar-width);
+        transition: margin-left 0.3s ease;
+    }
+
+    .sideBarDiv.sidebar-closed + .dashboard_content {
+        margin-left: var(--sidebar-closed-width);
+    }
+
+    .mobile-sidebar-toggle {
+        display: none;
+    }
+}
+
+/* Existing Styles (Keep these) */
 .sideBar_icon_siteName {
     margin-bottom: 2rem;
 }
-.dashboard-cancel-btn{
+
+.dashboard-cancel-btn {
     padding: 8px 15px;
     background: red;
     color: white;
@@ -40,10 +179,11 @@
     border-radius: 5px;
 }
 
-.dashboard-cancel-btn:hover{
+.dashboard-cancel-btn:hover {
     background: rgb(192, 2, 2);
 }
-.dashboard-btn{
+
+.dashboard-btn {
     padding: 8px 15px;
     background: var(--primary-color);
     color: white;
@@ -51,9 +191,11 @@
     border: none;
     outline: none;
 }
-.dashboard-btn:hover{
+
+.dashboard-btn:hover {
     background: var(--hover-color);
 }
+
 .sideBar_list {
     margin-top: 1rem;
 }
@@ -67,14 +209,17 @@
     color: white;
     font-size: 25px;
 }
-.size_btn{
-    background:var(--primary-color);
+
+.size_btn {
+    background: var(--primary-color);
 }
-.btn-hover:hover{
+
+.btn-hover:hover {
     background: #e60719;
-    color: white ;
+    color: white;
     outline: none;
 }
-.pagination-bg{
+
+.pagination-bg {
     background: var(--primary-color);
 }
