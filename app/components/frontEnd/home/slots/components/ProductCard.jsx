@@ -97,7 +97,7 @@ const ProductCard = React.memo(function ProductCard({
           {slotProducts?.variants?.length > 1 ? (
             <button
               type="button"
-              className="btn-grad w-100 rounded-0"
+              className="btn-grad w-100 rounded-0 select-options-btn-sm"
               onClick={(e) => handleOptionDiv(e, slotProducts?.id)}
             >
               Select options

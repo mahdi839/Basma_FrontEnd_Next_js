@@ -1131,6 +1131,22 @@ ol {
 	animation: fadeIn 0.3s ease-in;
 }
 
+/* product card styling */
+
+.add-to-cart-footer {
+	
+}
+.add-to-cart-footer button {
+	font-size: small;
+	font-weight: 550;
+}
+
+
+.add-to-cart-footer .select-options-btn-sm{
+   padding-left: 10px;
+   padding-right: 10px;
+}
+
 .add-to-cart-footer-lg {
 	position: absolute;
 	bottom: 0;
