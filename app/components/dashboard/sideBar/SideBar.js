@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../layouts/dashboard.css";
 import { BsLayoutTextSidebar, BsChevronDown, BsChevronRight } from "react-icons/bs";
 import { FaInfoCircle, FaProductHunt, FaShippingFast, FaShoppingBag } from "react-icons/fa";
@@ -10,11 +10,11 @@ import { PiFlagBanner } from "react-icons/pi";
 import SideBarItem from "../components/sidebarItem/SideBarItem";
 import { MdOutlineSocialDistance } from "react-icons/md";
 import { AiOutlineDashboard } from "react-icons/ai";
+import { usePathname } from "next/navigation";
 
-export default function SideBar() {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
   const [openMenus, setOpenMenus] = useState({});
-  const [isMobile, setIsMobile] = useState(false);
+  const pathname = usePathname();
 
   // Menu structure with main and submenus
   const menuItems = [
@@ -73,6 +73,22 @@ export default function SideBar() {
     }
   ];
 
+  // Auto-open menu if current path is in submenu
+  useEffect(() => {
+    const newOpenMenus = { ...openMenus };
+    menuItems.forEach(item => {
+      if (item.type === 'menu') {
+        const isActive = item.submenus.some(subItem => 
+          pathname === subItem.href || pathname.startsWith(subItem.href + '/')
+        );
+        if (isActive) {
+          newOpenMenus[item.label] = true;
+        }
+      }
+    });
+    setOpenMenus(newOpenMenus);
+  }, [pathname]);
+
   const toggleMenu = (menuLabel) => {
     setOpenMenus(prev => ({
       ...prev,
@@ -80,15 +96,26 @@ export default function SideBar() {
     }));
   };
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
-
   // Close sidebar on mobile when clicking a link
   const handleLinkClick = () => {
-    if (window.innerWidth <= 768) {
-      setSidebarOpen(false);
+    if (isMobile) {
+      toggleSidebar();
     }
+  };
+
+  // Check if a menu item is active
+  const isItemActive = (href) => {
+    return pathname === href || pathname.startsWith(href + '/');
+  };
+
+  // Check if a menu group is active
+  const isMenuActive = (menu) => {
+    if (menu.type === 'single') {
+      return isItemActive(menu.href);
+    } else if (menu.type === 'menu') {
+      return menu.submenus.some(subItem => isItemActive(subItem.href));
+    }
+    return false;
   };
 
   return (
@@ -97,12 +124,12 @@ export default function SideBar() {
       {isMobile && isSidebarOpen && (
         <div 
           className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
+          onClick={toggleSidebar}
         />
       )}
 
       {/* Sidebar */}
-      <div className={`sideBarDiv d-flex flex-column ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      <div className={`sideBarDiv d-flex flex-column ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'} ${isMobile ? 'mobile-sidebar' : ''}`}>
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center sideBar_icon_siteName">
           <h5 className="text-white" style={{ display: isSidebarOpen ? 'block' : 'none' }}>
@@ -127,14 +154,16 @@ export default function SideBar() {
                     Icon={item.Icon} 
                     label={item.label}
                     isSidebarOpen={isSidebarOpen}
+                    isActive={isItemActive(item.href)}
                   />
                 </div>
               );
             } else if (item.type === 'menu') {
+              const isActive = isMenuActive(item);
               return (
                 <div key={index} className="sidebar-menu-group">
                   <div 
-                    className="sidebar-menu-header d-flex align-items-center justify-content-between text-white mb-3 cursor-pointer"
+                    className={`sidebar-menu-header d-flex align-items-center justify-content-between text-white mb-3 cursor-pointer ${isActive ? 'active' : ''}`}
                     onClick={() => toggleMenu(item.label)}
                   >
                     <div className="d-flex align-items-center gap-2">
@@ -158,6 +187,7 @@ export default function SideBar() {
                             label={subItem.label}
                             isSubmenu={true}
                             isSidebarOpen={isSidebarOpen}
+                            isActive={isItemActive(subItem.href)}
                           />
                         </div>
                       ))}

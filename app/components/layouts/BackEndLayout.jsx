@@ -2,13 +2,17 @@
 import React, { useEffect, useState } from 'react'
 import SideBar from '../dashboard/sideBar/SideBar'
 import './dashboard.css'
-import { BsLayoutTextSidebar } from 'react-icons/bs';
+import { BsLayoutTextSidebar } from "react-icons/bs";
+
 export default function BackEndLayout({ children }) {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 768) {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) {
         setSidebarOpen(false);
       } else {
         setSidebarOpen(true);
@@ -25,19 +29,29 @@ export default function BackEndLayout({ children }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const toggleSidebar = () => {
+    setSidebarOpen(!isSidebarOpen);
+  };
+
   return (
     <>
       <div className='Dashboard_layout'>
-        <SideBar isSidebarOpen={isSidebarOpen} setSidebarOpen={setSidebarOpen} />
+        <SideBar 
+          isSidebarOpen={isSidebarOpen} 
+          toggleSidebar={toggleSidebar}
+          isMobile={isMobile}
+        />
         
         <main className='dashboard_content'>
           {/* Mobile Toggle Button */}
-          <button 
-            className="mobile-sidebar-toggle"
-            onClick={() => setSidebarOpen(true)}
-          >
-            <BsLayoutTextSidebar />
-          </button>
+          {isMobile && !isSidebarOpen && (
+            <button 
+              className="mobile-sidebar-toggle"
+              onClick={toggleSidebar}
+            >
+              <BsLayoutTextSidebar />
+            </button>
+          )}
           
           {children}
         </main>

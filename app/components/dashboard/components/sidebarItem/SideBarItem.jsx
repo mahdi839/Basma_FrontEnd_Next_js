@@ -1,10 +1,17 @@
 import React from 'react'
 import Link from "next/link";
 
-export default function SideBarItem({ href, label, Icon, isSubmenu = false, isSidebarOpen = true }) {
+export default function SideBarItem({ 
+  href, 
+  label, 
+  Icon, 
+  isSubmenu = false, 
+  isSidebarOpen = true,
+  isActive = false 
+}) {
   return (
     <Link href={href} passHref>
-      <div className={`d-flex align-items-center gap-2 mb-3 text-white sidebar-item ${isSubmenu ? 'sidebar-subitem' : ''}`}>
+      <div className={`d-flex align-items-center gap-2 mb-3 text-white sidebar-item ${isSubmenu ? 'sidebar-subitem' : ''} ${isActive ? 'active' : ''}`}>
         {Icon && <Icon className="text-white" />}
         {isSidebarOpen && <span className="sidebar-label">{label}</span>}
       </div>
