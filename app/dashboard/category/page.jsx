@@ -7,7 +7,7 @@ import Link from "next/link";
 import PageLoader from "@/app/components/loader/pageLoader";
 
 export default function Page() {
-  const [categories, setCategories] = useState(null); // null = not loaded yet
+  const [categories, setCategories] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -20,7 +20,7 @@ export default function Page() {
       const url = `${baseUrl}api/categories`;
 
       const res = await fetch(url, {
-        cache: "no-store", // prevent stale cache in client
+        cache: "no-store",
         headers: { "Content-Type": "application/json" },
       });
 
@@ -47,12 +47,22 @@ export default function Page() {
 
   return (
     <div className="container-fluid my-5">
-      <Link href="/dashboard/category/add">
-        <Button className="mb-3">Add Category</Button>
-      </Link>
-      {!loading && error && <p className="text-center text-danger">{error}</p>}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1 className="h3 mb-0">Categories</h1>
+        <Link href="/dashboard/category/add">
+          <Button className="mb-0">
+            Add Category
+          </Button>
+        </Link>
+      </div>
+      
+      {!loading && error && (
+        <div className="alert alert-danger text-center" role="alert">
+          {error}
+        </div>
+      )}
+      
       {!loading && !error && (
-        // Pass the loaded categories into your client table
         <CategoryTable categories={categories || { data: [] }} />
       )}
     </div>

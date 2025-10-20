@@ -22,7 +22,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       type: 'single',
       href: "/dashboard",
       Icon: AiOutlineDashboard,
-      label: 'Dashboard'
+      label: 'Dashboard Summary'
     },
     {
       type: 'menu',
