@@ -290,7 +290,7 @@ export default function DashboardHome() {
             </div>
 
             <div className="col-6 col-md-2">
-              <label className="form-label">Hot by</label>
+              <label className="form-label">Hot Products by</label>
               <select className="form-select" value={hotBy} onChange={(e) => setHotBy(e.target.value)}>
                 <option value="qty">Quantity</option>
                 <option value="revenue">Revenue</option>
@@ -298,7 +298,7 @@ export default function DashboardHome() {
             </div>
 
             <div className="col-6 col-md-2">
-              <label className="form-label">Hot limit</label>
+              <label className="form-label">Hot Productslimit</label>
               <input
                 type="number"
                 min={1}
