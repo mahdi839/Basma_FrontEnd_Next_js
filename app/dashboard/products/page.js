@@ -23,13 +23,13 @@ export default async function ProductIndexPage() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 className="h3 mb-1">Products</h1>
-          <p className="text-muted mb-0">Manage your product inventory</p>
+          
         </div>
         <Link href="/dashboard/products/add_product">
-          <Button className="mb-0">
+          <button className="mb-0 btn btn-primary">
             <i className="fas fa-plus me-2"></i>
             Add Product
-          </Button>
+          </button>
         </Link>
       </div>
       <ProductTable productData={productData} />
