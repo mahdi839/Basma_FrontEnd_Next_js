@@ -75,7 +75,7 @@ export default function ProductTable({ productData }) {
               />
             ) : (
               <div className="img-thumbnail rounded d-flex align-items-center justify-content-center bg-light"
-                   style={{ width: "80px", height: "80px" }}>
+                style={{ width: "80px", height: "80px" }}>
                 <FaImage className="text-muted" size={24} />
               </div>
             )}
@@ -93,7 +93,7 @@ export default function ProductTable({ productData }) {
                 <FaEdit />
               </button>
             </Link>
-            <button 
+            <button
               className="btn btn-sm btn-outline-danger"
               onClick={() => handleDelete(product.id)}
             >
@@ -132,7 +132,7 @@ export default function ProductTable({ productData }) {
                     {v.attribute}: {v.value}
                   </span>
                   <FaArrowRight size={10} />
-                  <span className="badge bg-success">${v.price || product.price}</span>
+                  <span className="badge bg-success">{v.price || product.price}</span>
                 </div>
               ))}
               {product.variants.length > 2 && (
@@ -140,7 +140,7 @@ export default function ProductTable({ productData }) {
               )}
             </div>
           ) : product.price ? (
-            <span className="badge bg-success">Base Price: ${product.price}</span>
+            <span className="badge bg-success">Base Price: {product.price}</span>
           ) : (
             <span className="badge bg-warning text-dark">No price set</span>
           )}
@@ -156,8 +156,10 @@ export default function ProductTable({ productData }) {
           )}
           {product.video_url && (
             <div className="col-6">
-              <FaVideo className="me-1" />
-              Has Video
+              <a href={product.video_url} target="_blank" rel="noopener noreferrer">
+                <FaVideo className="me-1" />
+                 Video
+              </a>
             </div>
           )}
         </div>
@@ -208,7 +210,7 @@ export default function ProductTable({ productData }) {
                             />
                           ) : (
                             <div className="img-thumbnail rounded d-flex align-items-center justify-content-center bg-light"
-                                 style={{ width: "50px", height: "50px" }}>
+                              style={{ width: "50px", height: "50px" }}>
                               <FaImage className="text-muted" size={14} />
                             </div>
                           )}
@@ -227,7 +229,7 @@ export default function ProductTable({ productData }) {
                         <td>
                           <div className="d-flex flex-column gap-1">
                             {product.category?.slice(0, 3).map((category) => (
-                              <span key={category.id} className="badge bg-info text-white small">
+                              <span key={category.id} className="badge bg-info text-white small" style={{ width: 'fit-content' }}>
                                 {truncateText(category.name, 20)}
                               </span>
                             ))}
@@ -246,11 +248,11 @@ export default function ProductTable({ productData }) {
                                     {v.attribute}: {v.value}
                                   </span>
                                   <FaArrowRight size={10} className="text-muted" />
-                                  <span className="text-success fw-semibold">${v.price || product.price}</span>
+                                  <span className="text-success fw-semibold">{v.price || product.price}</span>
                                 </div>
                               ))
                             ) : product.price ? (
-                              <div className="text-success fw-semibold">${product.price}</div>
+                              <span className="badge bg-success " style={{ width: 'fit-content' }}>Base Price: {product.price}</span>
                             ) : (
                               <span className="text-muted small">No price</span>
                             )}
@@ -264,8 +266,9 @@ export default function ProductTable({ productData }) {
 
                         <td className="text-center">
                           {product.faqs?.length > 0 ? (
-                            <span className="badge bg-primary bg-opacity-10 text-primary border-0">
-                              {product.faqs.length}
+                            <span className="">
+                              <FaQuestionCircle className="me-1" />
+                              {product.faqs.length} FAQ{product.faqs.length !== 1 ? 's' : ''}
                             </span>
                           ) : (
                             <span className="text-muted">-</span>
@@ -274,7 +277,9 @@ export default function ProductTable({ productData }) {
 
                         <td className="text-center">
                           {product.video_url ? (
-                            <FaVideo className="text-success" />
+                            <a href={product.video_url} target="_blank" rel="noopener noreferrer">
+                              <FaVideo className="text-success" />
+                            </a>
                           ) : (
                             <span className="text-muted">-</span>
                           )}
@@ -287,7 +292,7 @@ export default function ProductTable({ productData }) {
                                 <FaEdit size={14} />
                               </button>
                             </Link>
-                            <button 
+                            <button
                               className="btn btn-sm btn-outline-danger"
                               onClick={() => handleDelete(product.id)}
                               title="Delete"
