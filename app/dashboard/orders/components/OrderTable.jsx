@@ -19,6 +19,7 @@ export default function OrderTable({
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState(false);
   const { formatDate } = useFormatDate();
+  
   // Sync with parent filters when they change
   React.useEffect(() => {
     setDraftFilters(filters);
@@ -116,11 +117,9 @@ export default function OrderTable({
     }
   }
 
-
-
   return (
     <div className="card">
-      {/* Filter Section */}
+      {/* Filter Section - Same for all screens */}
       <div className="card-header bg-light py-3">
         <div className="row g-3">
           {/* Search Input */}
@@ -207,7 +206,6 @@ export default function OrderTable({
           </div>
 
           {/* Product Filter */}
-          {/* Product Filter */}
           <div className="col-md-3 mt-2">
             <label className="form-label small mb-1">Product</label>
             <ProductFilter
@@ -228,8 +226,8 @@ export default function OrderTable({
         </div>
       </div>
 
-      {/* Table Section */}
-      <div className="card-body">
+      {/* Table for Large Screens */}
+      <div className="card-body d-none d-md-block">
         <div className="table-responsive">
           <table className="table table-hover align-middle">
             <thead className="bg-light">
@@ -340,6 +338,93 @@ export default function OrderTable({
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Cards for Mobile Screens */}
+      <div className="card-body d-block d-md-none">
+        {orders.length > 0 ? (
+          <div className="row">
+            {orders.map((order, index) => (
+              <div key={order.id} className="col-12 mb-3">
+                <div className="card border">
+                  <div className="card-header bg-light">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <h6 className="mb-0">Order #{index + 1}</h6>
+                      <span className={`badge ${order.customer_type === "Repeat Customer" ? "bg-warning" : "bg-info"} text-dark`}>
+                        {order.customer_type}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="card-body">
+                    {/* Customer Info */}
+                    <div className="mb-3">
+                      <h6 className="border-bottom pb-2">Customer Information</h6>
+                      <p className="mb-1"><strong>Name:</strong> {order.name || "N/A"}</p>
+                      <p className="mb-1"><strong>Phone:</strong> {order.phone || "N/A"}</p>
+                      <p className="mb-1"><strong>Address:</strong> {order.address || "N/A"}</p>
+                      <p className="mb-1"><strong>District:</strong> {order.district || "N/A"}</p>
+                      <p className="mb-0"><strong>Order Date:</strong> {formatDate(order.created_at || "")}</p>
+                    </div>
+
+                    {/* Ordered Products */}
+                    <div className="mb-3">
+                      <h6 className="border-bottom pb-2">Ordered Products</h6>
+                      {order.order_items?.map((item, itemIndex) => (
+                        <div key={item.id} className="mb-2 p-2 border rounded">
+                          <strong>{itemIndex + 1}. {item.title}</strong>
+                          <div className="small">
+                            Qty: {item.qty} × {item.unitPrice} = {item.totalPrice}
+                          </div>
+                          {item.selected_variant && (
+                            <div className="small">
+                              <strong>{item?.selected_variant?.attribute ?? ""}:</strong> {item?.selected_variant?.value ?? ""}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Order Summary */}
+                    <div className="mb-3">
+                      <h6 className="border-bottom pb-2">Order Summary</h6>
+                      <p className="mb-1"><strong>Shipping Cost:</strong> {order.shipping_cost}</p>
+                      <p className="mb-1"><strong>Payment Method:</strong> {order.payment_method}</p>
+                      <p className="mb-0"><strong>Total:</strong> {order.total} TK</p>
+                    </div>
+
+                    {/* Status and Actions */}
+                    <div className="row">
+                      <div className="col-6">
+                        <strong>Status</strong>
+                        <select
+                          className="form-select form-select-sm mt-1"
+                          value={order.status}
+                          onChange={(e) => handleStatus(e, order.id)}
+                          name="status"
+                        >
+                          <option value="cancel">Cancel</option>
+                          <option value="delivered">Delivered</option>
+                          <option value="placed">Placed</option>
+                          <option value="pending">Pending</option>
+                        </select>
+                      </div>
+                      <div className="col-6">
+                        <strong>Actions</strong>
+                        <div className="mt-1">
+                          <button className="btn btn-sm btn-primary w-100">View</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-4">
+            No orders found
+          </div>
+        )}
       </div>
     </div>
   );
