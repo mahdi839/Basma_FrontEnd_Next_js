@@ -242,7 +242,7 @@ export default function ProductTable({ productData }) {
                         <td>
                           <div className="d-flex flex-column gap-1">
                             {product.variants?.length > 0 ? (
-                              product.variants.slice(0, 2).map((v) => (
+                              product.variants.slice(0, 3).map((v) => (
                                 <div key={v.id} className="d-flex align-items-center gap-1 small">
                                   <span className="badge bg-light text-dark border">
                                     {v.attribute}: {v.value}
@@ -271,7 +271,7 @@ export default function ProductTable({ productData }) {
                               {product.faqs.length} FAQ{product.faqs.length !== 1 ? 's' : ''}
                             </span>
                           ) : (
-                            <span className="text-muted">-</span>
+                            <span className="text-muted">N/A</span>
                           )}
                         </td>
 
