@@ -2,12 +2,15 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import useFormatDate from "../hooks/useFormatDate";
 
 const STATUSES = ["pending", "placed", "delivered", "cancel"];
 
 /** Simple canvas bar chart (no libs) */
 function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
   const canvasRef = useRef(null);
+
+ 
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -96,6 +99,8 @@ function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
     </div>
   );
 }
+
+const { formatDate } = useFormatDate();
 
 export default function DashboardHome() {
   // ---------- UI State (filters) ----------
@@ -355,7 +360,7 @@ export default function DashboardHome() {
             <div className="card-header bg-white d-flex justify-content-between align-items-center">
               <h6 className="mb-0">Sales Overview</h6>
               <div className="small text-muted">
-                {data?.range?.from} — {data?.range?.to}
+                {formatDate(data?.range?.from)} — {formatDate(data?.range?.to)}
               </div>
             </div>
             <div className="card-body">
