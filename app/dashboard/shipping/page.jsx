@@ -53,11 +53,12 @@ export default function Page() {
             toast.error(err.message)
         }
         // Update state to remove deleted category
-        setData(prev => prev.filter(single => single.id !== id));
+        setData(prev => prev?.filter(single => single.id !== id));
     }
     if (loading) {
         return <PageLoader />
     }
+
     return (
         <div className="container-fluid my-5">
             <Link href="/dashboard/shipping/add">
