@@ -16,8 +16,7 @@ export default function OrderTable({
   onResetFilters,
 }) {
   const [draftFilters, setDraftFilters] = useState(filters);
-  const [isLoading, setIsLoading] = useState(false);
-  const [status, setStatus] = useState(false);
+  const [loadingStates, setLoadingStates] = useState({});
   const { formatDate } = useFormatDate();
   
   // Sync with parent filters when they change
@@ -78,42 +77,51 @@ export default function OrderTable({
     return <PageLoader />;
   }
 
-  async function handleEntry(id) {
-    setIsLoading(true);
-    let order = orders.find(o => o.id === id);
-    if (!order) {
-      toast.error("Order not found");
+  async function handleCourierEntry(orderId, courierType) {
+    if (!courierType) return;
+
+    setLoadingStates(prev => ({ ...prev, [orderId]: true }));
+
+    let token = null;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token");
+    }
+
+    if (!token) {
+      toast.error("No auth token found");
+      setLoadingStates(prev => ({ ...prev, [orderId]: false }));
       return;
     }
 
     try {
-      const url = "/api/steadfast";
-      const payload = {
-        invoice: order.order || "INV-" + Date.now(),
-        recipient_name: order.name,
-        recipient_phone: order.phone,
-        recipient_address: order.address + order.district,
-        cod_amount: order.total,
-        note: order.delivery_notes ?? "No notes",
-        item_description: order.order_items?.map(item => `Product Name: ${item.title} (Qty: ${item.qty}) ${item?.selected_variant?.attribute ?? ""}-${item?.selected_variant?.value}`).join(", ") || "No items",
-        total_lot: order.order_items?.length || 1,
-        delivery_type: 0,
-      };
-
-      const { data } = await axios.post(url, payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      setStatus(true);
-      toast.success("Courier entry created successfully");
-      console.log("Steadfast response:", data);
+      if (courierType === "pathao") {
+        const { data } = await axios.post(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}api/pathao/orders/${orderId}/create`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        
+        if (data.success) {
+          toast.success("Pathao courier entry created successfully!");
+          // Update the order in the local state
+          window.location.reload(); // Or update state properly
+        } else {
+          toast.error(data.message || "Failed to create courier entry");
+        }
+      } else if (courierType === "steadfast") {
+        // Steadfast logic here (keep your existing code)
+        toast.info("Steadfast integration coming soon");
+      }
     } catch (err) {
       console.error(err);
       const msg = err?.response?.data?.message || err?.message || "Failed to create courier entry";
       toast.error(msg);
     } finally {
-      setIsLoading(false)
+      setLoadingStates(prev => ({ ...prev, [orderId]: false }));
     }
   }
 
@@ -190,7 +198,7 @@ export default function OrderTable({
               <option value="">All Statuses</option>
               <option value="pending">Pending</option>
               <option value="completed">Completed</option>
-              <option value="completed">placed</option>
+              <option value="placed">Placed</option>
               <option value="cancelled">Cancelled</option>
               <option value="processing">Processing</option>
             </select>
@@ -237,7 +245,7 @@ export default function OrderTable({
                 <th>Ordered Products</th>
                 <th>Order Summary</th>
                 <th>Status</th>
-                {/* <th>Couriar Entry</th> */}
+                <th>Courier Entry</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -250,34 +258,39 @@ export default function OrderTable({
                   >
                     <td>{index + 1}</td>
                     <td>
-                      <h6 className="mb-0">Name: {order.name || "N/A"}
-                        {" "} <span className={`badge ${order.customer_type === "Repeat Customer" ? "bg-warning" : "bg-info "} text-dark`}>{order.customer_type}</span></h6>
+                      <h6 className="mb-0">
+                        Name: {order.name || "N/A"}{" "}
+                        <span
+                          className={`badge ${
+                            order.customer_type === "Repeat Customer"
+                              ? "bg-warning"
+                              : "bg-info"
+                          } text-dark`}
+                        >
+                          {order.customer_type}
+                        </span>
+                      </h6>
                       <small>
-                        {" "}
                         <strong>Order Date:</strong> {formatDate(order.created_at || "")}
-                      </small>{" "}
+                      </small>
                       <br />
                       <small>
-                        {" "}
                         <strong>Phone:</strong> {order.phone || "N/A"}
-                      </small>{" "}
+                      </small>
                       <br />
                       <small>
-                        {" "}
                         <strong>Address:</strong> {order.address || "N/A"}
-                      </small>{" "}
+                      </small>
                       <br />
                       <small>
-                        {" "}
                         <strong>District:</strong> {order.district || "N/A"}
                       </small>
                     </td>
                     <td>
                       {order.order_items?.map((item, itemIndex) => (
                         <div key={item.id}>
-                          <strong> {`${itemIndex + 1}.`} </strong>
-                          {item.title} (qty:{item.qty} x Price: {item.unitPrice}{" "}
-                          = {item.totalPrice} ) -
+                          <strong>{`${itemIndex + 1}.`}</strong> {item.title} (qty:
+                          {item.qty} x Price: {item.unitPrice} = {item.totalPrice}) -
                           {item.selected_variant && (
                             <div>
                               <strong>
@@ -291,12 +304,10 @@ export default function OrderTable({
                     </td>
                     <td>
                       <p>
-                        {" "}
-                        <strong>Shipping Cost:</strong> {order.shipping_cost}{" "}
+                        <strong>Shipping Cost:</strong> {order.shipping_cost}
                       </p>
                       <p>
-                        {" "}
-                        <strong>Payment Method:</strong> {order.payment_method}{" "}
+                        <strong>Payment Method:</strong> {order.payment_method}
                       </p>
                       <p>
                         <strong>Total:</strong> {order.total} TK
@@ -315,14 +326,24 @@ export default function OrderTable({
                         <option value="pending">Pending</option>
                       </select>
                     </td>
-                    {/* <td>
-                      <button
-                        onClick={()=>handleEntry(order.id)}
-                        className="btn btn-sm btn-secondary"
-                      >
-                        {isLoading ? "Loading..." : status ? "Success" : "Entry"}
-                      </button>
-                    </td> */}
+                    <td>
+                      {order.courier_entry ? (
+                        <span className="badge bg-success">Success</span>
+                      ) : (
+                        <select
+                          className="form-select form-select-sm"
+                          onChange={(e) => handleCourierEntry(order.id, e.target.value)}
+                          disabled={loadingStates[order.id]}
+                          defaultValue=""
+                        >
+                          <option value="" disabled>
+                            {loadingStates[order.id] ? "Processing..." : "Select Courier"}
+                          </option>
+                          <option value="pathao">Entry Pathao</option>
+                          <option value="steadfast">Entry Steadfast</option>
+                        </select>
+                      )}
+                    </td>
                     <td>
                       <button className="btn btn-sm btn-primary">View</button>
                     </td>
@@ -330,7 +351,7 @@ export default function OrderTable({
                 ))
               ) : (
                 <tr>
-                  <td colSpan="6" className="text-center py-4">
+                  <td colSpan="7" className="text-center py-4">
                     No orders found
                   </td>
                 </tr>
@@ -350,7 +371,13 @@ export default function OrderTable({
                   <div className="card-header bg-light">
                     <div className="d-flex justify-content-between align-items-center">
                       <h6 className="mb-0">Order #{index + 1}</h6>
-                      <span className={`badge ${order.customer_type === "Repeat Customer" ? "bg-warning" : "bg-info"} text-dark`}>
+                      <span
+                        className={`badge ${
+                          order.customer_type === "Repeat Customer"
+                            ? "bg-warning"
+                            : "bg-info"
+                        } text-dark`}
+                      >
                         {order.customer_type}
                       </span>
                     </div>
@@ -359,11 +386,21 @@ export default function OrderTable({
                     {/* Customer Info */}
                     <div className="mb-3">
                       <h6 className="border-bottom pb-2">Customer Information</h6>
-                      <p className="mb-1"><strong>Name:</strong> {order.name || "N/A"}</p>
-                      <p className="mb-1"><strong>Phone:</strong> {order.phone || "N/A"}</p>
-                      <p className="mb-1"><strong>Address:</strong> {order.address || "N/A"}</p>
-                      <p className="mb-1"><strong>District:</strong> {order.district || "N/A"}</p>
-                      <p className="mb-0"><strong>Order Date:</strong> {formatDate(order.created_at || "")}</p>
+                      <p className="mb-1">
+                        <strong>Name:</strong> {order.name || "N/A"}
+                      </p>
+                      <p className="mb-1">
+                        <strong>Phone:</strong> {order.phone || "N/A"}
+                      </p>
+                      <p className="mb-1">
+                        <strong>Address:</strong> {order.address || "N/A"}
+                      </p>
+                      <p className="mb-1">
+                        <strong>District:</strong> {order.district || "N/A"}
+                      </p>
+                      <p className="mb-0">
+                        <strong>Order Date:</strong> {formatDate(order.created_at || "")}
+                      </p>
                     </div>
 
                     {/* Ordered Products */}
@@ -371,13 +408,16 @@ export default function OrderTable({
                       <h6 className="border-bottom pb-2">Ordered Products</h6>
                       {order.order_items?.map((item, itemIndex) => (
                         <div key={item.id} className="mb-2 p-2 border rounded">
-                          <strong>{itemIndex + 1}. {item.title}</strong>
+                          <strong>
+                            {itemIndex + 1}. {item.title}
+                          </strong>
                           <div className="small">
                             Qty: {item.qty} × {item.unitPrice} = {item.totalPrice}
                           </div>
                           {item.selected_variant && (
                             <div className="small">
-                              <strong>{item?.selected_variant?.attribute ?? ""}:</strong> {item?.selected_variant?.value ?? ""}
+                              <strong>{item?.selected_variant?.attribute ?? ""}:</strong>{" "}
+                              {item?.selected_variant?.value ?? ""}
                             </div>
                           )}
                         </div>
@@ -387,14 +427,20 @@ export default function OrderTable({
                     {/* Order Summary */}
                     <div className="mb-3">
                       <h6 className="border-bottom pb-2">Order Summary</h6>
-                      <p className="mb-1"><strong>Shipping Cost:</strong> {order.shipping_cost}</p>
-                      <p className="mb-1"><strong>Payment Method:</strong> {order.payment_method}</p>
-                      <p className="mb-0"><strong>Total:</strong> {order.total} TK</p>
+                      <p className="mb-1">
+                        <strong>Shipping Cost:</strong> {order.shipping_cost}
+                      </p>
+                      <p className="mb-1">
+                        <strong>Payment Method:</strong> {order.payment_method}
+                      </p>
+                      <p className="mb-0">
+                        <strong>Total:</strong> {order.total} TK
+                      </p>
                     </div>
 
-                    {/* Status and Actions */}
+                    {/* Status, Courier Entry and Actions */}
                     <div className="row">
-                      <div className="col-6">
+                      <div className="col-6 mb-2">
                         <strong>Status</strong>
                         <select
                           className="form-select form-select-sm mt-1"
@@ -408,11 +454,29 @@ export default function OrderTable({
                           <option value="pending">Pending</option>
                         </select>
                       </div>
-                      <div className="col-6">
-                        <strong>Actions</strong>
+                      <div className="col-6 mb-2">
+                        <strong>Courier Entry</strong>
                         <div className="mt-1">
-                          <button className="btn btn-sm btn-primary w-100">View</button>
+                          {order.courier_entry ? (
+                            <span className="badge bg-success w-100">Success</span>
+                          ) : (
+                            <select
+                              className="form-select form-select-sm"
+                              onChange={(e) => handleCourierEntry(order.id, e.target.value)}
+                              disabled={loadingStates[order.id]}
+                              defaultValue=""
+                            >
+                              <option value="" disabled>
+                                {loadingStates[order.id] ? "Processing..." : "Select"}
+                              </option>
+                              <option value="pathao">Pathao</option>
+                              <option value="steadfast">Steadfast</option>
+                            </select>
+                          )}
                         </div>
+                      </div>
+                      <div className="col-12">
+                        <button className="btn btn-sm btn-primary w-100">View</button>
                       </div>
                     </div>
                   </div>
@@ -421,9 +485,7 @@ export default function OrderTable({
             ))}
           </div>
         ) : (
-          <div className="text-center py-4">
-            No orders found
-          </div>
+          <div className="text-center py-4">No orders found</div>
         )}
       </div>
     </div>
