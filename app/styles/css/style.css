@@ -1566,3 +1566,42 @@ table tr td {
 	}
 
 }
+
+/* Mobile-specific fixes for product grid */
+@media (max-width: 768px) {
+  .product-card .card-body {
+    padding: 0.5rem;
+  }
+  
+  .product-card .card-footer {
+    padding: 0.5rem;
+  }
+  
+  /* Ensure consistent spacing between products */
+  .row.mx-0 > [class*="col-"] {
+    padding-left: 4px;
+    padding-right: 4px;
+    margin-bottom: 8px;
+  }
+  
+  /* Reduce product card padding on mobile */
+  .product-div {
+    padding: 0.25rem !important;
+  }
+  
+  /* Adjust image container for mobile */
+  .product-image-container {
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* Ensure slider items have proper spacing on mobile */
+@media (max-width: 768px) {
+  .slick-slide > div {
+    padding: 0 4px;
+  }
+  
+  .slick-list {
+    margin: 0 -4px;
+  }
+}

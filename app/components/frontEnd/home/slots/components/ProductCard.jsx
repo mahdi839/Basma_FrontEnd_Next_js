@@ -4,8 +4,8 @@ import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
 import { FaCartArrowDown } from "react-icons/fa";
 import OptionDiv from "./OptionDiv";
-
 import { GrAidOption } from "react-icons/gr";
+
 const ProductCard = React.memo(function ProductCard({
   slotProducts,
   showOptionDiv,
@@ -20,10 +20,9 @@ const ProductCard = React.memo(function ProductCard({
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   return (
-    <div className={`${slotLength >= 4 ? "px-2" : ''} ${className} my-3 my-md-5`}>
+    <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5`}>
       <div
-        className="card product-div  p-2 bg-white h-100 product-card position-relative"
-
+        className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative"
       >
         {/* Product Image */}
         <div
@@ -59,12 +58,11 @@ const ProductCard = React.memo(function ProductCard({
               </Link>
 
             </div>
-          {/* Quick add to cart button (shown on hover) */}
         </div>
 
         {/* Product Body */}
-        <div className="card-body px-3 pb-2 pt-3">
-          <p className=" mb-1">
+        <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
+          <p className="mb-1">
             <Link
               href={`/frontEnd/product-page/${slotProducts?.id}`}
               className="text-decoration-none text-dark product-title"
@@ -74,13 +72,13 @@ const ProductCard = React.memo(function ProductCard({
           </p>
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
             <p
-              className="text-muted small mb-2 product-subtitle"
+              className="text-muted small mb-1 mb-md-2 product-subtitle"
             >
               {slotProducts?.sub_title}
             </p>
           </Link>
 
-          <div className="d-flex  justify-content-between align-items-center mt-2">
+          <div className="d-flex justify-content-between align-items-center mt-1 mt-md-2">
             <div>
               <span
                 className="text-dark fw-bold product-price"
@@ -92,19 +90,19 @@ const ProductCard = React.memo(function ProductCard({
         </div>
 
         <div
-          className="card-footer bg-transparent border-0 pt-0   add-to-cart-footer d-lg-none d-block"
+          className="card-footer bg-transparent border-0 pt-0 add-to-cart-footer d-lg-none d-block px-2 px-md-3"
         >
           {slotProducts?.variants?.length > 1 ? (
             <button
               type="button"
-              className="btn-grad w-100 rounded-0 select-options-btn-sm"
+              className="btn-grad w-100 rounded-0 select-options-btn-sm py-1"
               onClick={(e) => handleOptionDiv(e, slotProducts?.id)}
             >
               Select options
             </button>
           ) : (
             <button
-              className="btn-grad w-100 rounded-0 add-to-cart-btn-sm"
+              className="btn-grad w-100 rounded-0 add-to-cart-btn-sm py-1"
               onClick={() => handleAddToCart(slotProducts)}
             >
               Add to cart
@@ -113,8 +111,7 @@ const ProductCard = React.memo(function ProductCard({
         </div>
 
         <div
-          className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block "
-
+          className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block"
         >
           {slotProducts?.variants?.length > 1 ? (
             <button
@@ -135,7 +132,6 @@ const ProductCard = React.memo(function ProductCard({
             </button>
           )}
         </div>
-        {/* options div component start */}
 
         <OptionDiv
           showOptionDiv={showOptionDiv}
@@ -145,10 +141,10 @@ const ProductCard = React.memo(function ProductCard({
           product={slotProducts}
           handleAddToCart={handleAddToCart}
         />
-
-        {/* options selection div end */}
       </div>
     </div>
   );
 });
+
+// Add this export statement
 export default ProductCard;

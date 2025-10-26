@@ -119,11 +119,11 @@ function FeatureClient({ homeCategories, BannerCatData }) {
       });
       return;
     }
-   
+
     // check if user select size or not for multiple sizes
     if (product.variants.length > 1 && !selectedSizes) {
       Swal.fire({
-        title: `Please Select A ${product?.variants[0]?.attribute?? "Option"}`,
+        title: `Please Select A ${product?.variants[0]?.attribute ?? "Option"}`,
         icon: "warning",
         confirmButtonText: "Ok",
         confirmButtonColor: "#DB3340",
@@ -156,14 +156,14 @@ function FeatureClient({ homeCategories, BannerCatData }) {
 
             return (
               <React.Fragment key={slot.id || slotIndex}>
-                     {/* Header with navigation buttons */}
+                {/* Header with navigation buttons */}
                 {
-                 slot.products.length > 0 && slot?.banner?.banner_images?.map((img) => {
-                      return (
-                        <Link key={img.id} href={slot?.banner?.link??""} className="text-decoration-none text-dark my-3">
-                          <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`} alt="banner image" style={{ width: '100%', height: 'auto' }} priority />
-                        </Link>
-                      );
+                  slot.products.length > 0 && slot?.banner?.banner_images?.map((img) => {
+                    return (
+                      <Link key={img.id} href={slot?.banner?.link ?? ""} className="text-decoration-none text-dark my-3">
+                        <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`} alt="banner image" style={{ width: '100%', height: 'auto' }} priority />
+                      </Link>
+                    );
                   }
                   )}
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
@@ -224,7 +224,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                   >
                     {slot.products?.map((product, productIndex) => (
                       <ProductCard
-                        className={slot.products.length >= 4 ? "mx-2" : ""} 
+                        className={slot.products.length >= 4 ? "mx-2" : ""}
                         key={product.id || productIndex}
                         slotProducts={product}
                         showOptionDiv={showOptionDiv}
@@ -240,11 +240,10 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                 )}
 
                 {slot.products?.length < 4 && (
-                  <div className="row">
+                  <div className="row mx-0">
                     {slot.products?.map((product, productIndex) => (
-                      <div className="col-6 col-lg-3 col-md-4">
+                      <div key={product.id || productIndex} className="col-6 col-lg-3 col-md-4 px-1 px-md-2">
                         <ProductCard
-                          key={product.id || productIndex}
                           slotProducts={product}
                           showOptionDiv={showOptionDiv}
                           setShowOptionDiv={setShowOptionDiv}
