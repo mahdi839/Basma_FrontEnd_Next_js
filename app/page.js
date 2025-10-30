@@ -22,9 +22,6 @@ export default async function Home() {
          BannerCatData.push(data[i])
        }
     }
-    console.log("hi")
-    console.log(BannerCatData)
-    console.log("hi")
   return ( 
      <FrontEndLayout>
      <Hero data={heroData[0]} />

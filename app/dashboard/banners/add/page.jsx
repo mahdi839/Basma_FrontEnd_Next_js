@@ -89,11 +89,6 @@ export default function Page() {
     payload.append("images[]", file);
   });
 
-  console.log("FormData contents:");
-  for (let [key, value] of payload.entries()) {
-    console.log(key, value);
-  }
-
   let token = null;
   if (typeof window !== "undefined") {
     token = localStorage.getItem("token");
