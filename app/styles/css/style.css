@@ -894,8 +894,8 @@ ol {
 	left: 0px;
 	width: 0px;
 	height: 0px;
-	border-top: 1px solid var(--primary-color);
-	border-left: 1px solid var(--primary-color);
+	border-top: 2px solid var(--primary-color);
+	border-left: 2px solid var(--primary-color);
 	transition: all 0.4s;
 }
 
@@ -906,8 +906,8 @@ ol {
 	right: 0px;
 	width: 0px;
 	height: 0px;
-	border-bottom: 1px solid var(--primary-color);
-	border-right: 1px solid var(--primary-color);
+	border-bottom: 2px solid var(--primary-color);
+	border-right: 2px solid var(--primary-color);
 	transition: all 0.4s;
 }
 
