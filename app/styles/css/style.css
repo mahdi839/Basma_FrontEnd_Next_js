@@ -885,8 +885,6 @@ ol {
 	position: relative;
 }
 
-
-
 .product-card::before {
 	content: "";
 	position: absolute;

@@ -12,11 +12,7 @@ export default function CartIcon({ itemCount = 0 }) {
   const [isClient, setIsClient] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
 
-  const handleCartIconClick = () => {
-    
-    
-  };
-
+ 
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
@@ -32,11 +28,9 @@ export default function CartIcon({ itemCount = 0 }) {
   }, []);
 
   return (
-
     <>
       <div
         onClick={handleClick}
-        onCartClick={handleCartIconClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className="cartIconContainer"
