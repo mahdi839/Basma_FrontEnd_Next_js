@@ -14,6 +14,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ProductModal from "./components/ProductModal";
 import { useRouter } from "next/navigation";
+import CartDrawer from "../../components/CartDrawer";
 
 function FeatureClient({ homeCategories, BannerCatData }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -21,13 +22,14 @@ function FeatureClient({ homeCategories, BannerCatData }) {
   const [selectedSizes, setSelectedSizes] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null); // For modal
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-
+  const [isDirectBuy, setIsDirectBuy] = useState(false);
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const cartCount = useSelector((state) => state.cart.count);
   const cartItems = useSelector((state) => state.cart.items);
   const router = useRouter()
-  
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+
   useEffect(() => {
     if (homeCategories) {
       setIsLoading(false);
@@ -90,11 +92,16 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     setSelectedSizes("");
   }
 
+  // close drawer
+  const handleCloseDrawer = () => {
+    setIsCartDrawerOpen(false);
+  };
+
   function handleSizeSelect(e) {
     setSelectedSizes(e.target.value);
   }
 
-  function handleAddToCart(product,type) {
+  function handleAddToCart(product, type) {
     // If modal is open, use the selected product from modal
     const targetProduct = selectedProduct || product;
 
@@ -125,7 +132,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
 
     // Find the selected variant for price
     const selectedVariant = targetProduct.variants.find(v => v.id == selectedSizes) || targetProduct.variants[0];
-    
+
     dispatch(
       addToCart({
         id: targetProduct.id,
@@ -137,8 +144,9 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     );
 
     setSelectedSizes(""); // Reset selection
-    if(type=='buy'){
-      router.push('/frontEnd/checkout')
+    if (type == 'buy') {
+      setIsCartDrawerOpen(true);
+      setIsDirectBuy(true)
     }
     handleCloseModal(); // Close modal after adding to cart
     toast.success("Added to cart!");
@@ -275,6 +283,12 @@ function FeatureClient({ homeCategories, BannerCatData }) {
             baseUrl={baseUrl}
           />
         )}
+
+        <CartDrawer
+          isOpen={isCartDrawerOpen}
+          isDirectBuy={isDirectBuy}
+          onClose={handleCloseDrawer}
+        />
       </div>
     </div>
   );
