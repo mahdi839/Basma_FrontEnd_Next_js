@@ -21,7 +21,7 @@ export default function CtgProductsLogic({ products, category }) {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
-  const [isDirectBuy,setIsDirectBuy] = useState(false);
+  const [isDirectBuy, setIsDirectBuy] = useState(false);
   // Open modal with product details
   function handleOpenModal(product) {
     setSelectedProduct(product);
@@ -37,7 +37,7 @@ export default function CtgProductsLogic({ products, category }) {
   }
 
   // close drawer
-   const handleCloseDrawer = () => {
+  const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
 
@@ -46,7 +46,7 @@ export default function CtgProductsLogic({ products, category }) {
   }, []);
 
   const handleAddToCart = useCallback(
-    (product,type) => {
+    (product, type) => {
       let existingCart = cartItems.find(
         (existProduct) => existProduct.id === product.id
       );
@@ -71,11 +71,14 @@ export default function CtgProductsLogic({ products, category }) {
         return;
       }
 
+      // Find the selected variant for price
+    const selectedVariant = product.variants.find(v => v.id == selectedSizes) || targetProduct.variants[0];
+
       dispatch(
         addToCart({
           id: product.id,
           title: product.title,
-          size: selectedSizes ?? "",
+          size: selectedSizes ? selectedVariant.value : "",
           price: product.variants[0]?.price ?? product.price,
           image: baseUrl + product.images?.[0]?.image || "",
         })
@@ -83,7 +86,7 @@ export default function CtgProductsLogic({ products, category }) {
 
       setSelectedSizes(""); // Reset selection
       toast.success("Added to cart!");
-      if(type === 'buy'){
+      if (type === 'buy') {
         setIsCartDrawerOpen(true);
         setIsDirectBuy(true)
         handleCloseModal()
@@ -141,9 +144,9 @@ export default function CtgProductsLogic({ products, category }) {
         )}
 
         <CartDrawer
-         isOpen={isCartDrawerOpen}
-         isDirectBuy={isDirectBuy}
-         onClose={handleCloseDrawer}
+          isOpen={isCartDrawerOpen}
+          isDirectBuy={isDirectBuy}
+          onClose={handleCloseDrawer}
         />
       </div>
     </div>
