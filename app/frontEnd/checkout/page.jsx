@@ -355,7 +355,7 @@ function CheckoutPage() {
               </div>
 
               <div className="d-flex justify-content-between mt-4">
-                <Link href="/cart" className="btn btn-grad">
+                <Link href="/frontEnd/cart" className="btn btn-grad">
                   Back to Cart
                 </Link>
                 <button type="submit" className="btn btn-grad">

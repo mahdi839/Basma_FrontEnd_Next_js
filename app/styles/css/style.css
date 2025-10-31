@@ -875,47 +875,51 @@ ol {
 
 
 .product-card {
-	border: 1px solid rgb(230, 227, 227);
-	transition: all 0.3s ease, box-shadow 0.3s ease;
-	position: relative;
+  border: 1px solid rgb(230, 227, 227);
+  transition: all 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden; /* Important for transform approach */
+}
+
+.product-card::before,
+.product-card::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s ease;
+  z-index: 1;
 }
 
 .product-card::before {
-	content: "";
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 0px;
-	height: 0px;
-	border-top: 2px solid var(--primary-color);
-	border-left: 2px solid var(--primary-color);
-	transition: all 0.4s;
+  top: 0;
+  left: 0;
+  border-top: 2px solid transparent;
+  border-left: 2px solid transparent;
+  transform: scaleX(0) scaleY(0);
+  transform-origin: top left;
 }
 
 .product-card::after {
-	content: "";
-	position: absolute;
-	bottom: 0px;
-	right: 0px;
-	width: 0px;
-	height: 0px;
-	border-bottom: 2px solid var(--primary-color);
-	border-right: 2px solid var(--primary-color);
-	transition: all 0.4s;
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid transparent;
+  border-right: 2px solid transparent;
+  transform: scaleX(0) scaleY(0);
+  transform-origin: bottom right;
 }
 
 .first-slide:first-child .product-card::before,
 .first-slide:first-child .product-card::after {
-	width: 100%;
-	height: 100%;
+  transform: scaleX(1) scaleY(1);
+  border-color: var(--primary-color);
 }
 
-.product-card:hover:before,
-.product-card:hover:after {
-	width: 100%;
-	height: 100%;
+.product-card:hover::before,
+.product-card:hover::after {
+  transform: scaleX(1) scaleY(1);
+  border-color: var(--primary-color);
 }
-
 
 .product-subtitle {
 	font-size: 13px;
