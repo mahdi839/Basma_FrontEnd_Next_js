@@ -12,20 +12,20 @@ import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
 import Image from "next/image";
+import ProductModal from "./components/ProductModal";
 
 function FeatureClient({ homeCategories, BannerCatData }) {
   const [isLoading, setIsLoading] = useState(true);
   const sliderRefs = useRef([]);
-  const [showOptionDiv, setShowOptionDiv] = useState({
-    productId: null,
-    status: false,
-  });
   const [selectedSizes, setSelectedSizes] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState(null); // For modal
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
 
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const cartCount = useSelector((state) => state.cart.count);
   const cartItems = useSelector((state) => state.cart.items);
+  
   useEffect(() => {
     if (homeCategories) {
       setIsLoading(false);
@@ -47,7 +47,6 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     slidesToShow: 4,
     slidesToScroll: 1,
     arrows: false,
-
     pauseOnHover: true,
     responsive: [
       {
@@ -74,6 +73,72 @@ function FeatureClient({ homeCategories, BannerCatData }) {
       },
     ],
   };
+
+  // Open modal with product details
+  function handleOpenModal(product) {
+    setSelectedProduct(product);
+    setSelectedSizes(""); // Reset selection when opening modal
+    setIsModalOpen(true);
+  }
+
+  // Close modal
+  function handleCloseModal() {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+    setSelectedSizes("");
+  }
+
+  function handleSizeSelect(e) {
+    setSelectedSizes(e.target.value);
+  }
+
+  function handleAddToCart(product) {
+    // If modal is open, use the selected product from modal
+    const targetProduct = selectedProduct || product;
+
+    let existingCart = cartItems.find(
+      (existProduct) => existProduct.id === targetProduct.id
+    );
+    if (existingCart) {
+      Swal.fire({
+        title: "Already in the cart",
+        text: "This product is already in your cart",
+        icon: "info",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#DB3340",
+      });
+      return;
+    }
+
+    // Check if user select size or not for multiple sizes
+    if (targetProduct.variants.length > 1 && !selectedSizes) {
+      Swal.fire({
+        title: `Please Select A ${targetProduct?.variants[0]?.attribute ?? "Option"}`,
+        icon: "warning",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#DB3340",
+      });
+      return;
+    }
+
+    // Find the selected variant for price
+    const selectedVariant = targetProduct.variants.find(v => v.id == selectedSizes) || targetProduct.variants[0];
+    
+    dispatch(
+      addToCart({
+        id: targetProduct.id,
+        title: targetProduct.title,
+        size: selectedSizes ? selectedVariant.value : "",
+        price: selectedVariant?.price ?? targetProduct.price,
+        image: baseUrl + targetProduct.images?.[0]?.image || "",
+      })
+    );
+
+    setSelectedSizes(""); // Reset selection
+    handleCloseModal(); // Close modal after adding to cart
+    toast.success("Added to cart!");
+  }
+
   if (isLoading) {
     return <DynamicLoader />;
   }
@@ -88,68 +153,11 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     return <div className="text-center my-5">No categories found</div>;
   }
 
-  function handleOptionDiv(e, productid) {
-    e.preventDefault();
-    setShowOptionDiv({
-      productId: productid,
-      status: true,
-    });
-  }
-
-  function handleSizeSelect(e) {
-    setSelectedSizes(e.target.value);
-  }
-
-  function handleAddToCart(product) {
-    setShowOptionDiv({
-      ...showOptionDiv,
-      status: false,
-    });
-
-    let existingCart = cartItems.find(
-      (existProduct) => existProduct.id === product.id
-    );
-    if (existingCart) {
-      Swal.fire({
-        title: "Already in the cart",
-        text: "This product is already in your cart",
-        icon: "info",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
-      return;
-    }
-
-    // check if user select size or not for multiple sizes
-    if (product.variants.length > 1 && !selectedSizes) {
-      Swal.fire({
-        title: `Please Select A ${product?.variants[0]?.attribute ?? "Option"}`,
-        icon: "warning",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
-      return;
-    }
-    dispatch(
-      addToCart({
-        id: product.id,
-        title: product.title,
-        size: selectedSizes ?? "",
-        price: product.variants[0]?.price ?? product.price,
-        image: baseUrl + product.images?.[0]?.image || "",
-      })
-    );
-
-    setSelectedSizes(""); // Reset selection
-    toast.success("Added to cart!");
-  }
-
   return (
     <div className="container mb-3 mb-md-5 mt-0 py-2 ">
       <div className="row position-relative">
         {homeCategories &&
           homeCategories.map((slot, slotIndex) => {
-            // Initialize ref if it doesn't exist
             if (!sliderRefs.current[slotIndex]) {
               sliderRefs.current[slotIndex] = React.createRef();
             }
@@ -164,8 +172,8 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                         <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`} alt="banner image" style={{ width: '100%', height: 'auto' }} priority />
                       </Link>
                     );
-                  }
-                  )}
+                  })
+                }
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
                   {slot.products.length > 0 && (
                     <h2
@@ -180,7 +188,6 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                     <div className="d-flex gap-2 mb-1">
                       <button
                         className="d-flex align-items-center justify-content-center slider-nav-btn"
-                        // Connect to this specific slider
                         onClick={() =>
                           sliderRefs.current[slotIndex]?.current?.slickPrev()
                         }
@@ -189,7 +196,6 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                       </button>
                       <button
                         className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
-                        // Connect to this specific slider
                         onClick={() =>
                           sliderRefs.current[slotIndex]?.current?.slickNext()
                         }
@@ -227,12 +233,8 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                         className={slot.products.length >= 4 ? "mx-2" : ""}
                         key={product.id || productIndex}
                         slotProducts={product}
-                        showOptionDiv={showOptionDiv}
-                        setShowOptionDiv={setShowOptionDiv}
-                        selectedSizes={selectedSizes}
-                        handleSizeSelect={handleSizeSelect}
+                        handleOpenModal={handleOpenModal}
                         handleAddToCart={handleAddToCart}
-                        handleOptionDiv={handleOptionDiv}
                         slotLength={slot.slot_details?.length}
                       />
                     ))}
@@ -245,12 +247,8 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                       <div key={product.id || productIndex} className="col-6 col-lg-3 col-md-4 px-1 px-md-2">
                         <ProductCard
                           slotProducts={product}
-                          showOptionDiv={showOptionDiv}
-                          setShowOptionDiv={setShowOptionDiv}
-                          selectedSizes={selectedSizes}
-                          handleSizeSelect={handleSizeSelect}
+                          handleOpenModal={handleOpenModal}
                           handleAddToCart={handleAddToCart}
-                          handleOptionDiv={handleOptionDiv}
                         />
                       </div>
                     ))}
@@ -259,6 +257,19 @@ function FeatureClient({ homeCategories, BannerCatData }) {
               </React.Fragment>
             );
           })}
+
+        {/* Product Modal */}
+        {isModalOpen && selectedProduct && (
+          <ProductModal
+            product={selectedProduct}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            selectedSizes={selectedSizes}
+            onSizeSelect={handleSizeSelect}
+            onAddToCart={handleAddToCart}
+            baseUrl={baseUrl}
+          />
+        )}
       </div>
     </div>
   );

@@ -3,17 +3,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
 import { FaCartArrowDown } from "react-icons/fa";
-import OptionDiv from "./OptionDiv";
 import { GrAidOption } from "react-icons/gr";
 
 const ProductCard = React.memo(function ProductCard({
   slotProducts,
-  showOptionDiv,
-  setShowOptionDiv,
-  selectedSizes,
-  handleSizeSelect,
+  handleOpenModal,
   handleAddToCart,
-  handleOptionDiv,
   slotLength,
   className
 }) {
@@ -43,21 +38,17 @@ const ProductCard = React.memo(function ProductCard({
             />
           </Link>
           {/* Product Actions */}
-         
-            <div
-              className="quick-add-btn product-actions position-absolute d-flex flex-column "
-
-            >
-              <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
-                <button
-                  className="  rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
-
-                >
-                  <CiSearch className="fs-5 " />
-                </button>
-              </Link>
-
-            </div>
+          <div
+            className="quick-add-btn product-actions position-absolute d-flex flex-column"
+          >
+            <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
+              <button
+                className="rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
+              >
+                <CiSearch className="fs-5" />
+              </button>
+            </Link>
+          </div>
         </div>
 
         {/* Product Body */}
@@ -96,7 +87,7 @@ const ProductCard = React.memo(function ProductCard({
             <button
               type="button"
               className="btn-grad w-100 rounded-0 select-options-btn-sm py-1"
-              onClick={(e) => handleOptionDiv(e, slotProducts?.id)}
+              onClick={() => handleOpenModal(slotProducts)}
             >
               Select options
             </button>
@@ -117,7 +108,7 @@ const ProductCard = React.memo(function ProductCard({
             <button
               type="button"
               className="btn-grad w-100 rounded-0"
-              onClick={(e) => handleOptionDiv(e, slotProducts?.id)}
+              onClick={() => handleOpenModal(slotProducts)}
             >
               <GrAidOption className="me-2" />
               Select options
@@ -132,19 +123,9 @@ const ProductCard = React.memo(function ProductCard({
             </button>
           )}
         </div>
-
-        <OptionDiv
-          showOptionDiv={showOptionDiv}
-          setShowOptionDiv={setShowOptionDiv}
-          selectedSizes={selectedSizes}
-          handleSizeSelect={handleSizeSelect}
-          product={slotProducts}
-          handleAddToCart={handleAddToCart}
-        />
       </div>
     </div>
   );
 });
 
-// Add this export statement
 export default ProductCard;
