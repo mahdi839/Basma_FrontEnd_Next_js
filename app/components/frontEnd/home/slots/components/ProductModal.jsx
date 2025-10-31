@@ -163,13 +163,13 @@ const ProductModal = ({
               <div className="action-section">
                 <button
                   className="btn-grad add-to-cart-btn"
-                  onClick={() => onAddToCart(product)}
+                  onClick={() => onAddToCart(product,'add')}
                 >
                   <FaCartArrowDown className="btn-icon" />
                   Add to Cart
                 </button>
                 
-                <button className="btn-grad">
+                <button className="btn-grad" onClick={() => onAddToCart(product,'buy')}>
                   Buy Now
                 </button>
               </div>

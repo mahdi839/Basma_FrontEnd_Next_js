@@ -13,6 +13,7 @@ import ProductCard from "./components/ProductCard";
 import Link from "next/link";
 import Image from "next/image";
 import ProductModal from "./components/ProductModal";
+import { useRouter } from "next/navigation";
 
 function FeatureClient({ homeCategories, BannerCatData }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -25,6 +26,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
   const dispatch = useDispatch();
   const cartCount = useSelector((state) => state.cart.count);
   const cartItems = useSelector((state) => state.cart.items);
+  const router = useRouter()
   
   useEffect(() => {
     if (homeCategories) {
@@ -92,7 +94,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     setSelectedSizes(e.target.value);
   }
 
-  function handleAddToCart(product) {
+  function handleAddToCart(product,type) {
     // If modal is open, use the selected product from modal
     const targetProduct = selectedProduct || product;
 
@@ -135,6 +137,9 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     );
 
     setSelectedSizes(""); // Reset selection
+    if(type=='buy'){
+      router.push('/frontEnd/checkout')
+    }
     handleCloseModal(); // Close modal after adding to cart
     toast.success("Added to cart!");
   }

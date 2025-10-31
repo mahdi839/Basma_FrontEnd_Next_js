@@ -68,7 +68,7 @@ export default function Products({ product }) {
 
     // Prevent duplicate "add" (but allow when ordering straight to checkout)
     const existing = cartItems.find((item) => item.id === product.id);
-    if (existing && type === "add") {
+    if (existing) {
       Swal.fire({
         title: "Already in the cart",
         text: "This product is already in your cart",
