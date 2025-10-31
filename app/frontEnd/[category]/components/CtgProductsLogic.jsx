@@ -7,34 +7,46 @@ import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard";
+import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
+import { useRouter } from "next/navigation";
+import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 
 export default function CtgProductsLogic({ products, category }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [showOptionDiv, setShowOptionDiv] = useState({
-    productId: null,
-    status: false,
-  });
+  const [selectedProduct, setSelectedProduct] = useState(null); // For modal
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const router = useRouter();
   const [selectedSizes, setSelectedSizes] = useState("");
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [isDirectBuy,setIsDirectBuy] = useState(false);
+  // Open modal with product details
+  function handleOpenModal(product) {
+    setSelectedProduct(product);
+    setSelectedSizes(""); // Reset selection when opening modal
+    setIsModalOpen(true);
+  }
 
-  // ✅ All hooks must come before any conditionals
-  const handleOptionDiv = useCallback((e, productId) => {
-    e.preventDefault();
-    setShowOptionDiv({
-      productId: productId,
-      status: true,
-    });
-  }, []);
+  // Close modal
+  function handleCloseModal() {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+    setSelectedSizes("");
+  }
+
+  // close drawer
+   const handleCloseDrawer = () => {
+    setIsCartDrawerOpen(false);
+  };
 
   const handleSizeSelect = useCallback((e) => {
     setSelectedSizes(e.target.value);
   }, []);
 
   const handleAddToCart = useCallback(
-    (product) => {
-      setShowOptionDiv(false);
+    (product,type) => {
       let existingCart = cartItems.find(
         (existProduct) => existProduct.id === product.id
       );
@@ -71,6 +83,11 @@ export default function CtgProductsLogic({ products, category }) {
 
       setSelectedSizes(""); // Reset selection
       toast.success("Added to cart!");
+      if(type === 'buy'){
+        setIsCartDrawerOpen(true);
+        setIsDirectBuy(true)
+        handleCloseModal()
+      }
     },
     [cartItems, dispatch, selectedSizes, baseUrl]
   );
@@ -104,15 +121,30 @@ export default function CtgProductsLogic({ products, category }) {
           <div className="col-6 col-lg-3 col-md-4 " key={product.id}>
             <ProductCard
               slotProducts={product}
-              showOptionDiv={showOptionDiv}
-              setShowOptionDiv={setShowOptionDiv}
-              selectedSizes={selectedSizes}
-              handleSizeSelect={handleSizeSelect}
+              handleOpenModal={handleOpenModal}
               handleAddToCart={handleAddToCart}
-              handleOptionDiv={handleOptionDiv}
             />
           </div>
         ))}
+
+        {/* Product Modal */}
+        {isModalOpen && selectedProduct && (
+          <ProductModal
+            product={selectedProduct}
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            selectedSizes={selectedSizes}
+            onSizeSelect={handleSizeSelect}
+            onAddToCart={handleAddToCart}
+            baseUrl={baseUrl}
+          />
+        )}
+
+        <CartDrawer
+         isOpen={isCartDrawerOpen}
+         isDirectBuy={isDirectBuy}
+         onClose={handleCloseDrawer}
+        />
       </div>
     </div>
   );

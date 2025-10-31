@@ -9,7 +9,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import './style.css';
 
-export default function CartDrawer({ isOpen, onClose }) {
+export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
   const [currentStep, setCurrentStep] = useState("cart");
   const [formData, setFormData] = useState({
     name: "",
@@ -77,6 +77,12 @@ export default function CartDrawer({ isOpen, onClose }) {
     }
     setCurrentStep("checkout");
   };
+
+ useEffect(() => {
+  if (isDirectBuy && isOpen) {
+    setCurrentStep("checkout");
+  }
+}, [isDirectBuy, isOpen]);
 
   // Checkout functions
   const handleInputChange = (e) => {
@@ -289,7 +295,7 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
                     Variant: <span>{item.size}</span>
                   </p>
                 )}
-                <p className="item-unit-price">{item.unitPrice} TK each</p>
+                <p className="item-unit-price">{item.unitPrice} TK</p>
                 
                 <div className="item-actions">
                   <div className="quantity-controls">
