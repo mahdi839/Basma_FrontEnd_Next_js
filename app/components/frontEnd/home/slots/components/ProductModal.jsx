@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaTimes, FaCartArrowDown, FaHeart, FaCheck } from "react-icons/fa";
 import { CiSearch, CiHeart } from "react-icons/ci";
+import { BiSolidPurchaseTag } from "react-icons/bi";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -170,6 +171,7 @@ const ProductModal = ({
                 </button>
                 
                 <button className="btn-grad" onClick={() => onAddToCart(product,'buy')}>
+                  <BiSolidPurchaseTag className="btn-icon" />
                   Buy Now
                 </button>
               </div>
