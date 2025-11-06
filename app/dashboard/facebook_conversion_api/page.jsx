@@ -17,9 +17,18 @@ export default function FacebookSettings() {
     fetchSettings();
   }, []);
 
+
   const fetchSettings = async () => {
+    const token = localStorage.getItem('token');
     try {
-      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "api/facebook-settings");
+      const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "api/facebook-settings",
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
       const data = await response.json();
       if (data) setSettings(data);
     } catch (error) {
@@ -36,6 +45,7 @@ export default function FacebookSettings() {
   };
 
   const handleSubmit = async (e) => {
+    const token = localStorage.getItem('token'); // ✅ inside function
     e.preventDefault();
     setLoading(true);
     setMessage({ type: '', text: '' });
@@ -43,7 +53,10 @@ export default function FacebookSettings() {
     try {
       const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "api/facebook-settings", {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(settings),
       });
       const data = await response.json();
@@ -60,13 +73,17 @@ export default function FacebookSettings() {
   };
 
   const testConnection = async () => {
+    const token = localStorage.getItem('token'); 
     setTesting(true);
     setMessage({ type: '', text: '' });
 
     try {
       const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "api/facebook-settings/test", {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
           pixel_id: settings.pixel_id,
           access_token: settings.access_token,
@@ -104,9 +121,8 @@ export default function FacebookSettings() {
             {/* Message Alert */}
             {message.text && (
               <div
-                className={`alert ${
-                  message.type === 'success' ? 'alert-success' : 'alert-danger'
-                } d-flex align-items-center`}
+                className={`alert ${message.type === 'success' ? 'alert-success' : 'alert-danger'
+                  } d-flex align-items-center`}
                 role="alert"
               >
                 <span className="me-2">
