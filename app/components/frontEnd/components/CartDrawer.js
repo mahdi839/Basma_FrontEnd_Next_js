@@ -135,11 +135,32 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
       return;
     }
 
+     // Get Facebook cookies
+  const getFacebookParams = () => {
+    const getCookie = (name) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    };
+
+    return {
+      fbp: getCookie('_fbp'),
+      fbc: getCookie('_fbc')
+    };
+  };
+
+  const { fbp, fbc } = getFacebookParams();
+
     const orderData = {
       ...formData,
       cart: cartItems,
       shipping_cost: shippingAmount,
       total_amount: finalTotal,
+      // Add Facebook tracking data
+      fbp: fbp,
+      fbc: fbc,
+      event_source_url: window.location.href,
     };
 
     try {

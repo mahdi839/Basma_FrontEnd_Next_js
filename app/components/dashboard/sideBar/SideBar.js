@@ -11,6 +11,8 @@ import SideBarItem from "../components/sidebarItem/SideBarItem";
 import { MdOutlineSocialDistance } from "react-icons/md";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { usePathname } from "next/navigation";
+import { TbCirclesRelation } from "react-icons/tb";
+
 
 export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
   const [openMenus, setOpenMenus] = useState({});
@@ -63,6 +65,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
         { href: "/dashboard/about_us", label: 'About Us', Icon: FaInfoCircle },
         { href: "/dashboard/footerSettings", label: 'Footer Settings', Icon: IoIosSettings },
         { href: "/dashboard/socialLinks", label: 'Social Links', Icon: MdOutlineSocialDistance },
+        { href: "/dashboard/facebook_conversion_api", label: 'Facebook Api Settings', Icon: TbCirclesRelation  },
       ]
     },
     {
