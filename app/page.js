@@ -24,8 +24,10 @@ export default async function Home() {
     }
   return ( 
      <FrontEndLayout>
-     <Hero data={heroData[0]} />
-     <Feature BannerCatData={BannerCatData} />
+     <div style={{ minHeight: '60vh' }}>
+         <Hero data={heroData[0]} />
+         <Feature BannerCatData={BannerCatData} />
+       </div>
      </FrontEndLayout>
   );
 }
