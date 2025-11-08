@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { FaFirstOrder } from "react-icons/fa";
+import { FaCartPlus, FaFirstOrder } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
 import Zoom from "react-medium-image-zoom";
@@ -198,6 +198,9 @@ export default function Products({ product }) {
 
             <div className="action-buttons d-flex gap-2 flex-wrap">
               <button className="btn-grad px-3 py-2 rounded-0" onClick={() => handleAddToCart("add")}>
+                <span className="pe-1">
+                  <FaCartPlus />
+                </span>
                 Add To Cart
               </button>
               <button className="btn-grad px-3 py-2 rounded-0" onClick={() => handleAddToCart("order")}>
