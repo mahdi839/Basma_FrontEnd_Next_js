@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { FaCartPlus, FaFirstOrder } from "react-icons/fa";
+import { FaCartPlus, FaFacebookMessenger, FaFirstOrder, FaWhatsapp } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
 import Zoom from "react-medium-image-zoom";
@@ -23,6 +23,11 @@ export default function Products({ product }) {
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const router = useRouter();
 
+  // Social media links - you can also move these to environment variables
+  const messengerUsername = process.env.NEXT_PUBLIC_MESSENGER_USERNAME || "Basmah";
+  const messengerUrl = `https://m.me/${messengerUsername}`;
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801795802507";
+  
   // Derive variants & images safely
   const variants = product?.variants || [];
   const images = product?.images || [];
@@ -98,6 +103,18 @@ export default function Products({ product }) {
       router.push("/frontEnd/checkout");
     }
   }
+
+  // Generate WhatsApp message with product details
+  const generateWhatsAppMessage = () => {
+    const productName = product?.title || "Product";
+    const productPrice = displayPrice;
+    const selectedSize = selectedVariant?.value ? `, Size: ${selectedVariant.value}` : "";
+    
+    return `Hello! I'm interested in this product: ${productName} (Price: ৳${productPrice}${selectedSize}). Can you provide more information?`;
+  };
+
+  // Generate WhatsApp URL
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(generateWhatsAppMessage())}`;
 
   if (isLoading) {
     return (
@@ -209,6 +226,43 @@ export default function Products({ product }) {
                 </span>
                 Order Now
               </button>
+            </div>
+
+            {/* Messenger and WhatsApp Buttons */}
+            <div className="social-buttons d-flex flex-column gap-2 mt-3">
+              {/* Messenger Button */}
+              <a 
+                href={messengerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn px-3 py-2 rounded-0 text-white text-decoration-none d-flex align-items-center justify-content-center"
+                style={{ 
+                  background: 'linear-gradient(135deg, #0084FF 0%, #0066CC 100%)',
+                  border: 'none'
+                }}
+              >
+                <span className="pe-2">
+                  <FaFacebookMessenger size={18} />
+                </span>
+                Message us on Messenger
+              </a>
+
+              {/* WhatsApp Button */}
+              <a 
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn px-3 py-2 rounded-0 text-white text-decoration-none d-flex align-items-center justify-content-center"
+                style={{ 
+                  background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
+                  border: 'none'
+                }}
+              >
+                <span className="pe-2">
+                  <FaWhatsapp size={18} />
+                </span>
+                Contact us on WhatsApp
+              </a>
             </div>
           </div>
         </div>
