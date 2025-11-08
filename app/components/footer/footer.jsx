@@ -88,7 +88,7 @@ export default async function Footer() {
           {/* Logo Section */}
           <div className="col-md-6 col-lg-3 mb-1 mb-lg-4 mb-lg-0 footer_logo_section">
             <div className="logo_section_mobile_border">
-              <div className=" rounded  footer_logo_div">
+              <div className=" rounded  footer_logo_div pb-2">
                 <Link href="/">
                   {data.logo_path ? (
                     <img

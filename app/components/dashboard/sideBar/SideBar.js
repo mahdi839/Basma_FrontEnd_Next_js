@@ -63,7 +63,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       Icon: IoIosSettings,
       submenus: [
         { href: "/dashboard/about_us", label: 'About Us', Icon: FaInfoCircle },
-        { href: "/dashboard/footerSettings", label: 'Footer Settings', Icon: IoIosSettings },
+        { href: "/dashboard/footerSettings", label: 'Web Settings', Icon: IoIosSettings },
         { href: "/dashboard/socialLinks", label: 'Social Links', Icon: MdOutlineSocialDistance },
         { href: "/dashboard/facebook_conversion_api", label: 'Facebook Api Settings', Icon: TbCirclesRelation  },
       ]
