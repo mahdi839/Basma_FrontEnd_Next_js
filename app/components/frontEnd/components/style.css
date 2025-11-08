@@ -1,3 +1,9 @@
+:root {
+	/* --primary-color: #DB3340; */
+	--primary-color: #7d0ba7;
+
+}
+
 .cartIconContainer {
   position: fixed;
   top: 55%;
@@ -20,7 +26,7 @@
 }
 
 .cartIcon {
-  color: #DB3340;
+  color: var(--primary-color);
   transition: transform 0.2s ease;
 }
 
@@ -32,7 +38,7 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  background-color: #ef4444;
+  background-color: var(--primary-color);
   color: white;
   border-radius: 50%;
   width: 24px;

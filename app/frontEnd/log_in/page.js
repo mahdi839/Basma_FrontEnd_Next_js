@@ -63,13 +63,11 @@ export default function AdminLogin() {
               <h1 className="h4 mb-1 text-center position-relative d-inline-block">
                 Log In
                 <span
-                  className="d-block mx-auto mt-2"
+                  className="d-block mx-auto mt-2 btn-grad"
                   style={{
                     width: "80px", // width of curved border
                     height: "5px", // thickness of curve
                     borderRadius: "50px", // creates the curve
-                    background:
-                      "linear-gradient(90deg, #fd450dff 0%, #f27d10ff 100%)", // color gradient
                     marginTop: "8px",
                   }}
                 ></span>

@@ -371,7 +371,7 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
           
           <button 
             onClick={onProceed}
-            className="checkout-btn"
+            className="btn-grad checkout-btn"
           >
             <FaCreditCard className="me-2" />
             Proceed to Checkout
@@ -530,7 +530,7 @@ function CheckoutStep({ formData, shippingAmount, finalTotal, cartItems, onInput
           </div>
         </div>
 
-        <button type="submit" className="place-order-btn">
+        <button type="submit" className="place-order-btn btn-grad">
           <FaCreditCard className="me-2" />
           Place Order
         </button>

@@ -14,8 +14,6 @@
 }
 
 
-
-
 html,
 body {
 	height: 100%;
@@ -1267,7 +1265,7 @@ table tr td {
 }
 
 .btn-grad {
-	background-image: linear-gradient(to right, #DB3340 0%, #b95044 51%, #d8477c 100%)
+    background-image: linear-gradient(to right, #9d4edd 0%, #7d0ba7 51%, #5a189a 100%);
 }
 
 .btn-grad {
@@ -1513,7 +1511,7 @@ table tr td {
 }
 
 .item-count {
-  background: #DB3340;
+  background: var(--primary-color);
   color: white;
   padding: 0.25rem 0.5rem;
   border-radius: 20px;
@@ -1535,9 +1533,9 @@ table tr td {
 }
 
 .back-btn:hover, .close-btn:hover {
-  background: #DB3340;
+  background: var(--primary-color);
   color: white;
-  border-color: #DB3340;
+  border-color: var(--primary-color);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(219, 51, 64, 0.3);
 }
@@ -1726,7 +1724,7 @@ table tr td {
 }
 
 .qty-btn:hover:not(:disabled) {
-  background: #DB3340;
+  background: var(--primary-color);
   color: white;
   transform: scale(1.1);
 }
@@ -1771,7 +1769,7 @@ table tr td {
 
 .total-price {
   font-weight: 700;
-  color: #DB3340;
+  color: var(--primary-color);
   font-size: 1rem;
 }
 
@@ -1822,7 +1820,6 @@ table tr td {
 .checkout-btn {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #DB3340 0%, #c53030 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -1834,12 +1831,10 @@ table tr td {
   align-items: center;
   justify-content: center;
   font-size: 1rem;
-  box-shadow: 0 4px 15px rgba(219, 51, 64, 0.3);
 }
 
 .checkout-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(219, 51, 64, 0.4);
 }
 
 .continue-shopping-btn {
@@ -1935,7 +1930,7 @@ table tr td {
 
 .form-control:focus {
   outline: none;
-  border-color: #DB3340;
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(219, 51, 64, 0.1);
 }
 
@@ -1957,7 +1952,7 @@ table tr td {
 
 .payment-option.selected,
 .payment-option:hover {
-  border-color: #DB3340;
+  border-color: var(--primary-color);
   background: #fdf2f2;
 }
 
@@ -2067,7 +2062,6 @@ table tr td {
 .place-order-btn {
   width: 100%;
   padding: 1.125rem;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
   border-radius: 12px;
@@ -2078,7 +2072,6 @@ table tr td {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
   margin-top: auto;
 }
 
