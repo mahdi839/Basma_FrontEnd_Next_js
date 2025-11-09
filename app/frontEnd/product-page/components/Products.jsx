@@ -24,8 +24,8 @@ export default function Products({ product }) {
   const router = useRouter();
 
   // Social media links - you can also move these to environment variables
-  const messengerUsername = process.env.NEXT_PUBLIC_MESSENGER_USERNAME || "Basmah";
-  const messengerUrl = `https://m.me/${messengerUsername}`;
+  const pageId = 100068785812292;
+  const messengerUrl = `https://m.me/${pageId}`;
   const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801795802507";
   
   // Derive variants & images safely

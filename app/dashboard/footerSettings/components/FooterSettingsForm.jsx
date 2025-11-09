@@ -109,7 +109,7 @@ export default function FooterSettingsForm() {
           className="card-header text-white py-3 rounded-top-3"
           style={{ background: "#7d59bf" }}
         >
-          <h5 className="mb-0 text-center">Footer Settings</h5>
+          <h5 className="mb-0 text-center">Web Settings</h5>
         </div>
 
         <div className="card-body p-4">
