@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import "react-medium-image-zoom/dist/styles.css";
 
-export default function Products({ product }) {
+export default function Products({ product,socialLinksData }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);
@@ -24,9 +24,9 @@ export default function Products({ product }) {
   const router = useRouter();
 
   // Social media links - you can also move these to environment variables
-  const pageId = 100068785812292;
+  const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
-  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "8801795802507";
+  const whatsappNumber = socialLinksData.whatsapp_number;
   
   // Derive variants & images safely
   const variants = product?.variants || [];

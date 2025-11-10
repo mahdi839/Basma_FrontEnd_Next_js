@@ -9,10 +9,17 @@ export default async function page({params}) {
     }catch(err){
       data = {error:err.message}
     }
-   
+
+  let socialLinksData = [];
+  try{
+    socialLinksData = await getData(`api/social-links-first`);
+  }catch(err){
+    socialLinksData = {error:err.message}
+  }
+   console.log(socialLinksData)
   return (
     <>
-    <Products product={data.data} />
+    <Products product={data.data} socialLinksData={socialLinksData} />
     </>
   )
 }

@@ -16,6 +16,8 @@ export default function SocialLinksForm() {
     instagram: "",
     tweeter: "",
     pinterest: "",
+    facebook_id: "",
+    whatsapp_number: ""
   });
 
   const [recordId, setRecordId] = useState(null);
@@ -34,6 +36,8 @@ export default function SocialLinksForm() {
         instagram: data.instagram || "",
         tweeter: data.tweeter || "",
         pinterest: data.pinterest || "",
+        facebook_id: data.facebook_id || "",
+        whatsapp_number: data.whatsapp_number || "",
       });
       setRecordId(data.id);
     }
@@ -101,14 +105,16 @@ export default function SocialLinksForm() {
               { label: "Instagram", name: "instagram" },
               { label: "Tweeter", name: "tweeter" },
               { label: "Pinterest", name: "pinterest" },
+              { label: "Facebook Id", name: "facebook_id" },
+              { label: "Whatsapp Number", name: "whatsapp_number" }
             ].map(({ label, name }) => (
               <div className="mb-3" key={name}>
                 <label className="form-label fw-semibold">{label}</label>
                 <input
-                  type="url"
+                  type={label !== 'Facebook Id' && label !== 'Whatsapp Number' ? 'url' : 'number'}
                   name={name}
                   className="form-control"
-                  placeholder={`Enter ${label} URL`}
+                  placeholder={`Enter ${label} ${label !== 'Facebook Id' && label !== 'Whatsapp Number' ? 'URL' : ''}`}
                   value={formData[name]}
                   onChange={handleInputChange}
                 />
