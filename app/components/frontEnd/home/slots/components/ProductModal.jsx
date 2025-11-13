@@ -4,7 +4,8 @@ import { CiSearch} from "react-icons/ci";
 import { BiSolidPurchaseTag } from "react-icons/bi";
 import Image from "next/image";
 import Link from "next/link";
-
+import { increament, decreament,} from "@/redux/slices/CartSlice";
+import { useDispatch, useSelector } from "react-redux";
 const ProductModal = ({
   product,
   isOpen,
@@ -15,8 +16,10 @@ const ProductModal = ({
   baseUrl,
 }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
-
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  const [preQty,setPreQty] = useState(1)
+  const cartItem = cartItems.find(item=>product.id == item.id);
   if (!isOpen) return null;
 
   const mainImage = product.images?.[currentImageIndex]?.image
@@ -34,12 +37,14 @@ const ProductModal = ({
     setCurrentImageIndex(index);
   };
 
-  const handleQuantityChange = (change) => {
-    const newQuantity = quantity + change;
-    if (newQuantity >= 1) {
-      setQuantity(newQuantity);
-    }
-  };
+  const handleQuantityChange =(id) => {
+      setPreQty((prev)=>prev+1);
+        dispatch(increament({ id }));
+    };
+
+  const handleDecrement =(id)=>{
+     dispatch(decreament({id}));
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -103,13 +108,7 @@ const ProductModal = ({
               {/* Price Section */}
               <div className="price-section">
                 <div className="price-main">
-                  <span className="current-price">৳{displayPrice}</span>
-                  {hasDiscount && (
-                    <>
-                      <span className="original-price">৳{product.original_price}</span>
-                      <span className="discount-text">Save ৳{product.original_price - displayPrice}</span>
-                    </>
-                  )}
+                  <span className="current-price">৳{cartItem?.totalPrice??product?.price*preQty}</span>
                 </div>
               </div>
 
@@ -130,7 +129,7 @@ const ProductModal = ({
                         onClick={() => onSizeSelect({ target: { value: variant.id }})}
                       >
                         {variant.value}
-                        <span className="variant-price">৳{variant.price}</span>
+                        <span className="variant-price">{variant.price?"৳":""}{variant.price}</span>
                         {selectedSizes == variant.id && <FaCheck className="check-icon" />}
                       </button>
                     ))}
@@ -144,15 +143,15 @@ const ProductModal = ({
                 <div className="quantity-selector">
                   <button 
                     className="quantity-btn"
-                    onClick={() => handleQuantityChange(-1)}
-                    disabled={quantity <= 1}
+                    onClick={() => handleDecrement(product.id)}
+                    disabled={cartItem?.qty <= 1}
                   >
                     -
                   </button>
-                  <span className="quantity-display">{quantity}</span>
+                  <span className="quantity-display">{cartItem?.qty??preQty}</span>
                   <button 
                     className="quantity-btn"
-                    onClick={() => handleQuantityChange(1)}
+                    onClick={() => handleQuantityChange(product?.id)}
                   >
                     +
                   </button>
@@ -163,13 +162,13 @@ const ProductModal = ({
               <div className="action-section">
                 <button
                   className="btn-grad add-to-cart-btn"
-                  onClick={() => onAddToCart(product,'add')}
+                  onClick={() => onAddToCart(product,'add',preQty)}
                 >
                   <FaCartArrowDown className="btn-icon" />
                   Add to Cart
                 </button>
                 
-                <button className="btn-grad" onClick={() => onAddToCart(product,'buy')}>
+                <button className="btn-grad" onClick={() => onAddToCart(product,'buy',preQty)}>
                   <BiSolidPurchaseTag className="btn-icon" />
                   Buy Now
                 </button>

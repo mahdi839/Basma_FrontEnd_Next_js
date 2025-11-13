@@ -316,8 +316,7 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
                     Variant: <span>{item.size}</span>
                   </p>
                 )}
-                <p className="item-unit-price">{item.unitPrice} TK</p>
-                
+               
                 <div className="item-actions">
                   <div className="quantity-controls">
                     <button 

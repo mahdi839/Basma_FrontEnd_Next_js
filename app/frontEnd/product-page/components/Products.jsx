@@ -114,7 +114,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     return match && match[2]?.length === 11 ? match[2] : null;
   }
 
-  function handleAddToCart(type) {
+  function handleAddToCart(type,preQty) {
     if (!product) return;
 
     const existing = cartItems.find((item) => item.id === product.id);
@@ -166,7 +166,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     setSelectedSizes(e.target.value);
   }
 
-  function handleRelatedAddToCart(product, type) {
+  function handleRelatedAddToCart(product, type,preQty) {
     const existing = cartItems.find((item) => item.id === product.id);
     if (existing) {
       Swal.fire({
@@ -189,6 +189,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
         size: selectedSizes ? selectedVariant.value : "",
         price: selectedVariant?.price ?? product.price,
         image: imageUrl,
+        preQty:preQty??0
       })
     );
 

@@ -101,7 +101,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     setSelectedSizes(e.target.value);
   }
 
-  function handleAddToCart(product, type) {
+  function handleAddToCart(product, type,preQty) {
     // If modal is open, use the selected product from modal
     const targetProduct = selectedProduct || product;
 
@@ -140,6 +140,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
         size: selectedSizes ? selectedVariant.value : "",
         price: selectedVariant?.price ?? targetProduct.price,
         image: baseUrl + targetProduct.images?.[0]?.image || "",
+        preQty:preQty??0,
       })
     );
 
