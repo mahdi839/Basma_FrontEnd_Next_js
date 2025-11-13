@@ -1,0 +1,94 @@
+/* Related Products Section Styling */
+.related-products-section {
+  border-top: 1px solid #e9ecef;
+  padding-top: 2rem;
+}
+
+.related-heading {
+  position: relative;
+  padding-bottom: 0.5rem;
+}
+
+.related-hr {
+  border: none;
+  height: 2px;
+  background-color: #e9ecef;
+  margin-bottom: 1.5rem;
+}
+
+/* Slider Navigation Buttons */
+.slider-nav-btn {
+  background: #7d0ba7;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.slider-nav-btn:hover {
+  background: #6a098f;
+  transform: scale(1.05);
+}
+
+.slider-arrow {
+  font-size: 1rem;
+}
+
+/* Related Products Card Adjustments */
+.related-product-card .product-div {
+  transition: all 0.3s ease;
+  border: 1px solid #f8f9fa;
+}
+
+.related-product-card .product-div:hover {
+  border-color: #7d0ba7;
+  box-shadow: 0 4px 12px rgba(125, 11, 167, 0.1);
+}
+
+/* Slick Slider Customizations */
+.related-products-slider .slick-list {
+  padding: 10px 0;
+}
+
+.related-products-slider .slick-slide > div {
+  padding: 0 8px;
+}
+
+.related-products-slider .slick-track {
+  display: flex;
+}
+
+.related-products-slider .slick-slide {
+  height: inherit;
+}
+
+.related-products-slider .slick-slide > div {
+  height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .related-heading {
+    font-size: 1.5rem !important;
+  }
+  
+  .slider-nav-btn {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 576px) {
+  .related-products-section {
+    padding-top: 1.5rem;
+  }
+  
+  .related-heading {
+    font-size: 1.25rem !important;
+  }
+}

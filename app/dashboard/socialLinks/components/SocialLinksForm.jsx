@@ -17,7 +17,7 @@ export default function SocialLinksForm() {
     tweeter: "",
     pinterest: "",
     facebook_id: "",
-    whatsapp_number: ""
+    whatsapp_number: "+880", // default with country code
   });
 
   const [recordId, setRecordId] = useState(null);
@@ -27,7 +27,7 @@ export default function SocialLinksForm() {
     showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/social-links-first");
   }, []);
 
-
+  // When data is fetched, populate the form
   useEffect(() => {
     if (data) {
       setFormData({
@@ -37,9 +37,14 @@ export default function SocialLinksForm() {
         tweeter: data.tweeter || "",
         pinterest: data.pinterest || "",
         facebook_id: data.facebook_id || "",
-        whatsapp_number: data.whatsapp_number || "",
+        whatsapp_number: data.whatsapp_number || "+880",
       });
       setRecordId(data.id);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        whatsapp_number: "+880",
+      }));
     }
   }, [data]);
 
@@ -52,11 +57,10 @@ export default function SocialLinksForm() {
     }));
   };
 
-  // Submit handler for store or update
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Choose store or update based on presence of recordId
     if (recordId) {
       await updateData(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}api/social-links/${recordId}`,
@@ -72,7 +76,7 @@ export default function SocialLinksForm() {
       );
     }
 
-    // Refetch to update the form
+    // Refetch after submit
     showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/social-links-first");
   };
 
@@ -99,6 +103,7 @@ export default function SocialLinksForm() {
 
         <div className="card-body p-4">
           <form onSubmit={handleSubmit} autoComplete="off">
+            {/* Other social link inputs */}
             {[
               { label: "Facebook", name: "facebook" },
               { label: "YouTube", name: "youtube" },
@@ -106,20 +111,44 @@ export default function SocialLinksForm() {
               { label: "Tweeter", name: "tweeter" },
               { label: "Pinterest", name: "pinterest" },
               { label: "Facebook Id", name: "facebook_id" },
-              { label: "Whatsapp Number", name: "whatsapp_number" }
             ].map(({ label, name }) => (
               <div className="mb-3" key={name}>
                 <label className="form-label fw-semibold">{label}</label>
                 <input
-                  type={label !== 'Facebook Id' && label !== 'Whatsapp Number' ? 'url' : 'number'}
+                  type={
+                    label === "Facebook Id" ? "text" : "url"
+                  }
                   name={name}
                   className="form-control"
-                  placeholder={`Enter ${label} ${label !== 'Facebook Id' && label !== 'Whatsapp Number' ? 'URL' : ''}`}
+                  placeholder={`Enter ${label} ${
+                    label === "Facebook Id" ? "" : "URL"
+                  }`}
                   value={formData[name]}
                   onChange={handleInputChange}
                 />
               </div>
             ))}
+
+            {/* WhatsApp number input with prefilled country code */}
+            <div className="mb-3">
+              <label className="form-label fw-semibold">Whatsapp Number</label>
+              <div className="input-group">
+                <span className="input-group-text">+880</span>
+                <input
+                  type="number"
+                  name="whatsapp_number"
+                  className="form-control"
+                  placeholder="Enter WhatsApp number (without country code)"
+                  value={formData.whatsapp_number.replace("+880", "")}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      whatsapp_number: "+880" + e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            </div>
 
             <div className="mt-4 pt-2 border-top">
               <button

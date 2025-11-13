@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { FaCartPlus, FaFacebookMessenger, FaFirstOrder, FaWhatsapp } from "react-icons/fa";
+import { FaCartPlus, FaFacebookMessenger, FaFirstOrder, FaWhatsapp, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
 import Zoom from "react-medium-image-zoom";
@@ -9,21 +9,31 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import "react-medium-image-zoom/dist/styles.css";
-
-export default function Products({ product,socialLinksData }) {
+import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard"; // Adjust path as needed
+import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal"; // Adjust path as needed
+import './relatedProduct.css'
+export default function Products({ product, socialLinksData, relatedProducts }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariantId, setSelectedVariantId] = useState(undefined);
+  
+  // Modal states for related products
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedSizes, setSelectedSizes] = useState("");
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const router = useRouter();
 
-  // Social media links - you can also move these to environment variables
+  // Social media links
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
   const whatsappNumber = socialLinksData.whatsapp_number;
@@ -46,6 +56,42 @@ export default function Products({ product,socialLinksData }) {
     if (product) setIsLoading(false);
     if (product?.error) toast.error(product.error);
   }, [product]);
+
+  // Slider settings for related products
+  const sliderSettings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
+
+  // Refs for slider navigation
+  const sliderRef = React.useRef(null);
 
   function handleThumbClick(id) {
     const clickedImg = images.find((img) => String(img.id) === String(id));
@@ -71,7 +117,6 @@ export default function Products({ product,socialLinksData }) {
   function handleAddToCart(type) {
     if (!product) return;
 
-    // Prevent duplicate "add" (but allow when ordering straight to checkout)
     const existing = cartItems.find((item) => item.id === product.id);
     if (existing) {
       Swal.fire({
@@ -100,6 +145,58 @@ export default function Products({ product,socialLinksData }) {
     toast.success("Added to cart!");
 
     if (type === "order") {
+      router.push("/frontEnd/checkout");
+    }
+  }
+
+  // Functions for related products modal
+  function handleOpenModal(product) {
+    setSelectedProduct(product);
+    setSelectedSizes("");
+    setIsModalOpen(true);
+  }
+
+  function handleCloseModal() {
+    setIsModalOpen(false);
+    setSelectedProduct(null);
+    setSelectedSizes("");
+  }
+
+  function handleSizeSelect(e) {
+    setSelectedSizes(e.target.value);
+  }
+
+  function handleRelatedAddToCart(product, type) {
+    const existing = cartItems.find((item) => item.id === product.id);
+    if (existing) {
+      Swal.fire({
+        title: "Already in the cart",
+        text: "This product is already in your cart",
+        icon: "info",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#DB3340",
+      });
+      return;
+    }
+
+    const selectedVariant = product.variants.find(v => v.id == selectedSizes) || product.variants[0];
+    const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
+
+    dispatch(
+      addToCart({
+        id: product.id,
+        title: product.title,
+        size: selectedSizes ? selectedVariant.value : "",
+        price: selectedVariant?.price ?? product.price,
+        image: imageUrl,
+      })
+    );
+
+    setSelectedSizes("");
+    handleCloseModal();
+    toast.success("Added to cart!");
+
+    if (type === "buy") {
       router.push("/frontEnd/checkout");
     }
   }
@@ -141,7 +238,6 @@ export default function Products({ product,socialLinksData }) {
           <div className="main_image mb-3 mb-md-4 text-center">
             <div className="image-container">
               <Zoom>
-                {/* Using native img here to avoid Next Image domain issues for dynamic backends */}
                 <img
                   src={imgUrl || (images?.[0]?.image ? baseUrl + images[0].image : "/placeholder.png")}
                   className="card-img-top"
@@ -230,7 +326,6 @@ export default function Products({ product,socialLinksData }) {
 
             {/* Messenger and WhatsApp Buttons */}
             <div className="social-buttons d-flex flex-column gap-2 mt-3">
-              {/* Messenger Button */}
               <a 
                 href={messengerUrl}
                 target="_blank"
@@ -247,7 +342,6 @@ export default function Products({ product,socialLinksData }) {
                 Message us on Messenger
               </a>
 
-              {/* WhatsApp Button */}
               <a 
                 href={whatsappUrl}
                 target="_blank"
@@ -348,6 +442,100 @@ export default function Products({ product,socialLinksData }) {
           )}
         </div>
       </div>
+
+      {/* Related Products Section */}
+      {relatedProducts && relatedProducts.length > 0 && (
+        <div className="related-products-section mt-5 pt-4">
+          <div className="row position-relative">
+            <div className="col-12 d-flex justify-content-between align-items-center mb-3 position-relative">
+              <h2 className="related-heading font-weight-bold mb-0 fs-4 fs-md-3" style={{ fontWeight: "600", color: "#222" }}>
+                You May Also Like
+              </h2>
+              
+              {relatedProducts.length >= 4 && (
+                <div className="d-flex gap-2 mb-1">
+                  <button
+                    className="d-flex align-items-center justify-content-center slider-nav-btn"
+                    onClick={() => sliderRef.current?.slickPrev()}
+                  >
+                    <FaChevronLeft className="slider-arrow" />
+                  </button>
+                  <button
+                    className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
+                    onClick={() => sliderRef.current?.slickNext()}
+                  >
+                    <FaChevronRight className="slider-arrow" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {relatedProducts.length > 0 && (
+              <div className="col-12 position-relative ml-3 mt-0 overflow-hidden mb-3">
+                <hr className="related-hr m-0" />
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    width: "100px",
+                    height: "5px",
+                    backgroundColor: "#7d0ba7",
+                    zIndex: "1",
+                  }}
+                ></div>
+              </div>
+            )}
+
+            {/* Related Products Slider/Grid */}
+            {relatedProducts.length >= 4 ? (
+              <Slider
+                ref={sliderRef}
+                {...sliderSettings}
+                className="w-100 related-products-slider"
+              >
+                {relatedProducts.map((relatedProduct) => (
+                  <div key={relatedProduct.id} className="px-2">
+                    <ProductCard
+                      slotProducts={relatedProduct}
+                      handleOpenModal={handleOpenModal}
+                      handleAddToCart={handleRelatedAddToCart}
+                      slotLength={relatedProducts.length}
+                      className="related-product-card"
+                    />
+                  </div>
+                ))}
+              </Slider>
+            ) : (
+              <div className="row mx-0">
+                {relatedProducts.map((relatedProduct) => (
+                  <div key={relatedProduct.id} className="col-6 col-lg-3 col-md-4 px-1 px-md-2">
+                    <ProductCard
+                      slotProducts={relatedProduct}
+                      handleOpenModal={handleOpenModal}
+                      handleAddToCart={handleRelatedAddToCart}
+                      slotLength={relatedProducts.length}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Product Modal for Related Products */}
+      {isModalOpen && selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          selectedSizes={selectedSizes}
+          onSizeSelect={handleSizeSelect}
+          onAddToCart={handleRelatedAddToCart}
+          baseUrl={baseUrl}
+        />
+      )}
     </div>
   );
 }

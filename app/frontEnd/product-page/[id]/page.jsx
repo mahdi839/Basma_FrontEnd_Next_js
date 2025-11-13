@@ -16,10 +16,18 @@ export default async function page({params}) {
   }catch(err){
     socialLinksData = {error:err.message}
   }
-   console.log(socialLinksData)
+
+   let relatedCatgProducts = [];
+  try{
+    relatedCatgProducts = await getData(`api/category_products/${id}`);
+  }catch(err){
+    relatedCatgProducts = {error:err.message}
+  }
+   console.log(relatedCatgProducts);
+   console.log('hi')
   return (
     <>
-    <Products product={data.data} socialLinksData={socialLinksData} />
+    <Products product={data.data} socialLinksData={socialLinksData} relatedProducts={relatedCatgProducts} />
     </>
   )
 }

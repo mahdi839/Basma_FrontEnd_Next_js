@@ -72,7 +72,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       type: 'single',
       href: "/",
       Icon: RiKanbanView2,
-      label: 'My Website'
+      label: 'View Website'
     }
   ];
 
