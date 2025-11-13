@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { FaTimes, FaCartArrowDown, FaHeart, FaCheck } from "react-icons/fa";
-import { CiSearch, CiHeart } from "react-icons/ci";
+import { FaTimes, FaCartArrowDown,FaCheck } from "react-icons/fa";
+import { CiSearch} from "react-icons/ci";
 import { BiSolidPurchaseTag } from "react-icons/bi";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,7 +36,7 @@ const ProductModal = ({
 
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
-    if (newQuantity >= 1 && newQuantity <= 10) {
+    if (newQuantity >= 1) {
       setQuantity(newQuantity);
     }
   };
@@ -153,7 +153,6 @@ const ProductModal = ({
                   <button 
                     className="quantity-btn"
                     onClick={() => handleQuantityChange(1)}
-                    disabled={quantity >= 10}
                   >
                     +
                   </button>
