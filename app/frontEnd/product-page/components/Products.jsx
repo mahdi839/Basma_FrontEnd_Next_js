@@ -198,8 +198,11 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     toast.success("Added to cart!");
 
     if (type === "buy") {
-      router.push("/frontEnd/checkout");
+      setIsCartDrawerOpen(true);
+      setIsDirectBuy(true)
+      handleCloseModal(); 
     }
+
   }
 
   // Generate WhatsApp message with product details
