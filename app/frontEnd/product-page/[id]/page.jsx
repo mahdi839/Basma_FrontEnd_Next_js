@@ -23,8 +23,6 @@ export default async function page({params}) {
   }catch(err){
     relatedCatgProducts = {error:err.message}
   }
-   console.log(relatedCatgProducts);
-   console.log('hi')
   return (
     <>
     <Products product={data.data} socialLinksData={socialLinksData} relatedProducts={relatedCatgProducts} />

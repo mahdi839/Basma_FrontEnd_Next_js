@@ -1,7 +1,7 @@
 /* Related Products Section Styling */
 .related-products-section {
   border-top: 1px solid #e9ecef;
-  padding-top: 2rem;
+  /* padding-top: 1rem; */
 }
 
 .related-heading {
@@ -13,7 +13,7 @@
   border: none;
   height: 2px;
   background-color: #e9ecef;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 /* Slider Navigation Buttons */
@@ -52,7 +52,7 @@
 
 /* Slick Slider Customizations */
 .related-products-slider .slick-list {
-  padding: 10px 0;
+  padding: 3px 0;
 }
 
 .related-products-slider .slick-slide > div {
