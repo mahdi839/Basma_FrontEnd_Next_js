@@ -16,18 +16,20 @@ import "react-medium-image-zoom/dist/styles.css";
 import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard"; // Adjust path as needed
 import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal"; // Adjust path as needed
 import './relatedProduct.css'
+import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 export default function Products({ product, socialLinksData, relatedProducts }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariantId, setSelectedVariantId] = useState(undefined);
-  
+
   // Modal states for related products
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSizes, setSelectedSizes] = useState("");
-
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [isDirectBuy, setIsDirectBuy] = useState(false);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -37,7 +39,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
   const whatsappNumber = socialLinksData.whatsapp_number;
-  
+
   // Derive variants & images safely
   const variants = product?.variants || [];
   const images = product?.images || [];
@@ -114,7 +116,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     return match && match[2]?.length === 11 ? match[2] : null;
   }
 
-  function handleAddToCart(type,preQty) {
+  function handleAddToCart(type, preQty) {
     if (!product) return;
 
     const existing = cartItems.find((item) => item.id === product.id);
@@ -166,9 +168,19 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     setSelectedSizes(e.target.value);
   }
 
-  function handleRelatedAddToCart(product, type,preQty) {
+  const handleCloseDrawer = () => {
+    setIsCartDrawerOpen(false);
+  };
+
+  function handleRelatedAddToCart(product, type, preQty) {
     const existing = cartItems.find((item) => item.id === product.id);
     if (existing) {
+      if (type == 'buy') {
+        setIsCartDrawerOpen(true);
+        setIsDirectBuy(true)
+        handleCloseModal();
+        return
+      }
       Swal.fire({
         title: "Already in the cart",
         text: "This product is already in your cart",
@@ -189,7 +201,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
         size: selectedSizes ? selectedVariant.value : "",
         price: selectedVariant?.price ?? product.price,
         image: imageUrl,
-        preQty:preQty??0
+        preQty: preQty ?? 0
       })
     );
 
@@ -200,9 +212,8 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     if (type === "buy") {
       setIsCartDrawerOpen(true);
       setIsDirectBuy(true)
-      handleCloseModal(); 
+      handleCloseModal();
     }
-
   }
 
   // Generate WhatsApp message with product details
@@ -210,7 +221,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     const productName = product?.title || "Product";
     const productPrice = displayPrice;
     const selectedSize = selectedVariant?.value ? `, Size: ${selectedVariant.value}` : "";
-    
+
     return `Hello! I'm interested in this product: ${productName} (Price: ৳${productPrice}${selectedSize}). Can you provide more information?`;
   };
 
@@ -330,12 +341,12 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
 
             {/* Messenger and WhatsApp Buttons */}
             <div className="social-buttons d-flex flex-column gap-2 mt-3">
-              <a 
+              <a
                 href={messengerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn px-3 py-2 rounded-0 text-white text-decoration-none d-flex align-items-center justify-content-center"
-                style={{ 
+                style={{
                   background: 'linear-gradient(135deg, #0084FF 0%, #0066CC 100%)',
                   border: 'none'
                 }}
@@ -346,12 +357,12 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
                 Message us on Messenger
               </a>
 
-              <a 
+              <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn px-3 py-2 rounded-0 text-white text-decoration-none d-flex align-items-center justify-content-center"
-                style={{ 
+                style={{
                   background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
                   border: 'none'
                 }}
@@ -455,7 +466,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
               <h2 className="related-heading font-weight-bold mb-0 fs-4 fs-md-3" style={{ fontWeight: "600", color: "#222" }}>
                 You May Also Like
               </h2>
-              
+
               {relatedProducts.length >= 4 && (
                 <div className="d-flex gap-2 mb-1">
                   <button
@@ -540,6 +551,12 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
           baseUrl={baseUrl}
         />
       )}
+
+      <CartDrawer
+        isOpen={isCartDrawerOpen}
+        isDirectBuy={isDirectBuy}
+        onClose={handleCloseDrawer}
+      />
     </div>
   );
 }
