@@ -72,7 +72,7 @@ export default function CtgProductsLogic({ products, category }) {
       }
 
       // Find the selected variant for price
-    const selectedVariant = product.variants.find(v => v.id == selectedSizes) || targetProduct.variants[0];
+    const selectedVariant = product.variants.find(v => v.id == selectedSizes) ||  product.variants[0];
 
       dispatch(
         addToCart({

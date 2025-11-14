@@ -208,7 +208,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     setSelectedSizes("");
     handleCloseModal();
     toast.success("Added to cart!");
-
+ 
     if (type === "buy") {
       setIsCartDrawerOpen(true);
       setIsDirectBuy(true)

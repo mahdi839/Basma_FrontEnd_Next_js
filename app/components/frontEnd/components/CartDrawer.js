@@ -8,8 +8,9 @@ import District from "@/app/frontEnd/checkout/components/District";
 import axios from "axios";
 import Swal from "sweetalert2";
 import './style.css';
+import Link from "next/link";
 
-export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
+export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   const [currentStep, setCurrentStep] = useState("cart");
   const [formData, setFormData] = useState({
     name: "",
@@ -25,7 +26,7 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = useSelector((state) => state.cart.count);
   const dispatch = useDispatch();
-  
+
   const totalPrice = cartItems.reduce((total, item) => total + item.totalPrice, 0);
   const finalTotal = totalPrice + shippingAmount;
 
@@ -78,11 +79,11 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
     setCurrentStep("checkout");
   };
 
- useEffect(() => {
-  if (isDirectBuy && isOpen) {
-    setCurrentStep("checkout");
-  }
-}, [isDirectBuy, isOpen]);
+  useEffect(() => {
+    if (isDirectBuy && isOpen) {
+      setCurrentStep("checkout");
+    }
+  }, [isDirectBuy, isOpen]);
 
   // Checkout functions
   const handleInputChange = (e) => {
@@ -106,7 +107,7 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
             `${process.env.NEXT_PUBLIC_BACKEND_URL}api/shipping-costs-latest`
           );
           const data = response.data;
-          
+
           if (formData.district === "dhaka") {
             setShippingAmount(data.inside_dhaka || data.one_shipping_cost || 0);
           } else {
@@ -117,14 +118,14 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
           setShippingAmount(0);
         }
       };
-      
+
       fetchShippingCost();
     }
   }, [formData.district]);
 
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (cartItems.length === 0) {
       Swal.fire({
         icon: "error",
@@ -135,22 +136,22 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
       return;
     }
 
-     // Get Facebook cookies
-  const getFacebookParams = () => {
-    const getCookie = (name) => {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-      return null;
+    // Get Facebook cookies
+    const getFacebookParams = () => {
+      const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+      };
+
+      return {
+        fbp: getCookie('_fbp'),
+        fbc: getCookie('_fbc')
+      };
     };
 
-    return {
-      fbp: getCookie('_fbp'),
-      fbc: getCookie('_fbc')
-    };
-  };
-
-  const { fbp, fbc } = getFacebookParams();
+    const { fbp, fbc } = getFacebookParams();
 
     const orderData = {
       ...formData,
@@ -177,7 +178,7 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
           confirmButtonText: "OK",
           confirmButtonColor: "#28a745",
         });
-        
+
         dispatch(clearCart());
         setCurrentStep("cart");
         onClose();
@@ -207,6 +208,8 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
 
   if (!isOpen) return null;
 
+
+
   return (
     <div className="cart-drawer-overlay">
       <div className="cart-drawer">
@@ -214,7 +217,7 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
         <div className="cart-drawer-header">
           <div className="d-flex align-items-center">
             {currentStep === "checkout" && (
-              <button 
+              <button
                 onClick={backToCart}
                 className="back-btn me-3"
                 aria-label="Back to cart"
@@ -244,7 +247,7 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
         {/* Content */}
         <div className="cart-drawer-content">
           {currentStep === "cart" ? (
-            <CartStep 
+            <CartStep
               cartItems={cartItems}
               totalPrice={totalPrice}
               onIncreament={handleIncreament}
@@ -254,7 +257,7 @@ export default function CartDrawer({ isOpen, onClose,isDirectBuy }) {
               removingItem={removingItem}
             />
           ) : (
-            <CheckoutStep 
+            <CheckoutStep
               formData={formData}
               shippingAmount={shippingAmount}
               finalTotal={finalTotal}
@@ -289,6 +292,10 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
     );
   }
 
+  const handleClickOnTitle = () => {
+    onClose();
+  }
+
   return (
     <div className="cart-step">
       <div className="cart-items-container">
@@ -298,28 +305,36 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
         </div>
         <div className="cart-items">
           {cartItems.map((item) => (
-            <div 
-              key={item.id} 
+            <div
+              key={item.id}
               className={`cart-item ${removingItem === item.id ? 'removing' : ''}`}
             >
               <div className="item-image">
-                <img 
-                  src={item.image} 
+                <img
+                  src={item.image}
                   alt={item.title}
                   className="img-fluid"
                 />
               </div>
               <div className="item-details">
-                <h6 className="item-title">{item.title}</h6>
+
+                <h6 className="item-title">
+                  <Link
+                    onClick={handleClickOnTitle}
+                    href={`/frontEnd/product-page/${item.id}`}
+                  >
+                    {item.title}
+                  </Link>
+                </h6>
                 {item.size && (
                   <p className="item-variant">
                     Variant: <span>{item.size}</span>
                   </p>
                 )}
-               
+
                 <div className="item-actions">
                   <div className="quantity-controls">
-                    <button 
+                    <button
                       onClick={() => onDecreament(item.id)}
                       disabled={item.qty <= 1}
                       className="qty-btn qty-minus"
@@ -328,7 +343,7 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
                       <FaMinus size={10} />
                     </button>
                     <span className="qty-display">{item.qty}</span>
-                    <button 
+                    <button
                       onClick={() => onIncreament(item.id)}
                       className="qty-btn qty-plus"
                       aria-label="Increase quantity"
@@ -336,7 +351,7 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
                       <FaPlus size={10} />
                     </button>
                   </div>
-                  <button 
+                  <button
                     onClick={() => onRemove(item.id)}
                     className="remove-btn"
                     aria-label="Remove item"
@@ -367,15 +382,15 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
             <span>Total:</span>
             <span>{totalPrice} TK</span>
           </div>
-          
-          <button 
+
+          <button
             onClick={onProceed}
             className="btn-grad checkout-btn"
           >
             <FaCreditCard className="me-2" />
             Proceed to Checkout
           </button>
-          
+
           <button className="continue-shopping-btn outline" onClick={() => window.location.href = '/'}>
             Continue Shopping
           </button>
@@ -512,7 +527,7 @@ function CheckoutStep({ formData, shippingAmount, finalTotal, cartItems, onInput
               </div>
             ))}
           </div>
-          
+
           <div className="order-totals">
             <div className="total-row">
               <span>Subtotal:</span>
