@@ -241,9 +241,6 @@ export default function ProductUploadForm() {
         <div className="col-lg-8">
           <div className="d-flex align-items-center mb-4">
             <h3 className="mb-0 fw-bold text-gray-800">Create New Product</h3>
-            <div className="ms-auto">
-              <span className="badge bg-primary fs-6">Draft</span>
-            </div>
           </div>
           
           <form onSubmit={handleSubmit} className="product-form">
@@ -253,12 +250,12 @@ export default function ProductUploadForm() {
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('basic')}
               >
-                <div className="d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center justify-content-between ">
                   <div className="d-flex align-items-center">
-                    <div className="bg-primary bg-opacity-10 p-2 rounded me-3">
-                      <FaTags className="text-primary" />
+                    <div className="pr-2">
+                      <FaTags size={22} className="text-primary" />
                     </div>
-                    <h5 className="mb-0 fw-semibold text-dark">Basic Information</h5>
+                    <h4 className="mb-0 fw-semibold text-dark ">Basic Information</h4>
                   </div>
                   {expandedSections.basic ? <FaChevronUp /> : <FaChevronDown />}
                 </div>
@@ -383,8 +380,8 @@ export default function ProductUploadForm() {
               >
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="d-flex align-items-center">
-                    <div className="bg-success bg-opacity-10 p-2 rounded me-3">
-                      <FaPalette className="text-success" />
+                    <div className=" bg-opacity-10 p-2 rounded me-3">
+                      <FaPalette size={22} className="text-success" />
                     </div>
                     <h5 className="mb-0 fw-semibold text-dark">Colors & Variants</h5>
                   </div>
@@ -489,8 +486,8 @@ export default function ProductUploadForm() {
               >
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="d-flex align-items-center">
-                    <div className="bg-warning bg-opacity-10 p-2 rounded me-3">
-                      <FaRuler className="text-warning" />
+                    <div className=" bg-opacity-10 p-2 rounded me-3">
+                      <FaRuler size={22} className="text-warning" />
                     </div>
                     <h5 className="mb-0 fw-semibold text-dark">Sizes & Pricing</h5>
                   </div>
@@ -604,8 +601,8 @@ export default function ProductUploadForm() {
               >
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="d-flex align-items-center">
-                    <div className="bg-info bg-opacity-10 p-2 rounded me-3">
-                      <FaImage className="text-info" />
+                    <div className=" bg-opacity-10 p-2 rounded me-3">
+                      <FaImage size={22} className="text-info" />
                     </div>
                     <h5 className="mb-0 fw-semibold text-dark">Product Images</h5>
                   </div>
@@ -678,8 +675,8 @@ export default function ProductUploadForm() {
               >
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="d-flex align-items-center">
-                    <div className="bg-secondary bg-opacity-10 p-2 rounded me-3">
-                      <FaTags className="text-secondary" />
+                    <div className="bg-opacity-10 p-2 rounded me-3">
+                      <FaTags size={22} className="text-secondary" />
                     </div>
                     <h5 className="mb-0 fw-semibold text-dark">Categories</h5>
                   </div>
@@ -732,8 +729,8 @@ export default function ProductUploadForm() {
               >
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="d-flex align-items-center">
-                    <div className="bg-dark bg-opacity-10 p-2 rounded me-3">
-                      <FaQuestionCircle className="text-dark" />
+                    <div className="bg-opacity-10 p-2 rounded me-3">
+                      <FaQuestionCircle size={22} className="text-dark" />
                     </div>
                     <h5 className="mb-0 fw-semibold text-dark">Frequently Asked Questions</h5>
                   </div>
@@ -813,7 +810,7 @@ export default function ProductUploadForm() {
               </div>
             </div>
 
-            <div className="card border-0 shadow-sm bg-primary bg-opacity-5">
+            <div className="card border-0 shadow-sm  bg-opacity-5">
               <div className="card-body py-4">
                 <div className="row align-items-center">
                   <div className="col-md-8">
@@ -871,12 +868,12 @@ export default function ProductUploadForm() {
 
               <hr className="my-4" />
 
-              <h6 className="fw-semibold mb-3 text-gray-700">Recent Sizes</h6>
+              <h6 className="fw-semibold mb-3 text-gray-700">Recent 6 Sizes</h6>
               <div className="d-flex flex-wrap gap-2">
                 {sizes.slice(0, 6).map((size) => (
                   <span
                     key={size.id}
-                    className="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2"
+                    className="badge fs-6 bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2"
                   >
                     {size.size}
                   </span>
@@ -959,7 +956,7 @@ export default function ProductUploadForm() {
 
               <hr className="my-4" />
 
-              <h6 className="fw-semibold mb-3 text-gray-700">Recent Categories</h6>
+              <h6 className="fw-semibold mb-3 text-gray-700">Recent 5 Categories</h6>
               <div className="list-group list-group-flush">
                 {categories.slice(0, 5).map((category) => (
                   <div
