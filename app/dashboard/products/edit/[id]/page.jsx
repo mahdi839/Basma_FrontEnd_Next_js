@@ -18,7 +18,7 @@ export default async function EditProductPage({ params }) {
   if (!productData) return <div>Product not found</div>;
 
   return (
-    <div className="container mt-4">
+    <div className="container-fluid mt-4">
       <h3 className="mb-4 text-center">Edit Product</h3>
       <ProductUpdateForm
         isEditMode={true}
