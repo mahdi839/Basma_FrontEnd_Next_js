@@ -84,13 +84,7 @@ export default function Colors({ toggleSection,
                                                 className="img-thumbnail me-2"
                                                 style={{ width: "50px", height: "50px", objectFit: "cover" }}
                                             />
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-danger"
-                                                onClick={() => handleDeleteColorImage(index)}
-                                            >
-                                                <FaTrash />
-                                            </button>
+                                           
                                         </div>
                                     )}
                                 </div>
