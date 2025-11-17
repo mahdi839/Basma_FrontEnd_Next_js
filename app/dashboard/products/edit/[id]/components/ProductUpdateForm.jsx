@@ -13,6 +13,7 @@ import Faq from "./updateFormComponents/Faq";
 import SubmitButtonDiv from "./updateFormComponents/SubmitButtonDiv";
 import Colors from "./updateFormComponents/Colors";
 import BasicInfo from "./updateFormComponents/BasicInfo";
+import { useRouter } from "next/navigation";
 export default function ProductUpdateForm({
   isEditMode = false,
   initialData = null,
@@ -22,6 +23,7 @@ export default function ProductUpdateForm({
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
+  const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
     short_description: "",
@@ -326,7 +328,7 @@ export default function ProductUpdateForm({
       }
 
       toast.success(`Product ${isEditMode ? 'Updated' : 'Created'} Successfully`);
-      window.location.href = "/dashboard/products";
+      // router.push('/dashboard/products')
     } catch (error) {
       console.error("Error:", error.response?.data);
       toast.error(error.response?.data?.message || "An Error Occurred");
