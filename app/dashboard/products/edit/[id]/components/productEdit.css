@@ -17,3 +17,7 @@
         .border-gray-300 {
           border-color: #d1d3e2 !important;
         }
+
+        .disabled_size_bg{
+           background: #e9e5e5;
+        }

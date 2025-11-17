@@ -190,6 +190,11 @@ export default function ProductUpdateForm({
     setFormData((s) => ({ ...s, sizes: next }));
   };
 
+  const selectedSizeIds = formData.sizes
+  .map((item, i) => item.size_id)
+  .filter((id, i2) => id !== "" && id !== null);
+
+
   const handleFAQChange = (index, field, value) => {
     const next = [...formData.faqs];
     next[index] = { ...next[index], [field]: value };
@@ -328,7 +333,7 @@ export default function ProductUpdateForm({
       }
 
       toast.success(`Product ${isEditMode ? 'Updated' : 'Created'} Successfully`);
-      // router.push('/dashboard/products')
+      router.push('/dashboard/products')
     } catch (error) {
       console.error("Error:", error.response?.data);
       toast.error(error.response?.data?.message || "An Error Occurred");
@@ -374,6 +379,7 @@ export default function ProductUpdateForm({
               sizes={sizes}
               handleSizeChange={handleSizeChange}
               setFormData={setFormData}
+              selectedSizeIds={selectedSizeIds}
             />
 
             {/* Product Images */}
