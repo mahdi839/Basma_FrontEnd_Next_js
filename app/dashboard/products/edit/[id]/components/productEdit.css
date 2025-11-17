@@ -1,0 +1,19 @@
+ .border-dashed {
+          border: 2px dashed #dee2e6;
+        }
+        .cursor-pointer {
+          cursor: pointer;
+        }
+        .bg-gradient-primary {
+          background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        }
+        .bg-gradient-success {
+          background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+        }
+        .focus-border-primary:focus {
+          border-color: #4e73df;
+          box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        .border-gray-300 {
+          border-color: #d1d3e2 !important;
+        }
