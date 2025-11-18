@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DesktopTableView from "./DesktopTableView";
 import MobileCardView from "./MobileCardView";
 import VariantsModal from "./VariantsModal";
@@ -9,6 +9,11 @@ export default function ProductTable({ productData }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showVariantsModal, setShowVariantsModal] = useState(false);
 
+  // ✅ FIX — Update table whenever parent sends new data
+  useEffect(() => {
+    setProducts(productData);
+  }, [productData]);
+
   const handleShowVariants = (product) => {
     setSelectedProduct(product);
     setShowVariantsModal(true);
@@ -17,10 +22,9 @@ export default function ProductTable({ productData }) {
   const handleDelete = (id) => {
     setProducts(prev => prev.filter(p => p.id !== id));
   };
-  console.log(productData)
+
   return (
     <>
-      {/* Desktop Table View */}
       <div className="d-none d-lg-block">
         <DesktopTableView 
           products={products} 
@@ -29,7 +33,6 @@ export default function ProductTable({ productData }) {
         />
       </div>
 
-      {/* Mobile & Tablet Card View */}
       <div className="d-block d-lg-none">
         <MobileCardView 
           products={products} 
@@ -38,7 +41,6 @@ export default function ProductTable({ productData }) {
         />
       </div>
 
-      {/* Variants Modal */}
       {showVariantsModal && selectedProduct && (
         <VariantsModal
           product={selectedProduct}

@@ -46,6 +46,7 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                 <th style={{ width: '70px' }}>Image</th>
                                 <th style={{ minWidth: '70px' }}>Product Info</th>
                                 <th style={{ minWidth: '70px' }}>Colors</th>
+                                <th style={{ minWidth: '50px' }}>Status</th>
                                 <th style={{ minWidth: '70px' }}>Categories</th>
                                 <th style={{ minWidth: '90px' }}>Pricing & Variants</th>
                                 <th style={{ width: '60px' }}>FAQ</th>
@@ -109,6 +110,10 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                                 ))
                                             }
                                         </div>
+                                    </td>
+
+                                    <td>
+                                        {product?.status??"N/A"}
                                     </td>
 
                                     <td>
