@@ -33,11 +33,11 @@
 }
 
 .view_all{
-    width: 100px;
+    width: 80px;
     height: 30px;
     background:rgb(54, 20, 204);
     color: white;
-    padding: 3px 0px;
+    padding: 1px 0px;
     cursor: pointer;
     font-size: small;
 }
