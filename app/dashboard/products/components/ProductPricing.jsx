@@ -56,10 +56,10 @@ export default function ProductPricing({ product, onShowVariants, variant = "des
           ))}
           {product.sizes.length > 3 && (
             <button 
-              className="btn btn-sm btn-outline-primary mt-1"
+              className="mt-1 view_all"
               onClick={onShowVariants}
             >
-              View all {product.sizes.length} variants
+              View all
             </button>
           )}
         </>

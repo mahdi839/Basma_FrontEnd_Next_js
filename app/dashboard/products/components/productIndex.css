@@ -32,6 +32,16 @@
   transform: scale(1.05);
 }
 
+.view_all{
+    width: 100px;
+    height: 30px;
+    background:rgb(54, 20, 204);
+    color: white;
+    padding: 3px 0px;
+    cursor: pointer;
+    font-size: small;
+}
+
 @media (max-width: 576px) {
   .product-card {
     margin-left: -1rem;
