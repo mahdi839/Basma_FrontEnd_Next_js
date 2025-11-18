@@ -4,10 +4,12 @@ import axios from "axios";
 import Button from "@/app/components/dashboard/components/button/Button";
 import { toast } from "react-toastify";
 import { FaTrash, FaPlus, FaChevronDown, FaChevronUp, FaImage, FaPalette, FaRuler, FaTags, FaQuestionCircle } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function ProductUploadForm() {
   const [categories, setCategories] = useState([]);
   const [sizes, setSizes] = useState([]);
+  const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
     short_description: "",
@@ -228,7 +230,7 @@ export default function ProductUploadForm() {
         categories: [],
       });
       toast.success("Product Successfully Uploaded");
-      window.location.href = "/dashboard/products";
+      router.push('/dashboard/products')
     } catch (error) {
       toast.error(error.response?.data?.message || "An Error Occurred");
     }
