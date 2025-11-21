@@ -97,8 +97,8 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     setIsCartDrawerOpen(false);
   };
 
-  function handleSizeSelect(e) {
-    setSelectedSizes(e.target.value);
+  function handleSizeSelect(sizeId) {
+    setSelectedSizes(sizeId);
   }
 
   function handleAddToCart(product, type,preQty) {
@@ -120,9 +120,9 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     }
 
     // Check if user select size or not for multiple sizes
-    if (targetProduct.variants.length > 1 && !selectedSizes) {
+    if (targetProduct.sizes.length > 1 && !selectedSizes) {
       Swal.fire({
-        title: `Please Select A ${targetProduct?.variants[0]?.attribute ?? "Option"}`,
+        title: `Please Select A Size}`,
         icon: "warning",
         confirmButtonText: "Ok",
         confirmButtonColor: "#DB3340",
@@ -131,13 +131,13 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     }
 
     // Find the selected variant for price
-    const selectedVariant = targetProduct.variants.find(v => v.id == selectedSizes) || targetProduct.variants[0];
+    const selectedVariant = targetProduct.sizes.find(v => v.id == selectedSizes) || targetProduct.sizes[0];
 
     dispatch(
       addToCart({
         id: targetProduct.id,
         title: targetProduct.title,
-        size: selectedSizes ? selectedVariant.value : "",
+        size: selectedSizes ? selectedVariant.size : "",
         price: selectedVariant?.price ?? targetProduct.price,
         image: baseUrl + targetProduct.images?.[0]?.image || "",
         preQty:preQty??0,

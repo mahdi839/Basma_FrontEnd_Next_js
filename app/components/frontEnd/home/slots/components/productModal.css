@@ -1,3 +1,8 @@
+ :root {
+	/* --primary-color: #DB3340; */
+	--primary-color: #7d0ba7;
+
+}
  .modal-overlay {
      position: fixed;
      top: 0;
@@ -295,7 +300,7 @@
 
  .variant-price {
      font-size: 0.8rem;
-     color: #e83e8c;
+     color: var(--primary-color);
      font-weight: 600;
  }
 
