@@ -316,7 +316,7 @@ export default function ProductUploadForm() {
                       </select>
                     </div>
                     <div className="col-md-6">
-                      <label className="form-label fw-semibold text-gray-700">Base Price</label>
+                      <label className="form-label fw-semibold text-gray-700">Single Price</label>
                       <div className="input-group">
                         <span className="input-group-text bg-light border-gray-300">৳</span>
                         <input
@@ -492,7 +492,7 @@ export default function ProductUploadForm() {
                             onChange={(e) =>
                               handleSizeChange(index, "size_id", e.target.value)
                             }
-                            required
+                            
                           >
                             <option value="">Select Size</option>
                             {sizes.map((s) => (
@@ -514,7 +514,7 @@ export default function ProductUploadForm() {
                               onChange={(e) =>
                                 handleSizeChange(index, "price", e.target.value)
                               }
-                              required
+                              
                             />
                           </div>
                         </div>
