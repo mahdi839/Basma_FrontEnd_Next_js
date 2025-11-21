@@ -166,7 +166,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
   if (!homeCategories?.length) {
     return <div className="text-center my-5">No categories found</div>;
   }
-
+  console.log(homeCategories)
   return (
     <div className="container mb-3 mb-md-5 mt-0 py-2 ">
       <div className="row position-relative">
@@ -223,13 +223,13 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                   <div className="col-12 position-relative  ml-3 mt-0 overflow-hidden">
                     <hr className="feature-hr m-0" />
                     <div
+                    className="feature-hr-div"
                       style={{
                         position: "absolute",
                         top: "0",
                         left: "0",
                         width: "100px",
-                        height: "5px",
-                        backgroundColor: "#e83e8c",
+                        height: "8px",
                         zIndex: "1",
                       }}
                     ></div>

@@ -1159,6 +1159,10 @@ ol {
 	transform: translateX(-10%) translateY(0);
 }
 
+.feature-hr-div{
+	background-color: var(--primary-color);
+}
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -2150,6 +2154,9 @@ table tr td {
 
 .cart-drawer-content::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+.current-price{
+   color: var(--primary-color);
 }
 
 /* Responsive adjustments */

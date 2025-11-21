@@ -61,20 +61,12 @@ const ProductCard = React.memo(function ProductCard({
               {slotProducts?.title}
             </Link>
           </p>
-          <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
-            <p
-              className="text-muted small mb-1 mb-md-2 product-subtitle"
-            >
-              {slotProducts?.sub_title}
-            </p>
-          </Link>
-
           <div className="d-flex justify-content-between align-items-center mt-1 mt-md-2">
             <div>
               <span
                 className="text-dark fw-bold product-price"
               >
-                ৳{slotProducts?.variants?.[0]?.price  || slotProducts?.price} {slotProducts?.variants?.[0]?.value?"-":""} {((slotProducts?.variants?.[0]?.value??""))}
+                ৳{slotProducts?.sizes?.[0]?.pivot.price  || slotProducts?.price} {slotProducts?.sizes?.[0]?.size?"-":""} {((slotProducts?.sizes?.[0]?.size??""))}
               </span>
             </div>
           </div>
@@ -83,7 +75,7 @@ const ProductCard = React.memo(function ProductCard({
         <div
           className="card-footer bg-transparent border-0 pt-0 add-to-cart-footer d-lg-none d-block px-2 px-md-3"
         >
-          {slotProducts?.variants?.length > 1 ? (
+          {slotProducts?.sizes?.length > 1 ? (
             <button
               type="button"
               className="btn-grad w-100 rounded-0 select-options-btn-sm py-1"
@@ -104,7 +96,7 @@ const ProductCard = React.memo(function ProductCard({
         <div
           className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block"
         >
-          {slotProducts?.variants?.length > 1 ? (
+          {slotProducts?.sizes?.length > 1 ? (
             <button
               type="button"
               className="btn-grad w-100 rounded-0"
