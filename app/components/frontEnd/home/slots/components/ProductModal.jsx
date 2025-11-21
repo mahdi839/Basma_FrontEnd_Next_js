@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { FaTimes, FaCartArrowDown,FaCheck } from "react-icons/fa";
-import { CiSearch} from "react-icons/ci";
+import { FaTimes, FaCartArrowDown, FaCheck } from "react-icons/fa";
+import { CiSearch } from "react-icons/ci";
 import { BiSolidPurchaseTag } from "react-icons/bi";
 import Image from "next/image";
 import Link from "next/link";
-import { increament, decreament,} from "@/redux/slices/CartSlice";
+import { increament, decreament, } from "@/redux/slices/CartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import './productModal.css'
 const ProductModal = ({
@@ -19,8 +19,8 @@ const ProductModal = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
-  const [preQty,setPreQty] = useState(1)
-  const cartItem = cartItems.find(item=>product.id == item.id);
+  const [preQty, setPreQty] = useState(1)
+  const cartItem = cartItems.find(item => product.id == item.id);
   if (!isOpen) return null;
 
   const mainImage = product.images?.[currentImageIndex]?.image
@@ -38,13 +38,13 @@ const ProductModal = ({
     setCurrentImageIndex(index);
   };
 
-  const handleQuantityChange =(id) => {
-      setPreQty((prev)=>prev+1);
-        dispatch(increament({ id }));
-    };
+  const handleQuantityChange = (id) => {
+    setPreQty((prev) => prev + 1);
+    dispatch(increament({ id }));
+  };
 
-  const handleDecrement =(id)=>{
-     dispatch(decreament({id}));
+  const handleDecrement = (id) => {
+    dispatch(decreament({ id }));
   }
 
   return (
@@ -75,13 +75,13 @@ const ProductModal = ({
                   priority
                 />
               </div>
-              
+
               {/* Thumbnail Images */}
               {product.images?.length > 1 && (
                 <div className="thumbnail-gallery">
                   {product.images.map((img, index) => (
-                    <div 
-                      key={index} 
+                    <div
+                      key={index}
                       className={`thumbnail-item ${index === currentImageIndex ? 'active' : ''}`}
                       onClick={() => handleThumbnailClick(index)}
                     >
@@ -109,25 +109,42 @@ const ProductModal = ({
               {/* Price Section */}
               <div className="price-section">
                 <div className="price-main">
-                  <span className="current-price">৳{cartItem?.totalPrice??product?.price*preQty}</span>
+                  <span className="current-price">৳{cartItem?.totalPrice ?? product?.price * preQty}</span>
                 </div>
               </div>
 
-              {/* Variant Selection */}
+              {/* Colors Selection */}
+              {product.colors?.length > 0 && (
+                <div className="variant-section">
+                  <div className="variant-header">
+                    {/* <span className="variant-label">
+                      {product.variants[0]?.attribute || "Option"}
+                    </span> */}
+                    <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Colors:</div>
+                  </div>
+                  <div className="d-flex gap-2 ">
+                    {product?.colors?.map((color) => (
+                      <div className="color-img-div"> <img src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} alt="colorImages" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* sizes Selection */}
               {product.sizes?.length > 1 && (
                 <div className="variant-section">
                   <div className="variant-header">
                     {/* <span className="variant-label">
                       {product.variants[0]?.attribute || "Option"}
                     </span> */}
-                    <span className="required-asterisk">*</span>
+                    <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Sizes:</div>
                   </div>
                   <div className="variant-options-grid">
                     {product?.sizes?.map((size) => (
                       <button
                         key={size?.id}
-                        // className={`variant-option ${selectedSizes == variant.id ? 'selected' : ''}`}
-                        // onClick={() => onSizeSelect({ target: { value: variant.id }})}
+                      // className={`variant-option ${selectedSizes == variant.id ? 'selected' : ''}`}
+                      // onClick={() => onSizeSelect({ target: { value: variant.id }})}
                       >
                         {size?.size}
                         {/* <span className="variant-price">{variant.price?"৳":""}{variant.price}</span>
@@ -142,15 +159,15 @@ const ProductModal = ({
               <div className="quantity-section">
                 <span className="quantity-label">Quantity:</span>
                 <div className="quantity-selector">
-                  <button 
+                  <button
                     className="quantity-btn"
                     onClick={() => handleDecrement(product.id)}
                     disabled={cartItem?.qty <= 1}
                   >
                     -
                   </button>
-                  <span className="quantity-display">{cartItem?.qty??preQty}</span>
-                  <button 
+                  <span className="quantity-display">{cartItem?.qty ?? preQty}</span>
+                  <button
                     className="quantity-btn"
                     onClick={() => handleQuantityChange(product?.id)}
                   >
@@ -163,13 +180,13 @@ const ProductModal = ({
               <div className="action-section">
                 <button
                   className="action-cart-btn btn-grad add-to-cart-btn"
-                  onClick={() => onAddToCart(product,'add',preQty)}
+                  onClick={() => onAddToCart(product, 'add', preQty)}
                 >
                   <FaCartArrowDown className="btn-icon" />
                   Add to Cart
                 </button>
-                
-                <button className="action-cart-btn btn-grad" onClick={() => onAddToCart(product,'buy',preQty)}>
+
+                <button className="action-cart-btn btn-grad" onClick={() => onAddToCart(product, 'buy', preQty)}>
                   <BiSolidPurchaseTag className="btn-icon" />
                   Buy Now
                 </button>
@@ -212,12 +229,12 @@ const ProductModal = ({
                 </div>
                 <div className="meta-item">
                   <span className="meta-label">Availability:</span>
-                  <span className="meta-value in-stock">In Stock</span>
+                  <span className="meta-value in-stock">{product?.status??''}</span>
                 </div>
               </div>
 
               {/* View Details Link */}
-              <Link href={`/frontEnd/product-page/${product.id}`} className="view-details-link">
+              <Link href={`/frontEnd/product-page/${product?.id}`} className="view-details-link">
                 <CiSearch className="link-icon" />
                 View Full Details
               </Link>
@@ -226,7 +243,7 @@ const ProductModal = ({
         </div>
       </div>
 
-    
+
     </div>
   );
 };
