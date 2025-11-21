@@ -311,7 +311,7 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
             >
               <div className="item-image">
                 <img
-                  src={item.image}
+                  src={item?.colorImage??item?.image}
                   alt={item.title}
                   className="img-fluid"
                 />
