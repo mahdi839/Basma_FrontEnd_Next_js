@@ -21,6 +21,8 @@ const ProductModal = ({
   const cartItems = useSelector((state) => state.cart.items);
   const [preQty, setPreQty] = useState(1)
   const cartItem = cartItems.find(item => product.id == item.id);
+  const [selectedColor, setSelectedColor] = useState(null);
+
   if (!isOpen) return null;
 
   const mainImage = product.images?.[currentImageIndex]?.image
@@ -124,7 +126,10 @@ const ProductModal = ({
                   </div>
                   <div className="d-flex gap-2 ">
                     {product?.colors?.map((color) => (
-                      <div className="color-img-div"> <img src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} alt="colorImages" />
+                      <div
+                        className={`color-img-div ${selectedColor === color.id ? "active" : ""}`}
+                        onClick={() => setSelectedColor(color.id)}>
+                        <img src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} alt="colorImages" />
                       </div>
                     ))}
                   </div>
@@ -229,7 +234,7 @@ const ProductModal = ({
                 </div>
                 <div className="meta-item">
                   <span className="meta-label">Availability:</span>
-                  <span className="meta-value in-stock">{product?.status??''}</span>
+                  <span className="meta-value in-stock">{product?.status ?? ''}</span>
                 </div>
               </div>
 

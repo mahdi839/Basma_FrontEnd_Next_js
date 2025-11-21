@@ -403,31 +403,6 @@ export default function ProductUploadForm() {
                   ) : (
                     formData.colors.map((color, index) => (
                       <div key={index} className="row g-3 mb-3 p-3 border rounded bg-light align-items-end">
-                        <div className="col-md-3">
-                          <label className="form-label fw-semibold text-gray-700">Color</label>
-                          <div className="d-flex align-items-center gap-2">
-                            <input
-                              type="color"
-                              className="form-control form-control-color p-1"
-                              value={color.code || "#000000"}
-                              onChange={(e) =>
-                                handleColorChange(index, "code", e.target.value)
-                              }
-                              style={{ width: "50px", height: "50px", borderRadius: "8px" }}
-                              required
-                            />
-                            <input
-                              type="text"
-                              className="form-control border-gray-300"
-                              value={color.code || ""}
-                              onChange={(e) =>
-                                handleColorChange(index, "code", e.target.value)
-                              }
-                              placeholder="#000000"
-                              required
-                            />
-                          </div>
-                        </div>
                         <div className="col-md-7">
                           <label className="form-label fw-semibold text-gray-700">Color Image</label>
                           <div className="input-group">
