@@ -132,13 +132,12 @@ function FeatureClient({ homeCategories, BannerCatData }) {
 
     // Find the selected variant for price
     const selectedVariant = targetProduct.sizes.find(v => v.id == selectedSizes) || targetProduct.sizes[0];
-
     dispatch(
       addToCart({
         id: targetProduct.id,
         title: targetProduct.title,
         size: selectedSizes ? selectedVariant.size : "",
-        price: selectedVariant?.price ?? targetProduct.price,
+        price: selectedVariant?.pivot.price ?? targetProduct.price,
         image: baseUrl + targetProduct.images?.[0]?.image || "",
         preQty:preQty??0,
       })
@@ -166,7 +165,6 @@ function FeatureClient({ homeCategories, BannerCatData }) {
   if (!homeCategories?.length) {
     return <div className="text-center my-5">No categories found</div>;
   }
-  console.log(homeCategories)
   return (
     <div className="container mb-3 mb-md-5 mt-0 py-2 ">
       <div className="row position-relative">

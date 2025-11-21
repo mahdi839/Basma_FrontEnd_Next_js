@@ -46,6 +46,7 @@ const ProductModal = ({
   };
 
   const handleDecrement = (id) => {
+    setPreQty((prev) => prev -1);
     dispatch(decreament({ id }));
   }
 
@@ -113,7 +114,7 @@ const ProductModal = ({
                 <div className="price-main">
                   <span className="current-price">
                     {/* ৳{cartItem?.totalPrice ?? product?.price * preQty} */}
-                    ৳ {displayPrice}
+                    ৳ {displayPrice * preQty}
                     </span>
                 </div>
               </div>
@@ -170,7 +171,7 @@ const ProductModal = ({
                   <button
                     className="quantity-btn"
                     onClick={() => handleDecrement(product.id)}
-                    disabled={cartItem?.qty <= 1}
+                    disabled={preQty <= 1}
                   >
                     -
                   </button>
