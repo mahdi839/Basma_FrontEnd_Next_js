@@ -20,6 +20,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
   const [isLoading, setIsLoading] = useState(true);
   const sliderRefs = useRef([]);
   const [selectedSizes, setSelectedSizes] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null); // For modal
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [isDirectBuy, setIsDirectBuy] = useState(false);
@@ -101,7 +102,11 @@ function FeatureClient({ homeCategories, BannerCatData }) {
     setSelectedSizes(sizeId);
   }
 
-  function handleAddToCart(product, type,preQty) {
+  function handleColorSelect(colorImage) {
+    setSelectedColor(colorImage);
+  }
+
+  function handleAddToCart(product, type, preQty) {
     // If modal is open, use the selected product from modal
     const targetProduct = selectedProduct || product;
 
@@ -139,7 +144,8 @@ function FeatureClient({ homeCategories, BannerCatData }) {
         size: selectedSizes ? selectedVariant.size : "",
         price: selectedVariant?.pivot.price ?? targetProduct.price,
         image: baseUrl + targetProduct.images?.[0]?.image || "",
-        preQty:preQty??0,
+        colorImage: selectedColor ?? "",
+        preQty: preQty ?? 0,
       })
     );
 
@@ -221,7 +227,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                   <div className="col-12 position-relative  ml-3 mt-0 overflow-hidden">
                     <hr className="feature-hr m-0" />
                     <div
-                    className="feature-hr-div"
+                      className="feature-hr-div"
                       style={{
                         position: "absolute",
                         top: "0",
@@ -279,6 +285,8 @@ function FeatureClient({ homeCategories, BannerCatData }) {
             selectedSizes={selectedSizes}
             onSizeSelect={handleSizeSelect}
             onAddToCart={handleAddToCart}
+            onSelectColor={handleColorSelect}
+            selectedColor={selectedColor}
             baseUrl={baseUrl}
           />
         )}

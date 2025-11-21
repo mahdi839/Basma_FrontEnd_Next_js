@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import { FaTimes, FaCartArrowDown, FaCheck } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
@@ -13,6 +14,8 @@ const ProductModal = ({
   onClose,
   selectedSizes,
   onSizeSelect,
+  onSelectColor,
+  selectedColor,
   onAddToCart,
   baseUrl,
 }) => {
@@ -21,7 +24,7 @@ const ProductModal = ({
   const cartItems = useSelector((state) => state.cart.items);
   const [preQty, setPreQty] = useState(1)
   const cartItem = cartItems.find(item => product.id == item.id);
-  const [selectedColor, setSelectedColor] = useState(null);
+  
 
   if (!isOpen) return null;
 
@@ -131,8 +134,9 @@ const ProductModal = ({
                   <div className="d-flex gap-2 ">
                     {product?.colors?.map((color) => (
                       <div
-                        className={`color-img-div ${selectedColor === color.id ? "active" : ""}`}
-                        onClick={() => setSelectedColor(color.id)}>
+                      key={color.id}
+                        className={`color-img-div ${selectedColor === color.image ? "active" : ""}`}
+                        onClick={() => onSelectColor(color?.image)}>
                         <img src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} alt="colorImages" />
                       </div>
                     ))}
