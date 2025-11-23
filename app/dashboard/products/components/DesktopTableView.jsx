@@ -1,5 +1,5 @@
 "use client"
-import { FaEdit, FaTrash, FaQuestionCircle, FaVideo, FaImage, FaBox } from "react-icons/fa";
+import {FaQuestionCircle, FaVideo, FaBox } from "react-icons/fa";
 import ProductImage from "./ProductImage";
 import ProductCategories from "./ProductCategories";
 import ProductPricing from "./ProductPricing";
