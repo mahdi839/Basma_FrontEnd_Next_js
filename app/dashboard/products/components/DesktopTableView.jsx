@@ -1,10 +1,12 @@
-import Link from "next/link";
+"use client"
 import { FaEdit, FaTrash, FaQuestionCircle, FaVideo, FaImage, FaBox } from "react-icons/fa";
 import ProductImage from "./ProductImage";
 import ProductCategories from "./ProductCategories";
 import ProductPricing from "./ProductPricing";
 import ProductActions from "./ProductActions";
 import './productIndex.css'
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 export default function DesktopTableView({ products, onShowVariants, onDelete }) {
     const formatCreatedAt = (dateString) => {
@@ -82,24 +84,25 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                             <span className="badge bg-secondary">ID: {product.id}</span>
                                         </div>
                                     </td>
-
                                     <td>
                                         <div className="d-flex gap-2 mt-2">
                                             {
-                                                product?.colors?.map((color)=>(
-                                                     <div>
-                                                        <img
-                                                            width={28}
-                                                            height={28}
-                                                            src={baseUrl + color.image??""}
-                                                            alt=""
-                                                            className="rounded-circle border"
-                                                            style={{ objectFit: 'cover' }}
-                                                            onError={(e) => {
-                                                                // Fallback to color code if image fails to load
-                                                                e.target.style.display = 'none';
-                                                            }}
-                                                        />
+                                                product?.colors?.map((color) => (
+                                                    <div>
+                                                        <Zoom>
+                                                            <img
+                                                                width={28}
+                                                                height={28}
+                                                                src={baseUrl + color.image ?? ""}
+                                                                alt=""
+                                                                className="rounded-circle border"
+                                                                style={{ objectFit: 'cover' }}
+                                                                onError={(e) => {
+                                                                    // Fallback to color code if image fails to load
+                                                                    e.target.style.display = 'none';
+                                                                }}
+                                                            />
+                                                        </Zoom>
                                                     </div>
                                                 ))
                                             }
@@ -107,7 +110,7 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                     </td>
 
                                     <td>
-                                        {product?.status??"N/A"}
+                                        {product?.status ?? "N/A"}
                                     </td>
 
                                     <td>
