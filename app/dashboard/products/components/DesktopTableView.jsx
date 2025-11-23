@@ -84,12 +84,6 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                     </td>
 
                                     <td>
-                                        <div className="d-flex gap-2">
-                                            {product.colors?.map((color) => (
-                                                <div style={{ width: '20px', height: '20px', background: color?.code, borderRadius: '50%' }}>
-                                                </div>
-                                            ))}
-                                        </div>
                                         <div className="d-flex gap-2 mt-2">
                                             {
                                                 product?.colors?.map((color)=>(
