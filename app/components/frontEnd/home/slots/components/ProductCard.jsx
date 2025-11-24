@@ -56,7 +56,7 @@ const ProductCard = React.memo(function ProductCard({
           <p className="mb-1">
             <Link
               href={`/frontEnd/product-page/${slotProducts?.id}`}
-              className="text-decoration-none text-dark product-title"
+              className="text-decoration-none text-dark fw-bold"
             >
               {slotProducts?.title}
             </Link>
