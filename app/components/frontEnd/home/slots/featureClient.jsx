@@ -141,7 +141,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
       addToCart({
         id: targetProduct.id,
         title: targetProduct.title,
-        size: selectedSizes ? selectedVariant.size : "",
+        size: selectedSizes ? selectedVariant.id : "",
         price: selectedVariant?.pivot.price ?? targetProduct.price,
         image: baseUrl + targetProduct.images?.[0]?.image || "",
         colorImage: baseUrl + selectedColor ?? "",

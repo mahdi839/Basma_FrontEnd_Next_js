@@ -528,7 +528,6 @@ export default function ProductUploadForm() {
                             onChange={(e) =>
                               handleSizeChange(index, "stock", e.target.value)
                             }
-                            required
                           />
                         </div>
                         <div className="col-md-2 d-flex align-items-end">
