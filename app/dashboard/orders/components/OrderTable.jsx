@@ -7,6 +7,8 @@ import ProductFilter from "./ProductFilter";
 import axios from "axios";
 import { toast } from "react-toastify";
 import useFormatDate from "@/app/hooks/useFormatDate";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 export default function OrderTable({
   loading,
@@ -18,7 +20,7 @@ export default function OrderTable({
   const [draftFilters, setDraftFilters] = useState(filters);
   const [loadingStates, setLoadingStates] = useState({});
   const { formatDate } = useFormatDate();
-  
+
   // Sync with parent filters when they change
   React.useEffect(() => {
     setDraftFilters(filters);
@@ -104,7 +106,7 @@ export default function OrderTable({
             },
           }
         );
-        
+
         if (data.success) {
           toast.success("Pathao courier entry created successfully!");
           // Update the order in the local state
@@ -261,11 +263,10 @@ export default function OrderTable({
                       <h6 className="mb-0">
                         Name: {order.name || "N/A"}{" "}
                         <span
-                          className={`badge ${
-                            order.customer_type === "Repeat Customer"
-                              ? "bg-warning"
-                              : "bg-info"
-                          } text-dark`}
+                          className={`badge ${order.customer_type === "Repeat Customer"
+                            ? "bg-warning"
+                            : "bg-info"
+                            } text-dark`}
                         >
                           {order.customer_type}
                         </span>
@@ -297,6 +298,27 @@ export default function OrderTable({
                                 {item?.selected_variant?.attribute ?? ""}:
                               </strong>{" "}
                               {item?.selected_variant?.value ?? ""}
+                            </div>
+                          )}
+                          {item.colorImage && (
+                            <div className="d-flex gap-2">
+                              <strong className="mt-3">Color Image:</strong>
+                              <Zoom>
+                                <img
+                                  width={50}
+                                  height={50}
+                                  src={item?.colorImage ?? ""}
+                                  alt=""
+                                  className="rounded-circle border"
+                                  style={{ objectFit: 'cover' }}
+                                />
+                              </Zoom>
+                            </div>
+                          )}
+                          {item.size && (
+                            <div className="d-flex gap-2">
+                               <strong>Size:</strong>
+                               <span>{item?.size?.size??"no size found"}</span>
                             </div>
                           )}
                         </div>
@@ -372,11 +394,10 @@ export default function OrderTable({
                     <div className="d-flex justify-content-between align-items-center">
                       <h6 className="mb-0">Order #{index + 1}</h6>
                       <span
-                        className={`badge ${
-                          order.customer_type === "Repeat Customer"
-                            ? "bg-warning"
-                            : "bg-info"
-                        } text-dark`}
+                        className={`badge ${order.customer_type === "Repeat Customer"
+                          ? "bg-warning"
+                          : "bg-info"
+                          } text-dark`}
                       >
                         {order.customer_type}
                       </span>
