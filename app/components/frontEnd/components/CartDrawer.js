@@ -9,6 +9,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import './style.css';
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   const [currentStep, setCurrentStep] = useState("cart");
@@ -292,8 +293,29 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
     );
   }
 
+  const [sizes, setSizes] = useState(null);
+
+  useEffect(() => {
+    const fetchSizeData = async () => {
+      try {
+       let response =  await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/sizes')
+       console.log(response)
+       setSizes(response?.data??null)
+      } catch (err) {
+        console.log(err.message);
+      }
+    }
+
+    fetchSizeData()
+  }, [])
+
   const handleClickOnTitle = () => {
     onClose();
+  }
+
+  const getSeletedSizeName = (sizeId) => {
+    let selectedSize = sizes?.find(size => size?.id == sizeId)
+    return selectedSize?.size??"N/A"
   }
 
   return (
@@ -305,13 +327,14 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
         </div>
         <div className="cart-items">
           {cartItems.map((item) => (
+
             <div
               key={item.id}
               className={`cart-item ${removingItem === item.id ? 'removing' : ''}`}
             >
               <div className="item-image">
                 <img
-                  src={item?.colorImage??item?.image}
+                  src={item?.colorImage ?? item?.image}
                   alt={item.title}
                   className="img-fluid"
                 />
@@ -328,7 +351,7 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
                 </h6>
                 {item.size && (
                   <p className="item-variant">
-                    Variant: <span>{item.size}</span>
+                    Variant: <span>{getSeletedSizeName(item.size)}</span>
                   </p>
                 )}
 

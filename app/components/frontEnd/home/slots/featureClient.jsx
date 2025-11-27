@@ -145,7 +145,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
         price: selectedVariant?.pivot.price ?? targetProduct.price,
         image: baseUrl + targetProduct.images?.[0]?.image || "",
         colorImage: baseUrl + selectedColor ?? "",
-        preQty: preQty ?? 0,
+        preQty: preQty ?? 1,
       })
     );
 

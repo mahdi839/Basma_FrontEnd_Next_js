@@ -17,6 +17,7 @@ export default function CtgProductsLogic({ products, category }) {
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const router = useRouter();
   const [selectedSizes, setSelectedSizes] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
@@ -41,12 +42,16 @@ export default function CtgProductsLogic({ products, category }) {
     setIsCartDrawerOpen(false);
   };
 
-  const handleSizeSelect = useCallback((e) => {
-    setSelectedSizes(e.target.value);
+  const handleSizeSelect = useCallback((sizeId) => {
+    setSelectedSizes(sizeId);
   }, []);
 
+  function handleColorSelect(colorImage) {
+    setSelectedColor(colorImage);
+  }
+
   const handleAddToCart = useCallback(
-    (product, type) => {
+    (product, type,preQty) => {
       let existingCart = cartItems.find(
         (existProduct) => existProduct.id === product.id
       );
@@ -61,9 +66,9 @@ export default function CtgProductsLogic({ products, category }) {
         return;
       }
 
-      if (product.variants.length > 1 && !selectedSizes) {
+      if (product.sizes.length > 1 && !selectedSizes) {
         Swal.fire({
-          title: `Please Select A ${product?.variants[0]?.attribute ?? "Option"}`,
+          title: `Please Select A Size"}`,
           icon: "warning",
           confirmButtonText: "Ok",
           confirmButtonColor: "#DB3340",
@@ -72,15 +77,17 @@ export default function CtgProductsLogic({ products, category }) {
       }
 
       // Find the selected variant for price
-    const selectedVariant = product.variants.find(v => v.id == selectedSizes) ||  product.variants[0];
+      const selectedVariant = product.sizes.find(v => v.id == selectedSizes) || product.sizes[0];
 
       dispatch(
         addToCart({
           id: product.id,
           title: product.title,
-          size: selectedSizes ? selectedVariant.value : "",
-          price: product.variants[0]?.price ?? product.price,
+          size: selectedSizes ? selectedVariant.id : "",
+          price: selectedVariant?.pivot?.price ?? product.price,
           image: baseUrl + product.images?.[0]?.image || "",
+          colorImage: baseUrl + selectedColor ?? "",
+          preQty: preQty ?? 1,
         })
       );
 
@@ -138,6 +145,8 @@ export default function CtgProductsLogic({ products, category }) {
             onClose={handleCloseModal}
             selectedSizes={selectedSizes}
             onSizeSelect={handleSizeSelect}
+            onSelectColor={handleColorSelect}
+            selectedColor={selectedColor}
             onAddToCart={handleAddToCart}
             baseUrl={baseUrl}
           />
