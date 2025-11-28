@@ -62,27 +62,10 @@ export default async function Footer() {
 
   return (
     <footer
-      className="bg-warning-subtle position-relative overflow-hidden "
+      className="footer_bg position-relative overflow-hidden "
       style={{ paddingTop: "120px" }} // padding fixed so content stays below SVG
     >
-      {/* 🔥 SVG Shape Divider (Top) */}
-      <div className="custom-shape-divider-top-1764343130">
-        <svg
-          data-name="Layer 1"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,
-            168.19-17.73,250.45-.39C823.78,31,906.67,72,
-            985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,
-            600.21,0,0,0,321.39,56.44Z"
-            className="shape-fill"
-          ></path>
-        </svg>
-      </div>
-
+    
       <div className="container position-relative py-4">
         <div className="row g-4">
           {/* Logo Section */}
@@ -113,12 +96,12 @@ export default async function Footer() {
 
               <div className="d-flex gap-3">
                 {socialData?.facebook && (
-                  <Link href={socialData.facebook} className="text-dark fs-5">
+                  <Link href={socialData.facebook} className="text-white fs-5">
                     <FaFacebook />
                   </Link>
                 )}
                 {socialData?.instagram && (
-                  <Link href={socialData.instagram} className="text-dark fs-5">
+                  <Link href={socialData.instagram} className="text-white fs-5">
                     <FaInstagram />
                   </Link>
                 )}

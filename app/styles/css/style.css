@@ -33,31 +33,12 @@ body {
 	min-height: 100vh;
 }
 
-.custom-shape-divider-top-1764343130 {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	overflow: hidden;
-	line-height: 0;
-	z-index: 2;
-	transform: translateY(-1px);
-	/* Removes tiny border gap */
+.footer_bg {
+	background: var(--primary-color);
+	color: white;
+	border-radius: 100% / 20% 20% 0 0;
+	min-height: 500px;
 }
-
-.custom-shape-divider-top-1764343130 svg {
-	position: relative;
-	display: block;
-	width: calc(100% + 1.3px);
-	height: 90px;
-	/* adjust shape height */
-}
-
-.custom-shape-divider-top-1764343130 .shape-fill {
-	fill: #ffffff;
-	/* must match footer background */
-}
-
 
 h1,
 h2,
@@ -2150,6 +2131,9 @@ table tr td {
 
 /* Responsive Design */
 @media (max-width: 576px) {
+	.footer_bg {
+	border-radius: 100% / 5% 5% 0 0;
+}
 	.cart-drawer {
 		max-width: 100%;
 	}
