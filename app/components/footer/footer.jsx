@@ -14,66 +14,45 @@ export default async function Footer() {
   let data = {};
   let socialData = {};
 
-  // Always define backendUrl once
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.endsWith("/")
     ? process.env.NEXT_PUBLIC_BACKEND_URL.slice(0, -1)
     : process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
   try {
-    // Fetch footer data with error handling
     const footerResponse = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}api/footer-settings`,
       {
         next: { revalidate: 60 },
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
 
-    if (!footerResponse.ok) {
-      console.error(`Footer API failed: ${footerResponse.status} ${footerResponse.statusText}`);
-    } else {
+    if (footerResponse.ok) {
       const responseText = await footerResponse.text();
-      if (responseText) {
-        try {
-          data = JSON.parse(responseText);
-        } catch (parseError) {
-          console.error("Failed to parse footer data:", parseError);
-          console.log("Response text:", responseText);
-        }
-      }
+      if (responseText) data = JSON.parse(responseText);
     }
   } catch (error) {
     console.error("Error fetching footer data:", error);
   }
 
   try {
-    // Fetch social links data with error handling
     const socialResponse = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}api/social-links-first`,
       {
         next: { revalidate: 60 },
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       }
     );
 
-    if (!socialResponse.ok) {
-      console.error(`Social links API failed: ${socialResponse.status} ${socialResponse.statusText}`);
-    } else {
+    if (socialResponse.ok) {
       const responseText = await socialResponse.text();
-      if (responseText) {
-        try {
-          socialData = JSON.parse(responseText);
-        } catch (parseError) {
-          console.error("Failed to parse social data:", parseError);
-          console.log("Response text:", responseText);
-        }
-      }
+      if (responseText) socialData = JSON.parse(responseText);
     }
   } catch (error) {
     console.error("Error fetching social data:", error);
@@ -82,13 +61,34 @@ export default async function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-warning-subtle position-relative overflow-hidden pt-5">
+    <footer
+      className="bg-warning-subtle position-relative overflow-hidden "
+      style={{ paddingTop: "120px" }} // padding fixed so content stays below SVG
+    >
+      {/* 🔥 SVG Shape Divider (Top) */}
+      <div className="custom-shape-divider-top-1764343130">
+        <svg
+          data-name="Layer 1"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,
+            168.19-17.73,250.45-.39C823.78,31,906.67,72,
+            985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,
+            600.21,0,0,0,321.39,56.44Z"
+            className="shape-fill"
+          ></path>
+        </svg>
+      </div>
+
       <div className="container position-relative py-4">
         <div className="row g-4">
           {/* Logo Section */}
           <div className="col-md-6 col-lg-3 mb-1 mb-lg-4 mb-lg-0 footer_logo_section">
             <div className="logo_section_mobile_border">
-              <div className=" rounded  footer_logo_div pb-2">
+              <div className="rounded footer_logo_div pb-2">
                 <Link href="/">
                   {data.logo_path ? (
                     <img
@@ -97,14 +97,17 @@ export default async function Footer() {
                       alt="Company Logo"
                     />
                   ) : (
-                    <div className="d-flex align-items-center justify-content-center" style={{ width: 91, height: 80 }}>
+                    <div
+                      className="d-flex align-items-center justify-content-center"
+                      style={{ width: 91, height: 80 }}
+                    >
                       <span>Logo</span>
                     </div>
                   )}
                 </Link>
               </div>
 
-              <p className="text-muted mb-2 mb-lg-4 ">
+              <p className="text-muted mb-2 mb-lg-4">
                 {data?.company_description || "Your company description here"}
               </p>
 
@@ -139,7 +142,7 @@ export default async function Footer() {
           </div>
 
           {/* Store Information */}
-          <div className="col-md-6 col-lg-3 mb-1 mb-md-4 mb-lg-0 pt-2 pt-lg-0 ">
+          <div className="col-md-6 col-lg-3 mb-1 mb-md-4 mb-lg-0 pt-2 pt-lg-0">
             <div className="footer_store_info">
               <h5 className="fw-bold mb-2 mb-md-4 pb-2">Store Information</h5>
               <ul className="list-unstyled text-muted">
@@ -166,7 +169,7 @@ export default async function Footer() {
           </div>
 
           {/* Account Links */}
-          <div className="col-md-6 col-lg-3 mb-1 mb-md-4 mb-lg-0 ">
+          <div className="col-md-6 col-lg-3 mb-1 mb-md-4 mb-lg-0">
             <div className="footer_account">
               <h5 className="fw-bold mb-4 pb-2">My Account</h5>
               <ul className="list-unstyled text-muted">
@@ -199,7 +202,7 @@ export default async function Footer() {
           </div>
 
           {/* Useful Links */}
-          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0 ">
+          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
             <div className="footer_links">
               <h5 className="fw-bold mb-4 pb-2">Useful Links</h5>
               <ul className="list-unstyled text-muted">
@@ -246,7 +249,8 @@ export default async function Footer() {
         {/* Copyright */}
         <div className="d-flex flex-wrap align-items-center justify-content-center pb-3">
           <p className="text-muted mb-0 me-3">
-            &copy; {currentYear} {data?.company_name || "My Company"}. All rights reserved.
+            &copy; {currentYear} {data?.company_name || "My Company"}. All rights
+            reserved.
           </p>
         </div>
       </div>
