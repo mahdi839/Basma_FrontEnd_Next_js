@@ -299,7 +299,6 @@ function CartStep({ cartItems, totalPrice, onIncreament, onDecreament, onRemove,
     const fetchSizeData = async () => {
       try {
        let response =  await axios.get(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/sizes')
-       console.log(response)
        setSizes(response?.data??null)
       } catch (err) {
         console.log(err.message);

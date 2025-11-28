@@ -64,8 +64,6 @@ export default function ProductUpdateForm({
 
   useEffect(() => {
     if (isEditMode && initialData) {
-      console.log("Initial Data:", initialData);
-
       // Transform initial data to match backend structure
       const transformedData = {
         title: initialData.title || "",
@@ -304,8 +302,6 @@ export default function ProductUpdateForm({
       const url = isEditMode
         ? `${baseUrl}api/products/${productId}`
         : `${baseUrl}api/products`;
-
-      console.log("Submitting data...");
       const response = await axios.post(url, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -313,7 +309,6 @@ export default function ProductUpdateForm({
         },
       });
 
-      console.log("Response:", response);
 
       if (!isEditMode) {
         setFormData({

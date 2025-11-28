@@ -18,7 +18,6 @@ import ProductModal from "@/app/components/frontEnd/home/slots/components/Produc
 import './relatedProduct.css'
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 export default function Products({ product, socialLinksData, relatedProducts }) {
-  console.log(product);
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);

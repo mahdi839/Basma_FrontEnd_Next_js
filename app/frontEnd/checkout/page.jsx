@@ -110,7 +110,6 @@ function CheckoutPage() {
         }
         
         abandonedCheckoutSent.current = true; // Mark as sent
-        console.log("Abandoned checkout tracked");
       } catch (err) {
         console.error("Abandoned checkout tracking failed:", err);
       }
