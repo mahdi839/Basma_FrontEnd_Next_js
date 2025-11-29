@@ -37,7 +37,7 @@ body {
 	background: var(--primary-color);
 	color: white;
 	border-radius: 100% / 20% 20% 0 0;
-	min-height: 500px;
+	min-height: 400px;
 }
 
 h1,

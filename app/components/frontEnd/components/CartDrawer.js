@@ -201,6 +201,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
         confirmButtonColor: "#DB3340",
       });
     }
+    onClose();
   };
 
   const backToCart = () => {
