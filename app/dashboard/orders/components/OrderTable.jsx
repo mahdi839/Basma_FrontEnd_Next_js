@@ -9,7 +9,9 @@ import { toast } from "react-toastify";
 import useFormatDate from "@/app/hooks/useFormatDate";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-
+import { FaPrint } from "react-icons/fa";
+import './orderTable.css'
+import Link from "next/link";
 export default function OrderTable({
   loading,
   orders,
@@ -317,8 +319,8 @@ export default function OrderTable({
                           )}
                           {item.size && (
                             <div className="d-flex gap-2">
-                               <strong>Size:</strong>
-                               <span>{item?.size?.size??"no size found"}</span>
+                              <strong>Size:</strong>
+                              <span>{item?.size?.size ?? "no size found"}</span>
                             </div>
                           )}
                         </div>
@@ -366,8 +368,18 @@ export default function OrderTable({
                         </select>
                       )}
                     </td>
-                    <td>
+
+                    <td className="d-flex gap-2">
                       <button className="btn btn-sm btn-primary">View</button>
+                      <Link href={`/dashboard/orders/invoice/${order.id}`}>
+                        <button
+                          className="order_print_btn"
+                          style={{ border: 'none', outline: 'none', background: 'none' }}
+                          title="Print Invoice"
+                        >
+                          <FaPrint className="order_print_btn_icon" size={22} />
+                        </button>
+                      </Link>
                     </td>
                   </tr>
                 ))
@@ -496,8 +508,21 @@ export default function OrderTable({
                           )}
                         </div>
                       </div>
-                      <div className="col-12">
-                        <button className="btn btn-sm btn-primary w-100">View</button>
+                      // In the mobile cards:
+                      <div className="d-flex gap-5">
+                        <div className="col-6">
+                          <button className="btn btn-sm btn-primary w-100">View</button>
+                        </div>
+                        <div className="col-6">
+                          <Link href={`/dashboard/orders/invoice/${order.id}`}>
+                            <button
+                              className="order_print_btn w-100"
+                              style={{ border: 'none', outline: 'none', background: 'none' }}
+                            >
+                              <FaPrint className="order_print_btn_icon" size={22} />
+                            </button>
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
