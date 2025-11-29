@@ -2222,6 +2222,7 @@ table tr td {
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		color: white;
 	}
 
 	.list-unstyled {

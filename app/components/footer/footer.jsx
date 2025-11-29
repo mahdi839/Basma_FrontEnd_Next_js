@@ -90,9 +90,7 @@ export default async function Footer() {
                 </Link>
               </div>
 
-              <p className="text-muted mb-2 mb-lg-4">
-                {data?.company_description || "Your company description here"}
-              </p>
+             
 
               <div className="d-flex gap-3">
                 {socialData?.facebook && (
@@ -110,13 +108,13 @@ export default async function Footer() {
                     href={`https://wa.me/${data.company_phone}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-dark fs-5"
+                    className="text-white fs-5"
                   >
                     <FaWhatsappSquare />
                   </a>
                 )}
                 {socialData?.youtube && (
-                  <Link href={socialData.youtube} className="text-dark fs-5">
+                  <Link href={socialData.youtube} className="text-white fs-5">
                     <FaYoutube />
                   </Link>
                 )}
@@ -127,24 +125,24 @@ export default async function Footer() {
           {/* Store Information */}
           <div className="col-md-6 col-lg-3 mb-1 mb-md-4 mb-lg-0 pt-2 pt-lg-0">
             <div className="footer_store_info">
-              <h5 className="fw-bold mb-2 mb-md-4 pb-2">Store Information</h5>
+              <h5 className="fw-bold text-white mb-2 mb-md-4 pb-2">Store Information</h5>
               <ul className="list-unstyled text-muted">
                 {data?.company_address && (
                   <li className="mb-3 d-flex">
-                    <CiLocationOn className="text-dark mt-1 me-md-3 fs-5" />
-                    <span>{data.company_address}</span>
+                    <CiLocationOn className="text-white mt-1 me-md-3 fs-5" />
+                    <span className="text-white">{data.company_address}</span>
                   </li>
                 )}
                 {data?.company_phone && (
                   <li className="mb-3 d-flex">
-                    <FaPhone className="text-dark mt-1 me-3 fs-5" />
-                    <span>{data.company_phone}</span>
+                    <FaPhone className="text-white mt-1 me-3 fs-5" />
+                    <span className="text-white">{data.company_phone}</span>
                   </li>
                 )}
                 {data?.company_email && (
                   <li className="d-flex">
-                    <CiMail className="text-dark mt-1 me-3 fs-5" />
-                    <span>{data.company_email}</span>
+                    <CiMail className="text-white mt-1 me-3 fs-5" />
+                    <span className="text-white">{data.company_email}</span>
                   </li>
                 )}
               </ul>
@@ -154,12 +152,12 @@ export default async function Footer() {
           {/* Account Links */}
           <div className="col-md-6 col-lg-3 mb-1 mb-md-4 mb-lg-0">
             <div className="footer_account">
-              <h5 className="fw-bold mb-4 pb-2">My Account</h5>
+              <h5 className="fw-bold text-white mb-4 pb-2">My Account</h5>
               <ul className="list-unstyled text-muted">
                 <li className="mb-2">
                   <Link
                     href="#"
-                    className="text-muted text-decoration-none d-block mb-3"
+                    className="text-white text-decoration-none d-block mb-3"
                   >
                     My Profile
                   </Link>
@@ -167,7 +165,7 @@ export default async function Footer() {
                 <li className="mb-2">
                   <Link
                     href="#"
-                    className="text-muted text-decoration-none d-block mb-3"
+                    className="text-white text-decoration-none d-block mb-3"
                   >
                     Login/Register
                   </Link>
@@ -175,7 +173,7 @@ export default async function Footer() {
                 <li>
                   <Link
                     href="#"
-                    className="text-muted text-decoration-none d-block"
+                    className="text-white text-decoration-none d-block"
                   >
                     My Orders
                   </Link>
@@ -187,12 +185,12 @@ export default async function Footer() {
           {/* Useful Links */}
           <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
             <div className="footer_links">
-              <h5 className="fw-bold mb-4 pb-2">Useful Links</h5>
-              <ul className="list-unstyled text-muted">
+              <h5 className="fw-bold text-white mb-4 pb-2">Useful Links</h5>
+              <ul className="list-unstyled text-white">
                 <li className="mb-2">
                   <Link
                     href="#"
-                    className="text-muted text-decoration-none d-block mb-3"
+                    className="text-white text-decoration-none d-block mb-3"
                   >
                     About
                   </Link>
@@ -200,7 +198,7 @@ export default async function Footer() {
                 <li className="mb-2">
                   <Link
                     href="#"
-                    className="text-muted text-decoration-none d-block mb-3"
+                    className="text-white text-decoration-none d-block mb-3"
                   >
                     Privacy Policy
                   </Link>
@@ -208,7 +206,7 @@ export default async function Footer() {
                 <li className="mb-2">
                   <Link
                     href="#"
-                    className="text-muted text-decoration-none d-block mb-3"
+                    className="text-white text-decoration-none d-block mb-3"
                   >
                     Terms & Condition
                   </Link>
@@ -216,7 +214,7 @@ export default async function Footer() {
                 <li>
                   <Link
                     href="#"
-                    className="text-muted text-decoration-none d-block"
+                    className="text-white text-decoration-none d-block"
                   >
                     FAQ
                   </Link>
@@ -227,11 +225,11 @@ export default async function Footer() {
         </div>
 
         {/* Divider */}
-        <hr className="my-5 opacity-25" />
+        <hr className="my-5 text-white" />
 
         {/* Copyright */}
         <div className="d-flex flex-wrap align-items-center justify-content-center pb-3">
-          <p className="text-muted mb-0 me-3">
+          <p className="text-white mb-0 me-3">
             &copy; {currentYear} {data?.company_name || "My Company"}. All rights
             reserved.
           </p>
