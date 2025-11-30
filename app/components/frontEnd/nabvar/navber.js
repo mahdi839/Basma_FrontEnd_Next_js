@@ -156,7 +156,7 @@ export default function Navbar() {
                       style={{objectFit: 'contain'}}
                     />
                   ) : (
-                    <Image src="/img/logo3.png" alt="" width={150} height={40} />
+                    <Image src="/img/logo.png" alt="" width={150} height={40} />
                   )}
                 </Link>
               </div>
@@ -193,7 +193,7 @@ export default function Navbar() {
                 ) : (
                   <Link href="/">
                     <Image
-                      src="/img/logo3.png"
+                      src="/img/logo.png"
                       alt=""
                       width={200}
                       height={60}

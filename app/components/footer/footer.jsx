@@ -230,7 +230,7 @@ export default async function Footer() {
         {/* Copyright */}
         <div className="d-flex flex-wrap align-items-center justify-content-center pb-3">
           <p className="text-white mb-0 me-3">
-            &copy; {currentYear} {data?.company_name || "My Company"}. All rights
+            &copy; {currentYear} {data?.company_name || "Eyara Fashion"}. All rights
             reserved.
           </p>
         </div>
