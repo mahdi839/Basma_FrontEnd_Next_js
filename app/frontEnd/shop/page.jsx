@@ -234,7 +234,7 @@ function ShopPage() {
   };
 
   return (
-    <div className="container-fluid py-4">
+    <div className="container py-4">
       <div className="row">
         {/* Sidebar Filters */}
         <div className="col-lg-3 col-md-4 mb-4">

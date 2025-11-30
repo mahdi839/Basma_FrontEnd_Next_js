@@ -213,7 +213,7 @@ export default function Navbar() {
                     <Link href="/">Home</Link>
                   </li>
                   <li className="mx-3">
-                    <Link href="/shop">Shop</Link>
+                    <Link href="/frontEnd/shop">Shop</Link>
                   </li>
                   <li className="mx-3">
                     <Link href="/frontEnd/about_us">About Us</Link>
