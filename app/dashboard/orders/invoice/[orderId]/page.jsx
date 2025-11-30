@@ -5,7 +5,8 @@ import axios from "axios";
 import PageLoader from "@/app/components/loader/pageLoader";
 import useFormatDate from "@/app/hooks/useFormatDate";
 import { FaPrint, FaArrowLeft } from "react-icons/fa";
-
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 export default function InvoicePage() {
     const params = useParams();
     const orderId = params.orderId;
@@ -188,14 +189,16 @@ export default function InvoicePage() {
                                                 <td>
                                                     <div className="d-flex align-items-center">
                                                         {item.colorImage && (
-                                                            <img
-                                                                src={item.colorImage}
-                                                                alt="Color"
-                                                                width="40"
-                                                                height="40"
-                                                                className="rounded-circle border me-2"
-                                                                style={{ objectFit: "cover" }}
-                                                            />
+                                                            <Zoom>
+                                                                <img
+                                                                    src={item.colorImage}
+                                                                    alt="Color"
+                                                                    width="70"
+                                                                    height="70"
+                                                                    className="rounded-circle border me-2"
+                                                                    style={{ objectFit: "cover" }}
+                                                                />
+                                                            </Zoom>
                                                         )}
                                                         <span className="fw-medium">{item.title}</span>
                                                     </div>
@@ -251,10 +254,7 @@ export default function InvoicePage() {
                     <div className="row mt-5 pt-3 border-top">
                         <div className="col-12 text-center">
                             <p className="text-muted mb-2 small">
-                                Thank you for your business! For any questions, please contact us at {companyInfo.phone || companyInfo.email}
-                            </p>
-                            <p className="text-muted small mb-0">
-                                This is a computer-generated invoice and does not require a physical signature.
+                                Thank you for your business! For any questions, please contact us at {companyInfo?.phone ?? "0 1614 477 721"}
                             </p>
                         </div>
                     </div>
@@ -275,6 +275,8 @@ export default function InvoicePage() {
                         color: black !important;
                         font-size: 12pt;
                         line-height: 1.4;
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
                     
                     .container {
@@ -363,9 +365,23 @@ export default function InvoicePage() {
                         page-break-inside: avoid;
                     }
                     
-                    /* Margins for the printed page */
+                    /* Remove browser headers and footers */
                     @page {
-                        margin: 1cm;
+                        margin: 0.5cm !important;
+                        size: auto;
+                    }
+                    
+                    /* Hide browser-specific headers and footers */
+                    body::before,
+                    body::after {
+                        display: none !important;
+                    }
+                    
+                    /* Additional print optimizations */
+                    html, body {
+                        height: 100% !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
                     }
                 }
                 

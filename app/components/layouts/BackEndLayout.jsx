@@ -56,6 +56,34 @@ export default function BackEndLayout({ children }) {
           {children}
         </main>
       </div>
+
+        {/* Add print styles to hide sidebar and adjust layout */}
+      <style jsx global>{`
+        @media print {
+          /* Hide sidebar during print */
+          .Dashboard_layout > :first-child:not(.dashboard_content) {
+            display: none !important;
+          }
+          
+          /* Make main content take full width during print */
+          .dashboard_content {
+            margin-left: 0 !important;
+            width: 100% !important;
+            padding: 0 !important;
+          }
+          
+          /* Hide mobile toggle button during print */
+          .mobile-sidebar-toggle {
+            display: none !important;
+          }
+          
+          /* Ensure body has no margins during print */
+          body {
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+        }
+      `}</style>
     </>
   )
 }

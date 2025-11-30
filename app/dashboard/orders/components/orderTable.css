@@ -1,10 +1,7 @@
-:root {
-	/* --primary-color: #DB3340; */
-	--primary-color: #7d0ba7;
-}
+
 .order_print_btn{
     background: transparent;
 }
 .order_print_btn_icon{
-    color: var(--primary-color);
+    color: #7d0ba7;
 }
