@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
+import ShopSkeleton from "./ShopSkeleton";
 
 function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -236,7 +237,7 @@ function ShopPage() {
 
   // ✅ Now it's safe to return conditionally
   if (loading) {
-    return <DynamicLoader />;
+    return <ShopSkeleton />;
   }
 
   return (

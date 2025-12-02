@@ -2092,6 +2092,19 @@ table tr td {
 	box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
 }
 
+.skeleton {
+  background: #e2e2e2;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: .6; }
+  50% { opacity: 1; }
+  100% { opacity: .6; }
+}
+
+
 /* Animations */
 @keyframes overlayFadeIn {
 	from {
