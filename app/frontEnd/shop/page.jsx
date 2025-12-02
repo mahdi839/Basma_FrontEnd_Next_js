@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
+import DynamicLoader from "@/app/components/loader/dynamicLoader";
 
 function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -67,7 +68,7 @@ function ShopPage() {
     try {
       const params = new URLSearchParams();
       params.append('page', page);
-      
+
       if (filters.categories.length > 0) {
         filters.categories.forEach(cat => params.append('categories[]', cat));
       }
@@ -233,6 +234,11 @@ function ShopPage() {
     toast.success("Added to cart!");
   };
 
+  // ✅ Now it's safe to return conditionally
+  if (loading) {
+    return <DynamicLoader />;
+  }
+
   return (
     <div className="container py-4">
       <div className="row">
@@ -325,7 +331,7 @@ function ShopPage() {
               </div>
 
               {/* Clear Filters */}
-              <button 
+              <button
                 className="btn btn-outline-secondary w-100"
                 onClick={clearFilters}
               >
@@ -345,13 +351,6 @@ function ShopPage() {
                 Showing {products.length} of {pagination.total} products
               </small>
             </div>
-            <div>
-              {loading && (
-                <div className="spinner-border spinner-border-sm" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Products Grid */}
@@ -364,7 +363,7 @@ function ShopPage() {
             <>
               <div className="row">
                 {products.map((product, index) => (
-                  <div key={product.id} className="col-xl-3 col-lg-4 col-md-6 col-sm-6 mb-4">
+                  <div key={product.id} className="col-6 col-lg-4 col-md-4 ">
                     <ProductCard
                       slotProducts={product}
                       handleOpenModal={handleOpenModal}
