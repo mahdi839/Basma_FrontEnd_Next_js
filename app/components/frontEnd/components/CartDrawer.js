@@ -153,10 +153,11 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
     };
 
     const { fbp, fbc } = getFacebookParams();
-
+    const user_id = localStorage.getItem('user_id')??null
     const orderData = {
       ...formData,
       cart: cartItems,
+      user_id,
       shipping_cost: shippingAmount,
       total_amount: finalTotal,
       // Add Facebook tracking data

@@ -28,7 +28,7 @@ export default function AdminLogin() {
         API_BASE.endsWith("/") ? "" : "/"
       }${LOGIN_ENDPOINT}`;
       const response = await axios.post(url, { email, password });
-      const { status, token, role, message } = response.data;
+      const { status, token, role, message,user_id } = response.data;
 
       if (!status) {
         toast.error(message || "Login failed.");
@@ -38,6 +38,7 @@ export default function AdminLogin() {
       if (typeof window !== "undefined") {
         localStorage.setItem("token", token);
         if (role) localStorage.setItem("role", role);
+        if(user_id) localStorage.setItem('user_id',user_id)
       }
 
       toast.success("Successfully logged in");
