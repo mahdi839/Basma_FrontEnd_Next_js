@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../layouts/dashboard.css";
 import { BsLayoutTextSidebar, BsChevronDown, BsChevronRight } from "react-icons/bs";
-import { FaInfoCircle, FaProductHunt, FaShippingFast, FaShoppingBag } from "react-icons/fa";
+import { FaInfoCircle, FaProductHunt, FaShippingFast, FaShoppingBag, FaUsers } from "react-icons/fa";
 import { RiKanbanView2 } from "react-icons/ri";
 import { IoIosSettings } from "react-icons/io";
 import { MdInventory } from "react-icons/md";
@@ -12,6 +12,7 @@ import { MdOutlineSocialDistance } from "react-icons/md";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { usePathname } from "next/navigation";
 import { TbCirclesRelation } from "react-icons/tb";
+import { HiTrophy } from "react-icons/hi2";
 
 
 export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
@@ -44,6 +45,12 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
         { href: "/dashboard/orders", label: 'All Orders', Icon: FaShoppingBag },
         { href: "/dashboard/incomplete_orders", label: 'Incomplete Orders', Icon: FaShoppingBag },
       ]
+    },
+    {
+      type: 'single',
+      href: "/dashboard/customers",
+      Icon: HiTrophy,
+      label: 'Customer Leaderboard'
     },
     {
       type: 'single',
