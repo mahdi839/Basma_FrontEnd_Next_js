@@ -15,7 +15,7 @@ const ProductCard = React.memo(function ProductCard({
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   return (
-    <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5`}>
+    <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
       <div
         className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative"
       >
@@ -64,9 +64,9 @@ const ProductCard = React.memo(function ProductCard({
           <div className="d-flex justify-content-between align-items-center mt-1 mt-md-2">
             <div>
               <span
-                className="text-dark fw-bold product-price"
+                className="fw-bold product-price"
               >
-                ৳{slotProducts?.sizes?.[0]?.pivot.price  || slotProducts?.price} {slotProducts?.sizes?.[0]?.size?"-":""} {((slotProducts?.sizes?.[0]?.size??""))}
+                {`${slotProducts?.price?"৳":""} ${slotProducts?.price}`} 
               </span>
             </div>
           </div>
@@ -116,6 +116,14 @@ const ProductCard = React.memo(function ProductCard({
           )}
         </div>
       </div>
+      {slotProducts.status === 'prebook' && (
+        <div
+          className="position-absolute  m-2 px-3 py-1  shadow-sm product_status_badge"
+          style={{ fontSize: "12px", letterSpacing: "0.5px" }}
+        >
+          PRE-BOOK
+        </div>
+      )}
     </div>
   );
 });

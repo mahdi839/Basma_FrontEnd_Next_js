@@ -2142,6 +2142,17 @@ table tr td {
 	}
 }
 
+.product_status_badge{
+	top: 3rem;
+	left: -1;
+	background: #2D64E6;
+	color: white;
+}
+
+.product-price{
+	color: var(--primary-color);
+}
+
 /* Responsive Design */
 @media (max-width: 576px) {
 	.footer_bg {
