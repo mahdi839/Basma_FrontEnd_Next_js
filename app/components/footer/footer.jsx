@@ -90,6 +90,11 @@ export default async function Footer() {
                 </Link>
               </div>
 
+
+              <div>
+                 {data.company_description??''}
+              </div>
+
              
 
               <div className="d-flex gap-3">
