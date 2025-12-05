@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
-import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ShopSkeleton from "./ShopSkeleton";
 
 function ShopPage() {
@@ -19,6 +18,10 @@ function ShopPage() {
     max_price: '',
     search: ''
   });
+  // Local state for inputs to avoid triggering useEffect immediately
+  const [searchInput, setSearchInput] = useState('');
+  const [priceInput, setPriceInput] = useState({ min: '', max: '' });
+  
   const [filterOptions, setFilterOptions] = useState({
     categories: [],
     sizes: [],
@@ -42,6 +45,33 @@ function ShopPage() {
   const cartItems = useSelector((state) => state.cart.items);
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+  // Debounce effect for search - only trigger when 3+ characters or empty
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput.length >= 3 || searchInput.length === 0) {
+        setFilters(prev => ({
+          ...prev,
+          search: searchInput
+        }));
+      }
+    }, 1000); 
+
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  // Debounce effect for price range
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFilters(prev => ({
+        ...prev,
+        min_price: priceInput.min,
+        max_price: priceInput.max
+      }));
+    }, 1000); // 800ms delay for price
+
+    return () => clearTimeout(timer);
+  }, [priceInput]);
+
   // Fetch filter options
   const fetchFilterOptions = async () => {
     try {
@@ -50,11 +80,14 @@ function ShopPage() {
       if (data.message === 'success') {
         setFilterOptions(data.data);
         // Set initial price range
+        const minPrice = data.data.price_range.min;
+        const maxPrice = data.data.price_range.max;
         setFilters(prev => ({
           ...prev,
-          min_price: data.data.price_range.min,
-          max_price: data.data.price_range.max
+          min_price: minPrice,
+          max_price: maxPrice
         }));
+        setPriceInput({ min: minPrice, max: maxPrice });
       }
     } catch (error) {
       console.error('Error fetching filter options:', error);
@@ -129,22 +162,20 @@ function ShopPage() {
     }));
   };
 
-  const handlePriceChange = (min, max) => {
-    setFilters(prev => ({
-      ...prev,
-      min_price: min,
-      max_price: max
-    }));
+  const handleSearchChange = (searchTerm) => {
+    setSearchInput(searchTerm);
   };
 
-  const handleSearchChange = (searchTerm) => {
-    setFilters(prev => ({
-      ...prev,
-      search: searchTerm
-    }));
+  const handlePriceChange = (min, max) => {
+    setPriceInput({ min, max });
   };
 
   const clearFilters = () => {
+    setSearchInput('');
+    setPriceInput({
+      min: filterOptions.price_range.min,
+      max: filterOptions.price_range.max
+    });
     setFilters({
       categories: [],
       sizes: [],
@@ -161,7 +192,7 @@ function ShopPage() {
     }
   };
 
-  // Product modal and cart functions (from your example)
+  // Product modal and cart functions
   const handleOpenModal = (product) => {
     setSelectedProduct(product);
     setSelectedSizes("");
@@ -235,7 +266,6 @@ function ShopPage() {
     toast.success("Added to cart!");
   };
 
-  // ✅ Now it's safe to return conditionally
   if (loading) {
     return <ShopSkeleton />;
   }
@@ -256,10 +286,13 @@ function ShopPage() {
                 <input
                   type="text"
                   className="form-control"
-                  placeholder="Search products..."
-                  value={filters.search}
+                  placeholder="Search products... (min 3 chars)"
+                  value={searchInput}
                   onChange={(e) => handleSearchChange(e.target.value)}
                 />
+                {searchInput.length > 0 && searchInput.length < 3 && (
+                  <small className="text-muted">Type at least 3 characters to search</small>
+                )}
               </div>
 
               {/* Categories */}
@@ -307,7 +340,7 @@ function ShopPage() {
               {/* Price Range */}
               <div className="mb-4">
                 <label className="form-label fw-semibold">
-                  Price Range: ৳{filters.min_price} - ৳{filters.max_price}
+                  Price Range: ৳{priceInput.min} - ৳{priceInput.max}
                 </label>
                 <div className="row g-2">
                   <div className="col">
@@ -315,8 +348,8 @@ function ShopPage() {
                       type="number"
                       className="form-control"
                       placeholder="Min"
-                      value={filters.min_price}
-                      onChange={(e) => handlePriceChange(e.target.value, filters.max_price)}
+                      value={priceInput.min}
+                      onChange={(e) => handlePriceChange(e.target.value, priceInput.max)}
                     />
                   </div>
                   <div className="col">
@@ -324,8 +357,8 @@ function ShopPage() {
                       type="number"
                       className="form-control"
                       placeholder="Max"
-                      value={filters.max_price}
-                      onChange={(e) => handlePriceChange(filters.min_price, e.target.value)}
+                      value={priceInput.max}
+                      onChange={(e) => handlePriceChange(priceInput.min, e.target.value)}
                     />
                   </div>
                 </div>
