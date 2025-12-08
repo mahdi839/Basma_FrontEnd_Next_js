@@ -48,7 +48,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
     },
     {
       type: 'single',
-      href: "/dashboard/customers",
+      href: "/dashboard/customer_leaderboard",
       Icon: HiTrophy,
       label: 'Customer Leaderboard'
     },
