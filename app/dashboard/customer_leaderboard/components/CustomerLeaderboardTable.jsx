@@ -5,10 +5,9 @@ import React, { useState } from "react";
 import useFormatDate from "@/app/hooks/useFormatDate";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import { 
-  FaPhone, FaEnvelope, FaMapMarkerAlt, FaTrophy, FaStar, 
-  FaSearch, FaFilter, FaRedo, FaEye, FaMedal, FaShoppingBag,
-  FaTimes
+import {
+  FaPhone, FaEnvelope, FaMapMarkerAlt, FaTrophy, FaStar,
+  FaSearch, FaFilter, FaRedo, FaEye, FaMedal, FaShoppingBag, FaWhatsapp
 } from "react-icons/fa";
 import { BiSortAlt2 } from "react-icons/bi";
 import { HiUserGroup } from "react-icons/hi";
@@ -194,15 +193,15 @@ export default function CustomerLeaderboardTable({
 
             {/* Action Buttons - Enhanced */}
             <div className="col-lg-4 col-md-8 d-flex align-items-end gap-2">
-              <button 
-                className="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-2" 
+              <button
+                className="btn btn-primary flex-fill d-flex align-items-center justify-content-center gap-2"
                 onClick={handleApply}
               >
                 <FaFilter size={14} />
                 Apply Filters
               </button>
-              <button 
-                className="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-2" 
+              <button
+                className="btn btn-outline-secondary flex-fill d-flex align-items-center justify-content-center gap-2"
                 onClick={handleReset}
               >
                 <FaRedo size={14} />
@@ -262,7 +261,7 @@ export default function CustomerLeaderboardTable({
                             {medalStyle ? (
                               <span style={{ fontSize: '24px' }}>{medalStyle.icon}</span>
                             ) : (
-                              <div 
+                              <div
                                 className="bg-light rounded-circle d-flex align-items-center justify-content-center fw-bold text-muted"
                                 style={{ width: '32px', height: '32px', fontSize: '14px' }}
                               >
@@ -302,7 +301,7 @@ export default function CustomerLeaderboardTable({
                         <td className="px-4">
                           <div className="d-flex flex-column gap-2">
                             <div className="d-flex align-items-center gap-2">
-                              <span 
+                              <span
                                 className="badge bg-primary-subtle text-primary border border-primary"
                                 style={{ fontSize: '0.75rem', padding: '6px 12px' }}
                               >
@@ -313,9 +312,9 @@ export default function CustomerLeaderboardTable({
                               className="badge bg-info text-white border border-primary"
                               onClick={() => handleViewProducts(customer)}
                               disabled={!customer.last_ordered_products?.length}
-                              style={{ fontSize: '0.75rem', padding: '6px 12px',cursor:'pointer' }}
+                              style={{ fontSize: '0.75rem', padding: '6px 12px', cursor: 'pointer' }}
                             >
-                              Latest Order
+                              View Latest Order
                             </span>
                           </div>
                         </td>
@@ -336,11 +335,10 @@ export default function CustomerLeaderboardTable({
                         </td>
                         <td className="px-4">
                           <span
-                            className={`badge ${
-                              customer.badge === "new" 
-                                ? "bg-info-subtle text-info border border-info" 
-                                : "bg-warning-subtle text-warning border border-warning"
-                            } d-inline-flex align-items-center gap-1`}
+                            className={`badge ${customer.badge === "new"
+                              ? "bg-info-subtle text-info border border-info"
+                              : "bg-warning-subtle text-warning border border-warning"
+                              } d-inline-flex align-items-center gap-1`}
                             style={{ fontSize: '0.75rem', padding: '8px 12px', fontWeight: '600' }}
                           >
                             {customer.badge === "new" ? (
@@ -356,14 +354,31 @@ export default function CustomerLeaderboardTable({
                             )}
                           </span>
                         </td>
-                        <td className="px-4 text-center">
+                        <td className="px-4 text-center d-flex justify-content-center gap-2">
+                          {/* View Details */}
                           <Link href={`/dashboard/customer_leaderboard/${customer.phone}`}>
-                            <button className="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-2">
+                            <button className="d-inline-flex align-items-center gap-2" style={{ outline: 'none', border: 'none' }}>
                               <FaEye size={14} />
-                              View
                             </button>
                           </Link>
+
+                          {/* WhatsApp */}
+                          {customer.phone && (
+                            <a
+                              href={`https://wa.me/${customer.phone.replace(/\D/g, '').startsWith('88')
+                                  ? customer.phone.replace(/\D/g, '')
+                                  : '88' + customer.phone.replace(/\D/g, '')
+                                }`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="d-inline-flex align-items-center gap-2 text-success"
+                            >
+                              <FaWhatsapp size={16} />
+                            </a>
+                          )}
                         </td>
+
+
                       </tr>
                     );
                   })
@@ -397,7 +412,7 @@ export default function CustomerLeaderboardTable({
                           {medalStyle ? (
                             <span style={{ fontSize: '28px' }}>{medalStyle.icon}</span>
                           ) : (
-                            <div 
+                            <div
                               className="bg-light rounded-circle d-flex align-items-center justify-content-center fw-bold text-muted"
                               style={{ width: '36px', height: '36px' }}
                             >
@@ -410,11 +425,10 @@ export default function CustomerLeaderboardTable({
                           </div>
                         </div>
                         <span
-                          className={`badge ${
-                            customer.badge === "new" 
-                              ? "bg-info-subtle text-info border border-info" 
-                              : "bg-warning-subtle text-warning border border-warning"
-                          }`}
+                          className={`badge ${customer.badge === "new"
+                            ? "bg-info-subtle text-info border border-info"
+                            : "bg-warning-subtle text-warning border border-warning"
+                            }`}
                           style={{ fontSize: '0.75rem', padding: '6px 10px' }}
                         >
                           {customer.badge === "new" ? "🌟 New" : "🏆 Repeat"}
@@ -515,9 +529,9 @@ export default function CustomerLeaderboardTable({
                 <h5 className="modal-title fw-bold">
                   {selectedCustomer.name}'s Latest Ordered Products
                 </h5>
-                <button 
-                  type="button" 
-                  className="btn-close" 
+                <button
+                  type="button"
+                  className="btn-close"
                   onClick={handleCloseModal}
                 ></button>
               </div>
@@ -587,9 +601,9 @@ export default function CustomerLeaderboardTable({
                 )}
               </div>
               <div className="modal-footer">
-                <button 
-                  type="button" 
-                  className="btn btn-secondary" 
+                <button
+                  type="button"
+                  className="btn btn-secondary"
                   onClick={handleCloseModal}
                 >
                   Close
