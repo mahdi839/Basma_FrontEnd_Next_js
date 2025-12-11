@@ -211,7 +211,6 @@ export default function DashboardHome() {
           <small className="text-muted">Overview of sales, orders, and activity</small>
         </div>
         <div className="d-flex gap-2">
-          <button className="btn btn-primary">Create Invoice</button>
           <button className="btn btn-outline-secondary" onClick={fetchSummary}>
             Refresh
           </button>
