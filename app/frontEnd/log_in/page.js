@@ -15,8 +15,15 @@ export default function AdminLogin() {
   const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const LOGIN_ENDPOINT = "api/logIn";
 
+  // ✅ Helper function to set cookie
+  const setCookie = (name, value, days = 7) => {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!email || !password) {
       toast.warn("Please enter both email and password.");
       return;
@@ -24,28 +31,43 @@ export default function AdminLogin() {
 
     setLoading(true);
     try {
-      const url = `${API_BASE}${
-        API_BASE.endsWith("/") ? "" : "/"
-      }${LOGIN_ENDPOINT}`;
+      const url = `${API_BASE}${API_BASE.endsWith("/") ? "" : "/"}${LOGIN_ENDPOINT}`;
       const response = await axios.post(url, { email, password });
-      const { status, token, role, message,user_id } = response.data;
+
+      const { status, token, user, message } = response.data;
 
       if (!status) {
         toast.error(message || "Login failed.");
         return;
       }
 
+      // ✅ Save to both localStorage AND cookies (middleware reads cookies)
       if (typeof window !== "undefined") {
+        // LocalStorage (for client-side access)
         localStorage.setItem("token", token);
-        if (role) localStorage.setItem("role", role);
-        if(user_id) localStorage.setItem('user_id',user_id)
+        localStorage.setItem("user_id", user.id);
+        localStorage.setItem("user_name", user.name);
+        localStorage.setItem("roles", JSON.stringify(user.roles));
+        localStorage.setItem("permissions", JSON.stringify(user.permissions || []));
+
+        // ✅ Cookies (for middleware access)
+        setCookie("token", token);
+        setCookie("roles", JSON.stringify(user.roles));
+        setCookie("user_id", user.id);
       }
 
       toast.success("Successfully logged in");
 
-      if (role === "admin" || role === "super_admin") {
+      // ✅ Check roles (now it's an array)
+      const roles = user.roles || [];
+      const hasAdminAccess = roles.some(role => 
+        ["super-admin", "admin"].includes(role)
+      );
+
+      if (hasAdminAccess) {
         router.push("/dashboard");
       } else {
+        toast.error("Access denied. You are not an admin.");
         router.push("/");
       }
     } catch (err) {
@@ -65,24 +87,17 @@ export default function AdminLogin() {
                 Log In
                 <span
                   className="d-block mx-auto mt-2 btn-grad"
-                  style={{
-                    width: "80px", // width of curved border
-                    height: "5px", // thickness of curve
-                    borderRadius: "50px", // creates the curve
-                    marginTop: "8px",
-                  }}
+                  style={{ width: "80px", height: "5px", borderRadius: "50px" }}
                 ></span>
               </h1>
             </div>
+
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label fw-semibold">
-                  Email Address
-                </label>
+                <label className="form-label fw-semibold">Email Address</label>
                 <input
                   type="email"
                   className="form-control form-control-lg"
-                  id="email"
                   placeholder="Enter email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -91,14 +106,11 @@ export default function AdminLogin() {
               </div>
 
               <div className="mb-3 position-relative">
-                <label htmlFor="password" className="form-label fw-semibold">
-                  Password
-                </label>
+                <label className="form-label fw-semibold">Password</label>
                 <div className="input-group">
                   <input
                     type={showPassword ? "text" : "password"}
                     className="form-control form-control-lg"
-                    id="password"
                     placeholder="Enter password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -121,11 +133,7 @@ export default function AdminLogin() {
               >
                 {loading ? (
                   <>
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
+                    <span className="spinner-border spinner-border-sm me-2"></span>
                     Logging in...
                   </>
                 ) : (
