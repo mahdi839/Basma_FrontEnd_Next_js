@@ -36,15 +36,15 @@ export function middleware(req) {
   }
 
   // ✅ Check if user has admin or super-admin role
-  const hasAdminAccess = roles.some(role => 
-    ["admin", "super-admin"].includes(role)
-  );
+  // const hasAdminAccess = roles.some(role => 
+  //   ["admin", "super-admin"].includes(role)
+  // );
 
   // Redirect if not admin
-  if (!hasAdminAccess) {
-    const homeUrl = new URL("/", req.url);
-    return NextResponse.redirect(homeUrl);
-  }
+  // if (!hasAdminAccess) {
+  //   const homeUrl = new URL("/", req.url);
+  //   return NextResponse.redirect(homeUrl);
+  // }
 
   return NextResponse.next(); // Allow access
 }
