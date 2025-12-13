@@ -1,10 +1,12 @@
-// middleware.js
+// middleware.js (root level of Next.js project)
 import { NextResponse } from "next/server";
 
 export function middleware(req) {
   const { pathname } = req.nextUrl;
 
-  // ✅ Define protected paths
+  console.log("🔍 Middleware checking:", pathname);
+
+  // ✅ STEP 1: Define which paths require protection
   const protectedPaths = ["/dashboard"];
   
   // Check if current path is protected
@@ -12,41 +14,58 @@ export function middleware(req) {
     pathname.startsWith(path)
   );
 
-  // If not protected, allow access
+  // If not protected, allow access immediately
   if (!isProtected) {
+    console.log("✅ Public route, allowing access");
     return NextResponse.next();
   }
 
-  // ✅ Get token and roles from cookies (middleware can only read cookies, not localStorage)
+  // ✅ STEP 2: Get authentication data from cookies
   const token = req.cookies.get("token")?.value;
-  const rolesString = req.cookies.get("roles")?.value;
+  const permissionsString = req.cookies.get("permissions")?.value;
 
-  // Redirect to login if no token
+  console.log("🔑 Token exists:", !!token);
+
+  // ✅ STEP 3: Check if user is authenticated
   if (!token) {
+    console.log("❌ No token found, redirecting to login");
     const loginUrl = new URL("/frontEnd/log_in", req.url);
+    loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // Parse roles
-  let roles = [];
+  // ✅ STEP 4: Parse permissions from cookie
+  let permissions = [];
+  
   try {
-    roles = rolesString ? JSON.parse(rolesString) : [];
+    permissions = permissionsString ? JSON.parse(permissionsString) : [];
+    console.log("✅ User permissions:", permissions);
   } catch (e) {
-    roles = [];
+    console.error("❌ Failed to parse permissions:", e);
+    permissions = [];
   }
 
-  // ✅ Check if user has admin or super-admin role
-  // const hasAdminAccess = roles.some(role => 
-  //   ["admin", "super-admin"].includes(role)
-  // );
+  // ✅ STEP 5: Check if user has ANY dashboard/admin permission
+  // This is flexible - any permission means they can access dashboard
+  const hasDashboardPermission = permissions.includes("view dashboard");
+  
+  // ✅ ALTERNATIVE: Check if user has ANY permission at all
+  // This means anyone with any permission can access dashboard
+  const hasAnyPermission = permissions.length > 0;
 
-  // Redirect if not admin
-  // if (!hasAdminAccess) {
-  //   const homeUrl = new URL("/", req.url);
-  //   return NextResponse.redirect(homeUrl);
-  // }
+  if (!hasDashboardPermission && !hasAnyPermission) {
+    console.log("❌ User has no dashboard permissions, redirecting to home");
+    const homeUrl = new URL("/", req.url);
+    return NextResponse.redirect(homeUrl);
+  }
 
-  return NextResponse.next(); // Allow access
+  // ✅ STEP 6: No route-specific checks here!
+  // Let the ProtectedRoute components handle page-level permission checks
+  // Let the sidebar handle menu visibility
+  // Let the Laravel API handle action permissions
+
+  console.log("✅ User has permissions, allowing access to:", pathname);
+  return NextResponse.next();
 }
 
 // ✅ Configure which paths to run middleware on

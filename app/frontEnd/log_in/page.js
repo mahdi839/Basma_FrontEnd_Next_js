@@ -54,13 +54,14 @@ export default function AdminLogin() {
         setCookie("token", token);
         setCookie("roles", JSON.stringify(user.roles));
         setCookie("user_id", user.id);
+        setCookie("permissions", JSON.stringify(user.permissions));
       }
 
       toast.success("Successfully logged in");
 
       // ✅ Check roles (now it's an array)
       const roles = user.roles || [];
-      const hasAdminAccess = roles.some(role => 
+      const hasAdminAccess = roles.some(role =>
         ["super-admin", "admin"].includes(role)
       );
 
