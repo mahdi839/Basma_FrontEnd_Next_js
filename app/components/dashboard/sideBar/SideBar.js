@@ -83,7 +83,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       href: "/dashboard/customer_leaderboard",
       Icon: HiTrophy,
       label: 'Customer Leaderboard',
-      permission: 'view dashboard' // ✅ Uses dashboard permission
+      permission: 'view leaderboard' // ✅ Uses dashboard permission
     },
     {
       type: 'single',
