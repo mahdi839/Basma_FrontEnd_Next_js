@@ -8,8 +8,6 @@ export default function RootLayout({ children }) {
   return (
     <BackEndLayout>
     {children}
-    </BackEndLayout>
-     
-      
+    </BackEndLayout>   
   )
 }
