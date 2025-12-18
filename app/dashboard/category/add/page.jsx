@@ -36,6 +36,20 @@ export default function CreateCategoryPage() {
     fetchCategories();
   }, []);
 
+  // Build hierarchical category tree for display
+  const buildCategoryTree = (categories, parentId = null, level = 0) => {
+    const result = [];
+    categories
+      .filter(cat => cat.parent_id === parentId)
+      .forEach(cat => {
+        result.push({ ...cat, level });
+        result.push(...buildCategoryTree(categories, cat.id, level + 1));
+      });
+    return result;
+  };
+
+  const categoryTree = buildCategoryTree(categories);
+
   const validateForm = () => {
     const newErrors = {};
     
@@ -102,6 +116,19 @@ export default function CreateCategoryPage() {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: "" }));
     }
+  };
+
+  // Get indent style based on level
+  const getIndentStyle = (level) => {
+    return {
+      paddingLeft: `${level * 20 + 12}px`
+    };
+  };
+
+  // Get prefix based on level
+  const getLevelPrefix = (level) => {
+    if (level === 0) return '';
+    return '└─ '.repeat(level);
   };
 
   return (
@@ -200,7 +227,6 @@ export default function CreateCategoryPage() {
                         </div>
                       )}
                     </div>
-                 
                   </div>
                 </div>
 
@@ -221,19 +247,23 @@ export default function CreateCategoryPage() {
                         value={form.parent_id}
                         onChange={(e) => handleInputChange("parent_id", e.target.value)}
                         disabled={isSubmitting || loading}
+                        style={{ fontFamily: 'monospace' }}
                       >
-                        <option value="">-- Select Parent Category (Optional) --</option>
-                        {categories
-                          .filter(cat => !cat.parent_id)
-                          .map((cat) => (
-                            <option key={cat.id} value={cat.id}>
-                              {cat.name}
-                            </option>
-                          ))}
+                        <option value="">-- Root Category (No Parent) --</option>
+                        {categoryTree.map((cat) => (
+                          <option 
+                            key={cat.id} 
+                            value={cat.id}
+                            style={getIndentStyle(cat.level)}
+                          >
+                            {getLevelPrefix(cat.level)}{cat.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <small className="form-text text-muted">
-                      Leave empty to create a root category
+                      <i className="fas fa-info-circle me-1"></i>
+                      You can nest categories at any level
                     </small>
                   </div>
 
@@ -343,7 +373,7 @@ export default function CreateCategoryPage() {
                       <div className="d-flex gap-3">
                         <button
                           type="submit"
-                          className="btn px-5"
+                          className="btn btn-primary px-5"
                           disabled={isSubmitting || !form.name.trim()}
                         >
                           {isSubmitting ? (
@@ -367,7 +397,7 @@ export default function CreateCategoryPage() {
           </div>
         </div>
 
-        {/* Sidebar - Help & Guidelines */}
+        {/* Sidebar */}
         <div className="col-lg-4">
           {/* Help Card */}
           <div className="card shadow mb-4">
@@ -381,21 +411,20 @@ export default function CreateCategoryPage() {
               <div className="mb-3">
                 <h6 className="fw-bold text-primary mb-2">
                   <i className="fas fa-check-circle text-success me-2"></i>
-                  Best Practices
+                  Nested Categories
                 </h6>
                 <ul className="list-unstyled mb-0">
                   <li className="mb-2">
                     <i className="fas fa-chevron-right text-primary me-2"></i>
-                    Use clear, descriptive names
+                    Create unlimited nesting levels
                   </li>
-                 
                   <li className="mb-2">
                     <i className="fas fa-chevron-right text-primary me-2"></i>
-                    Feature popular categories
+                    Subcategories can have their own children
                   </li>
                   <li>
                     <i className="fas fa-chevron-right text-primary me-2"></i>
-                    Use priority for important categories
+                    Organize products hierarchically
                   </li>
                 </ul>
               </div>
@@ -403,57 +432,60 @@ export default function CreateCategoryPage() {
               <div className="mb-3">
                 <h6 className="fw-bold text-primary mb-2">
                   <i className="fas fa-exclamation-triangle text-warning me-2"></i>
-                  Things to Avoid
+                  Best Practices
                 </h6>
                 <ul className="list-unstyled mb-0">
                   <li className="mb-2">
-                    <i className="fas fa-times text-danger me-2"></i>
-                    Avoid duplicate category names
+                    <i className="fas fa-check text-success me-2"></i>
+                    Keep hierarchy logical and shallow when possible
                   </li>
                   <li className="mb-2">
-                    <i className="fas fa-times text-danger me-2"></i>
-                    Don't create too many levels
+                    <i className="fas fa-check text-success me-2"></i>
+                    Use clear, descriptive names
                   </li>
                   <li>
-                    <i className="fas fa-times text-danger me-2"></i>
-                    Avoid vague category names
+                    <i className="fas fa-check text-success me-2"></i>
+                    Avoid duplicate names at same level
                   </li>
                 </ul>
               </div>
               
-              <div className="alert alert-warning">
+              <div className="alert alert-info mb-0">
                 <i className="fas fa-info-circle me-2"></i>
-                <strong>Tip:</strong> Categories with higher priority will appear first in listings.
+                <strong>Example:</strong> Electronics → Phones → Smartphones → iPhone
               </div>
             </div>
           </div>
 
-          {/* Recent Categories */}
+          {/* Category Tree Preview */}
           <div className="card shadow">
             <div className="card-header py-3">
               <h6 className="m-0 fw-bold text-primary">
-                <i className="fas fa-history me-2"></i>
-                Recent Categories
+                <i className="fas fa-tree me-2"></i>
+                Category Structure
               </h6>
             </div>
-            <div className="card-body">
-              {categories.slice(0, 5).map((category) => (
-                <div key={category.id} className="d-flex align-items-center mb-3">
-                  <div className="flex-shrink-0">
-                    <i className="fas fa-folder text-primary"></i>
-                  </div>
-                  <div className="flex-grow-1 ms-3">
-                    <div className="fw-medium">{category.name}</div>
-                    <small className="text-muted">
-                      {category.parent_id ? "Sub-category" : "Root category"}
+            <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+              {categoryTree.length > 0 ? (
+                categoryTree.map((category) => (
+                  <div 
+                    key={category.id} 
+                    className="mb-2"
+                    style={{ 
+                      paddingLeft: `${category.level * 20}px`,
+                      fontSize: category.level === 0 ? '14px' : '13px'
+                    }}
+                  >
+                    <i className={`fas fa-${category.level === 0 ? 'folder' : 'folder-open'} text-${category.level === 0 ? 'primary' : 'secondary'} me-2`}></i>
+                    <span className={category.level === 0 ? 'fw-bold' : ''}>
+                      {category.name}
+                    </span>
+                    <small className="text-muted ms-2">
+                      (Level {category.level + 1})
                     </small>
                   </div>
-                  <span className="badge bg-light text-dark">
-                    {category.priority}
-                  </span>
-                </div>
-              ))}
-              {categories.length === 0 && (
+                ))
+              ) : (
                 <div className="text-center text-muted py-3">
                   <i className="fas fa-folder-open fa-2x mb-2"></i>
                   <p>No categories yet</p>
@@ -466,7 +498,7 @@ export default function CreateCategoryPage() {
 
       {/* Loading Overlay */}
       {loading && (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25 z-3">
+        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25" style={{ zIndex: 9999 }}>
           <div className="text-center">
             <div className="spinner-border text-primary mb-3" role="status">
               <span className="visually-hidden">Loading...</span>

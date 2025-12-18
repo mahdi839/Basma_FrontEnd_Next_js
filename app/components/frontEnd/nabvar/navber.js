@@ -16,6 +16,7 @@ import {
 } from "react-icons/fa";
 import { IoMenuOutline } from "react-icons/io5";
 import { ImCancelCircle } from "react-icons/im";
+import { BiCategory } from "react-icons/bi";
 
 import LogButtons from "./LogButtons";
 import NavSearch from "./navSearch/NavSearch";
@@ -28,6 +29,7 @@ export default function Navbar() {
   const [isClient, setIsClient] = useState(false);
   const [isShowCollaps, setIsShowCollaps] = useState(false);
   const [isShowCollapsMenu, setIsShowCollapsMenu] = useState('category');
+  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
   const [footerData, setFooterData] = useState(null);
   const [logoUrl, setLogoUrl] = useState(null);
   
@@ -208,13 +210,29 @@ export default function Navbar() {
             {/* Desktop navigation */}
             <div className="col-lg-6 d-none d-xl-block">
               <nav className="header__menu">
-                <ul className="d-flex justify-content-center mb-0">
+                <ul className="d-flex justify-content-center align-items-center mb-0">
                   <li className="mx-3">
                     <Link href="/">Home</Link>
                   </li>
-                  <li className="mx-3">
-                    <Link href="/frontEnd/shop">Shop</Link>
+                  
+                  {/* Categories Mega Menu */}
+                  <li 
+                    className={`mx-3 position-relative ${style.category_dropdown}`}
+                    onMouseEnter={() => setShowCategoryMenu(true)}
+                    onMouseLeave={() => setShowCategoryMenu(false)}
+                  >
+                    <Link href="/frontEnd/shop" className="d-flex align-items-center gap-2">
+                      <BiCategory />
+                      <span>Categories</span>
+                    </Link>
+                    
+                    {showCategoryMenu && (
+                      <div className={style.category_mega_menu}>
+                        <NavCategories isMobile={false} />
+                      </div>
+                    )}
                   </li>
+                  
                   <li className="mx-3">
                     <Link href="/frontEnd/about_us">About Us</Link>
                   </li>
@@ -257,7 +275,7 @@ export default function Navbar() {
           <div className={`${style.collaps_category_list_div}`}>
             {isShowCollapsMenu === 'category' && (
               <ul className={`my-3 ${style.collaps_category_list}`}>
-                <NavCategories onClick={handleCollapsCancel} />
+                <NavCategories onClick={handleCollapsCancel} isMobile={true} />
               </ul>
             )}
             {isShowCollapsMenu === 'menu' && (
