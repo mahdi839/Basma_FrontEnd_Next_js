@@ -16,22 +16,17 @@ export default function Page() {
     setError("");
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
-      const url = `${baseUrl}api/categories`;
-
-      const res = await fetch(url, {
+      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+      const res = await fetch(`${baseUrl}api/categories`, {
         cache: "no-store",
-        headers: { "Content-Type": "application/json" },
       });
 
-      if (!res.ok) {
-        throw new Error(`Failed to load categories: ${res.status}`);
-      }
+      if (!res.ok) throw new Error("Failed to load categories");
 
       const data = await res.json();
-      setCategories(data || { data: [] });
+      setCategories(data);
     } catch (err) {
-      setError(err.message || "Error loading categories.");
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -41,29 +36,23 @@ export default function Page() {
     fetchCategories();
   }, [fetchCategories]);
 
-  if (loading) {
-    return <PageLoader />;
-  }
+  if (loading) return <PageLoader />;
 
   return (
     <div className="container-fluid my-5">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1 className="h3 mb-0">Categories</h1>
         <Link href="/dashboard/category/add">
-          <Button className="mb-0">
-            Add Category
-          </Button>
+          <Button>Add Category</Button>
         </Link>
       </div>
-      
-      {!loading && error && (
-        <div className="alert alert-danger text-center" role="alert">
-          {error}
-        </div>
+
+      {error && (
+        <div className="alert alert-danger text-center">{error}</div>
       )}
-      
-      {!loading && !error && (
-        <CategoryTable categories={categories || { data: [] }} />
+
+      {!error && (
+        <CategoryTable categories={categories} />
       )}
     </div>
   );

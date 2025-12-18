@@ -5,8 +5,6 @@ import CartIcon from "../components/frontEnd/components/CartIcon";
 import ScrollToTop from "../components/frontEnd/scrollToTop/ScrollToTop";
 
 
-
-
 export default function FrontEndLayout({ children }) {
   
   return (
