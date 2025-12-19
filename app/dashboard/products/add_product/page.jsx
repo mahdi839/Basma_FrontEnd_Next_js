@@ -51,7 +51,7 @@ export default function ProductUploadForm() {
   const fetchData = async () => {
     try {
       const [catRes, sizeRes] = await Promise.all([
-        axios.get(`${baseUrl}api/frontend/categories`),
+        axios.get(`${baseUrl}api/product_add_category`),
         axios.get(`${baseUrl}api/sizes`),
       ]);
       setCategories(catRes.data);
