@@ -1,4 +1,7 @@
-/* Desktop Mega Menu Styles */
+/* ===============================
+   DESKTOP MEGA MENU
+================================ */
+
 .megaMenuWrapper {
   position: relative;
   width: 100%;
@@ -9,7 +12,6 @@
   flex-direction: column;
   background: #fff;
   border-radius: 8px;
-  overflow: visible;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
@@ -32,9 +34,6 @@
   font-size: 15px;
   text-decoration: none;
   transition: all 0.3s ease;
-  background: #fff;
-  position: relative;
-  z-index: 1;
 }
 
 .categoryLink:hover,
@@ -46,126 +45,76 @@
 .chevron {
   font-size: 12px;
   color: #999;
-  transition: all 0.3s ease;
 }
 
-.categoryLink:hover .chevron,
-.categoryLink.active .chevron {
-  color: #DB3340;
-  transform: translateX(3px);
-}
+/* ===============================
+   FIRST LEVEL MEGA MENU
+================================ */
 
-/* Mega Menu Dropdown - First Level */
 .megaMenu {
   position: absolute;
-  left: calc(100% - 8px);
+  left: 100%;
   top: 0;
-  width: 600px;
-  min-height: 200px;
-  max-height: 500px;
+  min-width: 300px;
+  max-width: 1000px;
   background: #fff;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   border-radius: 12px;
-  padding-left: 24px;
   opacity: 0;
   visibility: hidden;
-  transform: translateX(-20px);
-  transition: all 0.3s ease;
+  transform: translateX(-10px);
+  transition: 0.25s ease;
   z-index: 1000;
   pointer-events: none;
-  overflow: visible;
-}
-
-.megaMenu::after {
-  content: '';
-  position: absolute;
-  left: -16px;
-  top: 0;
-  width: 24px;
-  height: 100%;
-  background: transparent;
 }
 
 .megaMenuActive {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateX(0) !important;
-  pointer-events: auto !important;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
-.megaMenu::before {
-  content: '';
-  position: absolute;
-  left: -10px;
-  top: 20px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  border-right: 10px solid #fff;
-  filter: drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.08));
-}
-
+/* IMPORTANT: no height, no scroll */
 .megaMenuContent {
   padding: 20px 24px;
-  height: 100%;
-  max-height: 500px;
-  background: #fff;
-  border-radius: 12px;
-  position: relative;
-  z-index: 1;
-  overflow-y: auto;
-  overflow-x: visible;
-}
-
-.megaMenuContent::-webkit-scrollbar {
-  width: 6px;
-}
-
-.megaMenuContent::-webkit-scrollbar-track {
-  background: #f5f5f5;
-  border-radius: 10px;
-}
-
-.megaMenuContent::-webkit-scrollbar-thumb {
-  background: #DB3340;
-  border-radius: 10px;
+  overflow: visible;
 }
 
 .megaMenuHeader {
   margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #f5f5f5;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
 }
 
 .megaMenuHeader h4 {
   font-size: 18px;
   font-weight: 700;
   color: #DB3340;
-  margin-bottom: 4px;
 }
 
 .megaMenuHeader p {
   font-size: 12px;
   color: #999;
-  margin: 0;
 }
 
+
+
+/* VERTICAL LIST – NO SIDE BY SIDE */
 .subcategoriesGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  overflow: visible;
-}
-
-/* Nested Subcategories Styles */
-.nestedSubcategories {
-  display: contents;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .nestedItem {
-  position: relative;
+  break-inside: avoid;
+  margin-bottom: 10px;
 }
+
+/* ===============================
+   SUBCATEGORY CARD
+================================ */
 
 .subcategoryCard {
   display: flex;
@@ -175,205 +124,84 @@
   background: #fafafa;
   border-radius: 8px;
   text-decoration: none;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-  position: relative;
+  transition: 0.25s ease;
 }
 
 .subcategoryCard:hover {
   background: #fff;
-  border-color: #DB3340;
-  transform: translateY(-2px);
+  border: 1px solid #DB3340;
   box-shadow: 0 4px 12px rgba(219, 51, 64, 0.15);
 }
 
 .subcategoryIcon {
-  width: 38px;
-  height: 38px;
-  background: linear-gradient(135deg, #DB3340 0%, #ff5765 100%);
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  background: #DB3340;
+  color: #fff;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-weight: 700;
-  font-size: 16px;
-  flex-shrink: 0;
-  text-transform: uppercase;
-}
-
-.subcategoryInfo {
-  flex: 1;
-  min-width: 0;
+  border-radius: 6px;
 }
 
 .subcategoryInfo h5 {
   font-size: 13px;
   font-weight: 600;
+  margin: 0;
   color: #333;
-  margin: 0 0 2px 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .subcategoryInfo span {
   font-size: 11px;
   color: #999;
-  transition: color 0.3s ease;
-}
-
-.subcategoryCard:hover .subcategoryInfo span {
-  color: #DB3340;
 }
 
 .nestedChevron {
   font-size: 10px;
+  margin-left: auto;
   color: #999;
-  transition: all 0.3s ease;
-  flex-shrink: 0;
 }
 
-.subcategoryCard:hover .nestedChevron {
-  color: #DB3340;
-  transform: translateX(3px);
-}
+/* ===============================
+   DEEP NESTED MENU (RIGHT SIDE)
+================================ */
 
-/* Deep Nested Menu (2nd, 3rd level, etc.) */
 .deepNestedMenu {
   position: absolute;
-  left: calc(100% + 12px);
+  left: 100%;
   top: 0;
-  width: 450px;
-  min-height: 150px;
-  max-height: 450px;
+  min-width: 250px;
   background: #fff;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   border-radius: 12px;
   opacity: 0;
   visibility: hidden;
-  transform: translateX(-10px);
-  transition: all 0.3s ease;
+  transform: translateX(-8px);
+  transition: 0.25s ease;
   z-index: 2000;
   pointer-events: none;
-  overflow: visible;
 }
 
 .deepNestedMenu.megaMenuActive {
-  opacity: 1 !important;
-  visibility: visible !important;
-  transform: translateX(0) !important;
-  pointer-events: auto !important;
-}
-
-.deepNestedMenu::before {
-  content: '';
-  position: absolute;
-  left: -8px;
-  top: 20px;
-  width: 0;
-  height: 0;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 8px solid #fff;
-  filter: drop-shadow(-2px 0 4px rgba(0, 0, 0, 0.08));
-}
-
-.deepNestedMenu .megaMenuContent {
-  padding: 16px 20px;
-  max-height: 450px;
-}
-
-.deepNestedMenu .megaMenuHeader h4 {
-  font-size: 16px;
-}
-
-.deepNestedMenu .megaMenuHeader p {
-  font-size: 11px;
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  pointer-events: auto;
 }
 
 .deepNestedMenu .subcategoriesGrid {
-  grid-template-columns: 1fr;
-  gap: 8px;
+  column-count: 2;
 }
 
-.deepNestedMenu .subcategoryCard {
-  padding: 8px 10px;
-}
+/* ===============================
+   MOBILE
+================================ */
 
-.deepNestedMenu .subcategoryIcon {
-  width: 34px;
-  height: 34px;
-  font-size: 14px;
-}
-
-.deepNestedMenu .subcategoryInfo h5 {
-  font-size: 12px;
-}
-
-.deepNestedMenu .subcategoryInfo span {
-  font-size: 10px;
-}
-
-/* Mobile Styles */
-.mobileCategory {
-  margin-bottom: 0;
-  transition: all 0.3s ease;
-}
-
-.mobileCategory > a {
+.mobileCategory a {
   display: block;
-  color: #333;
-  font-weight: 500;
-  font-size: 15px;
-  border-bottom: 1px solid #e0e0e0;
   padding: 12px 20px;
+  border-bottom: 1px solid #eee;
   text-decoration: none;
-  transition: all 0.3s ease;
-  font-family: monospace;
-}
-
-.mobileCategory > a:hover {
-  background: #fef8f8;
-  color: #DB3340;
-  padding-left: 24px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1600px) {
-  .megaMenu {
-    width: 520px;
-  }
-  
-  .deepNestedMenu {
-    width: 400px;
-  }
-}
-
-@media (max-width: 1400px) {
-  .megaMenu {
-    width: 480px;
-  }
-  
-  .deepNestedMenu {
-    width: 360px;
-  }
-  
-  .subcategoriesGrid {
-    grid-template-columns: 1fr;
-  }
-  
-  .deepNestedMenu .subcategoriesGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 1200px) {
-  .megaMenu {
-    width: 400px;
-  }
-  
-  .deepNestedMenu {
-    width: 320px;
-  }
+  color: #333;
 }
