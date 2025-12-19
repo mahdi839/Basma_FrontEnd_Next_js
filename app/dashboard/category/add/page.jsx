@@ -186,7 +186,7 @@ export default function CreateCategoryPage() {
       </div>
 
       <div className="row">
-        <div className="col-lg-8">
+        <div className="col-lg-12">
           {/* Main Form Card */}
           <div className="card shadow mb-4">
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -397,103 +397,6 @@ export default function CreateCategoryPage() {
           </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="col-lg-4">
-          {/* Help Card */}
-          <div className="card shadow mb-4">
-            <div className="card-header py-3 bg-info">
-              <h6 className="m-0 fw-bold text-white">
-                <i className="fas fa-lightbulb me-2"></i>
-                Category Guidelines
-              </h6>
-            </div>
-            <div className="card-body">
-              <div className="mb-3">
-                <h6 className="fw-bold text-primary mb-2">
-                  <i className="fas fa-check-circle text-success me-2"></i>
-                  Nested Categories
-                </h6>
-                <ul className="list-unstyled mb-0">
-                  <li className="mb-2">
-                    <i className="fas fa-chevron-right text-primary me-2"></i>
-                    Create unlimited nesting levels
-                  </li>
-                  <li className="mb-2">
-                    <i className="fas fa-chevron-right text-primary me-2"></i>
-                    Subcategories can have their own children
-                  </li>
-                  <li>
-                    <i className="fas fa-chevron-right text-primary me-2"></i>
-                    Organize products hierarchically
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="mb-3">
-                <h6 className="fw-bold text-primary mb-2">
-                  <i className="fas fa-exclamation-triangle text-warning me-2"></i>
-                  Best Practices
-                </h6>
-                <ul className="list-unstyled mb-0">
-                  <li className="mb-2">
-                    <i className="fas fa-check text-success me-2"></i>
-                    Keep hierarchy logical and shallow when possible
-                  </li>
-                  <li className="mb-2">
-                    <i className="fas fa-check text-success me-2"></i>
-                    Use clear, descriptive names
-                  </li>
-                  <li>
-                    <i className="fas fa-check text-success me-2"></i>
-                    Avoid duplicate names at same level
-                  </li>
-                </ul>
-              </div>
-              
-              <div className="alert alert-info mb-0">
-                <i className="fas fa-info-circle me-2"></i>
-                <strong>Example:</strong> Electronics → Phones → Smartphones → iPhone
-              </div>
-            </div>
-          </div>
-
-          {/* Category Tree Preview */}
-          <div className="card shadow">
-            <div className="card-header py-3">
-              <h6 className="m-0 fw-bold text-primary">
-                <i className="fas fa-tree me-2"></i>
-                Category Structure
-              </h6>
-            </div>
-            <div className="card-body" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              {categoryTree.length > 0 ? (
-                categoryTree.map((category) => (
-                  <div 
-                    key={category.id} 
-                    className="mb-2"
-                    style={{ 
-                      paddingLeft: `${category.level * 20}px`,
-                      fontSize: category.level === 0 ? '14px' : '13px'
-                    }}
-                  >
-                    <i className={`fas fa-${category.level === 0 ? 'folder' : 'folder-open'} text-${category.level === 0 ? 'primary' : 'secondary'} me-2`}></i>
-                    <span className={category.level === 0 ? 'fw-bold' : ''}>
-                      {category.name}
-                    </span>
-                    <small className="text-muted ms-2">
-                      (Level {category.level + 1})
-                    </small>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center text-muted py-3">
-                  <i className="fas fa-folder-open fa-2x mb-2"></i>
-                  <p>No categories yet</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Loading Overlay */}

@@ -48,10 +48,21 @@ export default function ProductIndexPage() {
 
   // Fetch products from Laravel API
   async function fetchProducts() {
+    let token = null;
+    if (typeof window !== "undefined") {
+      token = localStorage.getItem("token");
+    }
+
     try {
       const response = await axios.get(
-        `${baseUrl}api/products?search=${search}&status=${status}`
+        `${baseUrl}api/products?search=${search}&status=${status}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
+
       setProductData(response.data.data);
     } catch (err) {
       console.error("Error fetching products", err);

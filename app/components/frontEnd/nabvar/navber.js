@@ -215,22 +215,8 @@ export default function Navbar() {
                     <Link href="/">Home</Link>
                   </li>
                   
-                  {/* Categories Mega Menu */}
-                  <li 
-                    className={`mx-3 position-relative ${style.category_dropdown}`}
-                    onMouseEnter={() => setShowCategoryMenu(true)}
-                    onMouseLeave={() => setShowCategoryMenu(false)}
-                  >
-                    <Link href="/frontEnd/shop" className="d-flex align-items-center gap-2">
-                      <BiCategory />
-                      <span>Categories</span>
-                    </Link>
-                    
-                    {showCategoryMenu && (
-                      <div className={style.category_mega_menu}>
-                        <NavCategories isMobile={false} />
-                      </div>
-                    )}
+               <li className="mx-3">
+                    <Link href="/frontEnd/shop">Shop</Link>
                   </li>
                   
                   <li className="mx-3">
