@@ -38,8 +38,8 @@
 
 .categoryLink:hover,
 .categoryLink.active {
-  background: linear-gradient(to right, #DB3340 3px, #fef8f8 3px);
-  color: #DB3340;
+  background: linear-gradient(to right, #7d0ba7 3px, #faf6fc 3px);
+  color: #7d0ba7;
 }
 
 .chevron {
@@ -53,7 +53,7 @@
 
 .megaMenu {
   position: absolute;
-  left: 100%;
+  left: calc(100% + 8px);
   top: 0;
   min-width: 300px;
   max-width: 1000px;
@@ -66,6 +66,7 @@
   transition: 0.25s ease;
   z-index: 1000;
   pointer-events: none;
+  padding-left: 12px;
 }
 
 .megaMenuActive {
@@ -75,7 +76,18 @@
   pointer-events: auto;
 }
 
-/* IMPORTANT: no height, no scroll */
+/* Bridge area to prevent menu disappearing */
+.megaMenu::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: transparent;
+  pointer-events: auto;
+}
+
 .megaMenuContent {
   padding: 20px 24px;
   overflow: visible;
@@ -90,15 +102,13 @@
 .megaMenuHeader h4 {
   font-size: 18px;
   font-weight: 700;
-  color: #DB3340;
+  color: #7d0ba7;
 }
 
 .megaMenuHeader p {
   font-size: 12px;
   color: #999;
 }
-
-
 
 /* VERTICAL LIST – NO SIDE BY SIDE */
 .subcategoriesGrid {
@@ -108,8 +118,10 @@
 }
 
 .nestedItem {
+  position: relative;
   break-inside: avoid;
   margin-bottom: 10px;
+  isolation: isolate;
 }
 
 /* ===============================
@@ -125,18 +137,20 @@
   border-radius: 8px;
   text-decoration: none;
   transition: 0.25s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .subcategoryCard:hover {
   background: #fff;
-  border: 1px solid #DB3340;
-  box-shadow: 0 4px 12px rgba(219, 51, 64, 0.15);
+  border: 1px solid #7d0ba7;
+  box-shadow: 0 4px 12px rgba(125, 11, 167, 0.15);
 }
 
 .subcategoryIcon {
   width: 36px;
   height: 36px;
-  background: #DB3340;
+  background: #7d0ba7;
   color: #fff;
   font-weight: 700;
   display: flex;
@@ -145,11 +159,20 @@
   border-radius: 6px;
 }
 
+.subcategoryInfo {
+  flex: 1;
+}
+
 .subcategoryInfo h5 {
   font-size: 13px;
   font-weight: 600;
   margin: 0;
   color: #333;
+  transition: color 0.25s ease;
+}
+
+.subcategoryCard:hover .subcategoryInfo h5 {
+  color: #7d0ba7;
 }
 
 .subcategoryInfo span {
@@ -161,6 +184,11 @@
   font-size: 10px;
   margin-left: auto;
   color: #999;
+  transition: color 0.25s ease;
+}
+
+.subcategoryCard:hover .nestedChevron {
+  color: #7d0ba7;
 }
 
 /* ===============================
@@ -169,18 +197,31 @@
 
 .deepNestedMenu {
   position: absolute;
-  left: 100%;
+  left: calc(100% + 8px);
   top: 0;
   min-width: 250px;
   background: #fff;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   border-radius: 12px;
-  opacity: 0;
+  opacity: 1;
   visibility: hidden;
   transform: translateX(-8px);
   transition: 0.25s ease;
   z-index: 2000;
   pointer-events: none;
+  padding-left: 12px;
+}
+
+/* Critical: Bridge to prevent menu disappearing */
+.deepNestedMenu::before {
+  content: '';
+  position: absolute;
+  right: 100%;
+  top: 0;
+  bottom: 0;
+  width: 20px;
+  background: transparent;
+  pointer-events: auto;
 }
 
 .deepNestedMenu.megaMenuActive {
@@ -191,7 +232,8 @@
 }
 
 .deepNestedMenu .subcategoriesGrid {
-  column-count: 2;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===============================
@@ -204,4 +246,11 @@
   border-bottom: 1px solid #eee;
   text-decoration: none;
   color: #333;
+  transition: all 0.25s ease;
+}
+
+.mobileCategory a:hover {
+  background: #faf6fc;
+  color: #7d0ba7;
+  padding-left: 24px;
 }
