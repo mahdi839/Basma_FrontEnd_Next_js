@@ -99,7 +99,6 @@ export default function ProductUpdateForm({
         })) || [],
       };
 
-      console.log("Transformed Data:", transformedData);
       setFormData(transformedData);
       setExistingImages(initialData.images || []);
     }
