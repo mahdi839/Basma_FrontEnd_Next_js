@@ -5,6 +5,8 @@ import Button from "@/app/components/dashboard/components/button/Button";
 import { toast } from "react-toastify";
 import { FaTrash, FaPlus, FaChevronDown, FaChevronUp, FaImage, FaPalette, FaRuler, FaTags, FaQuestionCircle } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import SidebarCreateSize from "./components/SidebarCreateSize";
+import SidebarCreateCategory from "./components/SidebarCreateCategory";
 
 export default function ProductUploadForm() {
   const [categories, setCategories] = useState([]);
@@ -244,11 +246,11 @@ export default function ProductUploadForm() {
           <div className="d-flex align-items-center mb-4">
             <h3 className="mb-0 fw-bold text-gray-800">Create New Product</h3>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="product-form">
             {/* Basic Information */}
             <div className="card mb-4 border-0 shadow-sm">
-              <div 
+              <div
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('basic')}
               >
@@ -376,7 +378,7 @@ export default function ProductUploadForm() {
 
             {/* Colors */}
             <div className="card mb-4 border-0 shadow-sm">
-              <div 
+              <div
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('colors')}
               >
@@ -436,7 +438,7 @@ export default function ProductUploadForm() {
                       </div>
                     ))
                   )}
-                  
+
                   <div className="text-center mt-3">
                     <button
                       type="button"
@@ -457,7 +459,7 @@ export default function ProductUploadForm() {
 
             {/* Sizes & Pricing */}
             <div className="card mb-4 border-0 shadow-sm">
-              <div 
+              <div
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('sizes')}
               >
@@ -492,7 +494,7 @@ export default function ProductUploadForm() {
                             onChange={(e) =>
                               handleSizeChange(index, "size_id", e.target.value)
                             }
-                            
+
                           >
                             <option value="">Select Size</option>
                             {sizes.map((s) => (
@@ -514,7 +516,7 @@ export default function ProductUploadForm() {
                               onChange={(e) =>
                                 handleSizeChange(index, "price", e.target.value)
                               }
-                              
+
                             />
                           </div>
                         </div>
@@ -547,7 +549,7 @@ export default function ProductUploadForm() {
                       </div>
                     ))
                   )}
-                  
+
                   <div className="text-center mt-3">
                     <button
                       type="button"
@@ -571,7 +573,7 @@ export default function ProductUploadForm() {
 
             {/* Product Images */}
             <div className="card mb-4 border-0 shadow-sm">
-              <div 
+              <div
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('images')}
               >
@@ -609,7 +611,7 @@ export default function ProductUploadForm() {
                     </label>
                     <p className="text-muted mt-2 mb-0">PNG, JPG, JPEG files up to 10MB</p>
                   </div>
-                  
+
                   {formData.images.length > 0 && (
                     <div className="mt-4">
                       <h6 className="fw-semibold mb-3">Selected Images ({formData.images.length})</h6>
@@ -645,7 +647,7 @@ export default function ProductUploadForm() {
 
             {/* Categories */}
             <div className="card mb-4 border-0 shadow-sm">
-              <div 
+              <div
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('categories')}
               >
@@ -699,7 +701,7 @@ export default function ProductUploadForm() {
 
             {/* FAQs */}
             <div className="card mb-4 border-0 shadow-sm">
-              <div 
+              <div
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('faqs')}
               >
@@ -767,7 +769,7 @@ export default function ProductUploadForm() {
                       </div>
                     ))
                   )}
-                  
+
                   <div className="text-center mt-3">
                     <button
                       type="button"
@@ -806,156 +808,23 @@ export default function ProductUploadForm() {
 
         {/* Sidebar - Right Side */}
         <div className="col-lg-4">
-          {/* Create Size */}
-          <div className="card mb-4 border-0 shadow-sm sticky-top" style={{ top: "20px" }}>
-            <div className="card-header bg-gradient-primary text-white border-0">
-              <h5 className="mb-0 fw-semibold">
-                <FaRuler className="me-2" />
-                Quick Create Size
-              </h5>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleCreateSize}>
-                <div className="mb-3">
-                  <label className="form-label fw-semibold text-gray-700">Size Name</label>
-                  <input
-                    type="text"
-                    className="form-control border-gray-300"
-                    placeholder="e.g., S, M, L, XL"
-                    value={newSize}
-                    onChange={(e) => setNewSize(e.target.value)}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary w-100 fw-semibold py-2"
-                  disabled={loadingSidebar}
-                >
-                  {loadingSidebar ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" />
-                      Creating...
-                    </>
-                  ) : (
-                    "Create Size"
-                  )}
-                </button>
-              </form>
+          <SidebarCreateSize
+            newSize={newSize}
+            setNewSize={setNewSize}
+            handleCreateSize={handleCreateSize}
+            loadingSidebar={loadingSidebar}
+            sizes={sizes}
+          />
 
-              <hr className="my-4" />
-
-              <h6 className="fw-semibold mb-3 text-gray-700">Recent 6 Sizes</h6>
-              <div className="d-flex flex-wrap gap-2">
-                {sizes.slice(0, 6).map((size) => (
-                  <span
-                    key={size.id}
-                    className="badge fs-6 bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2"
-                  >
-                    {size.size}
-                  </span>
-                ))}
-                {sizes.length === 0 && (
-                  <p className="text-muted text-center w-100">No sizes available</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Create Category */}
-          <div className="card mb-4 border-0 shadow-sm">
-            <div className="card-header bg-gradient-success text-white border-0">
-              <h5 className="mb-0 fw-semibold">
-                <FaTags className="me-2" />
-                Quick Create Category
-              </h5>
-            </div>
-            <div className="card-body">
-              <form onSubmit={handleCreateCategory}>
-                <div className="mb-3">
-                  <label className="form-label fw-semibold text-gray-700">Category Name</label>
-                  <input
-                    type="text"
-                    className="form-control border-gray-300"
-                    placeholder="Enter category name"
-                    value={newCategory.name}
-                    onChange={(e) =>
-                      setNewCategory({ ...newCategory, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label fw-semibold text-gray-700">Home Category</label>
-                  <select
-                    className="form-select border-gray-300"
-                    value={newCategory.home_category}
-                    onChange={(e) =>
-                      setNewCategory({
-                        ...newCategory,
-                        home_category: e.target.value,
-                      })
-                    }
-                  >
-                    <option value="0">Off</option>
-                    <option value="1">On</option>
-                  </select>
-                </div>
-                <div className="mb-3">
-                  <label className="form-label fw-semibold text-gray-700">Priority</label>
-                  <input
-                    type="number"
-                    className="form-control border-gray-300"
-                    placeholder="0"
-                    value={newCategory.priority}
-                    onChange={(e) =>
-                      setNewCategory({
-                        ...newCategory,
-                        priority: parseInt(e.target.value) || 0,
-                      })
-                    }
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-success w-100 fw-semibold py-2"
-                  disabled={loadingSidebar}
-                >
-                  {loadingSidebar ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" />
-                      Creating...
-                    </>
-                  ) : (
-                    "Create Category"
-                  )}
-                </button>
-              </form>
-
-              <hr className="my-4" />
-
-              <h6 className="fw-semibold mb-3 text-gray-700">Recent 5 Categories</h6>
-              <div className="list-group list-group-flush">
-                {categories.slice(0, 5).map((category) => (
-                  <div
-                    key={category.id}
-                    className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 py-2"
-                  >
-                    <span className="fw-medium">{category.name}</span>
-                    <span
-                      className={`badge ${
-                        category.home_category ? "bg-info" : "bg-secondary"
-                      } rounded-pill`}
-                    >
-                      {category.home_category ? "Home" : "Regular"}
-                    </span>
-                  </div>
-                ))}
-                {categories.length === 0 && (
-                  <p className="text-muted text-center">No categories available</p>
-                )}
-              </div>
-            </div>
-          </div>
+          <SidebarCreateCategory
+            newCategory={newCategory}
+            setNewCategory={setNewCategory}
+            handleCreateCategory={handleCreateCategory}
+            loadingSidebar={loadingSidebar}
+            categories={categories}
+          />
         </div>
+
       </div>
 
       <style jsx>{`
