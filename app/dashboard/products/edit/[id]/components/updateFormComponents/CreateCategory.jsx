@@ -4,8 +4,8 @@ import {FaTags } from 'react-icons/fa'
 
 export default function CreateCategory({setNewCategory,newCategory,loadingSidebar,categories,handleCreateCategory}) {
     return (
-        <div className="card mb-4 border-0 shadow-sm">
-            <div className="card-header bg-success text-white border-0">
+        <div className="card mb-4 border-top ">
+            <div className="card-header">
                 <h5 className="mb-0 fw-semibold">
                     <FaTags className="me-2" />
                     Quick Create Category

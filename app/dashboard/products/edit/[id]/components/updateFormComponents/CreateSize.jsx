@@ -3,8 +3,8 @@ import { FaRuler } from 'react-icons/fa'
 
 export default function CreateSize({ sizes, handleCreateSize,newSize,loadingSidebar,setNewSize}) {
     return (
-        <div className="card mb-4 border-0 shadow-sm sticky-top" style={{ top: "20px" }}>
-            <div className="card-header bg-gradient-primary text-white border-0">
+        <div className="card mb-4 border-top" style={{ top: "20px" }}>
+            <div className="card-header  border-0">
                 <h5 className="mb-0 fw-semibold">
                     <FaRuler className="me-2" />
                     Quick Create Size

@@ -9,7 +9,7 @@ export default function Categories({
     setFormData,
     categories,}) {
     return (
-        <div className="card mb-4 border-0 shadow-sm">
+        <div className="card mb-4 border-top">
             <div
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('categories')}

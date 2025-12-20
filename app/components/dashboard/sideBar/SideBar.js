@@ -50,12 +50,12 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
           Icon: FaProductHunt,
           permission: 'view products' // ✅ Required permission
         },
-        { 
-          href: "/dashboard/inventory", 
-          label: 'Inventory Management', 
-          Icon: MdInventory,
-          permission: 'view products' // ✅ Reuse products permission
-        },
+        // { 
+        //   href: "/dashboard/inventory", 
+        //   label: 'Inventory Management', 
+        //   Icon: MdInventory,
+        //   permission: 'view products' // ✅ Reuse products permission
+        // },
       ]
     },
     {
