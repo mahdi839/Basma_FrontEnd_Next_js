@@ -15,37 +15,39 @@ import Image from "next/image";
 import ProductModal from "./components/ProductModal";
 import { useRouter } from "next/navigation";
 import CartDrawer from "../../components/CartDrawer";
+import Button from "@/app/components/dashboard/components/button/Button";
 
-function FeatureClient({ homeCategories, BannerCatData }) {
-  const [isLoading, setIsLoading] = useState(true);
+function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const sliderRefs = useRef([]);
   const [selectedSizes, setSelectedSizes] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
-  const [selectedProduct, setSelectedProduct] = useState(null); // For modal
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
+  const [homeCategories, setHomeCategories] = useState(initialCategories?.data || []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMorePages, setHasMorePages] = useState(initialCategories?.has_more || false);
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const dispatch = useDispatch();
   const cartCount = useSelector((state) => state.cart.count);
   const cartItems = useSelector((state) => state.cart.items);
-  const router = useRouter()
+  const router = useRouter();
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
 
   useEffect(() => {
-    if (homeCategories) {
-      setIsLoading(false);
-    }
-    if (homeCategories?.error) {
-      toast.error(homeCategories.error);
+    if (initialCategories?.error) {
+      toast.error(initialCategories.error);
     }
 
     sliderRefs.current = sliderRefs.current.slice(
       0,
       homeCategories?.length || 0
     );
-  }, [homeCategories]);
+  }, [homeCategories, initialCategories]);
 
-  // Slider settings with autoplay
+  // Slider settings
   const settings = {
     infinite: true,
     speed: 500,
@@ -82,7 +84,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
   // Open modal with product details
   function handleOpenModal(product) {
     setSelectedProduct(product);
-    setSelectedSizes(""); // Reset selection when opening modal
+    setSelectedSizes("");
     setIsModalOpen(true);
   }
 
@@ -107,7 +109,6 @@ function FeatureClient({ homeCategories, BannerCatData }) {
   }
 
   function handleAddToCart(product, type, preQty) {
-    // If modal is open, use the selected product from modal
     const targetProduct = selectedProduct || product;
 
     let existingCart = cartItems.find(
@@ -124,10 +125,9 @@ function FeatureClient({ homeCategories, BannerCatData }) {
       return;
     }
 
-    // Check if user select size or not for multiple sizes
     if (targetProduct.sizes.length > 1 && !selectedSizes) {
       Swal.fire({
-        title: `Please Select A Size}`,
+        title: `Please Select A Size`,
         icon: "warning",
         confirmButtonText: "Ok",
         confirmButtonColor: "#DB3340",
@@ -135,7 +135,6 @@ function FeatureClient({ homeCategories, BannerCatData }) {
       return;
     }
 
-    // Find the selected variant for price
     const selectedVariant = targetProduct.sizes.find(v => v.id == selectedSizes) || targetProduct.sizes[0];
     dispatch(
       addToCart({
@@ -149,30 +148,56 @@ function FeatureClient({ homeCategories, BannerCatData }) {
       })
     );
 
-    setSelectedSizes(""); // Reset selection
+    setSelectedSizes("");
     if (type == 'buy') {
       setIsCartDrawerOpen(true);
-      setIsDirectBuy(true)
+      setIsDirectBuy(true);
     }
-    handleCloseModal(); // Close modal after adding to cart
+    handleCloseModal();
     toast.success("Added to cart!");
   }
+
+  // Handle Load More - fetch next page from backend
+  const handleLoadMore = async () => {
+    setIsLoadingMore(true);
+    try {
+      const nextPage = currentPage + 1;
+      const response = await fetch(
+        `${baseUrl}api/product-slots_index/frontEndIndex?page=${nextPage}`
+      );
+      const data = await response.json();
+
+      if (data?.data && data.data.length > 0) {
+        setHomeCategories(prev => [...prev, ...data.data]);
+        setCurrentPage(nextPage);
+        setHasMorePages(data.has_more);
+      } else {
+        setHasMorePages(false);
+      }
+    } catch (error) {
+      toast.error("Failed to load more categories");
+      console.error("Load more error:", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   if (isLoading) {
     return <DynamicLoader />;
   }
 
-  if (homeCategories?.error) {
+  if (initialCategories?.error) {
     return (
-      <div className="text-center my-5">Error: {homeCategories.error} </div>
+      <div className="text-center my-5">Error: {initialCategories.error} </div>
     );
   }
 
   if (!homeCategories?.length) {
     return <div className="text-center my-5">No categories found</div>;
   }
+
   return (
-    <div className="container mb-3 mb-md-5 mt-0 py-2 ">
+    <div className="container mb-3 mb-md-5 mt-0 py-2">
       <div className="row position-relative">
         {homeCategories &&
           homeCategories.map((slot, slotIndex) => {
@@ -182,20 +207,32 @@ function FeatureClient({ homeCategories, BannerCatData }) {
 
             return (
               <React.Fragment key={slot.id || slotIndex}>
-                {/* Header with navigation buttons */}
-                {
-                  slot.products.length > 0 && slot?.banner?.banner_images?.map((img) => {
+                {/* Banner Images */}
+                {slot.products.length > 0 &&
+                  slot?.banner?.banner_images?.map((img) => {
                     return (
-                      <Link key={img.id} href={slot?.banner?.link ?? ""} className="text-decoration-none text-dark my-3">
-                        <Image src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`} alt="banner image" style={{ width: '100%', height: 'auto' }} priority />
+                      <Link
+                        key={img.id}
+                        href={slot?.banner?.link ?? ""}
+                        className="text-decoration-none text-dark my-3"
+                      >
+                        <Image
+                          src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`}
+                          alt="banner image"
+                          width={1200}
+                          height={400}
+                          style={{ width: "100%", height: "auto" }}
+                          priority
+                        />
                       </Link>
                     );
-                  })
-                }
+                  })}
+
+                {/* Category Header */}
                 <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
                   {slot.products.length > 0 && (
                     <h2
-                      className="featured-heading font-weight-bold mb-0  fs-5 fs-md-3 fs-lg-2 fs-xl-1"
+                      className="featured-heading font-weight-bold mb-0 fs-5 fs-md-3 fs-lg-2 fs-xl-1"
                       style={{ fontWeight: "600", color: "#222" }}
                     >
                       {slot.name}
@@ -223,8 +260,10 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                     </div>
                   )}
                 </div>
+
+                {/* Horizontal Line */}
                 {slot.products.length > 0 && (
-                  <div className="col-12 position-relative  ml-3 mt-0 overflow-hidden">
+                  <div className="col-12 position-relative ml-3 mt-0 overflow-hidden">
                     <hr className="feature-hr m-0" />
                     <div
                       className="feature-hr-div"
@@ -240,6 +279,7 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                   </div>
                 )}
 
+                {/* Products Slider (4 or more products) */}
                 {slot.products?.length >= 4 && (
                   <Slider
                     ref={sliderRefs.current[slotIndex]}
@@ -259,10 +299,14 @@ function FeatureClient({ homeCategories, BannerCatData }) {
                   </Slider>
                 )}
 
+                {/* Products Grid (less than 4 products) */}
                 {slot.products?.length < 4 && (
                   <div className="row mx-0">
                     {slot.products?.map((product, productIndex) => (
-                      <div key={product.id || productIndex} className="col-6 col-lg-3 col-md-4 px-1 px-md-2">
+                      <div
+                        key={product.id || productIndex}
+                        className="col-6 col-lg-3 col-md-4 px-1 px-md-2"
+                      >
                         <ProductCard
                           slotProducts={product}
                           handleOpenModal={handleOpenModal}
@@ -276,27 +320,65 @@ function FeatureClient({ homeCategories, BannerCatData }) {
             );
           })}
 
-        {/* Product Modal */}
-        {isModalOpen && selectedProduct && (
-          <ProductModal
-            product={selectedProduct}
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            selectedSizes={selectedSizes}
-            onSizeSelect={handleSizeSelect}
-            onAddToCart={handleAddToCart}
-            onSelectColor={handleColorSelect}
-            selectedColor={selectedColor}
-            baseUrl={baseUrl}
-          />
+        {/* Load More Button */}
+        {hasMorePages && (
+          <div className="col-12 text-center my-4">
+            <Button
+              onClick={handleLoadMore}
+              disabled={isLoadingMore}
+              onMouseEnter={(e) => {
+                if (!isLoadingMore) {
+                  e.target.style.backgroundColor = "#c02a35";
+                  e.target.style.transform = "translateY(-2px)";
+                  e.target.style.boxShadow = "0 6px 12px rgba(0,0,0,0.15)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isLoadingMore) {
+                  e.target.style.backgroundColor = "#DB3340";
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+                }
+              }}
+            >
+              {isLoadingMore ? (
+                <>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Loading...
+                </>
+              ) : (
+                "Load More "
+              )}
+            </Button>
+          </div>
         )}
-
-        <CartDrawer
-          isOpen={isCartDrawerOpen}
-          isDirectBuy={isDirectBuy}
-          onClose={handleCloseDrawer}
-        />
       </div>
+
+      {/* Product Modal */}
+      {isModalOpen && selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          selectedSizes={selectedSizes}
+          onSizeSelect={handleSizeSelect}
+          onAddToCart={handleAddToCart}
+          onSelectColor={handleColorSelect}
+          selectedColor={selectedColor}
+          baseUrl={baseUrl}
+        />
+      )}
+
+      {/* Cart Drawer */}
+      <CartDrawer
+        isOpen={isCartDrawerOpen}
+        isDirectBuy={isDirectBuy}
+        onClose={handleCloseDrawer}
+      />
     </div>
   );
 }

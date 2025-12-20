@@ -130,7 +130,7 @@ export default function Navbar() {
                       className="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
                     >
-                      <LogButtons />
+                      {isClient && <LogButtons />}
                     </ul>
                   </div>
                 </div>
