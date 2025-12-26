@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { increament, decreament, removeCart, clearCart } from "@/redux/slices/CartSlice";
 import axios from "axios";
@@ -22,6 +22,11 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   });
   const [shippingAmount, setShippingAmount] = useState(0);
   const [removingItem, setRemovingItem] = useState(null);
+  const [orderCompleted, setOrderCompleted] = useState(false);
+  
+  // Tracking refs
+  const abandonedCheckoutSent = useRef(false);
+  const formInteracted = useRef(false);
 
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = useSelector((state) => state.cart.count);
@@ -30,10 +35,130 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   const totalPrice = cartItems.reduce((total, item) => total + item.totalPrice, 0);
   const finalTotal = totalPrice + shippingAmount;
 
+  // Generate or retrieve session ID
+  const getSessionId = () => {
+    let sessionId = sessionStorage.getItem("checkout_session_id");
+    if (!sessionId) {
+      sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      sessionStorage.setItem("checkout_session_id", sessionId);
+    }
+    return sessionId;
+  };
+
+  // Send abandoned checkout data
+  const sendAbandonedCheckout = async () => {
+    // Only send if:
+    // 1. User has items in cart
+    // 2. User has filled phone number (minimum requirement)
+    // 3. Order not completed
+    // 4. Not already sent
+    // 5. User has interacted with the form
+    // 6. Currently on checkout step
+    if (
+      !orderCompleted &&
+      cartItems.length > 0 &&
+      formData.phone &&
+      !abandonedCheckoutSent.current &&
+      formInteracted.current &&
+      currentStep === "checkout"
+    ) {
+      const checkoutData = {
+        name: formData.name,
+        phone: formData.phone,
+        address: formData.address,
+        cart_items: cartItems,
+      };
+
+      try {
+        const sessionId = getSessionId();
+        
+        if (navigator.sendBeacon) {
+          // Use fetch with keepalive for better reliability
+          await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}api/track-abandoned-checkout`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-Session-ID": sessionId,
+              },
+              body: JSON.stringify(checkoutData),
+              keepalive: true,
+            }
+          );
+        } else {
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}api/track-abandoned-checkout`,
+            checkoutData,
+            {
+              headers: {
+                "X-Session-ID": sessionId,
+              },
+              withCredentials: true,
+            }
+          );
+        }
+        
+        abandonedCheckoutSent.current = true;
+        console.log("Abandoned checkout tracked");
+      } catch (err) {
+        console.error("Abandoned checkout tracking failed:", err);
+      }
+    }
+  };
+
+  // Track before user leaves page or closes drawer
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      sendAbandonedCheckout();
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        sendAbandonedCheckout();
+      }
+    };
+
+    // Only add listeners when on checkout step with phone number
+    if (isOpen && currentStep === "checkout" && formData.phone && formInteracted.current) {
+      window.addEventListener("beforeunload", handleBeforeUnload);
+      document.addEventListener("visibilitychange", handleVisibilityChange);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        document.removeEventListener("visibilitychange", handleVisibilityChange);
+      };
+    }
+  }, [isOpen, currentStep, cartItems, formData.phone, formData.name, formData.address, orderCompleted]);
+
+  // Debounced save - save after user stops typing for 3 seconds
+  useEffect(() => {
+    if (!formData.phone || !formInteracted.current || currentStep !== "checkout") return;
+
+    const timer = setTimeout(() => {
+      sendAbandonedCheckout();
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [formData.phone, formData.name, formData.address, currentStep]);
+
+  // Track when drawer closes without completing order
+  useEffect(() => {
+    if (!isOpen && currentStep === "checkout") {
+      sendAbandonedCheckout();
+    }
+  }, [isOpen]);
+
   // Close drawer on Escape key
   useEffect(() => {
     const handleEscape = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        // Track before closing if on checkout
+        if (currentStep === "checkout") {
+          sendAbandonedCheckout();
+        }
+        onClose();
+      }
     };
 
     if (isOpen) {
@@ -45,7 +170,16 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
       document.removeEventListener("keydown", handleEscape);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, currentStep]);
+
+  // Reset tracking when drawer opens fresh
+  useEffect(() => {
+    if (isOpen) {
+      abandonedCheckoutSent.current = false;
+      formInteracted.current = false;
+      setOrderCompleted(false);
+    }
+  }, [isOpen]);
 
   // Cart functions
   const handleIncreament = (id) => dispatch(increament({ id }));
@@ -78,10 +212,11 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
     }
   }, [isDirectBuy, isOpen]);
 
-  // Checkout functions
+  // Checkout functions with tracking
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    formInteracted.current = true; // Mark that user has interacted
   };
 
   const handleDistrictChange = (selectedOption) => {
@@ -89,6 +224,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
       ...prev,
       district: selectedOption?.value || ""
     }));
+    formInteracted.current = true;
   };
 
   // Fetch shipping cost
@@ -129,6 +265,9 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
       return;
     }
 
+    // Mark order as completed BEFORE API call
+    setOrderCompleted(true);
+
     const getFacebookParams = () => {
       const getCookie = (name) => {
         const value = `; ${document.cookie}`;
@@ -158,6 +297,19 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
     };
 
     try {
+      // Mark abandoned checkout as converted BEFORE placing order
+      if (formData.phone) {
+        try {
+          await axios.post(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}api/mark-checkout-converted`,
+            { phone: formData.phone },
+            { withCredentials: true }
+          );
+        } catch (err) {
+          console.error("Failed to mark checkout as converted:", err);
+        }
+      }
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}api/orders`,
         orderData
@@ -174,7 +326,6 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
 
         dispatch(clearCart());
         setCurrentStep("cart");
-        onClose();
         setFormData({
           name: "",
           phone: "",
@@ -183,9 +334,17 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
           payment_method: "cash",
           delivery_notes: "",
         });
+        
+        // Reset tracking flags
+        abandonedCheckoutSent.current = false;
+        formInteracted.current = false;
+        
+        onClose();
       }
     } catch (error) {
       console.error("Order submission error:", error);
+      setOrderCompleted(false); // Reset if order failed
+      
       Swal.fire({
         icon: "error",
         title: "Order Failed",
@@ -193,10 +352,23 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
         confirmButtonColor: "#DB3340",
       });
     }
-    onClose();
   };
 
-  const backToCart = () => setCurrentStep("cart");
+  const backToCart = () => {
+    // Track before going back if user filled phone
+    if (formData.phone && formInteracted.current) {
+      sendAbandonedCheckout();
+    }
+    setCurrentStep("cart");
+  };
+
+  const handleClose = () => {
+    // Track before closing if on checkout
+    if (currentStep === "checkout") {
+      sendAbandonedCheckout();
+    }
+    onClose();
+  };
 
   if (!isOpen) return null;
 
@@ -206,7 +378,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
         <CartDrawerHeader
           currentStep={currentStep}
           cartCount={cartCount}
-          onClose={onClose}
+          onClose={handleClose}
           onBack={backToCart}
         />
 
@@ -220,7 +392,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
               onRemove={handleRemove}
               onProceed={proceedToCheckout}
               removingItem={removingItem}
-              onClose={onClose}
+              onClose={handleClose}
             />
           ) : (
             <CheckoutStep
