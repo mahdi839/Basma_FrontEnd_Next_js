@@ -122,6 +122,7 @@ export default function MyOrders() {
         );
     }
 
+    let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
     return (
         <div className="orders-page">
             <div className="container">
@@ -166,14 +167,16 @@ export default function MyOrders() {
                                         <div className="order-number">{order.order_number}</div>
                                         <div className="order-date">{formatDate(order.created_at)}</div>
                                     </div>
-                                        {getStatusBadge(order.status)}                                   
+                                    {getStatusBadge(order.status)}
                                 </div>
 
                                 {/* Card Body */}
                                 <div className="order-body">
                                     {order.order_items?.slice(0, 2).map((item, idx) => (
                                         <div key={idx} className="product-item">
-                                            <img src={item.colorImage} alt={item.title} />
+                                            <img src={item?.product?.images?.[0]?.image
+                                                ? baseUrl + item?.product?.images?.[0]?.image
+                                                : ""} alt={item.title} />
                                             <div>
                                                 <div className="product-title">{item.title}</div>
                                                 <div className="product-meta">
