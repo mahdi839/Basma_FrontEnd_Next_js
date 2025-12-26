@@ -300,9 +300,10 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
       // Mark abandoned checkout as converted BEFORE placing order
       if (formData.phone) {
         try {
+          const session_id = getSessionId();
           await axios.post(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}api/mark-checkout-converted`,
-            { phone: formData.phone },
+            { session_id },
             { withCredentials: true }
           );
         } catch (err) {
