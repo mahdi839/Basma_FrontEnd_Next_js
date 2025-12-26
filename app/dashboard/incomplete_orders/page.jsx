@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Pagination from "../orders/components/Pagination";
+import PageLoader from "@/app/components/loader/pageLoader";
 
 export default function IncompleteOrder() {
   const [loading, setLoading] = useState(false);
@@ -127,11 +128,7 @@ export default function IncompleteOrder() {
       <div className="card">
         <div className="card-body">
           {loading ? (
-            <div className="text-center py-4">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            </div>
+            <PageLoader />
           ) : (
             <>
               <div className="table-responsive">
