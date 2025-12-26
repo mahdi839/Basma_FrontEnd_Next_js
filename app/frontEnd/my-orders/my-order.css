@@ -1,0 +1,168 @@
+/* ===== My Orders UI ===== */
+:root {
+    /* --primary-color: #DB3340; */
+    --primary-color: #7d0ba7;
+}
+
+.orders-page {
+    min-height: 100vh;
+    padding: 40px 0;
+}
+
+.page-header {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.filter-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.order-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: .3s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 2px solid transparent;
+}
+
+.order-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-color);
+}
+
+.order-card-header {
+    background: var(--primary-color);
+    padding: 16px 20px;
+    color: #fff;
+}
+
+.order-number {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.order-date {
+    font-size: 12px;
+    opacity: .9;
+}
+
+.status-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.order-body {
+    padding: 20px;
+}
+
+.product-item {
+    display: flex;
+    gap: 14px;
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+}
+
+.product-item img {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.product-title {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.product-meta {
+    font-size: 12px;
+    color: var(--primary-color);
+}
+
+.product-price {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.order-footer {
+    background: #fafbfc;
+    border-top: 2px dashed #e2e8f0;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.total-amount {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.btn-view {
+    border: 1px solid var(--primary-color);
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #7d0ba7;
+}
+
+/* ===== Order Status Pills ===== */
+.status-pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+/* Individual statuses */
+.status-placed {
+    background: #3b82f6;
+    /* blue */
+}
+
+.status-confirmed {
+    background: #06b6d4;
+    /* cyan */
+}
+
+.status-shipped {
+    background: #f59e0b;
+    /* orange */
+}
+
+.status-delivered {
+    background: #10b981;
+    /* green */
+}
+
+.status-cancelled {
+    background: #ef4444;
+    /* red */
+}
+
+.more_item_text{
+    color: var(--primary-color);
+}

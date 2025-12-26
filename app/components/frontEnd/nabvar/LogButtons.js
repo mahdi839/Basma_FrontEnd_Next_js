@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { FaArrowAltCircleRight, FaSignInAlt } from "react-icons/fa";
+import { FaArrowAltCircleRight, FaSignInAlt, FaShoppingBag } from "react-icons/fa";
 import { MdAssignmentInd } from "react-icons/md";
-import { useAuth } from "@/app//hooks/useAuth";
+import { useAuth } from "@/app/hooks/useAuth";
 
 export default function LogButtons() {
   const { logout, isAuthenticated } = useAuth();
@@ -26,10 +26,20 @@ export default function LogButtons() {
   return (
     <>
       {isAuthenticated() ? (
-        <button className="dropdown-item" onClick={handleLogout}>
-          <FaSignInAlt style={{ fontSize: "20px", color: "#DB3340" }} />{" "}
-          <span className="ml-2"> Log Out</span>
-        </button>
+        <>
+          <li>
+            <Link className="dropdown-item" href="/frontEnd/my-orders">
+              <FaShoppingBag style={{ fontSize: "20px", color: "#DB3340" }} />{" "}
+              <span className="ml-2"> My Orders</span>
+            </Link>
+          </li>
+          <li>
+            <button className="dropdown-item" onClick={handleLogout}>
+              <FaSignInAlt style={{ fontSize: "20px", color: "#DB3340" }} />{" "}
+              <span className="ml-2"> Log Out</span>
+            </button>
+          </li>
+        </>
       ) : (
         <>
           <li>
