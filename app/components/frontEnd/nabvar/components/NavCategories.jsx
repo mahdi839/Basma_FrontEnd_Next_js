@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import DesktopCategories from './navCatComponents/DesktopCategories'
 import MobileCategories from './navCatComponents/MobileCategories'
 
-export default function NavCategories({ isMobile = false }) {
+export default function NavCategories({ isMobile = false, onClick }) {
   const [categories, setCategories] = useState([])
 
   useEffect(() => {
@@ -20,10 +20,11 @@ export default function NavCategories({ isMobile = false }) {
 
         setCategories(normalize(res.data))
       })
+      .catch(err => console.error('Error fetching categories:', err))
   }, [])
 
   if (isMobile) {
-    return <MobileCategories categories={categories} />
+    return <MobileCategories categories={categories} onClick={onClick} />
   }
 
   return <DesktopCategories categories={categories} />
