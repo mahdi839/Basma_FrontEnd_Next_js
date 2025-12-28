@@ -1,6 +1,8 @@
 import { getData } from '@/lib/api'
-import React from 'react'
+import React, { Suspense } from 'react'
 import FeatureClient from './featureClient'
+import FeatureSkeleton from './components/FeatureSkeleton'
+
 
 export default async function Feature({BannerCatData}) {
   let data = []
@@ -11,8 +13,11 @@ export default async function Feature({BannerCatData}) {
     data = {error: err.message}
   }
 
-console.log(data);
+  console.log(data);
+  
   return (
-    <FeatureClient homeCategories={data} BannerCatData={BannerCatData} />
+    <Suspense fallback={<FeatureSkeleton />}>
+      <FeatureClient homeCategories={data} BannerCatData={BannerCatData} />
+    </Suspense>
   )
 }
