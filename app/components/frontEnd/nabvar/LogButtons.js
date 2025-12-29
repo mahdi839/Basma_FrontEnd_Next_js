@@ -29,13 +29,13 @@ export default function LogButtons() {
         <>
           <li>
             <Link className="dropdown-item" href="/frontEnd/my-orders">
-              <FaShoppingBag style={{ fontSize: "20px", color: "#DB3340" }} />{" "}
+              <FaShoppingBag style={{ fontSize: "20px", color: "#7d0ba7" }} />{" "}
               <span className="ml-2"> My Orders</span>
             </Link>
           </li>
           <li>
             <button className="dropdown-item" onClick={handleLogout}>
-              <FaSignInAlt style={{ fontSize: "20px", color: "#DB3340" }} />{" "}
+              <FaSignInAlt style={{ fontSize: "20px", color: "#7d0ba7" }} />{" "}
               <span className="ml-2"> Log Out</span>
             </button>
           </li>
@@ -44,13 +44,13 @@ export default function LogButtons() {
         <>
           <li>
             <Link className="dropdown-item" href="/frontEnd/log_in">
-              <MdAssignmentInd style={{ fontSize: "20px", color: "#DB3340" }} />{" "}
+              <MdAssignmentInd style={{ fontSize: "20px", color: "#7d0ba7" }} />{" "}
               <span className="ml-2"> Log In</span>
             </Link>
           </li>
           <li>
             <Link className="dropdown-item" href="/frontEnd/register">
-              <FaArrowAltCircleRight style={{ fontSize: "20px", color: "#DB3340" }} />{" "}
+              <FaArrowAltCircleRight style={{ fontSize: "20px", color: "#7d0ba7" }} />{" "}
               <span className="ml-2"> Register </span>
             </Link>
           </li>
