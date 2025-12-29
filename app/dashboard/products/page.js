@@ -97,7 +97,7 @@ export default function ProductIndexPage() {
         <input
           type="text"
           className="form-control"
-          placeholder="Search product..."
+          placeholder="Search by product name or sku"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
