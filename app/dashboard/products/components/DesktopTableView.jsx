@@ -47,6 +47,7 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                 <th style={{ width: '70px' }}>#</th>
                                 <th style={{ width: '70px' }}>Image</th>
                                 <th style={{ minWidth: '70px' }}>Product Info</th>
+                                <th style={{ minWidth: '70px' }}>Sku</th>
                                 <th style={{ minWidth: '70px' }}>Colors</th>
                                 <th style={{ minWidth: '50px' }}>Status</th>
                                 <th style={{ minWidth: '70px' }}>Categories</th>
@@ -84,6 +85,7 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                             <span className="badge bg-secondary">ID: {product.id}</span>
                                         </div>
                                     </td>
+                                    <td>{product.sku}</td>
                                     <td>
                                         <div className="d-flex gap-2 mt-2">
                                             {
