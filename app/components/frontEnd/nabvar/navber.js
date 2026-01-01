@@ -270,7 +270,7 @@ export default function Navbar() {
                   <Link href='/' onClick={() => handleCollapsCancel()}>Home</Link>
                 </li>
                 <li>
-                  <Link onClick={() => handleCollapsCancel()} href='/about'>About Us</Link>
+                  <Link onClick={() => handleCollapsCancel()} href='/frontEnd/about_us'>About Us</Link>
                 </li>
               </ul>
             )}
