@@ -52,24 +52,24 @@ export default function CreateCategoryPage() {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!form.name.trim()) {
       newErrors.name = "Category name is required";
     } else if (form.name.length > 100) {
       newErrors.name = "Category name must be less than 100 characters";
     }
-    
+
     if (form.priority < 0 || form.priority > 999) {
       newErrors.priority = "Priority must be between 0 and 999";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   async function handleSubmit(e) {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -89,20 +89,27 @@ export default function CreateCategoryPage() {
           priority: Number(form.priority),
         },
         {
-          headers: { 
+          headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
           },
         }
       );
-
+      // 🔥 invalidate cache
+      await fetch("/api/revalidate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tags: ["products"],
+        }),
+      });
       toast.success("Category created successfully!");
       router.push("/dashboard/category");
       router.refresh();
     } catch (err) {
       const errorMessage = err.response?.data?.message || "Failed to create category";
       toast.error(errorMessage);
-      
+
       if (err.response?.data?.errors) {
         setErrors(err.response.data.errors);
       }
@@ -163,7 +170,7 @@ export default function CreateCategoryPage() {
             </div>
           </div>
         </div>
-        
+
         <div className="col-xl-3 col-md-6 mb-4">
           <div className="card border-left-success shadow h-100 py-2">
             <div className="card-body">
@@ -195,7 +202,7 @@ export default function CreateCategoryPage() {
                 Category Information
               </h6>
             </div>
-            
+
             <div className="card-body">
               <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                 {/* Category Name */}
@@ -251,8 +258,8 @@ export default function CreateCategoryPage() {
                       >
                         <option value="">-- Root Category (No Parent) --</option>
                         {categoryTree.map((cat) => (
-                          <option 
-                            key={cat.id} 
+                          <option
+                            key={cat.id}
                             value={cat.id}
                             style={getIndentStyle(cat.level)}
                           >

@@ -21,21 +21,29 @@ export default function ProductTable({ productData }) {
 
   const handleDelete = (id) => {
     setProducts(prev => prev.filter(p => p.id !== id));
+    // 🔥 invalidate cache
+     fetch("/api/revalidate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tags: ["products"],
+      }),
+    });
   };
 
   return (
     <>
       <div className="d-none d-lg-block">
-        <DesktopTableView 
-          products={products} 
+        <DesktopTableView
+          products={products}
           onShowVariants={handleShowVariants}
           onDelete={handleDelete}
         />
       </div>
 
       <div className="d-block d-lg-none">
-        <MobileCardView 
-          products={products} 
+        <MobileCardView
+          products={products}
           onShowVariants={handleShowVariants}
           onDelete={handleDelete}
         />

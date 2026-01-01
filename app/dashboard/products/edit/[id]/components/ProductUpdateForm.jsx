@@ -188,8 +188,8 @@ export default function ProductUpdateForm({
   };
 
   const selectedSizeIds = formData.sizes
-  .map((item, i) => item.size_id)
-  .filter((id, i2) => id !== "" && id !== null);
+    .map((item, i) => item.size_id)
+    .filter((id, i2) => id !== "" && id !== null);
 
 
   const handleFAQChange = (index, field, value) => {
@@ -325,7 +325,14 @@ export default function ProductUpdateForm({
           categories: [],
         });
       }
-
+      // 🔥 invalidate cache
+      await fetch("/api/revalidate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tags: ["products"],
+        }),
+      });
       toast.success(`Product ${isEditMode ? 'Updated' : 'Created'} Successfully`);
       router.push('/dashboard/products')
     } catch (error) {
@@ -346,10 +353,10 @@ export default function ProductUpdateForm({
           <form onSubmit={handleSubmit} className="product-form">
             {/* Basic Information */}
             <BasicInfo
-              toggleSection ={toggleSection}
-              formData ={formData}
-              setFormData ={setFormData}
-              expandedSections ={expandedSections}
+              toggleSection={toggleSection}
+              formData={formData}
+              setFormData={setFormData}
+              expandedSections={expandedSections}
             />
 
             {/* Colors */}

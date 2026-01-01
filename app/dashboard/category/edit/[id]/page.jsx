@@ -84,6 +84,14 @@ export default function Page({ params }) {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
+      // 🔥 invalidate cache
+      await fetch("/api/revalidate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tags: ["products"],
+        }),
+      });
 
       toast.success("Category updated successfully!");
       router.push("/dashboard/category");
