@@ -78,6 +78,17 @@ export default function SocialLinksForm() {
 
     // Refetch after submit
     showData(process.env.NEXT_PUBLIC_BACKEND_URL + "api/social-links-first");
+    // ✅ IMPROVED: Revalidate cache with error handling and logging
+
+    await fetch("/api/revalidate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        tags: ["social-links"],
+      }),
+    });
+
+
   };
 
   if (fetchLoading) {
@@ -120,9 +131,8 @@ export default function SocialLinksForm() {
                   }
                   name={name}
                   className="form-control"
-                  placeholder={`Enter ${label} ${
-                    label === "Facebook Id" ? "" : "URL"
-                  }`}
+                  placeholder={`Enter ${label} ${label === "Facebook Id" ? "" : "URL"
+                    }`}
                   value={formData[name]}
                   onChange={handleInputChange}
                 />

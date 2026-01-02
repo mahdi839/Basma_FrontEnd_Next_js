@@ -231,32 +231,13 @@ export default function ProductUploadForm() {
         faqs: [],
         categories: [],
       });
-
-      // ✅ IMPROVED: Revalidate cache with error handling and logging
-      try {
-        console.log("🔄 Attempting to revalidate cache...");
-
-        const revalidateResponse = await fetch("/api/revalidate", {
+         await fetch("/api/revalidate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            tags: ["products"],
+            tags: ["social-links"],
           }),
         });
-
-        const revalidateData = await revalidateResponse.json();
-        console.log("✅ Cache revalidation response:", revalidateData);
-
-        if (!revalidateResponse.ok) {
-          console.error("❌ Cache revalidation failed:", revalidateData);
-          toast.warning("Product uploaded but cache may not be cleared");
-        } else {
-          console.log("✅ Cache cleared successfully");
-        }
-      } catch (revalidateError) {
-        console.error("❌ Cache revalidation error:", revalidateError);
-        toast.warning("Product uploaded but cache clearing failed");
-      }
 
       toast.success("Product Successfully Uploaded");
       router.push('/dashboard/products')

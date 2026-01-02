@@ -41,7 +41,7 @@ export default async function Page({ params }) {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/category_products/${id}`, {
       next: {
-        tags: [`category-products-${id}`],
+        tags: [`category-products`],
       },
     });
 
