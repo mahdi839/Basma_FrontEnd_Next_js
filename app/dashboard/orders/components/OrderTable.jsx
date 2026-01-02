@@ -12,6 +12,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import { FaPrint } from "react-icons/fa";
 import './orderTable.css'
 import Link from "next/link";
+import Image from "next/image";
 export default function OrderTable({
   loading,
   orders,
@@ -306,7 +307,7 @@ export default function OrderTable({
                             <div className="d-flex gap-2">
                               <strong className="mt-3">Color Image:</strong>
                               <Zoom>
-                                <img
+                                <Image
                                   width={50}
                                   height={50}
                                   src={item?.colorImage ?? ""}

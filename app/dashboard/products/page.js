@@ -5,77 +5,80 @@ import ProductTable from "./components/ProductTable";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
+import Pagination from "../orders/components/Pagination";
 
 export default function ProductIndexPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const initialSearch = searchParams.get("search") || "";
-  const initialStatus = searchParams.get("status") || "";
-
-  const [search, setSearch] = useState(initialSearch);
-  const [status, setStatus] = useState(initialStatus);
+  // --- State ---
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [status, setStatus] = useState(searchParams.get("status") || "");
   const [productData, setProductData] = useState([]);
+  const [pagination, setPagination] = useState({ current_page: 1, last_page: 1 });
+  const [loading, setLoading] = useState(false);
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // ----- Fetch products immediately -----
-  useEffect(() => {
-    fetchProducts();
-  }, []); // initial load
+  // --- Build API URL ---
+  const buildUrl = () => {
+    const params = new URLSearchParams();
+    if (search) params.append("search", search);
+    if (status) params.append("status", status);
+    if (page) params.append("page", page);
+    return `${baseUrl}api/products?${params.toString()}`;
+  };
 
-  // ----- Fetch immediately when status changes -----
+  // --- Fetch Products ---
+  const fetchProducts = async () => {
+    setLoading(true);
+    let token = null;
+    if (typeof window !== "undefined") token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get(buildUrl(), {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // ✅ Paginated data from Laravel
+      setProductData(response.data.data.data || []);
+      setPagination({
+        current_page: response.data.data.current_page,
+        last_page: response.data.data.last_page,
+      });
+    } catch (err) {
+      console.error("Error fetching products", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- Update URL query without reloading ---
+  const updateURL = () => {
+    const query = new URLSearchParams();
+    if (search) query.set("search", search);
+    if (status) query.set("status", status);
+    if (page) query.set("page", page);
+    router.push(`/dashboard/products?${query.toString()}`);
+  };
+
+  // --- Effects ---
   useEffect(() => {
     fetchProducts();
     updateURL();
-  }, [status]);
+  }, [page, status]);
 
-  // ----- Fetch with debounce when search changes -----
+  // --- Debounce search ---
   useEffect(() => {
-    if (search.length === 0) {
-      fetchProducts(); // optional: fetch all if search cleared
-      updateURL();
-      return;
-    }
-
     const delay = setTimeout(() => {
+      setPage(1); // Reset page when search changes
       fetchProducts();
       updateURL();
     }, 400);
 
     return () => clearTimeout(delay);
   }, [search]);
-
-  // Fetch products from Laravel API
-  async function fetchProducts() {
-    let token = null;
-    if (typeof window !== "undefined") {
-      token = localStorage.getItem("token");
-    }
-
-    try {
-      const response = await axios.get(
-        `${baseUrl}api/products?search=${search}&status=${status}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setProductData(response.data.data);
-    } catch (err) {
-      console.error("Error fetching products", err);
-    }
-  }
-
-  // Update URL query
-  function updateURL() {
-    const query = new URLSearchParams();
-    if (search) query.set("search", search);
-    if (status) query.set("status", status);
-    router.push(`/dashboard/products?${query.toString()}`);
-  }
 
   return (
     <div className="container-fluid py-4">
@@ -97,7 +100,7 @@ export default function ProductIndexPage() {
         <input
           type="text"
           className="form-control"
-          placeholder="Search by product name or sku"
+          placeholder="Search by product name or SKU"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -113,7 +116,13 @@ export default function ProductIndexPage() {
         </select>
       </div>
 
-      <ProductTable productData={productData} />
+      {/* Product Table */}
+      <ProductTable productData={productData} loading={loading} />
+
+      {/* Pagination */}
+      {pagination.last_page > 1 && (
+        <Pagination page={page} setPage={setPage} pagination={pagination} />
+      )}
     </div>
   );
 }
