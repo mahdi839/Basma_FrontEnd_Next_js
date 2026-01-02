@@ -364,13 +364,13 @@ export default function OrderTable({
                             {loadingStates[order.id] ? "Processing..." : "Select Courier"}
                           </option>
                           <option value="pathao">Entry Pathao</option>
-                          <option value="steadfast">Entry Steadfast</option>
+                          {/* <option value="steadfast">Entry Steadfast</option> */}
                         </select>
                       )}
                     </td>
 
                     <td className="d-flex gap-2">
-                      <button className="btn btn-sm btn-primary">View</button>
+                      {/* <button className="btn btn-sm btn-primary">View</button> */}
                       <Link href={`/dashboard/orders/invoice/${order.id}`}>
                         <button
                           className="order_print_btn"
