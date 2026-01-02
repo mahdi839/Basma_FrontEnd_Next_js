@@ -1,25 +1,29 @@
 import React from "react";
 import Link from "next/link";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
+import Image from "next/image";
 
-export default function CartItem({ 
-  item, 
-  onIncreament, 
-  onDecreament, 
-  onRemove, 
+export default function CartItem({
+  item,
+  onIncreament,
+  onDecreament,
+  onRemove,
   removingItem,
   getSizeName,
-  onClose 
+  onClose
 }) {
   return (
     <div
       className={`cart-item ${removingItem === item.id ? 'removing' : ''}`}
     >
       <div className="item-image">
-        <img
-          src={item?.colorImage? item?.colorImage : item?.image}
+        <Image
+          src={item?.colorImage ? item?.colorImage : item?.image}
           alt={item.title}
+          width={80} // Set a fixed width
+          height={80} // Set a fixed height
           className="img-fluid"
+          objectFit="contain"
         />
       </div>
       <div className="item-details">
