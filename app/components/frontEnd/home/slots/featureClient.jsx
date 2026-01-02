@@ -143,7 +143,7 @@ function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
         size: selectedSizes ? selectedVariant.id : "",
         price: selectedVariant?.pivot.price ?? targetProduct.price,
         image: baseUrl + targetProduct.images?.[0]?.image || "",
-        colorImage: baseUrl + selectedColor ?? "",
+        colorImage: selectedColor? baseUrl + selectedColor : null,
         preQty: preQty ?? 1,
       })
     );
@@ -209,7 +209,7 @@ function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
               <React.Fragment key={slot.id || slotIndex}>
                 {/* Banner Images */}
                 {slot.products.length > 0 &&
-                  slot?.banner?.banner_images?.map((img) => {
+                  slot?.banner?.banner_images?.map((img,index) => {
                     return (
                       <Link
                         key={img.id}
@@ -222,7 +222,7 @@ function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
                           width={1200}
                           height={400}
                           style={{ width: "100%", height: "auto" }}
-                          priority
+                          priority={index === 0}
                         />
                       </Link>
                     );

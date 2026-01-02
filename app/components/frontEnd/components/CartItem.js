@@ -17,7 +17,7 @@ export default function CartItem({
     >
       <div className="item-image">
         <img
-          src={item?.colorImage ?? item?.image}
+          src={item?.colorImage? item?.colorImage : item?.image}
           alt={item.title}
           className="img-fluid"
         />

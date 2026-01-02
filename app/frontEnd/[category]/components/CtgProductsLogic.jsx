@@ -86,7 +86,7 @@ export default function CtgProductsLogic({ products, category }) {
           size: selectedSizes ? selectedVariant.id : "",
           price: selectedVariant?.pivot?.price ?? product.price,
           image: baseUrl + product.images?.[0]?.image || "",
-          colorImage: baseUrl + selectedColor ?? "",
+          colorImage: selectedColor ? baseUrl + selectedColor : null,
           preQty: preQty ?? 1,
         })
       );
