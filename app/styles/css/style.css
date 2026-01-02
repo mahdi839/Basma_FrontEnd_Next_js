@@ -108,6 +108,10 @@ ol {
   Helper CSS
 -----------------------*/
 
+.Toastify__toast-container {
+	z-index: 100000 !important;
+}
+
 .section-title {
 	margin-bottom: 50px;
 	text-align: center;
@@ -2093,15 +2097,23 @@ table tr td {
 }
 
 .skeleton {
-  background: #e2e2e2;
-  border-radius: 4px;
-  animation: pulse 1.5s infinite ease-in-out;
+	background: #e2e2e2;
+	border-radius: 4px;
+	animation: pulse 1.5s infinite ease-in-out;
 }
 
 @keyframes pulse {
-  0% { opacity: .6; }
-  50% { opacity: 1; }
-  100% { opacity: .6; }
+	0% {
+		opacity: .6;
+	}
+
+	50% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: .6;
+	}
 }
 
 
@@ -2142,22 +2154,23 @@ table tr td {
 	}
 }
 
-.product_status_badge{
+.product_status_badge {
 	top: 3rem;
 	left: -1;
 	background: #2D64E6;
 	color: white;
 }
 
-.product-price{
+.product-price {
 	color: var(--primary-color);
 }
 
 /* Responsive Design */
 @media (max-width: 576px) {
 	.footer_bg {
-	border-radius: 100% / 5% 5% 0 0;
-}
+		border-radius: 100% / 5% 5% 0 0;
+	}
+
 	.cart-drawer {
 		max-width: 100%;
 	}

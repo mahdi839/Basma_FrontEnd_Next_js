@@ -5,7 +5,7 @@ import { increament, decreament, removeCart, clearCart } from "@/redux/slices/Ca
 import axios from "axios";
 import Swal from "sweetalert2";
 import './style.css';
-
+import { toast } from "react-toastify";
 import CartDrawerHeader from "./CartDrawerHeader";
 import CartStep from "./CartStep";
 import CheckoutStep from "./CheckoutStep";
@@ -23,7 +23,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   const [shippingAmount, setShippingAmount] = useState(0);
   const [removingItem, setRemovingItem] = useState(null);
   const [orderCompleted, setOrderCompleted] = useState(false);
-  
+
   // Tracking refs
   const abandonedCheckoutSent = useRef(false);
   const formInteracted = useRef(false);
@@ -71,7 +71,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
 
       try {
         const sessionId = getSessionId();
-        
+
         if (navigator.sendBeacon) {
           // Use fetch with keepalive for better reliability
           await fetch(
@@ -98,7 +98,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
             }
           );
         }
-        
+
         abandonedCheckoutSent.current = true;
         console.log("Abandoned checkout tracked");
       } catch (err) {
@@ -184,7 +184,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   // Cart functions
   const handleIncreament = (id) => dispatch(increament({ id }));
   const handleDecreament = (id) => dispatch(decreament({ id }));
-  
+
   const handleRemove = (id) => {
     setRemovingItem(id);
     setTimeout(() => {
@@ -284,7 +284,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
 
     const { fbp, fbc } = getFacebookParams();
     const user_id = localStorage.getItem('user_id') ?? null;
-    
+
     const orderData = {
       ...formData,
       cart: cartItems,
@@ -335,23 +335,22 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
           payment_method: "cash",
           delivery_notes: "",
         });
-        
+
         // Reset tracking flags
         abandonedCheckoutSent.current = false;
         formInteracted.current = false;
-        
+
         onClose();
       }
     } catch (error) {
       console.error("Order submission error:", error);
-      setOrderCompleted(false); // Reset if order failed
-      
-      Swal.fire({
-        icon: "error",
-        title: "Order Failed",
-        text: "There was an error placing your order. Please try again.",
-        confirmButtonColor: "#DB3340",
-      });
+
+      setOrderCompleted(false);
+      const errorMessage =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      toast.error(errorMessage);
     }
   };
 
