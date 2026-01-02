@@ -88,7 +88,6 @@ export default function SocialLinksForm() {
       }),
     });
 
-
   };
 
   if (fetchLoading) {

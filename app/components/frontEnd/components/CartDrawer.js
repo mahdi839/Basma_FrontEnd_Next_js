@@ -71,7 +71,6 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
 
       try {
         const sessionId = getSessionId();
-
         if (navigator.sendBeacon) {
           // Use fetch with keepalive for better reliability
           await fetch(
@@ -98,7 +97,6 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
             }
           );
         }
-
         abandonedCheckoutSent.current = true;
         console.log("Abandoned checkout tracked");
       } catch (err) {
@@ -112,7 +110,6 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
     const handleBeforeUnload = () => {
       sendAbandonedCheckout();
     };
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
         sendAbandonedCheckout();
@@ -251,7 +248,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
       fetchShippingCost();
     }
   }, [formData.district]);
-
+ console.log(shippingAmount)
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
 

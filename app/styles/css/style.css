@@ -135,6 +135,42 @@ ol {
 	margin: 0 auto;
 }
 
+/* Select container styling */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.select-wrapper select {
+  width: 100%;
+  padding: 5px 40px 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  appearance: none; /* Remove default arrow */
+  background-color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.select-wrapper select:focus {
+  border-color: #0d6efd; /* Bootstrap primary color */
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  outline: none;
+}
+
+/* Custom arrow */
+.select-wrapper::after {
+  content: "▼";
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6c757d;
+  font-size: 0.7rem;
+}
 
 
 .spad {

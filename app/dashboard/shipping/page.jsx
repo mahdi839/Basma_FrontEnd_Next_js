@@ -12,13 +12,13 @@ export default function Page() {
     const [shippingType, setShippingType] = useState('');
     const [isEditMode, setIsEditMode] = useState(false);
     const [currentId, setCurrentId] = useState(null);
-    
+
     const { storeData, loading: storeLoading } = useStoreData()
     const { updateData, loading: updateLoading } = useUpdateData()
     const { indexData, data, loading: indexLoading } = useIndexData()
-    
+
     const url = process.env.NEXT_PUBLIC_BACKEND_URL + "api/shipping-costs"
-    
+
     const [shippingData, setShippingData] = useState({
         inside_dhaka: "",
         outside_dhaka: "",
@@ -36,7 +36,7 @@ export default function Page() {
             const existingData = data.data[0]; // Get first shipping cost
             setCurrentId(existingData.id);
             setIsEditMode(true);
-            
+
             setShippingData({
                 inside_dhaka: existingData.inside_dhaka || "",
                 outside_dhaka: existingData.outside_dhaka || "",
@@ -63,7 +63,7 @@ export default function Page() {
     function handleShippingTypeChange(e) {
         const type = e.target.value;
         setShippingType(type);
-        
+
         // Reset relevant fields when switching types
         if (type === 'one') {
             setShippingData(prev => ({
@@ -81,7 +81,7 @@ export default function Page() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        
+
         // Validation
         if (!shippingType) {
             toast.error("Please select shipping type");
@@ -145,17 +145,19 @@ export default function Page() {
                                     <label htmlFor="shippingType" className="form-label fw-bold">
                                         Shipping Type:
                                     </label>
-                                    <select
-                                        className="form-control"
-                                        id="shippingType"
-                                        value={shippingType}
-                                        onChange={handleShippingTypeChange}
-                                        required
-                                    >
-                                        <option value="">Select Type</option>
-                                        <option value="inside_outside">Inside/Outside Dhaka</option>
-                                        <option value="one">One Shipping Cost</option>
-                                    </select>
+                                    <div className="select-wrapper">
+                                        <select
+                                            className="form-control"
+                                            id="shippingType"
+                                            value={shippingType}
+                                            onChange={handleShippingTypeChange}
+                                            required
+                                        >
+                                            <option value="">Select Type</option>
+                                            <option value="inside_outside">Inside/Outside Dhaka</option>
+                                            <option value="one">One Shipping Cost</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 {/* Conditional Fields */}
@@ -218,8 +220,8 @@ export default function Page() {
                                     </div>
                                 )}
 
-                                <Button 
-                                    type="submit" 
+                                <Button
+                                    type="submit"
                                     className="btn btn-primary w-100 mt-3 py-2 fw-bold"
                                     disabled={loading}
                                 >
