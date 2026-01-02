@@ -1,31 +1,62 @@
-import React from 'react'
-import Products from '../components/Products'
-import { getData } from '@/lib/api'
-export default async function page({params}) {
-  const {id} = params;
-  let data =[]
-    try{
-      data = await getData(`api/products/${id}`)
-    }catch(err){
-      data = {error:err.message}
-    }
+import Products from '../components/Products';
 
-  let socialLinksData = [];
-  try{
-    socialLinksData = await getData(`api/social-links-first`);
-  }catch(err){
-    socialLinksData = {error:err.message}
+export default async function Page({ params }) {
+  const { id } = params;
+
+  let product = {};
+  let socialLinksData = {};
+  let relatedCatgProducts = {};
+
+  // Fetch product details
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/products/${id}`, {
+      next: {
+        tags: [`products`], // cache tag for this product
+      },
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch product data');
+
+    product = await res.json();
+  } catch (err) {
+    product = { error: err.message };
   }
 
-   let relatedCatgProducts = [];
-  try{
-    relatedCatgProducts = await getData(`api/category_products/${id}`);
-  }catch(err){
-    relatedCatgProducts = {error:err.message}
+  // Fetch social links
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/social-links-first`, {
+      next: {
+        tags: ['social-links'],
+      },
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch social links');
+
+    socialLinksData = await res.json();
+  } catch (err) {
+    socialLinksData = { error: err.message };
   }
+
+  // Fetch related category products
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/category_products/${id}`, {
+      next: {
+        tags: [`category-products-${id}`],
+      },
+    });
+
+    if (!res.ok) throw new Error('Failed to fetch related products');
+
+    relatedCatgProducts = await res.json();
+  } catch (err) {
+    relatedCatgProducts = { error: err.message };
+  }
+
   return (
-    <>
-    <Products product={data.data} socialLinksData={socialLinksData} relatedProducts={relatedCatgProducts} />
-    </>
-  )
+    <Products
+      product={product?.data}
+      socialLinksData={socialLinksData}
+      relatedProducts={relatedCatgProducts}
+    />
+  );
 }
