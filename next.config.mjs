@@ -1,24 +1,33 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-     remotePatterns: [
+    remotePatterns: [
       {
         protocol: 'http',
         hostname: '127.0.0.1',
         port: '8000',
       },
       {
-        protocol: 'https',
-        hostname: 'api.ibtikarbd.com', // production API domain
-         pathname: '/storage/**',
+        protocol: 'https', // ✅ Changed to https for production
+        hostname: 'api.eyarafashion.xyz',
+        pathname: '/storage/**',
       },
     ],
   },
-  // env: {
-  //   BACKEND_URL: "https://api.ibtikarbd.com/", // use live API
-  // },
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  output: 'standalone',
+  
+  // ✅ Add these for production
+  reactStrictMode: true,
+  swcMinify: true,
+  
+  // ✅ Improve production logging
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
   },
 };
 

@@ -15,10 +15,15 @@ export default function AdminLogin() {
   const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const LOGIN_ENDPOINT = "api/logIn";
 
-  // ✅ Helper function to set cookie
+  // ✅ Improved cookie setter with proper encoding
   const setCookie = (name, value, days = 7) => {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
-    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+    const isProduction = process.env.NODE_ENV === "production";
+    
+    // Ensure value is properly encoded
+    const encodedValue = encodeURIComponent(value);
+    
+    document.cookie = `${name}=${encodedValue}; expires=${expires}; path=/; SameSite=Lax${isProduction ? '; Secure' : ''}`;
   };
 
   const handleSubmit = async (e) => {
@@ -32,29 +37,55 @@ export default function AdminLogin() {
     setLoading(true);
     try {
       const url = `${API_BASE}${API_BASE.endsWith("/") ? "" : "/"}${LOGIN_ENDPOINT}`;
+      
+      console.log("🔄 Attempting login to:", url);
+      
       const response = await axios.post(url, { email, password });
 
       const { status, token, user, message } = response.data;
+
+      console.log("📦 Login response:", { status, hasToken: !!token, user });
 
       if (!status) {
         toast.error(message || "Login failed.");
         return;
       }
 
-      // ✅ Save to both localStorage AND cookies (middleware reads cookies)
-      if (typeof window !== "undefined") {
-        // LocalStorage (for client-side access)
-        localStorage.setItem("token", token);
-        localStorage.setItem("user_id", user.id);
-        localStorage.setItem("user_name", user.name);
-        localStorage.setItem("roles", JSON.stringify(user.roles));
-        localStorage.setItem("permissions", JSON.stringify(user.permissions || []));
+      // ✅ Ensure user object has required data
+      if (!user || !user.id || !user.roles) {
+        toast.error("Invalid user data received");
+        console.error("❌ Invalid user data:", user);
+        return;
+      }
 
-        // ✅ Cookies (for middleware access)
-        setCookie("token", token);
-        setCookie("roles", JSON.stringify(user.roles));
-        setCookie("user_id", user.id);
-        setCookie("permissions", JSON.stringify(user.permissions));
+      // ✅ Save to both localStorage AND cookies
+      if (typeof window !== "undefined") {
+        try {
+          // LocalStorage (for client-side access)
+          localStorage.setItem("token", token);
+          localStorage.setItem("user_id", user.id.toString());
+          localStorage.setItem("user_name", user.name || "");
+          localStorage.setItem("roles", JSON.stringify(user.roles));
+          localStorage.setItem("permissions", JSON.stringify(user.permissions || []));
+
+          console.log("✅ Saved to localStorage:", {
+            userId: user.id,
+            roles: user.roles,
+            permissions: user.permissions
+          });
+
+          // ✅ Cookies (for middleware access) - with proper string conversion
+          setCookie("token", token);
+          setCookie("user_id", user.id.toString());
+          setCookie("roles", JSON.stringify(user.roles));
+          setCookie("permissions", JSON.stringify(user.permissions || []));
+
+          console.log("✅ Cookies set successfully");
+        } catch (storageError) {
+          console.error("❌ Storage error:", storageError);
+          toast.error("Failed to save login data");
+          return;
+        }
       }
 
       toast.success("Successfully logged in");
@@ -65,14 +96,24 @@ export default function AdminLogin() {
         ["super-admin", "admin"].includes(role)
       );
 
+      console.log("🔐 Access check:", { roles, hasAdminAccess });
+
+      // ✅ Small delay to ensure cookies are set before redirect
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       if (hasAdminAccess) {
-        router.push("/dashboard");
+        console.log("✅ Redirecting to dashboard");
+        // Use window.location for a hard refresh in production
+        window.location.href = "/dashboard";
       } else {
         toast.error("Access denied. You are not an admin.");
+        console.log("❌ No admin access, redirecting home");
         router.push("/");
       }
     } catch (err) {
-      toast.error(err?.response?.data?.message || "An error occurred.");
+      console.error("❌ Login error:", err);
+      const errorMessage = err?.response?.data?.message || err?.message || "An error occurred.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
