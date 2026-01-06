@@ -8,9 +8,9 @@ const nextConfig = {
         port: '8000',
       },
       {
-        protocol: 'https', // ✅ Changed to https for production
+        protocol: 'https',
         hostname: 'api.eyarafashion.xyz',
-        pathname: '/storage/**',
+        pathname: '/**',  // ← Allow all paths
       },
     ],
   },
@@ -18,17 +18,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   output: 'standalone',
-  
-  // ✅ Add these for production
-  reactStrictMode: true,
-  swcMinify: true,
-  
-  // ✅ Improve production logging
-  logging: {
-    fetches: {
-      fullUrl: true,
-    },
-  },
 };
 
 export default nextConfig;
