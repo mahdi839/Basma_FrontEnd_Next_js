@@ -4,7 +4,7 @@ import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
 import { FaCartArrowDown } from "react-icons/fa";
 import { GrAidOption } from "react-icons/gr";
-
+import Zoom from "react-medium-image-zoom";
 const ProductCard = React.memo(function ProductCard({
   slotProducts,
   handleOpenModal,
@@ -24,7 +24,8 @@ const ProductCard = React.memo(function ProductCard({
           className="position-relative overflow-hidden product-image-container"
         >
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
-            <Image
+           <Zoom>
+             <Image
               width={500}
               height={400}
               src={
@@ -36,6 +37,7 @@ const ProductCard = React.memo(function ProductCard({
               alt={slotProducts?.title}
               priority={false}
             />
+           </Zoom>
           </Link>
           {/* Product Actions */}
           <div

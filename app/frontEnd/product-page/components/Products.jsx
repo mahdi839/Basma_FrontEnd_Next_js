@@ -208,7 +208,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     setSelectedSizes("");
     handleCloseModal();
     toast.success("Added to cart!");
- 
+
     if (type === "buy") {
       setIsCartDrawerOpen(true);
       setIsDirectBuy(true)
@@ -253,11 +253,19 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
           <div className="main_image mb-3 mb-md-4 text-center">
             <div className="image-container">
               <Zoom>
-                <img
-                  src={imgUrl || (images?.[0]?.image ? baseUrl + images[0].image : "/placeholder.png")}
-                  className="card-img-top"
+                <Image
+                  src={
+                    imgUrl ||
+                    (images?.[0]?.image
+                      ? `${baseUrl}${images[0].image}`
+                      : "/placeholder.png")
+                  }
                   alt={product?.title || "product image"}
-                  loading="eager"
+                  width={500}          // adjust as needed
+                  height={400}         // adjust as needed
+                  className="card-img-top"
+                  priority             // equivalent to loading="eager"
+                  style={{ objectFit: "cover" }}
                 />
               </Zoom>
             </div>

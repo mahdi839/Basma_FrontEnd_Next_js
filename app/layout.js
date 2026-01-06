@@ -5,7 +5,7 @@ import "../app/styles/css/bootstrap.min.css";
 import "../app/styles/css/style.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-
+import "react-medium-image-zoom/dist/styles.css";
 import Bootstrap_js from "./components/bootstrapJs/Bootstrap_js";
 import Providers from "./Providers";
 

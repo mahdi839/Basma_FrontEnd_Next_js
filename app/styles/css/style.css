@@ -104,6 +104,8 @@ ol {
 	margin: 0;
 }
 
+
+
 /*---------------------
   Helper CSS
 -----------------------*/
@@ -2257,6 +2259,8 @@ table tr td {
 .current-price {
 	color: var(--primary-color);
 }
+
+
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

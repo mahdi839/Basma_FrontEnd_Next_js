@@ -77,7 +77,6 @@ const ProductModal = ({
                   src={mainImage}
                   alt={product.title}
                   className="main-product-image"
-                  unoptimized={true}
                   priority
                 />
               </div>
@@ -97,7 +96,6 @@ const ProductModal = ({
                         src={baseUrl + img.image}
                         alt={`${product.title} ${index + 1}`}
                         className="thumbnail-image"
-                        unoptimized={true}
                       />
                     </div>
                   ))}
@@ -230,22 +228,6 @@ const ProductModal = ({
                 </div>
               </div> */}
 
-              {/* Product Meta */}
-              <div className="meta-section">
-                {/* <div className="meta-item">
-                  <span className="meta-label">SKU:</span>
-                  <span className="meta-value">{product.sku || "N/A"}</span>
-                </div> */}
-                <div className="meta-item">
-                  <span className="meta-label">Category:</span>
-                  <span className="meta-value">{product.category?.name || "N/A"}</span>
-                </div>
-                <div className="meta-item">
-                  <span className="meta-label">Availability:</span>
-                  <span className="meta-value in-stock">{product?.status ?? ''}</span>
-                </div>
-              </div>
-
               {/* View Details Link */}
               <Link href={`/frontEnd/product-page/${product?.id}`} className="view-details-link">
                 <CiSearch className="link-icon" />
@@ -255,8 +237,6 @@ const ProductModal = ({
           </div>
         </div>
       </div>
-
-
     </div>
   );
 };
