@@ -65,7 +65,7 @@ export default async function Footer() {
       className="footer_bg position-relative overflow-hidden "
       style={{ paddingTop: "120px" }} // padding fixed so content stays below SVG
     >
-    
+
       <div className="container position-relative py-4">
         <div className="row g-4">
           {/* Logo Section */}
@@ -73,29 +73,23 @@ export default async function Footer() {
             <div className="logo_section_mobile_border">
               <div className="rounded footer_logo_div pb-2">
                 <Link href="/">
-                  {data.logo_path ? (
-                    <img
-                      className="desktop_logo"
-                      src={backendUrl + data.logo_path}
-                      alt="Company Logo"
-                    />
-                  ) : (
-                    <div
-                      className="d-flex align-items-center justify-content-center"
-                      style={{ width: 91, height: 80 }}
-                    >
-                      <span>Logo</span>
-                    </div>
-                  )}
+                  <Image
+                    src="/img/logo.png"
+                    alt=""
+                    width={200}
+                    height={60}
+                    style={{ objectFit: 'contain' }}
+                    priority
+                  />
                 </Link>
               </div>
 
 
               <div>
-                 {data.company_description??''}
+                {data.company_description ?? ''}
               </div>
 
-             
+
 
               <div className="d-flex gap-3">
                 {socialData?.facebook && (

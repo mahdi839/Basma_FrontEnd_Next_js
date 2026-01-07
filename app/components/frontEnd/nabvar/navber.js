@@ -149,17 +149,9 @@ export default function Navbar() {
 
               <div className="mobile_logo">
                 <Link href="/">
-                  {logoUrl ? (
-                    <Image 
-                      src={logoUrl} 
-                      alt="Logo" 
-                      width={150} 
-                      height={40} 
-                      style={{objectFit: 'contain'}}
-                    />
-                  ) : (
+                 
                     <Image src="/img/logo.png" alt="" width={150} height={40} />
-                  )}
+       
                 </Link>
               </div>
 
@@ -183,16 +175,7 @@ export default function Navbar() {
             {/* Desktop logo */}
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo py-2">
-                {logoUrl ? (
-                  <Link href="/">
-                    <img
-                      src={logoUrl}
-                      alt="Logo"
-                      priority
-                      className="desktop_logo"
-                    />
-                  </Link>
-                ) : (
+                
                   <Link href="/">
                     <Image
                       src="/img/logo.png"
@@ -203,7 +186,6 @@ export default function Navbar() {
                       priority
                     />
                   </Link>
-                )}
               </div>
             </div>
             
