@@ -31,7 +31,6 @@ export default async function AboutUsPage() {
             {aboutUs.image && (
               <div className="col-lg-6 mt-4 mt-lg-0">
                 <div className="about-image-container position-relative">
-                  <p className="text-danger">Image URL: {`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${aboutUs.image}`}</p>
                   <Image
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${aboutUs.image}`}
                     alt={aboutUs.title}
