@@ -1,6 +1,7 @@
 // app/about-us/page.jsx
 import React from "react";
 import { getData } from "@/lib/api";
+import Image from "next/image";
 
 export default async function AboutUsPage() {
   const aboutUs = await getData("api/about-us");
@@ -17,7 +18,6 @@ export default async function AboutUsPage() {
       </div>
     );
   }
-
   return (
     <div className="about-us-page">
       {/* Hero Section */}
@@ -26,14 +26,17 @@ export default async function AboutUsPage() {
           <div className="row align-items-center">
             <div className="col-lg-6">
               <h1 className="display-4 fw-bold mb-4 text-gray">{aboutUs.title}</h1>
-              <p className="lead text-muted">{aboutUs.excerpt || "Learn more about our story, mission, and values."}</p>
+              <p className="lead text-muted">{aboutUs.excerpt}</p>
             </div>
             {aboutUs.image && (
               <div className="col-lg-6 mt-4 mt-lg-0">
                 <div className="about-image-container position-relative">
-                  <img
+                  <p className="text-danger">Image URL: {`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${aboutUs.image}`}</p>
+                  <Image
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${aboutUs.image}`}
                     alt={aboutUs.title}
+                    width={800}
+                    height={400}
                     className="img-fluid rounded shadow-lg"
                     style={{ maxHeight: "400px", width: "100%", objectFit: "cover" }}
                   />
@@ -51,7 +54,7 @@ export default async function AboutUsPage() {
             <div className="col-lg-10">
               <div
                 className="about-content fs-5 lh-lg"
-                dangerouslySetInnerHTML={{ __html: aboutUs?.content??"" }}
+                dangerouslySetInnerHTML={{ __html: aboutUs?.content ?? "" }}
               ></div>
             </div>
           </div>
