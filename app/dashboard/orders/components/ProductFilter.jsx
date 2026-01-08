@@ -17,6 +17,7 @@ export default function ProductFilter({ value, onChange, required = false }) {
         if (typeof window !== "undefined") {
           token = localStorage.getItem("token");
         }
+
         const response = await axios.get(
           process.env.NEXT_PUBLIC_BACKEND_URL + 'api/products',
           {
@@ -26,15 +27,28 @@ export default function ProductFilter({ value, onChange, required = false }) {
           }
         );
 
-        if (response.data && response.data.data) {
-          const options = response.data.data.map(product => ({
+        console.log('Product API Response:', response.data);
+
+        // ✅ Fix: response.data.data is the paginated object, 
+        // response.data.data.data is the actual products array
+        const productsData = response.data?.data?.data || [];
+
+        if (Array.isArray(productsData)) {
+          const options = productsData.map(product => ({
             value: product.title,
-            label: product.title
+            label: product.title,
+            id: product.id
           }));
           setProducts(options);
+        } else {
+          console.error('Products data is not an array:', productsData);
+          setProducts([]);
         }
+
       } catch (err) {
-        toast.error(err.response?.data?.message || err.message);
+        console.error('Fetch products error:', err);
+        toast.error(err.response?.data?.message || 'Failed to load products');
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -43,26 +57,40 @@ export default function ProductFilter({ value, onChange, required = false }) {
     fetchProducts();
   }, []);
 
+  // Find selected value
+  const selectedValue = products.find(option => option.value === value) || null;
+
   return (
     <Select
       options={products}
-      value={products.find(option => option.value === value)}
+      value={selectedValue}
       onChange={onChange}
       placeholder={loading ? "Loading products..." : "Search or select product..."}
       isSearchable
       required={required}
       isLoading={loading}
+      isClearable // ✅ Allow clearing selection
+      isDisabled={loading}
       styles={{
-        control: (base) => ({
+        control: (base, state) => ({
           ...base,
           padding: '4px',
-          border: '1px solid #dee2e6',
+          border: state.isFocused ? '1px solid #80bdff' : '1px solid #dee2e6',
           borderRadius: '0.375rem',
-          minHeight: 'calc(1.5em + 0.75rem + 2px)'
+          minHeight: 'calc(1.5em + 0.75rem + 2px)',
+          boxShadow: state.isFocused ? '0 0 0 0.2rem rgba(0,123,255,.25)' : 'none',
+          '&:hover': {
+            borderColor: '#80bdff'
+          }
+        }),
+        menu: (base) => ({
+          ...base,
+          zIndex: 9999
         })
       }}
       className="basic-multi-select"
       classNamePrefix="select"
+      noOptionsMessage={() => loading ? "Loading..." : "No products found"}
     />
   );
 }
