@@ -96,7 +96,7 @@ export default function Navbar() {
                 <div className="header__top__left d-none d-xl-block">
                   <ul className="mb-0">
                     <li>
-                      <FaEnvelope className="me-2" /> hello@colorlib.com
+                      <FaEnvelope className="me-2" /> {footerData?.company_email??""}
                     </li>
                   </ul>
                 </div>
@@ -222,7 +222,7 @@ export default function Navbar() {
           <div className="d-xl-none humberger__open text-center my-2">
             <FaBars />
           </div>
-          <NavSearch />
+          <NavSearch footerData={footerData}/>
         </div>
       </header>
       

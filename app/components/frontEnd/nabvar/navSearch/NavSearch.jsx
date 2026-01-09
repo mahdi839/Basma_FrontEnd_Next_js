@@ -5,12 +5,11 @@ import style from "../hero.module.css"
 import NavCategories from '../components/NavCategories';
 import Link from 'next/link';
 import './nav_search.css'
-export default function NavSearch() {
+export default function NavSearch({footerData}) {
   const [isClient, setIsClient] = useState(false)
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   useEffect(() => {
@@ -70,7 +69,7 @@ export default function NavSearch() {
               <FaPhone className="fa fa-phone" />
             </div>
             <div className="hero__search__phone__text">
-              <h5>01795802507</h5>
+              <h5>{footerData?.company_phone ?? "+880 1614 477 721"}</h5>
               <span>support 24/7 time</span>
             </div>
           </div>
