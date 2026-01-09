@@ -184,11 +184,7 @@ export default function DashboardHome() {
     );
   const clearStatuses = () => setSelectedStatuses([]);
  
-  let permissions = localStorage.getItem("permissions")
   
-  if(!permissions.includes("view dashboard summary")){
-     return <div className="container-fluid py-4"> </div>
-  }
 
   return (
     <div className="container-fluid py-4">
