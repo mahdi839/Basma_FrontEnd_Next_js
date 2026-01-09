@@ -29,7 +29,7 @@ export default function MobileCategories({ categories, onClick }) {
       <li key={category.id} className={`mobile-category-item level-${level}`}>
         <div className="mobile-category-header">
           <Link 
-            href={`/frontEnd/shop?category=${category.id}`}
+            href={`/frontEnd/${category.slug}`}
             className="mobile-category-link"
             onClick={handleLinkClick}
           >
