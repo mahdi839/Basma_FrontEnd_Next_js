@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import CartDrawer from "../../components/CartDrawer";
 import Button from "@/app/components/dashboard/components/button/Button";
 
-function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
+function FeatureClient({ homeCategories: initialCategories}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const sliderRefs = useRef([]);
