@@ -70,8 +70,6 @@ export default function Page() {
         },
       });
 
-      console.log('API Response:', response.data);
-
       // Set orders array
       setOrders(response.data.data || []);
       

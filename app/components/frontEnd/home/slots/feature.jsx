@@ -13,8 +13,6 @@ export default async function Feature({BannerCatData}) {
     data = {error: err.message}
   }
 
-  console.log(data);
-  
   return (
     <Suspense fallback={<FeatureSkeleton />}>
       <FeatureClient homeCategories={data} BannerCatData={BannerCatData} />

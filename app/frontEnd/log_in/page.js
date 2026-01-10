@@ -38,13 +38,9 @@ export default function AdminLogin() {
     try {
       const url = `${API_BASE}${API_BASE.endsWith("/") ? "" : "/"}${LOGIN_ENDPOINT}`;
 
-      console.log("🔄 Attempting login to:", url);
-
       const response = await axios.post(url, { email, password });
 
       const { status, token, user, message } = response.data;
-
-      console.log("📦 Login response:", { status, hasToken: !!token, user });
 
       if (!status) {
         toast.error(message || "Login failed.");
@@ -68,12 +64,6 @@ export default function AdminLogin() {
           localStorage.setItem("roles", JSON.stringify(user.roles));
           localStorage.setItem("permissions", JSON.stringify(user.permissions || []));
 
-          console.log("✅ Saved to localStorage:", {
-            userId: user.id,
-            roles: user.roles,
-            permissions: user.permissions
-          });
-
           // ✅ Cookies (for middleware access) - with proper string conversion
           setCookie("token", token);
           setCookie("user_id", user.id.toString());
@@ -95,9 +85,6 @@ export default function AdminLogin() {
       if (typeof window !== "undefined") {
         let permissions = user.permissions || []
         const hasAdminAccess = permissions.length > 0
-
-        console.log("🔐 Access check:", { roles, hasAdminAccess });
-
         // ✅ Small delay to ensure cookies are set before redirect
         await new Promise(resolve => setTimeout(resolve, 100));
 

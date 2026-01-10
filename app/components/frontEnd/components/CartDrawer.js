@@ -248,7 +248,6 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
       fetchShippingCost();
     }
   }, [formData.district]);
- console.log(shippingAmount)
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
 

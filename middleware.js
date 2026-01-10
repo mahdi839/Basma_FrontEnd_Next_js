@@ -48,8 +48,6 @@ export function middleware(req) {
     
     roles = JSON.parse(decodedRoles);
     permissions = JSON.parse(decodedPermissions);
-    
-    console.log("✅ Parsed successfully:", { roles, permissions });
   } catch (e) {
     console.error("❌ Failed to parse cookies:", e);
     // If parsing fails, redirect to login (cookies might be corrupted)
