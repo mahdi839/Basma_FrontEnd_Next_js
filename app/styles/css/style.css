@@ -2402,6 +2402,9 @@ table tr td {
 	.product-image-container {
 		margin-bottom: 0.25rem;
 	}
+	.home_page_card_header{
+		margin-top: 2rem;
+	}
 }
 
 /* Ensure slider items have proper spacing on mobile */

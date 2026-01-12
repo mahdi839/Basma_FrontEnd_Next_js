@@ -198,7 +198,7 @@ function FeatureClient({ homeCategories: initialCategories}) {
 
   return (
     <div className="container mb-3 mb-md-5 mt-0 py-2">
-      <div className="row position-relative">
+      <div className="row position-relative ">
         {homeCategories &&
           homeCategories.map((slot, slotIndex) => {
             if (!sliderRefs.current[slotIndex]) {
@@ -229,7 +229,7 @@ function FeatureClient({ homeCategories: initialCategories}) {
                   })}
 
                 {/* Category Header */}
-                <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
+                <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative home_page_card_header">
                   {slot.products.length > 0 && (
                     <h2
                       className="featured-heading font-weight-bold mb-0 fs-5 fs-md-3 fs-lg-2 fs-xl-1"
