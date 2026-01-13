@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { FaCartPlus, FaFacebookMessenger, FaFirstOrder, FaWhatsapp, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaCartPlus, FaFacebookMessenger, FaFirstOrder, FaWhatsapp, FaChevronLeft, FaChevronRight, FaCheck } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
 import Zoom from "react-medium-image-zoom";
@@ -17,24 +17,25 @@ import ProductCard from "@/app/components/frontEnd/home/slots/components/Product
 import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal"; // Adjust path as needed
 import './relatedProduct.css'
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
+import './productPage.css'
+import useProductLogics from "@/app/hooks/useProductLogics";
 export default function Products({ product, socialLinksData, relatedProducts }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariantId, setSelectedVariantId] = useState(undefined);
+  const { handleSelectedColor, selectedColor, handleSelectedSize, selectedSize } = useProductLogics()
 
   // Modal states for related products
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedSizes, setSelectedSizes] = useState("");
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const router = useRouter();
-
   // Social media links
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
@@ -52,7 +53,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   }, [variants, selectedVariantId]);
 
   // Price derived from selectedVariant or product.price
-  const displayPrice = selectedVariant?.price ?? product?.price ?? 0;
+  const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
 
   useEffect(() => {
     if (product) setIsLoading(false);
@@ -131,16 +132,38 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
       return;
     }
 
-    const sizeId = selectedVariant?.id ?? variants[0]?.id ?? "";
-    const imageUrl = images?.[0]?.image ? baseUrl + images[0].image : "";
+    if (product.sizes.length > 1 && !selectedSize) {
+      Swal.fire({
+        title: `Please Select A Size`,
+        icon: "warning",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#DB3340",
+      });
+      return;
+    }
+
+    if (product.colors.length > 1 && !selectedColor) {
+      Swal.fire({
+        title: `Please Select A Color`,
+        icon: "warning",
+        confirmButtonText: "Ok",
+        confirmButtonColor: "#DB3340",
+      });
+      return;
+    }
+
+
+    const selectedVariant = product.sizes.find(s => s.id == selectedSize) || product.sizes[0];
+    const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
 
     dispatch(
       addToCart({
         id: product.id,
         title: product.title,
-        size: sizeId,
-        price: displayPrice,
+        size: selectedSize ? selectedVariant.id : "",
+        price: selectedVariant?.pivot?.price ?? product.price,
         image: imageUrl,
+        colorImage: selectedColor ? baseUrl + selectedColor : null,
       })
     );
 
@@ -154,20 +177,15 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   // Functions for related products modal
   function handleOpenModal(product) {
     setSelectedProduct(product);
-    setSelectedSizes("");
     setIsModalOpen(true);
   }
 
   function handleCloseModal() {
     setIsModalOpen(false);
     setSelectedProduct(null);
-    setSelectedSizes("");
   }
 
-  function handleSizeSelect(e) {
-    setSelectedSizes(e.target.value);
-  }
-
+  console.log(product)
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
@@ -191,21 +209,22 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
       return;
     }
 
-    const selectedVariant = product.variants.find(v => v.id == selectedSizes) || product.variants[0];
+
+    const selectedVariant = product.sizes.find(s => s.id == selectedSize) || product.sizes[0];
     const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
 
     dispatch(
       addToCart({
         id: product.id,
         title: product.title,
-        size: selectedSizes ? selectedVariant.value : "",
+        size: selectedSize ? selectedVariant.id : "",
         price: selectedVariant?.price ?? product.price,
         image: imageUrl,
+        colorImage: selectedColor ? baseUrl + selectedColor : null,
         preQty: preQty ?? 0
       })
     );
 
-    setSelectedSizes("");
     handleCloseModal();
     toast.success("Added to cart!");
 
@@ -295,40 +314,58 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
         <div className="product_desc col-12 col-md-6">
           <div className="ms-md-5">
             <h1 className="product-title fw-bold mb-3">{product?.title}</h1>
-            <h3 className="product-price mb-4">৳ {displayPrice}</h3>
+            {displayPrice && (<h3 className="product-price mb-4">৳ {displayPrice}</h3>)}
 
-            {variants?.length > 0 && (
-              <div className="size-selector mb-4">
-                <span className="size-label me-3 fw-bold">
-                  Select {variants?.[0]?.attribute ?? "Option"}:
-                </span>
-                <div className="size-options d-flex flex-wrap gap-2">
-                  {variants.map((variant, index) => (
-                    <div className="form-check" key={variant.id}>
-                      <input
-                        className="form-check-input"
-                        id={`size-${variant.id}`}
-                        type="radio"
-                        name="size"
-                        value={variant.id}
-                        onChange={onSelectVariant}
-                        defaultChecked={
-                          cartItems.some(
-                            (cartItem) => cartItem.id === product.id && String(cartItem.size) === String(variant.id)
-                          ) || index === 0
-                        }
-                      />
-                      <label className="form-check-label fw-bold" htmlFor={`size-${variant.id}`}>
-                        {variant.value}
-                      </label>
+            {/* Colors Selection */}
+            {product.colors?.length > 0 && (
+              <div className="variant-section">
+                <div className="variant-header">
+                  {/* <span className="variant-label">
+                      {product.variants[0]?.attribute || "Option"}
+                    </span> */}
+                  <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Colors:</div>
+                </div>
+                <div className="d-flex gap-2 ">
+                  {product?.colors?.map((color) => (
+                    <div
+                      key={color.id}
+                      className={`color-img-div ${selectedColor === color.image ? "active" : ""}`}
+                      onClick={() => handleSelectedColor(color?.image)}
+                    >
+                      <img src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} alt="colorImages" />
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {product?.description && (
-              <p className="product-description mb-4">{product.description}</p>
+            {/* sizes Selection */}
+            {product.sizes?.length > 1 && (
+              <div className="variant-section">
+                <div className="variant-header">
+                  {/* <span className="variant-label">
+                                {product.variants[0]?.attribute || "Option"}
+                              </span> */}
+                  <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Sizes:</div>
+                </div>
+                <div className="variant-options-grid">
+                  {product?.sizes?.map((size) => (
+                    <button
+                      key={size?.id}
+                      className={`variant-option ${selectedSize == size.id ? 'selected' : ''}`}
+                      onClick={() => handleSelectedSize(size.id)}
+                    >
+                      {size?.size}
+                      <span className="variant-price">{size?.pivot?.price ? "৳" : ""}{size?.pivot?.price ?? ""}</span>
+                      {selectedSize == size?.id && <FaCheck className="check-icon" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {product?.short_description && (
+              <p className="product-description mb-4">{product.short_description}</p>
             )}
 
             <div className="action-buttons d-flex gap-2 flex-wrap">
@@ -552,7 +589,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
           product={selectedProduct}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          selectedSizes={selectedSizes}
+          selectedSize={selectedSize}
           onSizeSelect={handleSizeSelect}
           onAddToCart={handleRelatedAddToCart}
           baseUrl={baseUrl}

@@ -134,6 +134,16 @@ function FeatureClient({ homeCategories: initialCategories}) {
       });
       return;
     }
+    
+     if (targetProduct.colors.length > 1 && !selectedColor) {
+          Swal.fire({
+            title: `Please Select A Color`,
+            icon: "warning",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#DB3340",
+          });
+          return;
+        }
 
     const selectedVariant = targetProduct.sizes.find(v => v.id == selectedSizes) || targetProduct.sizes[0];
     dispatch(
