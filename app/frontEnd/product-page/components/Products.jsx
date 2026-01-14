@@ -25,7 +25,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariantId, setSelectedVariantId] = useState(undefined);
-  const { handleSelectedColor, selectedColor, handleSelectedSize, selectedSize } = useProductLogics()
+  const { handleSelectedColor, selectedColor, handleSelectedSize, selectedSize,whatsappUrl } = useProductLogics(product,socialLinksData.whatsapp_number)
 
   // Modal states for related products
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -39,7 +39,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   // Social media links
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
-  const whatsappNumber = socialLinksData.whatsapp_number;
+  
 
   // Derive variants & images safely
   const variants = product?.variants || [];
@@ -234,17 +234,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     }
   }
 
-  // Generate WhatsApp message with product details
-  const generateWhatsAppMessage = () => {
-    const productName = product?.title || "Product";
-    const productPrice = displayPrice;
-    const selectedSize = selectedVariant?.value ? `, Size: ${selectedVariant.value}` : "";
 
-    return `Hello! I'm interested in this product: ${productName} (Price: ৳${productPrice}${selectedSize}). Can you provide more information?`;
-  };
-
-  // Generate WhatsApp URL
-  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(generateWhatsAppMessage())}`;
 
   if (isLoading) {
     return (

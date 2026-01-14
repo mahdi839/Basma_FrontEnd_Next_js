@@ -1,13 +1,24 @@
 import React, { useState } from 'react'
 
-export default function useProductLogics() {
-    const [selectedColor,setSelectedColor] = useState(null);
-    const [selectedSize,setSelectedSize] = useState(null);
-   function handleSelectedColor (colorImage){
+export default function useProductLogics(product,whatsappNumber) {
+   const [selectedColor, setSelectedColor] = useState(null);
+   const [selectedSize, setSelectedSize] = useState(null);
+   function handleSelectedColor(colorImage) {
       setSelectedColor(colorImage)
    }
-   function handleSelectedSize (sizeId){
+   function handleSelectedSize(sizeId) {
       setSelectedSize(sizeId)
    }
-   return {handleSelectedColor,selectedColor,handleSelectedSize,selectedSize};
+   // WhatsApp message generator
+   const generateWhatsAppMessage = () => {
+      const productName = product?.title || "Product";
+      return `Hello! I'm interested in this product: ${productName}. Can you provide more information?`;
+   };
+
+   // WhatsApp URL
+   const whatsappUrl = whatsappNumber
+      ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(generateWhatsAppMessage())}`
+      : "";
+   return { handleSelectedColor, selectedColor, handleSelectedSize, selectedSize,
+    whatsappUrl };
 }
