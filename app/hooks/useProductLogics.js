@@ -19,6 +19,8 @@ export default function useProductLogics(product,whatsappNumber) {
    const whatsappUrl = whatsappNumber
       ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(generateWhatsAppMessage())}`
       : "";
+
+   // cartcount 
    return { handleSelectedColor, selectedColor, handleSelectedSize, selectedSize,
     whatsappUrl };
 }

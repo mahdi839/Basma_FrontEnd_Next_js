@@ -5,7 +5,6 @@ import { FaCartPlus, FaFacebookMessenger, FaFirstOrder, FaWhatsapp, FaChevronLef
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
 import Zoom from "react-medium-image-zoom";
-import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
@@ -19,13 +18,16 @@ import './relatedProduct.css'
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import './productPage.css'
 import useProductLogics from "@/app/hooks/useProductLogics";
+import { increament, decreament, } from "@/redux/slices/CartSlice";
+import { useDispatch, useSelector } from "react-redux";
 export default function Products({ product, socialLinksData, relatedProducts }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariantId, setSelectedVariantId] = useState(undefined);
-  const { handleSelectedColor, selectedColor, handleSelectedSize, selectedSize,whatsappUrl } = useProductLogics(product,socialLinksData.whatsapp_number)
+  const [preQty, setPreQty] = useState(1)
+  const { handleSelectedColor, selectedColor, handleSelectedSize, selectedSize, whatsappUrl } = useProductLogics(product, socialLinksData.whatsapp_number)
 
   // Modal states for related products
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -39,7 +41,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   // Social media links
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
-  
+
 
   // Derive variants & images safely
   const variants = product?.variants || [];
@@ -54,7 +56,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
 
   // Price derived from selectedVariant or product.price
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
-
+  const cartItem = cartItems.find(item => product.id == item.id);
   useEffect(() => {
     if (product) setIsLoading(false);
     if (product?.error) toast.error(product.error);
@@ -117,7 +119,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     return match && match[2]?.length === 11 ? match[2] : null;
   }
 
-  function handleAddToCart(type, preQty) {
+  function handleAddToCart(type) {
     if (!product) return;
 
     const existing = cartItems.find((item) => item.id === product.id);
@@ -164,6 +166,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
         price: selectedVariant?.pivot?.price ?? product.price,
         image: imageUrl,
         colorImage: selectedColor ? baseUrl + selectedColor : null,
+        preQty: preQty ?? 1,
       })
     );
 
@@ -234,6 +237,15 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     }
   }
 
+  const handleQuantityChange = (id) => {
+    setPreQty((prev) => prev + 1);
+    dispatch(increament({ id }));
+  };
+
+  const handleDecrement = (id) => {
+      setPreQty((prev) => prev -1);
+      dispatch(decreament({ id }));
+    }
 
 
   if (isLoading) {
@@ -359,17 +371,17 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
               <div className="quantity-selector">
                 <button
                   className="quantity-btn"
-                // onClick={() => handleDecrement(product.id)}
-                // disabled={preQty <= 1}
+                onClick={() => handleDecrement(product.id)}
+                disabled={preQty <= 1}
                 >
                   -
                 </button>
                 <span className="quantity-display">
-                  {/* {cartItem?.qty ?? preQty} */}5
+                  {cartItem?.qty ?? preQty}
                 </span>
                 <button
                   className="quantity-btn"
-                // onClick={() => handleQuantityChange(product?.id)}
+                  onClick={() => handleQuantityChange(product?.id)}
                 >
                   +
                 </button>
