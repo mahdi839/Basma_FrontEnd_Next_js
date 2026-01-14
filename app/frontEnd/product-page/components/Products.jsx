@@ -185,7 +185,6 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     setSelectedProduct(null);
   }
 
-  console.log(product)
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
@@ -364,11 +363,34 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
               </div>
             )}
 
-            {product?.short_description && (
-              <p className="product-description mb-4">{product.short_description}</p>
-            )}
+            {/* Quantity Selector */}
+            <div className="quantity-section">
+              <span className="quantity-label">Quantity:</span>
+              <div className="quantity-selector">
+                <button
+                  className="quantity-btn"
+                // onClick={() => handleDecrement(product.id)}
+                // disabled={preQty <= 1}
+                >
+                  -
+                </button>
+                <span className="quantity-display">
+                  {/* {cartItem?.qty ?? preQty} */}5
+                </span>
+                <button
+                  className="quantity-btn"
+                // onClick={() => handleQuantityChange(product?.id)}
+                >
+                  +
+                </button>
+              </div>
+            </div>
 
-            <div className="action-buttons d-flex gap-2 flex-wrap">
+            {/* {product?.short_description && (
+              <p className="product-description mb-4">{product.short_description}</p>
+            )} */}
+
+            <div className="action-buttons d-flex gap-2 ">
               <button className="btn-grad px-3 py-2 rounded-0" onClick={() => handleAddToCart("add")}>
                 <span className="pe-1">
                   <FaCartPlus />
@@ -384,7 +406,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
             </div>
 
             {/* Messenger and WhatsApp Buttons */}
-            <div className="social-buttons d-flex flex-column gap-2 mt-3">
+            <div className="social-buttons d-flex  gap-2 mt-3">
               <a
                 href={messengerUrl}
                 target="_blank"
@@ -398,7 +420,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
                 <span className="pe-2">
                   <FaFacebookMessenger size={18} />
                 </span>
-                Message us on Messenger
+                Messenger
               </a>
 
               <a
@@ -414,7 +436,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
                 <span className="pe-2">
                   <FaWhatsapp size={18} />
                 </span>
-                Contact us on WhatsApp
+                WhatsApp
               </a>
             </div>
           </div>
