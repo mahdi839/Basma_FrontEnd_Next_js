@@ -51,13 +51,6 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   const variants = product?.variants || [];
   const images = product?.images || [];
 
-  // Selected variant object
-  const selectedVariant = useMemo(() => {
-    if (!variants.length) return undefined;
-    const byId = variants.find((v) => String(v.id) === String(selectedVariantId));
-    return byId || variants[0];
-  }, [variants, selectedVariantId]);
-
   // Price derived from selectedVariant or product.price
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
   const cartItem = cartItems.find(item => product.id == item.id);
@@ -65,39 +58,6 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     if (product) setIsLoading(false);
     if (product?.error) toast.error(product.error);
   }, [product]);
-
-  // Slider settings for related products
-  const sliderSettings = {
-    dots: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    arrows: false,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-        },
-      },
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-        },
-      },
-    ],
-  };
 
   // Refs for slider navigation
   const sliderRef = React.useRef(null);
@@ -520,35 +480,19 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
         </div>
       </div>
 
+       
       {/* Related Products Section */}
       {relatedProducts && relatedProducts.length > 0 && (
         <div className="related-products-section mt-5 pt-4">
           <div className="row position-relative">
-            <div className="col-12 d-flex justify-content-between align-items-center mb-3 position-relative">
+            <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
               <h2 className="related-heading font-weight-bold mb-0 fs-4 fs-md-3" style={{ fontWeight: "600", color: "#222" }}>
-                You May Also Like
+                Our Latest Products
               </h2>
-
-              {relatedProducts.length >= 4 && (
-                <div className="d-flex gap-2 mb-1">
-                  <button
-                    className="d-flex align-items-center justify-content-center slider-nav-btn"
-                    onClick={() => sliderRef.current?.slickPrev()}
-                  >
-                    <FaChevronLeft className="slider-arrow" />
-                  </button>
-                  <button
-                    className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
-                    onClick={() => sliderRef.current?.slickNext()}
-                  >
-                    <FaChevronRight className="slider-arrow" />
-                  </button>
-                </div>
-              )}
             </div>
 
-            {relatedProducts.length > 0 && (
-              <div className="col-12 position-relative ml-3 mt-0 overflow-hidden mb-3">
+             {relatedProducts.length > 0 && (
+              <div className="col-12 position-relative ml-3 mt-0 overflow-hidden">
                 <hr className="related-hr m-0" />
                 <div
                   style={{
@@ -564,15 +508,14 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
               </div>
             )}
 
-            {/* Related Products Slider/Grid */}
-            {relatedProducts.length >= 4 ? (
-              <Slider
-                ref={sliderRef}
-                {...sliderSettings}
-                className="w-100 related-products-slider"
-              >
+            {/* Related Products Grid */}
+            {relatedProducts.length > 0 && (
+              <div className="row ">
                 {relatedProducts.map((relatedProduct) => (
-                  <div key={relatedProduct.id} className="px-2">
+                  <div
+                    key={relatedProduct.id}
+                    className="col-6 col-md-4 col-lg-3"
+                  >
                     <ProductCard
                       slotProducts={relatedProduct}
                       handleOpenModal={handleOpenModal}
@@ -582,21 +525,9 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
                     />
                   </div>
                 ))}
-              </Slider>
-            ) : (
-              <div className="row mx-0">
-                {relatedProducts.map((relatedProduct) => (
-                  <div key={relatedProduct.id} className="col-6 col-lg-3 col-md-4 px-1 px-md-2">
-                    <ProductCard
-                      slotProducts={relatedProduct}
-                      handleOpenModal={handleOpenModal}
-                      handleAddToCart={handleRelatedAddToCart}
-                      slotLength={relatedProducts.length}
-                    />
-                  </div>
-                ))}
               </div>
             )}
+
           </div>
         </div>
       )}
