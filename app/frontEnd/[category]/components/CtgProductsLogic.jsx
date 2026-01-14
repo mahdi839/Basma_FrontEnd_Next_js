@@ -8,14 +8,18 @@ import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard";
 import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
+import Pagination from "@/app/dashboard/orders/components/Pagination";
 
-export default function CtgProductsLogic({ products, category }) {
+
+export default function CtgProductsLogic({ products, category, pagination }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedProduct, setSelectedProduct] = useState(null); // For modal
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [page, setPage] = useState(parseInt(searchParams.get('page')) || 1);
   const [selectedSizes, setSelectedSizes] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -23,10 +27,20 @@ export default function CtgProductsLogic({ products, category }) {
   const cartItems = useSelector((state) => state.cart.items);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
+
+  // Handle page change
+  useEffect(() => {
+    if (page !== parseInt(searchParams.get('page') || '1')) {
+      const params = new URLSearchParams(searchParams);
+      params.set('page', page.toString());
+      router.push(`?${params.toString()}`, { scroll: false });
+    }
+  }, [page, router, searchParams]);
+
   // Open modal with product details
   function handleOpenModal(product) {
     setSelectedProduct(product);
-    setSelectedSizes(""); // Reset selection when opening modal
+    setSelectedSizes("");
     setIsModalOpen(true);
   }
 
@@ -37,7 +51,7 @@ export default function CtgProductsLogic({ products, category }) {
     setSelectedSizes("");
   }
 
-  // close drawer
+  // Close drawer
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
@@ -51,10 +65,11 @@ export default function CtgProductsLogic({ products, category }) {
   }
 
   const handleAddToCart = useCallback(
-    (product, type,preQty) => {
+    (product, type, preQty) => {
       let existingCart = cartItems.find(
         (existProduct) => existProduct.id === product.id
       );
+      
       if (existingCart) {
         Swal.fire({
           title: "Already in the cart",
@@ -68,7 +83,7 @@ export default function CtgProductsLogic({ products, category }) {
 
       if (product.sizes.length > 1 && !selectedSizes) {
         Swal.fire({
-          title: `Please Select A Size"}`,
+          title: "Please Select A Size",
           icon: "warning",
           confirmButtonText: "Ok",
           confirmButtonColor: "#DB3340",
@@ -76,7 +91,6 @@ export default function CtgProductsLogic({ products, category }) {
         return;
       }
 
-      // Find the selected variant for price
       const selectedVariant = product.sizes.find(v => v.id == selectedSizes) || product.sizes[0];
 
       dispatch(
@@ -91,15 +105,16 @@ export default function CtgProductsLogic({ products, category }) {
         })
       );
 
-      setSelectedSizes(""); // Reset selection
+      setSelectedSizes("");
       toast.success("Added to cart!");
+      
       if (type === 'buy') {
         setIsCartDrawerOpen(true);
-        setIsDirectBuy(true)
-        handleCloseModal()
+        setIsDirectBuy(true);
+        handleCloseModal();
       }
     },
-    [cartItems, dispatch, selectedSizes, baseUrl]
+    [cartItems, dispatch, selectedSizes, selectedColor, baseUrl]
   );
 
   useEffect(() => {
@@ -111,7 +126,6 @@ export default function CtgProductsLogic({ products, category }) {
     }
   }, [products]);
 
-  // ✅ Now it's safe to return conditionally
   if (isLoading) {
     return <DynamicLoader />;
   }
@@ -127,8 +141,8 @@ export default function CtgProductsLogic({ products, category }) {
   return (
     <div className="container">
       <div className="row position-relative">
-        {products?.map((product, index) => (
-          <div className="col-6 col-lg-3 col-md-4 " key={product.id}>
+        {products?.map((product) => (
+          <div className="col-6 col-lg-3 col-md-4" key={product.id}>
             <ProductCard
               slotProducts={product}
               handleOpenModal={handleOpenModal}
@@ -158,6 +172,17 @@ export default function CtgProductsLogic({ products, category }) {
           onClose={handleCloseDrawer}
         />
       </div>
+
+      {/* Pagination */}
+      {pagination && pagination.last_page > 1 && (
+        <div className="d-flex justify-content-center my-3">
+          <Pagination
+            page={page}
+            setPage={setPage}
+            pagination={pagination}
+          />
+        </div>
+      )}
     </div>
   );
 }

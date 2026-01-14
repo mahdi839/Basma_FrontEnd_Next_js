@@ -104,7 +104,7 @@ export default async function Footer() {
                 )}
                 {data?.company_phone && (
                   <a
-                    href={`https://wa.me/${data.company_phone}`}
+                    href={`https://wa.me/880${data.company_phone}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-white fs-5"

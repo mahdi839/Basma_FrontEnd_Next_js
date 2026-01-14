@@ -19,10 +19,10 @@ export default function AdminLogin() {
   const setCookie = (name, value, days = 7) => {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
     const isProduction = process.env.NODE_ENV === "production";
-    
+
     // Ensure value is properly encoded
     const encodedValue = encodeURIComponent(value);
-    
+
     document.cookie = `${name}=${encodedValue}; expires=${expires}; path=/; SameSite=Lax${isProduction ? '; Secure' : ''}`;
   };
 
@@ -37,14 +37,10 @@ export default function AdminLogin() {
     setLoading(true);
     try {
       const url = `${API_BASE}${API_BASE.endsWith("/") ? "" : "/"}${LOGIN_ENDPOINT}`;
-      
-      console.log("🔄 Attempting login to:", url);
-      
+
       const response = await axios.post(url, { email, password });
 
       const { status, token, user, message } = response.data;
-
-      console.log("📦 Login response:", { status, hasToken: !!token, user });
 
       if (!status) {
         toast.error(message || "Login failed.");
@@ -68,12 +64,6 @@ export default function AdminLogin() {
           localStorage.setItem("roles", JSON.stringify(user.roles));
           localStorage.setItem("permissions", JSON.stringify(user.permissions || []));
 
-          console.log("✅ Saved to localStorage:", {
-            userId: user.id,
-            roles: user.roles,
-            permissions: user.permissions
-          });
-
           // ✅ Cookies (for middleware access) - with proper string conversion
           setCookie("token", token);
           setCookie("user_id", user.id.toString());
@@ -92,23 +82,18 @@ export default function AdminLogin() {
 
       // ✅ Check roles (now it's an array)
       const roles = user.roles || [];
-      const hasAdminAccess = roles.some(role =>
-        ["super-admin", "admin"].includes(role)
-      );
+      if (typeof window !== "undefined") {
+        let permissions = user.permissions || []
+        const hasAdminAccess = permissions.length > 0
+        // ✅ Small delay to ensure cookies are set before redirect
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-      console.log("🔐 Access check:", { roles, hasAdminAccess });
-
-      // ✅ Small delay to ensure cookies are set before redirect
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      if (hasAdminAccess) {
-        console.log("✅ Redirecting to dashboard");
-        // Use window.location for a hard refresh in production
-        window.location.href = "/dashboard";
-      } else {
-        toast.error("Access denied. You are not an admin.");
-        console.log("❌ No admin access, redirecting home");
-        router.push("/");
+        if (hasAdminAccess) {
+          window.location.href = "/dashboard";
+        } else {
+          toast.error("Access denied. You are not an admin.");
+          router.push("/");
+        }
       }
     } catch (err) {
       console.error("❌ Login error:", err);

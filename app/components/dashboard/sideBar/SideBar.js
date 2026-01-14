@@ -29,7 +29,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       href: "/dashboard",
       Icon: AiOutlineDashboard,
       label: 'Dashboard Summary',
-      permission: 'view dashboard' // ✅ Required permission
+      permission: 'view dashboard summary' // ✅ Required permission
     },
     {
       type: 'menu',

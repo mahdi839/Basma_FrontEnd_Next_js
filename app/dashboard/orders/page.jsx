@@ -1,15 +1,22 @@
 "use client"
 import Button from '@/app/components/dashboard/components/button/Button'
-import useIndexData from '@/app/hooks/useIndexData'
 import React, { useEffect, useState } from 'react'
 import OrderTable from './components/OrderTable'
 import Pagination from './components/Pagination'
 import Link from 'next/link'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
-export default function page() {
+export default function Page() {
   const [page, setPage] = useState(1);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [token, setToken] = useState(null); // ✅ store token safely
+  const [loading, setLoading] = useState(false);
+  const [token, setToken] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1
+  });
   const [filters, setFilters] = useState({
     search: '',
     min: '',
@@ -20,6 +27,14 @@ export default function page() {
     product_title: '',
     status: ''
   });
+
+  // Get token on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedToken = localStorage.getItem("token");
+      setToken(savedToken);
+    }
+  }, []);
 
   // Build URL with filters
   const buildIndexUrl = () => {
@@ -43,18 +58,42 @@ export default function page() {
     return params.toString() ? `${baseUrl}?${params.toString()}` : baseUrl;
   };
 
-  const { indexData, loading, data, setData, pagination, setPagination } = useIndexData()
+  // Fetch orders data
+  const fetchOrders = async () => {
+    if (!token) return;
 
-  useEffect(() => {
-    indexData(buildIndexUrl());
-  }, [page, filters])
+    setLoading(true);
+    try {
+      const response = await axios.get(buildIndexUrl(), {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+      });
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedToken = localStorage.getItem("token");
-      setToken(savedToken);
+      // Set orders array
+      setOrders(response.data.data || []);
+      
+      // Set pagination
+      setPagination({
+        current_page: response.data.current_page,
+        last_page: response.data.last_page
+      });
+
+    } catch (err) {
+      console.error('Fetch error:', err);
+      toast.error(err.response?.data?.message || err.message);
+      setOrders([]);
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  };
+
+  // Fetch orders when page, filters, or token changes
+  useEffect(() => {
+    if (token) {
+      fetchOrders();
+    }
+  }, [page, filters, token]);
 
   const handleApplyFilters = (newFilters) => {
     setPage(1); // Reset to first page when filters change
@@ -76,6 +115,11 @@ export default function page() {
   };
 
   const handleDownloadCSV = async () => {
+    if (!token) {
+      toast.error('Authentication token not found');
+      return;
+    }
+
     try {
       setIsDownloading(true);
       const csvUrl = buildCsvUrl();
@@ -84,7 +128,6 @@ export default function page() {
         method: 'GET',
         headers: {
           'Accept': 'text/csv',
-          // Add any authentication headers if needed
           'Authorization': `Bearer ${token}`,
         },
       });
@@ -120,9 +163,11 @@ export default function page() {
       link.remove();
       window.URL.revokeObjectURL(url);
 
+      toast.success('CSV downloaded successfully');
+
     } catch (error) {
       console.error('Error downloading CSV:', error);
-      alert('Failed to download CSV. Please try again.');
+      toast.error('Failed to download CSV. Please try again.');
     } finally {
       setIsDownloading(false);
     }
@@ -131,22 +176,17 @@ export default function page() {
   return (
     <div className="container-fluid py-4">
       <div className='d-flex justify-content-between'>
-        {/* <Link href="/dashboard/orders/createOrder">
-          <Button className="mb-3">
-            Create Order
-          </Button>
-        </Link> */}
         <Button
           className="mb-3"
           onClick={handleDownloadCSV}
-          disabled={isDownloading}
+          disabled={isDownloading || !token}
         >
           {isDownloading ? 'Downloading...' : 'Download CSV'}
         </Button>
       </div>
       <OrderTable
         loading={loading}
-        orders={data.data || []}
+        orders={orders}
         filters={filters}
         onApplyFilters={handleApplyFilters}
         onResetFilters={handleResetFilters}

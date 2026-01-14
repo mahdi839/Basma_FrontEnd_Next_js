@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import CartDrawer from "../../components/CartDrawer";
 import Button from "@/app/components/dashboard/components/button/Button";
 
-function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
+function FeatureClient({ homeCategories: initialCategories}) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const sliderRefs = useRef([]);
@@ -134,6 +134,16 @@ function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
       });
       return;
     }
+    
+     if (targetProduct.colors.length > 1 && !selectedColor) {
+          Swal.fire({
+            title: `Please Select A Color`,
+            icon: "warning",
+            confirmButtonText: "Ok",
+            confirmButtonColor: "#DB3340",
+          });
+          return;
+        }
 
     const selectedVariant = targetProduct.sizes.find(v => v.id == selectedSizes) || targetProduct.sizes[0];
     dispatch(
@@ -198,7 +208,7 @@ function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
 
   return (
     <div className="container mb-3 mb-md-5 mt-0 py-2">
-      <div className="row position-relative">
+      <div className="row position-relative ">
         {homeCategories &&
           homeCategories.map((slot, slotIndex) => {
             if (!sliderRefs.current[slotIndex]) {
@@ -229,7 +239,7 @@ function FeatureClient({ homeCategories: initialCategories, BannerCatData }) {
                   })}
 
                 {/* Category Header */}
-                <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
+                <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative home_page_card_header">
                   {slot.products.length > 0 && (
                     <h2
                       className="featured-heading font-weight-bold mb-0 fs-5 fs-md-3 fs-lg-2 fs-xl-1"

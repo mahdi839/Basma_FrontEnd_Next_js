@@ -10,8 +10,6 @@ const STATUSES = ["pending", "placed", "delivered", "cancel"];
 function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
   const canvasRef = useRef(null);
 
- 
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -21,14 +19,10 @@ function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
     const width = canvas.clientWidth * dpr;
     const h = height * dpr;
 
-    // Resize canvas for retina
     canvas.width = width;
     canvas.height = h;
-
-    // Clear
     ctx.clearRect(0, 0, width, h);
 
-    // Padding
     const padL = 40 * dpr;
     const padR = 16 * dpr;
     const padT = 16 * dpr;
@@ -37,21 +31,20 @@ function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
     const innerW = width - padL - padR;
     const innerH = h - padT - padB;
 
-    // Values
     const values =
       hotBy === "revenue"
         ? data.map((d) => Number(d.revenue))
         : data.map((d) => Number(d.qty_sold));
 
+    // ✅ Changed: Use size_name instead of variant_value
     const labels = data.map(
-      (d) => (d.title || `#${d.product_id}`) + (d.variant_value ? ` (${d.variant_value})` : "")
+      (d) => (d.title || `#${d.product_id}`) + (d.size_name ? ` (${d.size_name})` : "")
     );
 
     const maxVal = Math.max(1, ...values);
     const barGap = 12 * dpr;
     const barW = Math.max(10 * dpr, innerW / values.length - barGap);
 
-    // Axes
     ctx.strokeStyle = "#dee2e6";
     ctx.lineWidth = 1 * dpr;
     ctx.beginPath();
@@ -60,15 +53,13 @@ function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
     ctx.lineTo(width - padR, h - padB);
     ctx.stroke();
 
-    // Bars
-    ctx.fillStyle = "#0d6efd"; // Bootstrap primary
+    ctx.fillStyle = "#0d6efd";
     values.forEach((v, i) => {
       const x = padL + i * (barW + barGap) + barGap / 2;
       const bh = (v / maxVal) * innerH;
       const y = h - padB - bh;
       ctx.fillRect(x, y, barW, bh);
 
-      // Value label
       ctx.fillStyle = "#212529";
       ctx.font = `${12 * dpr}px system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial`;
       ctx.textAlign = "center";
@@ -77,11 +68,9 @@ function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
         hotBy === "revenue" ? `৳${Number(v).toLocaleString()}` : `${Number(v).toLocaleString()}`;
       ctx.fillText(txt, x + barW / 2, y - 4 * dpr);
 
-      // Reset color for next bar
       ctx.fillStyle = "#0d6efd";
     });
 
-    // X labels (trim long)
     ctx.fillStyle = "#6c757d";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
@@ -103,23 +92,20 @@ function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
 const { formatDate } = useFormatDate();
 
 export default function DashboardHome() {
-  // ---------- UI State (filters) ----------
-  const [range, setRange] = useState("today"); // today|week|month|year|custom
-  const [startDate, setStartDate] = useState(""); // YYYY-MM-DD
-  const [endDate, setEndDate] = useState(""); // YYYY-MM-DD
-  const [selectedStatuses, setSelectedStatuses] = useState([]); // array of enum values
-  const [hotBy, setHotBy] = useState("qty"); // qty|revenue
+  const [range, setRange] = useState("today");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [hotBy, setHotBy] = useState("qty");
   const [hotLimit, setHotLimit] = useState(10);
 
-  // ---------- Data State ----------
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [data, setData] = useState(null); // API JSON
+  const [data, setData] = useState(null);
 
   const apiBase = (process.env.NEXT_PUBLIC_BACKEND_URL ?? "").replace(/\/+$/, "");
   const tokenFromEnv = process.env.NEXT_PUBLIC_API_TOKEN ?? "";
 
-  // Build query string from filters
   const query = useMemo(() => {
     const params = new URLSearchParams();
     params.set("range", range);
@@ -173,13 +159,10 @@ export default function DashboardHome() {
     }
   };
 
-  // Fetch on mount & whenever filters change
   useEffect(() => {
     fetchSummary();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
-  // Helpers
   const fmtMoney = (num) => {
     const n = Number(num ?? 0);
     return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -194,17 +177,17 @@ export default function DashboardHome() {
     { label: "Customers", key: "customers" },
   ];
 
-  // ----- Dropdown helpers -----
   const isSelected = (s) => selectedStatuses.includes(s);
   const toggleStatus = (s) =>
     setSelectedStatuses((prev) =>
       prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
     );
   const clearStatuses = () => setSelectedStatuses([]);
+ 
+  
 
   return (
     <div className="container-fluid py-4">
-      {/* Header */}
       <div className="d-flex flex-wrap align-items-center justify-content-between mb-4">
         <div>
           <h3 className="mb-0">Dashboard</h3>
@@ -255,7 +238,6 @@ export default function DashboardHome() {
               </>
             )}
 
-            {/* ✅ Status multi-select dropdown (checkboxes) */}
             <div className="col-12 col-md-3">
               <label className="form-label">Status</label>
               <div className="dropdown w-100">
@@ -316,7 +298,6 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      {/* Loading / Error */}
       {loading && <div className="alert alert-info">Loading dashboard…</div>}
       {err && !loading && (
         <div className="alert alert-danger">
@@ -342,7 +323,7 @@ export default function DashboardHome() {
                     Profit: <span className="fw-semibold">৳{fmtMoney(totals?.estimated_profit || 0)}</span>
                   </div>
                 )}
-                <div className="progress mt-3" role="progressbar" aria-valuenow={70} aria-valuemin={0} aria-valuemax={100}>
+                <div className="progress mt-3">
                   <div className="progress-bar" style={{ width: `${60 + i * 8}%` }} />
                 </div>
               </div>
@@ -353,7 +334,6 @@ export default function DashboardHome() {
 
       {/* Main Grid */}
       <div className="row g-3">
-        {/* Sales Overview */}
         <div className="col-12 col-xl-8">
           <div className="card shadow-sm border-0 h-100">
             <div className="card-header bg-white d-flex justify-content-between align-items-center">
@@ -393,7 +373,6 @@ export default function DashboardHome() {
           </div>
         </div>
 
-        {/* Quick Stats & Chart */}
         <div className="col-12 col-xl-4">
           <div className="card shadow-sm border-0 mb-3">
             <div className="card-body">
@@ -421,8 +400,6 @@ export default function DashboardHome() {
               </div>
             </div>
           </div>
-
-       
         </div>
 
         {/* Top Products Table */}
@@ -443,7 +420,7 @@ export default function DashboardHome() {
                     <thead className="table-light">
                       <tr>
                         <th>Product</th>
-                        <th>Variant</th>
+                        <th>Size</th>
                         <th className="text-end">Qty sold</th>
                         <th className="text-end">Revenue</th>
                         <th className="text-end">Est. COGS</th>
@@ -452,9 +429,9 @@ export default function DashboardHome() {
                     </thead>
                     <tbody>
                       {hotProducts.map((p, i) => (
-                        <tr key={`${p.product_id}-${p.product_variant_id}-${i}`}>
+                        <tr key={`${p.product_id}-${p.size_id}-${i}`}>
                           <td className="fw-semibold">{p.title || p.product_id}</td>
-                          <td><span className="badge text-bg-light">{p.variant_value ?? "-"}</span></td>
+                          <td><span className="badge text-bg-light">{p.size_name ?? "-"}</span></td>
                           <td className="text-end">{Number(p.qty_sold).toLocaleString()}</td>
                           <td className="text-end">৳{fmtMoney(p.revenue)}</td>
                           <td className="text-end">৳{fmtMoney(p.estimated_cogs)}</td>
@@ -470,9 +447,8 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      {/* Footer */}
       <div className="text-center text-muted small mt-4">
-        © {new Date().getFullYear()} Imperial Tours — Dashboard
+        © {new Date().getFullYear()} Eyara Fashion — Dashboard
       </div>
     </div>
   );

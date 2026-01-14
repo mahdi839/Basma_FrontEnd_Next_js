@@ -17,27 +17,12 @@ export default function Page() {
   const [slot, setSlot] = useState(null);
   const { indexData, loading, data, setData } = useIndexData();
   const categoryIndeUrl = process.env.NEXT_PUBLIC_BACKEND_URL + `api/categories`;
-  const slotUrl = process.env.NEXT_PUBLIC_BACKEND_URL + `api/product-slots`;
   const router = useRouter()
   async function getSlotData() {
     let token = null;
 
     if (typeof window !== "undefined") {
       token = localStorage.getItem("token");
-    }
-    try {
-      const response = await axios.get(slotUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setSlot(response.data.data);
-    } catch (err) {
-      Swal.fire({
-        title: "Oops! Please Check",
-        text: err.response?.data?.message || err.message,
-        icon: "error",
-      });
     }
   }
 

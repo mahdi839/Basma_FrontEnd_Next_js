@@ -75,6 +75,7 @@ export default function OrderTable({
       toast.success("Successfully Updated!");
     } catch (error) {
       toast.error(error.message);
+      console.log(error)
     }
   }
 

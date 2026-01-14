@@ -133,10 +133,10 @@ export default function Page() {
             <div className="row w-100 justify-content-center">
                 <div className="col-12 col-md-6 col-lg-4">
                     <div className="card shadow-lg">
-                        <div className="card-header bg-primary text-white text-center py-3">
-                            <h4 className="card-title mb-0">
+                        <div className=" text-center py-3 border-bottom">
+                            <h5 className="card-title mb-0">
                                 {isEditMode ? 'Update Shipping Cost' : 'Set Shipping Cost'}
-                            </h4>
+                            </h5>
                         </div>
                         <div className="card-body p-4">
                             <form onSubmit={handleSubmit}>
