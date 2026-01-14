@@ -298,20 +298,16 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
             {product.sizes?.length > 1 && (
               <div className="variant-section">
                 <div className="variant-header">
-                  {/* <span className="variant-label">
-                                {product.variants[0]?.attribute || "Option"}
-                              </span> */}
                   <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Sizes:</div>
                 </div>
                 <div className="variant-options-grid">
                   {product?.sizes?.map((size) => (
                     <button
                       key={size?.id}
-                      className={`variant-option ${selectedSize == size.id ? 'selected' : ''}`}
+                      className={`prod_detailsvariant ${selectedSize == size.id ? 'selected' : ''}`}
                       onClick={() => handleSelectedSize(size.id)}
                     >
                       {size?.size}
-                      <span className="variant-price">{size?.pivot?.price ? "৳" : ""}{size?.pivot?.price ?? ""}</span>
                       {selectedSize == size?.id && <FaCheck className="check-icon" />}
                     </button>
                   ))}
