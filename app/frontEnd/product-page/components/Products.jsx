@@ -26,8 +26,12 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariantId, setSelectedVariantId] = useState(undefined);
-  const [preQty, setPreQty] = useState(1)
-  const { handleSelectedColor, selectedColor, handleSelectedSize, selectedSize, whatsappUrl } = useProductLogics(product, socialLinksData.whatsapp_number)
+  const { handleSelectedColor,
+    selectedColor, handleSelectedSize,
+    selectedSize, whatsappUrl, preQty,
+    handleQuantityIncrease,
+    handleQuantityDecrease
+  } = useProductLogics(product, socialLinksData.whatsapp_number)
 
   // Modal states for related products
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -237,16 +241,6 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     }
   }
 
-  const handleQuantityChange = (id) => {
-    setPreQty((prev) => prev + 1);
-    dispatch(increament({ id }));
-  };
-
-  const handleDecrement = (id) => {
-      setPreQty((prev) => prev -1);
-      dispatch(decreament({ id }));
-    }
-
 
   if (isLoading) {
     return (
@@ -371,8 +365,8 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
               <div className="quantity-selector">
                 <button
                   className="quantity-btn"
-                onClick={() => handleDecrement(product.id)}
-                disabled={preQty <= 1}
+                  onClick={() => handleQuantityDecrease(product.id)}
+                  disabled={preQty <= 1}
                 >
                   -
                 </button>
@@ -381,7 +375,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
                 </span>
                 <button
                   className="quantity-btn"
-                  onClick={() => handleQuantityChange(product?.id)}
+                  onClick={() => handleQuantityIncrease(product?.id)}
                 >
                   +
                 </button>
