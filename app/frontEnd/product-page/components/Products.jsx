@@ -103,7 +103,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
       return;
     }
 
-    if (product.colors.length > 1 && !selectedColor) {
+    if (product?.colors?.length > 1 && !selectedColor) {
       Swal.fire({
         title: `Please Select A Color`,
         icon: "warning",
@@ -205,11 +205,11 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
 
   return (
     <div className="container product-page-container">
-      <div className="row my-4 my-md-5">
+      <div className="row my-4 my-md-5 g-4">
         {/* Product Images */}
-        <div className="product_image col-12 col-md-6 mb-4 mb-md-0">
-          <div className="main_image mb-3 mb-md-4 text-center">
-            <div className="image-container">
+        <div className="col-12 col-md-6">
+          <div className="product-gallery-wrapper">
+            <div className="main-image-container">
               <Zoom>
                 <Image
                   src={
@@ -219,165 +219,192 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
                       : "/placeholder.png")
                   }
                   alt={product?.title || "product image"}
-                  width={500}          // adjust as needed
-                  height={400}         // adjust as needed
-                  className="card-img-top"
-                  priority             // equivalent to loading="eager"
-                  style={{ objectFit: "cover" }}
+                  width={600}
+                  height={600}
+                  className="img-fluid"
+                  priority
+                  style={{ objectFit: "contain" }}
                 />
               </Zoom>
             </div>
-          </div>
-          <div className="sub_image d-flex gap-2 gap-md-3 justify-content-center align-items-center flex-wrap">
-            {images?.map((img) => (
-              <button
-                type="button"
-                key={img.id}
-                className="thumbnail border-0 bg-transparent p-0"
-                onClick={() => handleThumbClick(img.id)}
-                aria-label="Show product image"
-              >
-                <Image
-                  className="pl-2"
-                  src={baseUrl + img.image}
-                  alt="product thumbnail"
-                  width={80}
-                  height={80}
-                />
-              </button>
-            ))}
+
+            {images?.length > 1 && (
+              <div className="thumbnails-container">
+                {images?.map((img, index) => (
+                  <button
+                    type="button"
+                    key={img.id}
+                    className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                      }`}
+                    onClick={() => {
+                      handleThumbClick(img.id);
+                    }}
+                    aria-label={`View product image ${index + 1}`}
+                  >
+                    <Image
+                      src={baseUrl + img.image}
+                      alt="product thumbnail"
+                      width={80}
+                      height={80}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Product Description */}
-        <div className="product_desc col-12 col-md-6">
-          <div className="ms-md-5">
-            <h1 className="product-title fw-bold mb-3">{product?.title}</h1>
-            {displayPrice && (<h3 className="product-price mb-4">৳ {displayPrice}</h3>)}
+        {/* Product Description & Options */}
+        <div className="col-12 col-md-6">
+          <div className="product-info-card">
+            {/* Product Header */}
+            <div className="product-header">
+              <h1 className="product-title">{product?.title}</h1>
+
+              {product?.sku && (
+                <div className="product-sku">
+                  SKU: <strong>{product.sku}</strong>
+                </div>
+              )}
+
+              {product?.status === 'prebook' && (
+                <div className="preorder-badge">
+                  ⚡ Pre Order, Delivery Time 20 to 25 Days
+                </div>
+              )}
+            </div>
+
+            {/* Price Display */}
+            {displayPrice && (
+              <div className="price-section">
+                <div className="product-price">
+                  ৳ {displayPrice}
+                </div>
+                {product?.original_price && product.original_price > displayPrice && (
+                  <div className="product-original-price">
+                    ৳ {product.original_price}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Colors Selection */}
             {product.colors?.length > 0 && (
               <div className="variant-section">
-                <div className="variant-header">
-                  {/* <span className="variant-label">
-                      {product.variants[0]?.attribute || "Option"}
-                    </span> */}
-                  <div className="quantity-label "><span className="required-asterisk">*{" "}</span>Colors:</div>
+                <div className="variant-section-title">
+                  <span className="required-asterisk">*</span>
+                  Colors:
                 </div>
-                <div className="d-flex gap-2 ">
+                <div className="color-selector-grid">
                   {product?.colors?.map((color) => (
                     <div
                       key={color.id}
-                      className={`color-img-div ${selectedColor === color.image ? "active" : ""}`}
+                      className={`color-option-card ${selectedColor === color.image ? "selected" : ""
+                        }`}
                       onClick={() => handleSelectedColor(color?.image)}
+                      title={color.name || `Color option ${color.id}`}
                     >
-                      <img src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} alt="colorImages" />
+                      <img
+                        src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""}
+                        alt={color.name || "Color option"}
+                      />
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            <div className="d-flex gap-5">
-              {/* Quantity Selector */}
-              <div className="prod-quantity-section">
-                <span className="quantity-label">Quantity:</span>
-                <div className="quantity-selector mt-2">
-                  <button
-                    className="quantity-btn"
-                    onClick={() => handleQuantityDecrease(product.id)}
-                    disabled={preQty <= 1}
-                  >
-                    -
-                  </button>
-                  <span className="quantity-display">
-                    {cartItem?.qty ?? preQty}
-                  </span>
-                  <button
-                    className="quantity-btn"
-                    onClick={() => handleQuantityIncrease(product?.id)}
-                  >
-                    +
-                  </button>
+            {/* Sizes Selection */}
+            {product.sizes?.length > 0 && (
+              <div className="variant-section">
+                <div className="variant-section-title">
+                  <span className="required-asterisk">*</span>
+                  Sizes:
+                </div>
+                <div className="size-selector-grid">
+                  {product?.sizes?.map((size) => {
+                    const sizePrice = size?.pivot?.price;
+                    const isSelected = selectedSize == size.id;
+
+                    return (
+                      <button
+                        key={size?.id}
+                        className={`size-option-btn ${isSelected ? 'selected' : ''}`}
+                        onClick={() => handleSelectedSize(size.id)}
+                      >
+                        {size?.size}
+                        {sizePrice && (
+                          <span className="size-price">৳{sizePrice}</span>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
-              <div>
-                {/* sizes Selection */}
-                {product.sizes?.length > 1 && (
-                  <div className="prod-variant-section">
-                    <div className="variant-header">
-                      <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Sizes:</div>
-                    </div>
-                    <div className="variant-options-grid">
-                      {product?.sizes?.map((size) => (
-                        <button
-                          key={size?.id}
-                          className={`prod_detailsvariant ${selectedSize == size.id ? 'selected' : ''}`}
-                          onClick={() => handleSelectedSize(size.id)}
-                        >
-                          {size?.size}
-                          {selectedSize == size?.id && <FaCheck className="check-icon" />}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+            )}
 
+            {/* Quantity Selector */}
+            <div className="quantity-selector-wrapper">
+              <div className="variant-section-title">Quantity:</div>
+              <div className="quantity-controls">
+                <button
+                  className="quantity-btn"
+                  onClick={() => handleQuantityDecrease(product.id)}
+                  disabled={preQty <= 1}
+                  aria-label="Decrease quantity"
+                >
+                  -
+                </button>
+                <span className="quantity-display">
+                  {cartItem?.qty ?? preQty}
+                </span>
+                <button
+                  className="quantity-btn"
+                  onClick={() => handleQuantityIncrease(product?.id)}
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
             </div>
 
 
-
-            {/* {product?.short_description && (
-              <p className="product-description mb-4">{product.short_description}</p>
-            )} */}
-
-            <div className="action-buttons d-flex gap-2 ">
-              <button className="btn-grad px-3 py-2 rounded-0" onClick={() => handleAddToCart("add")}>
-                <span className="pe-1">
-                  <FaCartPlus />
-                </span>
-                Add To Cart
+            {/* Action Buttons */}
+            <div className="action-buttons-container">
+              <button
+                className="action-btn btn-grad"
+                onClick={() => handleAddToCart("add")}
+              >
+                <FaCartPlus size={16} />
+                Add to Cart
               </button>
-              <button className="btn-grad px-3 py-2 rounded-0" onClick={() => handleAddToCart("order")}>
-                <span className="pe-1">
-                  <FaFirstOrder />
-                </span>
+              <button
+                className="action-btn btn-outline"
+                onClick={() => handleAddToCart("order")}
+              >
+                <FaFirstOrder size={16} />
                 Order Now
               </button>
             </div>
 
-            {/* Messenger and WhatsApp Buttons */}
-            <div className="social-buttons d-flex  gap-2 mt-3">
+            {/* Social Buttons */}
+            <div className="social-buttons-container">
               <a
                 href={messengerUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn px-3 py-2 rounded-0 text-white text-decoration-none d-flex align-items-center justify-content-center"
-                style={{
-                  background: 'linear-gradient(135deg, #0084FF 0%, #0066CC 100%)',
-                  border: 'none'
-                }}
+                className="social-btn messenger-btn"
               >
-                <span className="pe-2">
-                  <FaFacebookMessenger size={18} />
-                </span>
+                <FaFacebookMessenger size={16} />
                 Messenger
               </a>
-
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn px-3 py-2 rounded-0 text-white text-decoration-none d-flex align-items-center justify-content-center"
-                style={{
-                  background: 'linear-gradient(135deg, #25D366 0%, #128C7E 100%)',
-                  border: 'none'
-                }}
+                className="social-btn whatsapp-btn"
               >
-                <span className="pe-2">
-                  <FaWhatsapp size={18} />
-                </span>
+                <FaWhatsapp size={16} />
                 WhatsApp
               </a>
             </div>
