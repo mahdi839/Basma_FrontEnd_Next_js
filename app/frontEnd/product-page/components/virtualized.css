@@ -1,0 +1,97 @@
+/* Virtualized Related Products Styles */
+.related-products-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+}
+
+.related-products-section .virtualized-container {
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbar for virtualized container */
+.related-products-section [data-virtualized]::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.related-products-section [data-virtualized]::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.related-products-section [data-virtualized]::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.related-products-section [data-virtualized]::-webkit-scrollbar-thumb:hover {
+  background: #5a189a;
+}
+
+/* Smooth scrolling behavior */
+.related-products-section [data-virtualized] {
+  scroll-behavior: smooth;
+}
+
+/* Loading placeholder for virtualized items */
+.virtualized-item-loading {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Ensure product cards maintain aspect ratio in virtualized grid */
+.related-products-section .product-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.related-products-section .product-image-container {
+  flex-shrink: 0;
+}
+
+.related-products-section .card-body {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Responsive adjustments for virtualized grid */
+@media (max-width: 992px) {
+  .related-products-section [data-virtualized] {
+    height: 550px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .related-products-section [data-virtualized] {
+    height: 500px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .related-products-section [data-virtualized] {
+    height: 450px !important;
+  }
+  
+  .related-products-section .related-heading {
+    font-size: 1.25rem !important;
+  }
+}

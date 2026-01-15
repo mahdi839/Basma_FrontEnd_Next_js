@@ -1,67 +1,63 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { FaCartPlus, FaFacebookMessenger, FaFirstOrder, FaWhatsapp, FaChevronLeft, FaChevronRight, FaCheck } from "react-icons/fa";
+import { FaCartPlus, FaFacebookMessenger, FaWhatsapp } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { toast } from "react-toastify";
 import Zoom from "react-medium-image-zoom";
 import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import "react-medium-image-zoom/dist/styles.css";
-import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard"; // Adjust path as needed
-import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal"; // Adjust path as needed
-import './relatedProduct.css'
+import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
-import './productPage.css'
+import './productPage.css';
 import useProductLogics from "@/app/hooks/useProductLogics";
-import { increament, decreament, } from "@/redux/slices/CartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
-export default function Products({ product, socialLinksData, relatedProducts }) {
+import VirtualizedRelatedProducts from "./VirtualizedRelatedProducts";
+
+export default function Products({ product, socialLinksData, initialRelatedProducts,productId }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedVariantId, setSelectedVariantId] = useState(undefined);
-  const { handleSelectedColor,
-    selectedColor, handleSelectedSize,
-    selectedSize, whatsappUrl, preQty,
+
+  const {
+    handleSelectedColor,
+    selectedColor,
+    handleSelectedSize,
+    selectedSize,
+    whatsappUrl,
+    preQty,
     handleQuantityIncrease,
     handleQuantityDecrease
-  } = useProductLogics(product, socialLinksData.whatsapp_number)
+  } = useProductLogics(product, socialLinksData.whatsapp_number);
 
-  // Modal states for related products
+  // Modal states
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
+
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const router = useRouter();
-  // Social media links
+
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
 
-
-  // Derive variants & images safely
   const variants = product?.variants || [];
   const images = product?.images || [];
-
-  // Price derived from selectedVariant or product.price
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
   const cartItem = cartItems.find(item => product.id == item.id);
+
   useEffect(() => {
     if (product) setIsLoading(false);
     if (product?.error) toast.error(product.error);
   }, [product]);
-
-  // Refs for slider navigation
-  const sliderRef = React.useRef(null);
 
   function handleThumbClick(id) {
     const clickedImg = images.find((img) => String(img.id) === String(id));
@@ -82,6 +78,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
   function handleAddToCart(type) {
     if (!product) return;
     const existing = cartItems.find((item) => item.id === product.id);
+
     if (existing) {
       Swal.fire({
         title: "Already in the cart",
@@ -113,7 +110,6 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
       return;
     }
 
-
     const selectedVariant = product.sizes.find(s => s.id == selectedSize) || product.sizes[0];
     const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
 
@@ -136,7 +132,10 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     }
   }
 
-  // Functions for related products modal
+  function handleSizeSelect(sizeId) {
+    setSelectedSizes(sizeId);
+  }
+
   function handleOpenModal(product) {
     setSelectedProduct(product);
     setIsModalOpen(true);
@@ -153,12 +152,13 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
 
   function handleRelatedAddToCart(product, type, preQty) {
     const existing = cartItems.find((item) => item.id === product.id);
+
     if (existing) {
       if (type == 'buy') {
         setIsCartDrawerOpen(true);
-        setIsDirectBuy(true)
+        setIsDirectBuy(true);
         handleCloseModal();
-        return
+        return;
       }
       Swal.fire({
         title: "Already in the cart",
@@ -169,7 +169,6 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
       });
       return;
     }
-
 
     const selectedVariant = product.sizes.find(s => s.id == selectedSize) || product.sizes[0];
     const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
@@ -191,16 +190,13 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
 
     if (type === "buy") {
       setIsCartDrawerOpen(true);
-      setIsDirectBuy(true)
+      setIsDirectBuy(true);
       handleCloseModal();
     }
   }
 
-
   if (isLoading) {
-    return (
-      <SignProdSkeleton />
-    );
+    return <SignProdSkeleton />;
   }
 
   return (
@@ -349,26 +345,26 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
             {/* Action Buttons */}
             <div className="action-buttons-container">
               {/* Quantity Selector */}
-               <div className="quantity-controls">
-                  <button
-                    className="quantity-btn"
-                    onClick={() => handleQuantityDecrease(product.id)}
-                    disabled={preQty <= 1}
-                    aria-label="Decrease quantity"
-                  >
-                    -
-                  </button>
-                  <span className="quantity-display">
-                    {cartItem?.qty ?? preQty}
-                  </span>
-                  <button
-                    className="quantity-btn"
-                    onClick={() => handleQuantityIncrease(product?.id)}
-                    aria-label="Increase quantity"
-                  >
-                    +
-                  </button>
-                </div>
+              <div className="quantity-controls">
+                <button
+                  className="quantity-btn"
+                  onClick={() => handleQuantityDecrease(product.id)}
+                  disabled={preQty <= 1}
+                  aria-label="Decrease quantity"
+                >
+                  -
+                </button>
+                <span className="quantity-display">
+                  {cartItem?.qty ?? preQty}
+                </span>
+                <button
+                  className="quantity-btn"
+                  onClick={() => handleQuantityIncrease(product?.id)}
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
               <button
                 className="single-prod-action-btn btn-grad"
                 onClick={() => handleAddToCart("add")}
@@ -485,56 +481,13 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
       </div>
 
 
-      {/* Related Products Section */}
-      {relatedProducts && relatedProducts.length > 0 && (
-        <div className="related-products-section mt-5 pt-4">
-          <div className="row position-relative">
-            <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative">
-              <h2 className="related-heading font-weight-bold mb-0 fs-4 fs-md-3" style={{ fontWeight: "600", color: "#222" }}>
-                Our Latest Products
-              </h2>
-            </div>
-
-            {relatedProducts.length > 0 && (
-              <div className="col-12 position-relative ml-3 mt-0 overflow-hidden">
-                <hr className="related-hr m-0" />
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "0",
-                    left: "0",
-                    width: "100px",
-                    height: "5px",
-                    backgroundColor: "#7d0ba7",
-                    zIndex: "1",
-                  }}
-                ></div>
-              </div>
-            )}
-
-            {/* Related Products Grid */}
-            {relatedProducts.length > 0 && (
-              <div className="row ">
-                {relatedProducts.map((relatedProduct) => (
-                  <div
-                    key={relatedProduct.id}
-                    className="col-6 col-md-4 col-lg-3"
-                  >
-                    <ProductCard
-                      slotProducts={relatedProduct}
-                      handleOpenModal={handleOpenModal}
-                      handleAddToCart={handleRelatedAddToCart}
-                      slotLength={relatedProducts.length}
-                      className="related-product-card"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-
-          </div>
-        </div>
-      )}
+       {/* VIRTUALIZED Related Products with Infinite Scroll */}
+      <VirtualizedRelatedProducts
+        initialProducts={initialRelatedProducts}
+        productId={productId}
+        handleOpenModal={handleOpenModal}
+        handleRelatedAddToCart={handleRelatedAddToCart}
+      />
 
       {/* Product Modal for Related Products */}
       {isModalOpen && selectedProduct && (

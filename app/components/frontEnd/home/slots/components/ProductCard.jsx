@@ -66,7 +66,7 @@ const ProductCard = React.memo(function ProductCard({
               <span
                 className="fw-bold product-price"
               >
-                {`${slotProducts?.price?"৳":""} ${slotProducts?.price}`} 
+                {`${slotProducts?.price?"৳":""} ${slotProducts?.price??""}`} 
               </span>
             </div>
           </div>

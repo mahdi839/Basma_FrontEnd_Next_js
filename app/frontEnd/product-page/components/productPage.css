@@ -522,3 +522,112 @@
     align-items: flex-start;
   }
 }
+
+/* Virtualized Related Products - Additional Styles */
+.related-products-section {
+  position: relative;
+  background: linear-gradient(to bottom, transparent 0%, #faf5ff 100%);
+  padding-bottom: 2rem;
+}
+
+.related-products-section .bg-white {
+  position: relative;
+  z-index: 2;
+}
+
+/* Stats badge */
+.related-products-section .stats-badge {
+  background: linear-gradient(135deg, #9d4edd 0%, #7d0ba7 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* Virtualized grid loading skeleton */
+.virtualized-item-skeleton {
+  background: linear-gradient(90deg, 
+    #f0f0f0 25%, 
+    #e0e0e0 50%, 
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  border-radius: 8px;
+  height: 100%;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Empty state */
+.virtualized-empty-state {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  text-align: center;
+}
+
+.virtualized-empty-state svg {
+  font-size: 3rem;
+  color: #9d4edd;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+/* Performance optimizations */
+.related-product-card img {
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Print styles */
+@media print {
+  .virtualized-grid-container {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  
+  .related-products-section .bg-white {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .related-product-card,
+  .virtualized-grid-container::-webkit-scrollbar-thumb,
+  .virtualized-grid-container {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .virtualized-item-skeleton {
+    animation: none !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .virtualized-grid-container::-webkit-scrollbar-thumb {
+    background: #000 !important;
+  }
+  
+  .related-product-card:hover {
+    outline: 2px solid #000;
+  }
+}
