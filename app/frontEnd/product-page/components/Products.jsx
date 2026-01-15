@@ -343,47 +343,38 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
               </div>
             )}
 
-            {/* Quantity Selector */}
-            <div className="quantity-selector-wrapper">
-              <div className="variant-section-title">Quantity:</div>
-              <div className="quantity-controls">
-                <button
-                  className="quantity-btn"
-                  onClick={() => handleQuantityDecrease(product.id)}
-                  disabled={preQty <= 1}
-                  aria-label="Decrease quantity"
-                >
-                  -
-                </button>
-                <span className="quantity-display">
-                  {cartItem?.qty ?? preQty}
-                </span>
-                <button
-                  className="quantity-btn"
-                  onClick={() => handleQuantityIncrease(product?.id)}
-                  aria-label="Increase quantity"
-                >
-                  +
-                </button>
-              </div>
-            </div>
+
 
 
             {/* Action Buttons */}
             <div className="action-buttons-container">
+              {/* Quantity Selector */}
+               <div className="quantity-controls">
+                  <button
+                    className="quantity-btn"
+                    onClick={() => handleQuantityDecrease(product.id)}
+                    disabled={preQty <= 1}
+                    aria-label="Decrease quantity"
+                  >
+                    -
+                  </button>
+                  <span className="quantity-display">
+                    {cartItem?.qty ?? preQty}
+                  </span>
+                  <button
+                    className="quantity-btn"
+                    onClick={() => handleQuantityIncrease(product?.id)}
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
               <button
-                className="action-btn btn-grad"
+                className="single-prod-action-btn btn-grad"
                 onClick={() => handleAddToCart("add")}
               >
                 <FaCartPlus size={16} />
                 Add to Cart
-              </button>
-              <button
-                className="action-btn btn-outline"
-                onClick={() => handleAddToCart("order")}
-              >
-                <FaFirstOrder size={16} />
-                Order Now
               </button>
             </div>
 

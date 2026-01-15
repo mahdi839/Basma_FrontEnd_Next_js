@@ -345,7 +345,7 @@
   flex-wrap: wrap;
 }
 
-.action-btn {
+.single-prod-action-btn {
   flex: 1;
   min-width: 140px;
   padding: 10px 16px;

@@ -24,7 +24,6 @@ const ProductCard = React.memo(function ProductCard({
           className="position-relative overflow-hidden product-image-container"
         >
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
-           <Zoom>
              <Image
               width={500}
               height={400}
@@ -37,7 +36,6 @@ const ProductCard = React.memo(function ProductCard({
               alt={slotProducts?.title}
               priority={false}
             />
-           </Zoom>
           </Link>
           {/* Product Actions */}
           <div
