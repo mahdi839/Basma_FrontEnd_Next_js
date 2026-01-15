@@ -20,6 +20,7 @@ import './productPage.css'
 import useProductLogics from "@/app/hooks/useProductLogics";
 import { increament, decreament, } from "@/redux/slices/CartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import SignProdSkeleton from "./SignProdSkeleton";
 export default function Products({ product, socialLinksData, relatedProducts }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
@@ -71,11 +72,6 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
     setOpenFaqId((prev) => (prev === id ? 0 : id));
   }
 
-  function onSelectVariant(e) {
-    const variantId = e.target.value;
-    setSelectedVariantId(variantId);
-  }
-
   function getYoutubeVideoId(url) {
     if (!url) return null;
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -85,7 +81,6 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
 
   function handleAddToCart(type) {
     if (!product) return;
-
     const existing = cartItems.find((item) => item.id === product.id);
     if (existing) {
       Swal.fire({
@@ -204,18 +199,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
 
   if (isLoading) {
     return (
-      <div className="container py-5">
-        <div className="row g-4">
-          <div className="col-12 col-md-6">
-            <div className="placeholder-wave rounded w-100" style={{ aspectRatio: "1/1", background: "#f2f2f2" }} />
-          </div>
-          <div className="col-12 col-md-6">
-            <div className="placeholder-wave rounded w-100" style={{ height: 24, background: "#f2f2f2" }} />
-            <div className="mt-3 placeholder-wave rounded w-50" style={{ height: 24, background: "#f2f2f2" }} />
-            <div className="mt-4 placeholder-wave rounded w-100" style={{ height: 100, background: "#f2f2f2" }} />
-          </div>
-        </div>
-      </div>
+       <SignProdSkeleton />
     );
   }
 
