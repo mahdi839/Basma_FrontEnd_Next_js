@@ -135,7 +135,7 @@ function FeatureClient({ homeCategories: initialCategories}) {
       return;
     }
     
-     if (targetProduct.colors.length > 1 && !selectedColor) {
+     if (targetProduct?.colors?.length > 1 && !selectedColor) {
           Swal.fire({
             title: `Please Select A Color`,
             icon: "warning",
