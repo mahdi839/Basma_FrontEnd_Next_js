@@ -199,7 +199,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
 
   if (isLoading) {
     return (
-       <SignProdSkeleton />
+      <SignProdSkeleton />
     );
   }
 
@@ -262,7 +262,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
                   {/* <span className="variant-label">
                       {product.variants[0]?.attribute || "Option"}
                     </span> */}
-                  <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Colors:</div>
+                  <div className="quantity-label "><span className="required-asterisk">*{" "}</span>Colors:</div>
                 </div>
                 <div className="d-flex gap-2 ">
                   {product?.colors?.map((color) => (
@@ -278,49 +278,55 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
               </div>
             )}
 
-            {/* sizes Selection */}
-            {product.sizes?.length > 1 && (
-              <div className="variant-section">
-                <div className="variant-header">
-                  <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Sizes:</div>
-                </div>
-                <div className="variant-options-grid">
-                  {product?.sizes?.map((size) => (
-                    <button
-                      key={size?.id}
-                      className={`prod_detailsvariant ${selectedSize == size.id ? 'selected' : ''}`}
-                      onClick={() => handleSelectedSize(size.id)}
-                    >
-                      {size?.size}
-                      {selectedSize == size?.id && <FaCheck className="check-icon" />}
-                    </button>
-                  ))}
+            <div className="d-flex gap-5">
+              {/* Quantity Selector */}
+              <div className="prod-quantity-section">
+                <span className="quantity-label">Quantity:</span>
+                <div className="quantity-selector mt-2">
+                  <button
+                    className="quantity-btn"
+                    onClick={() => handleQuantityDecrease(product.id)}
+                    disabled={preQty <= 1}
+                  >
+                    -
+                  </button>
+                  <span className="quantity-display">
+                    {cartItem?.qty ?? preQty}
+                  </span>
+                  <button
+                    className="quantity-btn"
+                    onClick={() => handleQuantityIncrease(product?.id)}
+                  >
+                    +
+                  </button>
                 </div>
               </div>
-            )}
+              <div>
+                {/* sizes Selection */}
+                {product.sizes?.length > 1 && (
+                  <div className="prod-variant-section">
+                    <div className="variant-header">
+                      <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Sizes:</div>
+                    </div>
+                    <div className="variant-options-grid">
+                      {product?.sizes?.map((size) => (
+                        <button
+                          key={size?.id}
+                          className={`prod_detailsvariant ${selectedSize == size.id ? 'selected' : ''}`}
+                          onClick={() => handleSelectedSize(size.id)}
+                        >
+                          {size?.size}
+                          {selectedSize == size?.id && <FaCheck className="check-icon" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
 
-            {/* Quantity Selector */}
-            <div className="quantity-section">
-              <span className="quantity-label">Quantity:</span>
-              <div className="quantity-selector">
-                <button
-                  className="quantity-btn"
-                  onClick={() => handleQuantityDecrease(product.id)}
-                  disabled={preQty <= 1}
-                >
-                  -
-                </button>
-                <span className="quantity-display">
-                  {cartItem?.qty ?? preQty}
-                </span>
-                <button
-                  className="quantity-btn"
-                  onClick={() => handleQuantityIncrease(product?.id)}
-                >
-                  +
-                </button>
-              </div>
             </div>
+
+
 
             {/* {product?.short_description && (
               <p className="product-description mb-4">{product.short_description}</p>
@@ -460,7 +466,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
         </div>
       </div>
 
-       
+
       {/* Related Products Section */}
       {relatedProducts && relatedProducts.length > 0 && (
         <div className="related-products-section mt-5 pt-4">
@@ -471,7 +477,7 @@ export default function Products({ product, socialLinksData, relatedProducts }) 
               </h2>
             </div>
 
-             {relatedProducts.length > 0 && (
+            {relatedProducts.length > 0 && (
               <div className="col-12 position-relative ml-3 mt-0 overflow-hidden">
                 <hr className="related-hr m-0" />
                 <div

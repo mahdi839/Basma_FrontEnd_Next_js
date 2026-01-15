@@ -49,6 +49,14 @@
   font-weight: bold;
 }
 
+.prod_detailsvariant{
+  position: relative;
+  padding: 3px 8px;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 5px;
+}
+
 .variant-option {
   position: relative;
   padding: 3px 2px;
@@ -66,13 +74,13 @@
 }
 
 /* Hover */
-.variant-option:hover {
+.prod_detailsvariant:hover {
   border-color: var(--primary-color);
   background: #faf5ff;
 }
 
 /* Selected */
-.variant-option.selected {
+.prod_detailsvariant.selected {
   border-color: var(--primary-color);
   background: linear-gradient(135deg, #faf5ff, #f3e8ff);
   box-shadow: 0 0 0 3px rgba(125, 11, 167, 0.15);
@@ -83,11 +91,25 @@
 /* Tick */
 .check-icon {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 2px;
+  right: 2px;
   background: var(--primary-color);
   color: white;
   font-size: 10px;
   padding: 4px;
   border-radius: 50%;
 }
+
+.quty_size_div{
+  display: flex;
+  gap: 2rem;
+  margin-top: 5px;
+}
+.prod-quantity-section{
+  padding: 15px;
+}
+
+ .prod-variant-section {
+     padding: 15px 0;
+     border-bottom: 1px solid #f0f0f0;
+ }
