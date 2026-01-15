@@ -19,26 +19,26 @@ export default function VirtualizedRelatedProducts({
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
   // 🔥 DEV MODE: turn 20 API products into 100,000 virtual products
-  useEffect(() => {
-    if (!initialProducts || initialProducts.length === 0) return;
+  // useEffect(() => {
+  //   if (!initialProducts || initialProducts.length === 0) return;
 
-    const TARGET = 100000; 
-    const source = initialProducts;
+  //   const TARGET = 100000; 
+  //   const source = initialProducts;
 
-    const bigList = Array.from({ length: TARGET }, (_, i) => {
-      const base = source[i % source.length];
+  //   const bigList = Array.from({ length: TARGET }, (_, i) => {
+  //     const base = source[i % source.length];
 
-      return {
-        ...base,
-        id: `${base.id}-${i}`,    
-        __virtualIndex: i,        
-        title: `${base.title} #${i + 1}`,
-      };
-    });
+  //     return {
+  //       ...base,
+  //       id: `${base.id}-${i}`,    
+  //       __virtualIndex: i,        
+  //       title: `${base.title} #${i + 1}`,
+  //     };
+  //   });
 
-    setProducts(bigList);
-    setHasMore(false); // stop infinite API loading
-  }, [initialProducts]);
+  //   setProducts(bigList);
+  //   setHasMore(false); // stop infinite API loading
+  // }, [initialProducts]);
 
   // Responsive column count
   useEffect(() => {
@@ -56,7 +56,7 @@ export default function VirtualizedRelatedProducts({
 
   // Fetch more products
   const fetchMoreProducts = useCallback(async () => {
-    if (process.env.NODE_ENV === "development") return;
+    // if (process.env.NODE_ENV === "development") return;
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
