@@ -190,7 +190,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       return;
     }
 
-    if (product.sizes.length > 1 && !modalSelectedSize) {
+    if (product?.sizes?.length > 1 && !modalSelectedSize) {
       Swal.fire({
         title: "Please select a size",
         icon: "warning",
@@ -199,7 +199,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       return;
     }
 
-    if (product.colors?.length > 1 && !modalSelectedColor) {
+    if (product?.colors?.length > 1 && !modalSelectedColor) {
       Swal.fire({
         title: "Please select a color",
         icon: "warning",
@@ -209,7 +209,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     }
 
     const selectedVariant =
-      product.sizes.find(s => s.id == modalSelectedSize) || product.sizes[0];
+      selectedProduct?.sizes?.find(s => s.id == modalSelectedSize) ;
     const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
 
     dispatch(
