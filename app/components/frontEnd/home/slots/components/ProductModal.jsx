@@ -12,7 +12,7 @@ const ProductModal = ({
   product,
   isOpen,
   onClose,
-  selectedSizes,
+  selectedSize,
   onSizeSelect,
   onSelectColor,
   selectedColor,
@@ -32,8 +32,8 @@ const ProductModal = ({
     ? baseUrl + product.images[currentImageIndex]?.image
     : "/placeholder-image.jpg";
 
-  const selectedVariant = product.sizes.find(s => s.id == selectedSizes) || product.sizes[0];
-  const displayPrice = selectedVariant?.pivot.price ?? product.price;
+  const selectedVariant = product.sizes.find(s => s.id == selectedSize) || product.sizes[0];
+  const displayPrice = selectedVariant?.pivot?.price ?? product.price;
   // const hasDiscount = product.original_price && product.original_price > displayPrice;
   // const discountPercentage = hasDiscount 
   //   ? Math.round(((product.original_price - displayPrice) / product.original_price) * 100)
@@ -154,12 +154,12 @@ const ProductModal = ({
                     {product?.sizes?.map((size) => (
                       <button
                         key={size?.id}
-                      className={`variant-option ${selectedSizes == size.id ? 'selected' : ''}`}
+                      className={`variant-option ${selectedSize == size.id ? 'selected' : ''}`}
                       onClick={() => onSizeSelect(size.id)}
                       >
                         {size?.size}
                         <span className="variant-price">{size?.pivot?.price?"৳":""}{size?.pivot?.price??""}</span>
-                        {selectedSizes == size?.id && <FaCheck className="check-icon" />}
+                        {selectedSize == size?.id && <FaCheck className="check-icon" />}
                       </button>
                     ))}
                   </div>

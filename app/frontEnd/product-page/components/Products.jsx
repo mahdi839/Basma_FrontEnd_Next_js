@@ -17,12 +17,13 @@ import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
 import VirtualizedRelatedProducts from "./VirtualizedRelatedProducts";
 
-export default function Products({ product, socialLinksData, initialRelatedProducts,productId }) {
+export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
   const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedVariantId, setSelectedVariantId] = useState(undefined);
+  const [modalSelectedSize, setModalSelectedSize] = useState(null);
+  const [modalSelectedColor, setModalSelectedColor] = useState(null);
 
   const {
     handleSelectedColor,
@@ -133,11 +134,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   }
 
   function handleSizeSelect(sizeId) {
-    setSelectedSizes(sizeId);
+    setRelatedProdSize(sizeId);
   }
 
   function handleOpenModal(product) {
     setSelectedProduct(product);
+    setModalSelectedSize(null);
+    setModalSelectedColor(null);
     setIsModalOpen(true);
   }
 
@@ -170,17 +173,36 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       return;
     }
 
-    const selectedVariant = product.sizes.find(s => s.id == selectedSize) || product.sizes[0];
+    if (product.sizes.length > 1 && !modalSelectedSize) {
+      Swal.fire({
+        title: "Please select a size",
+        icon: "warning",
+        confirmButtonColor: "#DB3340",
+      });
+      return;
+    }
+
+    if (product.colors?.length > 1 && !modalSelectedColor) {
+      Swal.fire({
+        title: "Please select a color",
+        icon: "warning",
+        confirmButtonColor: "#DB3340",
+      });
+      return;
+    }
+
+    const selectedVariant =
+      product.sizes.find(s => s.id == modalSelectedSize) || product.sizes[0];
     const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
 
     dispatch(
       addToCart({
         id: product.id,
         title: product.title,
-        size: selectedSize ? selectedVariant.id : "",
-        price: selectedVariant?.price ?? product.price,
+        size: modalSelectedSize ?? "",
+        price: selectedVariant?.pivot?.price ?? product.price,
         image: imageUrl,
-        colorImage: selectedColor ? baseUrl + selectedColor : null,
+        colorImage: modalSelectedColor ? baseUrl + modalSelectedColor : null,
         preQty: preQty ?? 0
       })
     );
@@ -481,7 +503,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       </div>
 
 
-       {/* VIRTUALIZED Related Products with Infinite Scroll */}
+      {/* VIRTUALIZED Related Products with Infinite Scroll */}
       <VirtualizedRelatedProducts
         initialProducts={initialRelatedProducts}
         productId={productId}
@@ -495,8 +517,10 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           product={selectedProduct}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          selectedSize={selectedSize}
-          onSizeSelect={handleSizeSelect}
+          selectedSize={modalSelectedSize}
+          onSizeSelect={setModalSelectedSize}
+          selectedColor={modalSelectedColor}
+          onSelectColor={setModalSelectedColor}
           onAddToCart={handleRelatedAddToCart}
           baseUrl={baseUrl}
         />
