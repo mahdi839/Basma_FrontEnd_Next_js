@@ -14,6 +14,14 @@ const ProductCard = React.memo(function ProductCard({
 }) {
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+  const sizesCount = slotProducts?.sizes_count ?? 0;
+  const colorsCount = Array.isArray(slotProducts?.colors)
+    ? slotProducts.colors.length
+    : 0;
+  const showSelectOptions =
+    sizesCount > 0 || colorsCount > 1;
+
+
   return (
     <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
       <div
@@ -24,7 +32,7 @@ const ProductCard = React.memo(function ProductCard({
           className="position-relative overflow-hidden product-image-container"
         >
           <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
-             <Image
+            <Image
               width={500}
               height={400}
               src={
@@ -66,7 +74,7 @@ const ProductCard = React.memo(function ProductCard({
               <span
                 className="fw-bold product-price"
               >
-                {`${slotProducts?.price?"৳":""} ${slotProducts?.price??""}`} 
+                {`${slotProducts?.price ? "৳" : ""} ${slotProducts?.price ?? ""}`}
               </span>
             </div>
           </div>
@@ -75,7 +83,7 @@ const ProductCard = React.memo(function ProductCard({
         <div
           className="card-footer bg-transparent border-0 pt-0 add-to-cart-footer d-lg-none d-block px-2 px-md-3"
         >
-          {slotProducts?.sizes?.length > 1 ? (
+          {showSelectOptions ? (
             <button
               type="button"
               className="btn-grad w-100 rounded-0 select-options-btn-sm py-1"
@@ -85,35 +93,37 @@ const ProductCard = React.memo(function ProductCard({
             </button>
           ) : (
             <button
+              type="button"
               className="btn-grad w-100 rounded-0 add-to-cart-btn-sm py-1"
               onClick={() => handleAddToCart(slotProducts)}
             >
               Add to cart
             </button>
           )}
+
         </div>
 
         <div
           className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block"
         >
-          {slotProducts?.sizes?.length > 1 ? (
+          {showSelectOptions ? (
             <button
               type="button"
-              className="btn-grad w-100 rounded-0"
+              className="btn-grad w-100 rounded-0 select-options-btn-sm py-1"
               onClick={() => handleOpenModal(slotProducts)}
             >
-              <GrAidOption className="me-2" />
               Select options
             </button>
           ) : (
             <button
-              className="btn-grad w-100 rounded-0"
+              type="button"
+              className="btn-grad w-100 rounded-0 add-to-cart-btn-sm py-1"
               onClick={() => handleAddToCart(slotProducts)}
             >
-              <FaCartArrowDown className="me-2" />
               Add to cart
             </button>
           )}
+
         </div>
       </div>
       {slotProducts.status === 'prebook' && (
