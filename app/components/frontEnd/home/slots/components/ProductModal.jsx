@@ -5,12 +5,14 @@ import { CiSearch } from "react-icons/ci";
 import { BiSolidPurchaseTag } from "react-icons/bi";
 import Image from "next/image";
 import Link from "next/link";
-import { increament, decreament, } from "@/redux/slices/CartSlice";
+import { increament, decreament } from "@/redux/slices/CartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import './productModal.css'
+
 const ProductModal = ({
   product,
   isOpen,
+  isLoading,
   onClose,
   selectedSize,
   onSizeSelect,
@@ -22,22 +24,10 @@ const ProductModal = ({
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
-  const [preQty, setPreQty] = useState(1)
-  const cartItem = cartItems.find(item => product.id == item.id);
-  
+  const [preQty, setPreQty] = useState(1);
+  const cartItem = cartItems.find(item => product?.id == item.id);
 
   if (!isOpen) return null;
-
-  const mainImage = product.images?.[currentImageIndex]?.image
-    ? baseUrl + product.images[currentImageIndex]?.image
-    : "/placeholder-image.jpg";
-
-  const selectedVariant = product.sizes.find(s => s.id == selectedSize) || product.sizes[0];
-  const displayPrice = selectedVariant?.pivot?.price ?? product.price;
-  // const hasDiscount = product.original_price && product.original_price > displayPrice;
-  // const discountPercentage = hasDiscount 
-  //   ? Math.round(((product.original_price - displayPrice) / product.original_price) * 100)
-  //   : 0;
 
   const handleThumbnailClick = (index) => {
     setCurrentImageIndex(index);
@@ -49,9 +39,59 @@ const ProductModal = ({
   };
 
   const handleDecrement = (id) => {
-    setPreQty((prev) => prev -1);
+    setPreQty((prev) => prev - 1);
     dispatch(decreament({ id }));
+  };
+
+  // Loading skeleton while fetching product
+  if (isLoading || !product) {
+    return (
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <button className="modal-close-btn" onClick={onClose}>
+            <FaTimes className="close-icon" />
+          </button>
+          <div className="modal-body">
+            <div className="modal-grid">
+              {/* Image skeleton */}
+              <div className="image-section">
+                <div className="main-image-container" style={{
+                  background: '#f0f0f0',
+                  animation: 'pulse 1.5s ease-in-out infinite'
+                }}>
+                  <div style={{ height: '300px' }}></div>
+                </div>
+              </div>
+              {/* Details skeleton */}
+              <div className="details-section">
+                <div style={{
+                  height: '30px',
+                  background: '#f0f0f0',
+                  marginBottom: '10px',
+                  animation: 'pulse 1.5s ease-in-out infinite'
+                }}></div>
+                <div style={{
+                  height: '20px',
+                  background: '#f0f0f0',
+                  width: '70%',
+                  marginBottom: '20px',
+                  animation: 'pulse 1.5s ease-in-out infinite'
+                }}></div>
+                <p className="text-center text-muted">Loading product details...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
+
+  const mainImage = product.images?.[currentImageIndex]?.image
+    ? baseUrl + product.images[currentImageIndex]?.image
+    : "/placeholder-image.jpg";
+
+  const selectedVariant = product.sizes?.find(s => s.id == selectedSize) || product.sizes?.[0];
+  const displayPrice = selectedVariant?.pivot?.price ?? product.price;
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -66,11 +106,6 @@ const ProductModal = ({
             {/* Product Images Section */}
             <div className="image-section">
               <div className="main-image-container">
-                {/* {hasDiscount && (
-                  <div className="discount-badge">
-                    -{discountPercentage}%
-                  </div>
-                )} */}
                 <Image
                   width={300}
                   height={300}
@@ -114,9 +149,8 @@ const ProductModal = ({
               <div className="price-section">
                 <div className="price-main">
                   <span className="current-price">
-                    {/* ৳{cartItem?.totalPrice ?? product?.price * preQty} */}
-                    ৳ {displayPrice * preQty}
-                    </span>
+                    ৳{displayPrice * preQty}
+                  </span>
                 </div>
               </div>
 
@@ -124,42 +158,50 @@ const ProductModal = ({
               {product.colors?.length > 0 && (
                 <div className="variant-section">
                   <div className="variant-header">
-                    {/* <span className="variant-label">
-                      {product.variants[0]?.attribute || "Option"}
-                    </span> */}
-                    <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Colors:</div>
+                    <div className="quantity-label">
+                      <span className="required-asterisk">* </span>Colors:
+                    </div>
                   </div>
-                  <div className="d-flex gap-2 ">
-                    {product?.colors?.map((color) => (
+                  <div className="d-flex gap-2 flex-wrap">
+                    {product.colors.map((color) => (
                       <div
-                      key={color.id}
+                        key={color.id}
                         className={`color-img-div ${selectedColor === color.image ? "active" : ""}`}
-                        onClick={() => onSelectColor(color?.image)}>
-                        <img src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} alt="colorImages" />
+                        onClick={() => onSelectColor(color?.image)}
+                      >
+                        <img 
+                          src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} 
+                          alt="color variant" 
+                        />
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              {/* sizes Selection */}
-              {product.sizes?.length > 1 && (
+
+              {/* Sizes Selection */}
+              {product.sizes?.length > 0 && (
                 <div className="variant-section">
                   <div className="variant-header">
-                    {/* <span className="variant-label">
-                      {product.variants[0]?.attribute || "Option"}
-                    </span> */}
-                    <div className="quantity-label"><span className="required-asterisk">*{" "}</span>Sizes:</div>
+                    <div className="quantity-label">
+                      {product.sizes.length > 1 && (
+                        <span className="required-asterisk">* </span>
+                      )}
+                      Sizes:
+                    </div>
                   </div>
                   <div className="variant-options-grid">
-                    {product?.sizes?.map((size) => (
+                    {product.sizes.map((size) => (
                       <button
-                        key={size?.id}
-                      className={`variant-option ${selectedSize == size.id ? 'selected' : ''}`}
-                      onClick={() => onSizeSelect(size.id)}
+                        key={size.id}
+                        className={`variant-option ${selectedSize == size.id ? 'selected' : ''}`}
+                        onClick={() => onSizeSelect(size.id)}
                       >
-                        {size?.size}
-                        <span className="variant-price">{size?.pivot?.price?"৳":""}{size?.pivot?.price??""}</span>
-                        {selectedSize == size?.id && <FaCheck className="check-icon" />}
+                        {size.size}
+                        <span className="variant-price">
+                          {size?.pivot?.price ? "৳" : ""}{size?.pivot?.price ?? ""}
+                        </span>
+                        {selectedSize == size.id && <FaCheck className="check-icon" />}
                       </button>
                     ))}
                   </div>
@@ -180,7 +222,7 @@ const ProductModal = ({
                   <span className="quantity-display">{cartItem?.qty ?? preQty}</span>
                   <button
                     className="quantity-btn"
-                    onClick={() => handleQuantityChange(product?.id)}
+                    onClick={() => handleQuantityChange(product.id)}
                   >
                     +
                   </button>
@@ -197,39 +239,20 @@ const ProductModal = ({
                   Add to Cart
                 </button>
 
-                <button className="action-cart-btn btn-grad" onClick={() => onAddToCart(product, 'buy', preQty)}>
+                <button 
+                  className="action-cart-btn btn-grad" 
+                  onClick={() => onAddToCart(product, 'buy', preQty)}
+                >
                   <BiSolidPurchaseTag className="btn-icon" />
                   Buy Now
                 </button>
               </div>
 
-              {/* Additional Features */}
-              {/* <div className="features-section">
-                <div className="feature-item">
-                  <div className="feature-icon">🚚</div>
-                  <div className="feature-text">
-                    <strong>Free Delivery</strong>
-                    <span>For orders above ৳500</span>
-                  </div>
-                </div>
-                <div className="feature-item">
-                  <div className="feature-icon">↩️</div>
-                  <div className="feature-text">
-                    <strong>Easy Returns</strong>
-                    <span>15 days return policy</span>
-                  </div>
-                </div>
-                <div className="feature-item">
-                  <div className="feature-icon">🔒</div>
-                  <div className="feature-text">
-                    <strong>Secure Payment</strong>
-                    <span>100% secure transaction</span>
-                  </div>
-                </div>
-              </div> */}
-
               {/* View Details Link */}
-              <Link href={`/frontEnd/product-page/${product?.id}`} className="view-details-link">
+              <Link 
+                href={`/frontEnd/product-page/${product.id}`} 
+                className="view-details-link"
+              >
                 <CiSearch className="link-icon" />
                 View Full Details
               </Link>
@@ -237,6 +260,17 @@ const ProductModal = ({
           </div>
         </div>
       </div>
+
+      <style jsx>{`
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
+        }
+      `}</style>
     </div>
   );
 };

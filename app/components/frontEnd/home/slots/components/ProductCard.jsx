@@ -2,9 +2,6 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { CiSearch } from "react-icons/ci";
-import { FaCartArrowDown } from "react-icons/fa";
-import { GrAidOption } from "react-icons/gr";
-import Zoom from "react-medium-image-zoom";
 const ProductCard = React.memo(function ProductCard({
   slotProducts,
   handleOpenModal,
@@ -15,9 +12,8 @@ const ProductCard = React.memo(function ProductCard({
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const sizesCount = slotProducts?.sizes_count ?? 0;
-  const colorsCount = Array.isArray(slotProducts?.colors)
-    ? slotProducts.colors.length
-    : 0;
+  const colorsCount = slotProducts?.colors_count ?? 0;
+
   const showSelectOptions =
     sizesCount > 0 || colorsCount > 1;
 
