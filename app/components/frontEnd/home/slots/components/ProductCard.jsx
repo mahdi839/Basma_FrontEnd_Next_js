@@ -34,7 +34,7 @@ const ProductCard = React.memo(function ProductCard({
               src={
                 slotProducts?.images?.[0]?.image
                   ? baseUrl + slotProducts?.images[0]?.image
-                  : ""
+                  : slotProducts?.image? baseUrl + slotProducts?.image : ""
               }
               className="position-absolute w-100 h-100 object-fit-cover p-0 p-md-3 product-image"
               alt={slotProducts?.title}

@@ -137,11 +137,28 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     setRelatedProdSize(sizeId);
   }
 
-  function handleOpenModal(product) {
-    setSelectedProduct(product);
+  async function handleOpenModal(product) {
     setModalSelectedSize(null);
     setModalSelectedColor(null);
     setIsModalOpen(true);
+    try {
+      // Fetch full product details with sizes and colors
+      const response = await fetch(
+        `${baseUrl}api/products/${product.id}`,
+        { cache: 'no-store' }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch product details');
+      }
+
+      const data = await response.json();
+      setSelectedProduct(data.data);
+    } catch (error) {
+      console.error('Error fetching product:', error);
+      toast.error('Failed to load product details');
+      setIsModalOpen(false);
+    } 
   }
 
   function handleCloseModal() {
