@@ -12,7 +12,7 @@ export default async function Feature({BannerCatData}) {
   } catch(err) {
     data = {error: err.message}
   }
-
+ 
   return (
     <Suspense fallback={<FeatureSkeleton />}>
       <FeatureClient homeCategories={data} BannerCatData={BannerCatData} />

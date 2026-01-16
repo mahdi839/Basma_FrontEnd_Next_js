@@ -26,7 +26,7 @@ function FeatureClient({ homeCategories: initialCategories}) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
-  const [homeCategories, setHomeCategories] = useState(initialCategories?.data || []);
+  const [homeCategories, setHomeCategories] = useState(initialCategories || []);
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMorePages, setHasMorePages] = useState(initialCategories?.has_more || false);
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
@@ -46,6 +46,8 @@ function FeatureClient({ homeCategories: initialCategories}) {
       homeCategories?.length || 0
     );
   }, [homeCategories, initialCategories]);
+
+  console.log(initialCategories)
 
   // Slider settings
   const settings = {
@@ -201,6 +203,7 @@ function FeatureClient({ homeCategories: initialCategories}) {
       <div className="text-center my-5">Error: {initialCategories.error} </div>
     );
   }
+
 
   if (!homeCategories?.length) {
     return <div className="text-center my-5">No categories found</div>;
