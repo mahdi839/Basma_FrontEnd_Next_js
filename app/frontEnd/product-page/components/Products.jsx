@@ -158,7 +158,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       console.error('Error fetching product:', error);
       toast.error('Failed to load product details');
       setIsModalOpen(false);
-    } 
+    }
   }
 
   function handleCloseModal() {
@@ -172,7 +172,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
   function handleRelatedAddToCart(product, type, preQty) {
     const existing = cartItems.find((item) => item.id === product.id);
-
     if (existing) {
       if (type == 'buy') {
         setIsCartDrawerOpen(true);
@@ -208,22 +207,26 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       return;
     }
 
-    const selectedVariant =
-      selectedProduct?.sizes?.find(s => s.id == modalSelectedSize) ;
-    const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
+    const baseProduct = product || selectedProduct;
 
+    const selectedVariant =
+      baseProduct?.sizes?.find(s => s.id == modalSelectedSize)
+      || baseProduct?.sizes?.[0];
+    const imageUrl =
+      baseProduct?.image
+        ? baseUrl + baseProduct?.image
+        : "";
     dispatch(
       addToCart({
-        id: product.id,
-        title: product.title,
+        id: baseProduct.id,
+        title: baseProduct.title,
         size: modalSelectedSize ?? "",
-        price: selectedVariant?.pivot?.price ?? product.price,
+        price: selectedVariant?.pivot?.price ?? baseProduct.price,
         image: imageUrl,
         colorImage: modalSelectedColor ? baseUrl + modalSelectedColor : null,
-        preQty: preQty ?? 0
+        preQty: preQty ?? 1,
       })
     );
-
     handleCloseModal();
     toast.success("Added to cart!");
 
