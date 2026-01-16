@@ -129,7 +129,7 @@ export default function DashboardHome() {
 
       if (!token) {
         throw new Error(
-          "No auth token found. Save it as localStorage('token') after login, or set NEXT_PUBLIC_API_TOKEN for testing."
+          "Please Login As Admin"
         );
       }
 
