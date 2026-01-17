@@ -17,15 +17,20 @@ export default function VirtualizedRelatedProducts({
   const [isLoading, setIsLoading] = useState(false);
   const [activeMenu, setActiveMenu] = useState("new");
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
-  // Responsive column count
+  // Responsive column count and window width tracking
   useEffect(() => {
     const updateColumns = () => {
-      if (window.innerWidth < 576) setColumnCount(2);
-      else if (window.innerWidth < 768) setColumnCount(2);
-      else if (window.innerWidth < 992) setColumnCount(3);
+      const width = window.innerWidth;
+      setWindowWidth(width);
+      
+      if (width < 375) setColumnCount(1);
+      else if (width < 576) setColumnCount(2);
+      else if (width < 768) setColumnCount(2);
+      else if (width < 992) setColumnCount(3);
       else setColumnCount(4);
     };
 
@@ -63,17 +68,19 @@ export default function VirtualizedRelatedProducts({
   // Calculate row count
   const rowCount = Math.ceil(products.length / columnCount);
 
-  // Dynamic row height
+  // Dynamic row height - reduced for smaller screens
   const getRowHeight = () => {
-    if (typeof window === 'undefined') return 400;
-    if (window.innerWidth < 576) return 360;
-    if (window.innerWidth < 768) return 360;
-    return 420;
+    if (typeof window === 'undefined') return 420;
+    if (windowWidth < 375) return 320;  // Very small screens
+    if (windowWidth < 576) return 340;  // Small phones
+    if (windowWidth < 768) return 360;  // Tablets
+    return 400;  // Desktop
   };
 
+  // Always show exactly 3 rows initially, allow scrolling for more
   const getViewportHeight = () => {
     const rowHeight = getRowHeight();
-    const visibleRows = Math.min(rowCount, 3);
+    const visibleRows = 3; // Show exactly 3 rows
     return rowHeight * visibleRows;
   };
 
@@ -84,7 +91,7 @@ export default function VirtualizedRelatedProducts({
     overscan: 3,
   });
 
-  // Track scroll progress
+  // Track scroll progress and load more
   useEffect(() => {
     const scrollElement = parentRef.current;
     if (!scrollElement) return;
@@ -95,33 +102,34 @@ export default function VirtualizedRelatedProducts({
       const progress = scrollableDistance > 0 ? (scrollTop / scrollableDistance) * 100 : 0;
       setScrollProgress(Math.min(100, Math.max(0, progress)));
 
-      // Load more when 85% scrolled
-      if (progress > 85 && hasMore && !isLoading) {
+      // Load more when 80% scrolled
+      if (progress > 80 && hasMore && !isLoading) {
         fetchMoreProducts();
       }
     };
 
     scrollElement.addEventListener('scroll', handleScroll);
     return () => scrollElement.removeEventListener('scroll', handleScroll);
-  }, [fetchMoreProducts, hasMore, isLoading]);
+  }, [fetchMoreProducts, hasMore, isLoading, products.length]);
 
   if (!products || products.length === 0) return null;
 
   return (
     <div className="related-products-section mt-5">
       {/* Main Container */}
-      <div className="bg-white rounded-3 shadow-sm border border-gray-200 p-4">
+      <div className="rounded-3 shadow-sm border border-gray-200 p-4">
         {/* Header Section */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
           <div className="mb-3 mb-md-0">
             <h3 className="h4 fw-semibold mb-1 text-dark">Related Products</h3>
             <p className="text-muted mb-0">
               {products.length.toLocaleString()} products available
+              {hasMore && !isLoading && ' • Scroll to load more'}
             </p>
           </div>
 
-          {/* Filter Tabs */}
-          <div className="nav nav-pills">
+          {/* Filter Tabs - Responsive */}
+          <div className="nav nav-pills related-products-nav">
             {[
               { key: "new", label: "New Arrivals" },
               { key: "top", label: "Best Sellers" },
@@ -133,34 +141,42 @@ export default function VirtualizedRelatedProducts({
                 className={`nav-link ${activeMenu === item.key ? "active" : ""}`}
                 type="button"
               >
-                {item.label}
+                {windowWidth < 768 ? item.label.split(' ')[0] : item.label}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Scroll Progress Bar */}
-        <div className="progress mb-3" style={{ height: '3px' }}>
-          <div 
-            className="progress-bar bg-primary" 
-            role="progressbar" 
-            style={{ width: `${scrollProgress}%` }}
-            aria-valuenow={scrollProgress}
-            aria-valuemin="0"
-            aria-valuemax="100"
-          />
-        </div>
+        {/* Scroll Progress Bar - Only show if there are more than 3 rows */}
+        {rowCount > 3 && (
+          <div className="progress mb-3" style={{ height: '3px' }}>
+            <div 
+              className="progress-bar" 
+              role="progressbar" 
+              style={{ 
+                width: `${scrollProgress}%`,
+                backgroundColor: '#7d0ba7'
+              }}
+              aria-valuenow={scrollProgress}
+              aria-valuemin="0"
+              aria-valuemax="100"
+            />
+          </div>
+        )}
 
         {/* Virtualized Products Grid */}
         <div className="position-relative">
           <div
             ref={parentRef}
             data-virtualized="true"
-            className="virtualized-grid-container border rounded"
+            className="virtualized-grid-container"
             style={{
               height: `${getViewportHeight()}px`,
               position: 'relative',
-              overflow: 'hidden',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+              border: '1px solid #dee2e6',
+              borderRadius: '0.375rem',
             }}
           >
             <div
@@ -184,21 +200,19 @@ export default function VirtualizedRelatedProducts({
                       width: '100%',
                       height: `${virtualRow.size}px`,
                       transform: `translateY(${virtualRow.start}px)`,
-                      padding: '15px 0',
                     }}
                   >
-                    <div className="row g-4">
+                    <div className="row g-2 g-md-3 mx-0"> {/* Reduced gap */}
                       {rowProducts.map((product) => (
                         <div
                           key={product.id}
-                          className="col-6 col-md-4 col-lg-3"
+                          className="col-6 col-sm-6 col-md-4 col-lg-3 px-2 px-md-3" /* Responsive padding */
                         >
                           <ProductCard
                             slotProducts={product}
                             handleOpenModal={handleOpenModal}
                             handleAddToCart={handleRelatedAddToCart}
                             slotLength={products.length}
-                            
                           />
                         </div>
                       ))}
@@ -215,10 +229,11 @@ export default function VirtualizedRelatedProducts({
                     bottom: '20px',
                     left: '50%',
                     transform: 'translateX(-50%)',
+                    zIndex: 10,
                   }}
                 >
                   <div className="d-flex align-items-center gap-3 px-4 py-3 bg-white rounded-pill shadow-sm border">
-                    <div className="spinner-border spinner-border-sm text-primary" role="status">
+                    <div className="spinner-border spinner-border-sm" style={{ color: '#7d0ba7' }} role="status">
                       <span className="visually-hidden">Loading...</span>
                     </div>
                     <span className="text-muted">Loading more products...</span>
@@ -226,31 +241,32 @@ export default function VirtualizedRelatedProducts({
                 </div>
               )}
 
-              {/* End of List Indicator */}
-              {!hasMore && products.length > 20 && (
+              {/* End of List Indicator - Responsive */}
+              {!hasMore && products.length > 0 && (
                 <div
                   style={{
                     position: 'absolute',
                     bottom: '10px',
                     left: '50%',
                     transform: 'translateX(-50%)',
+                    zIndex: 10,
                   }}
                 >
-                  <div className="px-3 py-2 bg-light rounded-pill">
-                    <span className="text-muted small">All products loaded</span>
-                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Scroll Hint */}
-          <div className="text-center mt-3">
-            <small className="text-muted">
-              <i className="bi bi-arrow-down me-1"></i>
-              Scroll to see more products
-            </small>
-          </div>
+          {/* Scroll Hint - Only show if there are more than 3 rows */}
+          {rowCount > 3 && (
+            <div className="text-center mt-3">
+              <small className="text-muted">
+                <i className="bi bi-arrow-down me-1"></i>
+                Scroll to see more products
+                {hasMore && windowWidth > 576 && ' • More products will load automatically'}
+              </small>
+            </div>
+          )}
         </div>
       </div>
 
@@ -258,7 +274,7 @@ export default function VirtualizedRelatedProducts({
         /* Standard Bootstrap-like scrollbar */
         .virtualized-grid-container {
           scrollbar-width: thin;
-          scrollbar-color: #6c757d #f8f9fa;
+          scrollbar-color: #7d0ba7 #f8f9fa;
         }
 
         .virtualized-grid-container::-webkit-scrollbar {
@@ -272,43 +288,41 @@ export default function VirtualizedRelatedProducts({
         }
 
         .virtualized-grid-container::-webkit-scrollbar-thumb {
-          background-color: #adb5bd;
+          background-color: #7d0ba7;
           border-radius: 4px;
           border: 2px solid #f8f9fa;
         }
 
         .virtualized-grid-container::-webkit-scrollbar-thumb:hover {
-          background-color: #6c757d;
+          background-color: #6c0990;
         }
 
-        /* Fade-in animation for new rows */
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        /* Smooth scrolling */
+        .virtualized-grid-container {
+          scroll-behavior: smooth;
         }
 
-        /* Apply animation to virtual rows */
-        .virtualized-grid-container > div > div > div {
-          animation: fadeIn 0.3s ease-out;
+        /* Ensure proper virtualization rendering */
+        .virtualized-grid-container > div {
+          min-width: 100%;
+          will-change: transform;
         }
 
-        /* Product card hover effect */
-        .related-products-section .card {
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        /* Custom nav-pills style - Responsive */
+        .nav-pills.related-products-nav {
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          white-space: nowrap;
+          padding-bottom: 4px;
         }
 
-        .related-products-section .card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        .nav-pills.related-products-nav::-webkit-scrollbar {
+          display: none;
         }
 
-        /* Custom nav-pills style */
         .nav-pills .nav-link {
           padding: 0.5rem 1rem;
           margin-right: 0.5rem;
@@ -316,11 +330,12 @@ export default function VirtualizedRelatedProducts({
           color: #6c757d;
           border: 1px solid #dee2e6;
           background: transparent;
+          flex-shrink: 0;
         }
 
         .nav-pills .nav-link.active {
-          background-color: #0d6efd;
-          border-color: #0d6efd;
+          background-color: #7d0ba7;
+          border-color: #7d0ba7;
           color: white;
         }
 
@@ -329,45 +344,123 @@ export default function VirtualizedRelatedProducts({
           color: #495057;
         }
 
-        /* Container shadow on hover */
-        .related-products-section .bg-white {
-          transition: box-shadow 0.3s ease;
-        }
-
-        .related-products-section .bg-white:hover {
-          box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
-        }
-
-        /* Smooth scrolling */
-        .virtualized-grid-container {
-          scroll-behavior: smooth;
+        /* Responsive "No more products" indicator */
+        .no-more-products {
+          max-width: 90vw;
+          text-align: center;
         }
 
         /* Responsive adjustments */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
           .virtualized-grid-container {
-            height: 500px !important;
+            height: ${400 * 3}px !important;
           }
           
-          .nav-pills {
+          .nav-pills .nav-link {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .virtualized-grid-container {
+            height: ${360 * 3}px !important;
+          }
+          
+          .related-products-nav {
             width: 100%;
-            justify-content: center;
             margin-top: 1rem;
           }
           
           .nav-pills .nav-link {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
+            padding: 0.35rem 0.7rem;
+            font-size: 0.85rem;
+            margin-right: 0.4rem;
+          }
+          
+          .no-more-products span {
+            font-size: 0.85rem;
           }
         }
 
         @media (max-width: 576px) {
           .virtualized-grid-container {
-            height: 450px !important;
+            height: ${340 * 3}px !important;
           }
           
           h3.h4 {
             font-size: 1.25rem;
+          }
+          
+          .nav-pills .nav-link {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+            margin-right: 0.3rem;
+          }
+          
+          .no-more-products {
+            padding: 0.25rem 0.5rem !important;
+          }
+          
+          .no-more-products span {
+            font-size: 0.75rem;
+          }
+          
+          .row.g-2.g-md-3 {
+            margin-left: -4px;
+            margin-right: -4px;
+          }
+          
+          .col-6, .col-sm-6 {
+            padding-left: 4px;
+            padding-right: 4px;
+          }
+        }
+
+        @media (max-width: 375px) {
+          .virtualized-grid-container {
+            height: ${320 * 3}px !important;
+          }
+          
+          h3.h4 {
+            font-size: 1.1rem;
+          }
+          
+          .nav-pills .nav-link {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            margin-right: 0.25rem;
+          }
+          
+          .no-more-products {
+            padding: 0.2rem 0.4rem !important;
+          }
+          
+          .no-more-products span {
+            font-size: 0.7rem;
+          }
+          
+          .col-6 {
+            padding-left: 3px;
+            padding-right: 3px;
+          }
+          
+          .row.g-2.g-md-3 {
+            margin-left: -3px;
+            margin-right: -3px;
+          }
+        }
+
+        /* Make sure container has proper background for loading indicators */
+        .virtualized-grid-container {
+          background-color: transparent;
+        }
+
+        /* Adjust column count for very small screens */
+        @media (max-width: 374px) {
+          .col-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
           }
         }
       `}</style>
