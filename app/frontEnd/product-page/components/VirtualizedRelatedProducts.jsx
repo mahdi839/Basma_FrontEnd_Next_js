@@ -131,7 +131,7 @@ export default function VirtualizedRelatedProducts({
   return (
     <div className="related-products-section mt-5 pt-4">
       {/* Box Container with Shadow */}
-      <div className="bg-white rounded-2xl shadow-lg p-4 p-md-5 border border-gray-100">
+      <div className="bg-white rounded-2xl  p-4 p-md-5 border border-gray-100">
         <div className="row position-relative">
           <div className="col-12 d-flex justify-content-between align-items-center mb-3 position-relative">
             <h5
@@ -295,14 +295,14 @@ export default function VirtualizedRelatedProducts({
         }
 
         .virtualized-grid-container::-webkit-scrollbar-thumb {
-          background: linear-gradient(135deg, #9d4edd 0%, #7d0ba7 100%);
+         
           border-radius: 10px;
           border: 2px solid #f5f5f5;
           transition: all 0.3s ease;
         }
 
         .virtualized-grid-container::-webkit-scrollbar-thumb:hover {
-          background: linear-gradient(135deg, #7d0ba7 0%, #5a189a 100%);
+        
           transform: scale(1.1);
         }
 
