@@ -73,6 +73,47 @@
   flex-direction: column;
 }
 
+.menu-btn {
+  background: transparent;
+  border: none;
+  padding: 6px 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #777;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.menu-btn:hover {
+  color: #7d0ba7;
+}
+
+.menu-btn.active {
+  color: #7d0ba7;
+  font-weight: 600;
+}
+
+.menu-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #7d0ba7;
+  border-radius: 2px;
+}
+
+/* Mobile spacing */
+@media (max-width: 576px) {
+  .related-menu {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+
 /* Responsive adjustments for virtualized grid */
 @media (max-width: 992px) {
   .related-products-section [data-virtualized] {

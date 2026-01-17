@@ -15,30 +15,10 @@ export default function VirtualizedRelatedProducts({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeMenu, setActiveMenu] = useState("new");
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
-
-  // 🔥 DEV MODE: turn 20 API products into 100,000 virtual products
-  // useEffect(() => {
-  //   if (!initialProducts || initialProducts.length === 0) return;
-
-  //   const TARGET = 100000; 
-  //   const source = initialProducts;
-
-  //   const bigList = Array.from({ length: TARGET }, (_, i) => {
-  //     const base = source[i % source.length];
-
-  //     return {
-  //       ...base,
-  //       id: `${base.id}-${i}`,    
-  //       __virtualIndex: i,        
-  //       title: `${base.title} #${i + 1}`,
-  //     };
-  //   });
-
-  //   setProducts(bigList);
-  //   setHasMore(false); // stop infinite API loading
-  // }, [initialProducts]);
 
   // Responsive column count
   useEffect(() => {
@@ -56,7 +36,6 @@ export default function VirtualizedRelatedProducts({
 
   // Fetch more products
   const fetchMoreProducts = useCallback(async () => {
-    // if (process.env.NODE_ENV === "development") return;
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
@@ -84,40 +63,40 @@ export default function VirtualizedRelatedProducts({
   // Calculate row count
   const rowCount = Math.ceil(products.length / columnCount);
 
-  // Dynamic row height based on screen size
+  // Dynamic row height
   const getRowHeight = () => {
     if (typeof window === 'undefined') return 400;
-    if (window.innerWidth < 576) return 350;
-    if (window.innerWidth < 768) return 350;
-    return 380;
+    if (window.innerWidth < 576) return 360;
+    if (window.innerWidth < 768) return 360;
+    return 420;
   };
 
   const getViewportHeight = () => {
     const rowHeight = getRowHeight();
-    const visibleRows = Math.min(rowCount, 4); // 👈 don't exceed actual rows
+    const visibleRows = Math.min(rowCount, 3);
     return rowHeight * visibleRows;
   };
-
-
 
   const rowVirtualizer = useVirtualizer({
     count: rowCount,
     getScrollElement: () => parentRef.current,
     estimateSize: () => getRowHeight(),
-    overscan: 5,
+    overscan: 3,
   });
 
-  // Detect when user scrolls near bottom
+  // Track scroll progress
   useEffect(() => {
     const scrollElement = parentRef.current;
     if (!scrollElement) return;
 
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = scrollElement;
-      const scrollPercentage = (scrollTop + clientHeight) / scrollHeight;
+      const scrollableDistance = scrollHeight - clientHeight;
+      const progress = scrollableDistance > 0 ? (scrollTop / scrollableDistance) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
 
-      // Load more when 90% scrolled
-      if (scrollPercentage > 0.9 && hasMore && !isLoading) {
+      // Load more when 85% scrolled
+      if (progress > 85 && hasMore && !isLoading) {
         fetchMoreProducts();
       }
     };
@@ -129,158 +108,157 @@ export default function VirtualizedRelatedProducts({
   if (!products || products.length === 0) return null;
 
   return (
-    <div className="related-products-section mt-5 pt-4">
-      {/* Box Container with Shadow */}
-      <div className="bg-white rounded-2xl  p-4 p-md-5 border border-gray-100">
-        <div className="row position-relative">
-          <div className="col-12 d-flex justify-content-between align-items-center mb-3 position-relative">
-            <h5
-              className="related-heading font-weight-bold mb-0"
-              style={{
-                fontWeight: "400",
-                color: "#222",
-                fontFamily: "'Raleway', sans-serif"
-              }}
-            >
-              Our Latest Products
-              <span className="ms-2 text-muted" style={{ fontSize: '0.9rem' }}>
-                ({products.length.toLocaleString()} items)
-              </span>
-            </h5>
+    <div className="related-products-section mt-5">
+      {/* Main Container */}
+      <div className="bg-white rounded-3 shadow-sm border border-gray-200 p-4">
+        {/* Header Section */}
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+          <div className="mb-3 mb-md-0">
+            <h3 className="h4 fw-semibold mb-1 text-dark">Related Products</h3>
+            <p className="text-muted mb-0">
+              {products.length.toLocaleString()} products available
+            </p>
           </div>
 
-          <div className="col-12 position-relative ">
-            <hr className="related-hr m-0" />
-            <div
-              style={{
-                position: "absolute",
-                top: "0",
-                left: "2rem",
-                width: "120px",
-                height: "4px",
-                background: "linear-gradient(90deg, #7d0ba7 0%, #9d4edd 100%)",
-                zIndex: "1",
-                borderRadius: "2px",
-              }}
-            />
-          </div>
-
-          {/* Virtualized Grid Container */}
-          <div className="col-12">
-            <div
-              ref={parentRef}
-              data-virtualized="true"
-              className="virtualized-grid-container"
-              style={{
-                height: `${getViewportHeight()}px`,
-                position: 'relative',
-                borderRadius: '12px',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  height: `${rowVirtualizer.getTotalSize()}px`,
-                  width: '100%',
-                  position: 'relative',
-                }}
+          {/* Filter Tabs */}
+          <div className="nav nav-pills">
+            {[
+              { key: "new", label: "New Arrivals" },
+              { key: "top", label: "Best Sellers" },
+              { key: "related", label: "Related" },
+            ].map((item) => (
+              <button
+                key={item.key}
+                onClick={() => setActiveMenu(item.key)}
+                className={`nav-link ${activeMenu === item.key ? "active" : ""}`}
+                type="button"
               >
-                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
-                  const startIdx = virtualRow.index * columnCount;
-                  const rowProducts = products.slice(startIdx, startIdx + columnCount);
+                {item.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
-                  return (
-                    <div
-                      key={virtualRow.index}
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: `${virtualRow.size}px`,
-                        transform: `translateY(${virtualRow.start}px)`,
-                        padding: '10px 0',
-                      }}
-                    >
-                      <div className="row g-3 gx-3 mx-0">
-                        {rowProducts.map((product) => (
-                          <div
-                            key={product.id}
-                            className="col-6 col-md-4 col-lg-3 px-2 px-sm-3"
-                          >
-                            {/* ProductCard container - NO FIXED HEIGHT */}
-                            <div>
-                              <ProductCard
-                                slotProducts={product}
-                                handleOpenModal={handleOpenModal}
-                                handleAddToCart={handleRelatedAddToCart}
-                                slotLength={products.length}
-                                className="related-product-card h-100"
-                              />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
+        {/* Scroll Progress Bar */}
+        <div className="progress mb-3" style={{ height: '3px' }}>
+          <div 
+            className="progress-bar bg-primary" 
+            role="progressbar" 
+            style={{ width: `${scrollProgress}%` }}
+            aria-valuenow={scrollProgress}
+            aria-valuemin="0"
+            aria-valuemax="100"
+          />
+        </div>
 
-                {/* Loading Indicator */}
-                {isLoading && (
+        {/* Virtualized Products Grid */}
+        <div className="position-relative">
+          <div
+            ref={parentRef}
+            data-virtualized="true"
+            className="virtualized-grid-container border rounded"
+            style={{
+              height: `${getViewportHeight()}px`,
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                height: `${rowVirtualizer.getTotalSize()}px`,
+                width: '100%',
+                position: 'relative',
+              }}
+            >
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const startIdx = virtualRow.index * columnCount;
+                const rowProducts = products.slice(startIdx, startIdx + columnCount);
+
+                return (
                   <div
+                    key={virtualRow.index}
                     style={{
                       position: 'absolute',
-                      bottom: '30px',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      padding: '12px 24px',
-                      background: 'rgba(255, 255, 255, 0.95)',
-                      borderRadius: '25px',
-                      boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '12px',
-                      zIndex: 10,
-                      backdropFilter: 'blur(10px)',
-                      border: '1px solid rgba(125, 11, 167, 0.1)',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: `${virtualRow.size}px`,
+                      transform: `translateY(${virtualRow.start}px)`,
+                      padding: '15px 0',
                     }}
                   >
-                    <div
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        border: '3px solid #f3f3f3',
-                        borderTop: '3px solid #7d0ba7',
-                        borderRadius: '50%',
-                        animation: 'spin 1s linear infinite',
-                      }}
-                    />
-                    <span style={{
-                      color: '#666',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      fontFamily: "'Inter', sans-serif"
-                    }}>
-                      Loading more products...
-                    </span>
+                    <div className="row g-4">
+                      {rowProducts.map((product) => (
+                        <div
+                          key={product.id}
+                          className="col-6 col-md-4 col-lg-3"
+                        >
+                          <ProductCard
+                            slotProducts={product}
+                            handleOpenModal={handleOpenModal}
+                            handleAddToCart={handleRelatedAddToCart}
+                            slotLength={products.length}
+                            
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                )}
-              </div>
+                );
+              })}
+
+              {/* Loading Indicator */}
+              {isLoading && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                  }}
+                >
+                  <div className="d-flex align-items-center gap-3 px-4 py-3 bg-white rounded-pill shadow-sm border">
+                    <div className="spinner-border spinner-border-sm text-primary" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </div>
+                    <span className="text-muted">Loading more products...</span>
+                  </div>
+                </div>
+              )}
+
+              {/* End of List Indicator */}
+              {!hasMore && products.length > 20 && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '10px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                  }}
+                >
+                  <div className="px-3 py-2 bg-light rounded-pill">
+                    <span className="text-muted small">All products loaded</span>
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
+
+          {/* Scroll Hint */}
+          <div className="text-center mt-3">
+            <small className="text-muted">
+              <i className="bi bi-arrow-down me-1"></i>
+              Scroll to see more products
+            </small>
           </div>
         </div>
       </div>
 
       <style jsx>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        /* Custom scrollbar styles */
+        /* Standard Bootstrap-like scrollbar */
         .virtualized-grid-container {
           scrollbar-width: thin;
-          scrollbar-color: #9d4edd #f5f5f5;
+          scrollbar-color: #6c757d #f8f9fa;
         }
 
         .virtualized-grid-container::-webkit-scrollbar {
@@ -289,32 +267,75 @@ export default function VirtualizedRelatedProducts({
         }
 
         .virtualized-grid-container::-webkit-scrollbar-track {
-          background: #f5f5f5;
-          border-radius: 10px;
-          margin: 4px;
+          background: #f8f9fa;
+          border-radius: 4px;
         }
 
         .virtualized-grid-container::-webkit-scrollbar-thumb {
-         
-          border-radius: 10px;
-          border: 2px solid #f5f5f5;
-          transition: all 0.3s ease;
+          background-color: #adb5bd;
+          border-radius: 4px;
+          border: 2px solid #f8f9fa;
         }
 
         .virtualized-grid-container::-webkit-scrollbar-thumb:hover {
-        
-          transform: scale(1.1);
+          background-color: #6c757d;
         }
 
-        .virtualized-grid-container::-webkit-scrollbar-corner {
-          background: #f5f5f5;
-          border-radius: 0 12px 0 0;
+        /* Fade-in animation for new rows */
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
-        /* Remove horizontal scrollbar */
-        .virtualized-grid-container {
-          overflow-x: hidden !important;
-          overflow-y: auto !important;
+        /* Apply animation to virtual rows */
+        .virtualized-grid-container > div > div > div {
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Product card hover effect */
+        .related-products-section .card {
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .related-products-section .card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        }
+
+        /* Custom nav-pills style */
+        .nav-pills .nav-link {
+          padding: 0.5rem 1rem;
+          margin-right: 0.5rem;
+          border-radius: 20px;
+          color: #6c757d;
+          border: 1px solid #dee2e6;
+          background: transparent;
+        }
+
+        .nav-pills .nav-link.active {
+          background-color: #0d6efd;
+          border-color: #0d6efd;
+          color: white;
+        }
+
+        .nav-pills .nav-link:not(.active):hover {
+          background-color: #f8f9fa;
+          color: #495057;
+        }
+
+        /* Container shadow on hover */
+        .related-products-section .bg-white {
+          transition: box-shadow 0.3s ease;
+        }
+
+        .related-products-section .bg-white:hover {
+          box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
         }
 
         /* Smooth scrolling */
@@ -322,65 +343,32 @@ export default function VirtualizedRelatedProducts({
           scroll-behavior: smooth;
         }
 
-        /* Custom scrollbar for Firefox */
-        @supports (scrollbar-color: auto) {
-          .virtualized-grid-container {
-            scrollbar-color: #9d4edd #f5f5f5;
-            scrollbar-width: thin;
-          }
-        }
-
-        /* Hide scrollbar when not hovering */
-        .virtualized-grid-container:not(:hover)::-webkit-scrollbar-thumb {
-          background: #c7c7c7;
-        }
-
-        /* Related product card - keep original styling */
-        .related-product-card {
-          /* Let the original ProductCard styling remain */
-        }
-
         /* Responsive adjustments */
         @media (max-width: 768px) {
           .virtualized-grid-container {
-            height: 550px !important;
+            height: 500px !important;
           }
           
-          .col-6 {
-            padding-left: 8px;
-            padding-right: 8px;
+          .nav-pills {
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
           }
           
-          .row.g-3.gx-3 {
-            margin-left: -8px;
-            margin-right: -8px;
+          .nav-pills .nav-link {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
           }
         }
 
         @media (max-width: 576px) {
           .virtualized-grid-container {
-            height: 500px !important;
+            height: 450px !important;
           }
           
-          .related-heading {
-            font-size: 1.5rem !important;
+          h3.h4 {
+            font-size: 1.25rem;
           }
-          
-          .col-6 {
-            padding-left: 6px;
-            padding-right: 6px;
-          }
-          
-          .row.g-3.gx-3 {
-            margin-left: -6px;
-            margin-right: -6px;
-          }
-        }
-
-        /* Prevent layout shift */
-        .virtualized-grid-container > div {
-          min-width: 100%;
-          will-change: transform;
         }
       `}</style>
     </div>
