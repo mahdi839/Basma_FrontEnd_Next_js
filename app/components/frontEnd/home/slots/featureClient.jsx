@@ -42,19 +42,40 @@ function FeatureClient({ homeCategories: initialData }) {
     if (initialData?.error) {
       toast.error(initialData.error);
     }
-
-    sliderRefs.current = sliderRefs.current.slice(
-      0,
-      homeCategories?.length || 0
-    );
   }, [homeCategories, initialData]);
+
+
+  function NextArrow({ onClick }) {
+    return (
+      <button
+        className="custom-slick-arrow custom-slick-next"
+        onClick={onClick}
+      >
+        <FaChevronRight />
+      </button>
+    );
+  }
+
+  function PrevArrow({ onClick }) {
+    return (
+      <button
+        className="custom-slick-arrow custom-slick-prev"
+        onClick={onClick}
+      >
+        <FaChevronLeft />
+      </button>
+    );
+  }
+
 
   const settings = {
     infinite: true,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
-    arrows: false,
+    arrows: true,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
     pauseOnHover: true,
     responsive: [
       {
@@ -86,18 +107,18 @@ function FeatureClient({ homeCategories: initialData }) {
   async function handleOpenModal(product) {
     setIsLoadingProduct(true);
     setIsModalOpen(true);
-    
+
     try {
       // Fetch full product details with sizes and colors
       const response = await fetch(
         `${baseUrl}api/products/${product.id}`,
         { cache: 'no-store' }
       );
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch product details');
       }
-      
+
       const data = await response.json();
       setSelectedProduct(data.data);
       setSelectedSizes("");
@@ -206,12 +227,12 @@ function FeatureClient({ homeCategories: initialData }) {
 
     setSelectedSizes("");
     setSelectedColor("");
-    
+
     if (type == 'buy') {
       setIsCartDrawerOpen(true);
       setIsDirectBuy(true);
     }
-    
+
     handleCloseModal();
     toast.success("Added to cart!");
   }
@@ -287,7 +308,7 @@ function FeatureClient({ homeCategories: initialData }) {
                 })}
 
               {/* Category Header */}
-              <div className="col-12 d-flex justify-content-between align-items-center mb-1 position-relative home_page_card_header">
+              <div className="col-12 d-flex justify-content-between align-items-center position-relative home_page_card_header">
                 {slot.products.length > 0 && (
                   <h2
                     className="featured-heading font-weight-bold mb-0 fs-5 fs-md-3 fs-lg-2 fs-xl-1"
@@ -298,24 +319,12 @@ function FeatureClient({ homeCategories: initialData }) {
                 )}
 
                 {slot.products?.length >= 4 && (
-                  <div className="d-flex gap-2 mb-1">
-                    <button
-                      className="d-flex align-items-center justify-content-center slider-nav-btn"
-                      onClick={() =>
-                        sliderRefs.current[slotIndex]?.current?.slickPrev()
-                      }
-                    >
-                      <FaChevronLeft className="slider-arrow" />
-                    </button>
-                    <button
-                      className="p-2 d-flex align-items-center justify-content-center slider-nav-btn"
-                      onClick={() =>
-                        sliderRefs.current[slotIndex]?.current?.slickNext()
-                      }
-                    >
-                      <FaChevronRight className="slider-arrow" />
-                    </button>
-                  </div>
+                  <Link
+                    href={`/frontEnd/${slot.slug ?? slot.id}`}
+                    className="btn btn-outline-dark btn-sm fw-semibold"
+                  >
+                    View All
+                  </Link>
                 )}
               </div>
 
