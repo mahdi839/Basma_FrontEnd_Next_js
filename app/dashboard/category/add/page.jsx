@@ -17,6 +17,7 @@ export default function CreateCategoryPage() {
     parent_id: "",
     home_category: "0",
     priority: 0,
+    size_guide_type: "",
   });
 
   useEffect(() => {
@@ -87,6 +88,7 @@ export default function CreateCategoryPage() {
           parent_id: form.parent_id || null,
           home_category: form.home_category,
           priority: Number(form.priority),
+          size_guide_type: form.size_guide_type || null,
         },
         {
           headers: {
@@ -207,7 +209,7 @@ export default function CreateCategoryPage() {
               <form onSubmit={handleSubmit} className="needs-validation" noValidate>
                 {/* Category Name */}
                 <div className="row mb-4">
-                  <div className="col-md-12">
+                  <div className="col-md-6">
                     <label htmlFor="categoryName" className="form-label fw-bold">
                       <i className="fas fa-tag me-2"></i>
                       Category Name
@@ -234,6 +236,42 @@ export default function CreateCategoryPage() {
                         </div>
                       )}
                     </div>
+                  </div>
+                  {/* Size Guide Type */}
+
+                  <div className="col-md-6">
+                    <label className="form-label fw-bold">
+                      <i className="fas fa-ruler-combined me-2"></i>
+                      Size Guide Type
+                    </label>
+
+                    <div className="input-group">
+                      <span className="input-group-text">
+                        <i className="fas fa-list"></i>
+                      </span>
+                      <select
+                        className={`form-select ${errors.size_guide_type ? "is-invalid" : ""}`}
+                        value={form.size_guide_type}
+                        onChange={(e) =>
+                          handleInputChange("size_guide_type", e.target.value)
+                        }
+                        disabled={isSubmitting}
+                      >
+                        <option value="">-- No Size Guide --</option>
+                        <option value="shoe">Shoe Size Guide</option>
+                        <option value="dress">Dress Size Guide</option>
+                      </select>
+
+                      {errors.size_guide_type && (
+                        <div className="invalid-feedback">
+                          {errors.size_guide_type}
+                        </div>
+                      )}
+                    </div>
+
+                    <small className="text-muted">
+                      Select size guide only if category needs sizing
+                    </small>
                   </div>
                 </div>
 
