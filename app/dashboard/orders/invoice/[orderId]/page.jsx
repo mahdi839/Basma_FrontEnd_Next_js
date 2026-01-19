@@ -193,9 +193,9 @@ export default function InvoicePage() {
                                                                 <img
                                                                     src={item.colorImage}
                                                                     alt="Color"
-                                                                    width="70"
-                                                                    height="70"
-                                                                    className="rounded-circle border me-2"
+                                                                    width="80"
+                                                                    height="80"
+                                                                    className="rounded border me-2"
                                                                     style={{ objectFit: "cover" }}
                                                                 />
                                                             </Zoom>
