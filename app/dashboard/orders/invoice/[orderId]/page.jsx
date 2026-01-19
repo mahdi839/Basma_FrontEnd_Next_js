@@ -264,149 +264,86 @@ export default function InvoicePage() {
             {/* Enhanced Print Styles */}
             <style jsx global>{`
                 @media print {
-                    /* Hide unnecessary elements */
-                    .no-print {
-                        display: none !important;
-                    }
-                    
-                    /* Reset body and container styles */
-                    body {
-                        background: white !important;
-                        color: black !important;
-                        font-size: 12pt;
-                        line-height: 1.4;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                    }
-                    
-                    .container {
-                        max-width: 100% !important;
-                        padding: 0 !important;
-                        margin: 0 !important;
-                    }
-                    
-                    /* Invoice card styling */
-                    .invoice-card {
-                        border: none !important;
-                        box-shadow: none !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                    }
-                    
-                    .card-body {
-                        padding: 20px 15px !important;
-                    }
-                    
-                    /* Ensure proper spacing */
-                    .row {
-                        margin-left: -8px;
-                        margin-right: -8px;
-                    }
-                    
-                    .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, 
-                    .col-7, .col-8, .col-9, .col-10, .col-11, .col-12 {
-                        padding-left: 8px;
-                        padding-right: 8px;
-                    }
-                    
-                    /* Table styling for print */
-                    .invoice-table {
-                        font-size: 10pt;
-                        width: 100%;
-                    }
-                    
-                    .invoice-table th {
-                        background-color: #f8f9fa !important;
-                        color: #000 !important;
-                        border-color: #dee2e6 !important;
-                        padding: 8px 6px;
-                    }
-                    
-                    .invoice-table td {
-                        padding: 6px;
-                        border-color: #dee2e6 !important;
-                    }
-                    
-                    /* Remove background colors that don't print well */
-                    .table-dark {
-                        background-color: #f8f9fa !important;
-                        color: #000 !important;
-                    }
-                    
-                    .table-active {
-                        background-color: #f8f9fa !important;
-                    }
-                    
-                    /* Text colors for print */
-                    .text-primary, .text-muted {
-                        color: #000 !important;
-                    }
-                    
-                    .text-muted {
-                        color: #666 !important;
-                    }
-                    
-                    /* Borders */
-                    .border-bottom, .border-top {
-                        border-color: #000 !important;
-                    }
-                    
-                    /* Company logo sizing for print */
-                    .company-logo {
-                        max-height: 60px !important;
-                    }
-                    
-                    /* Force page breaks */
-                    .invoice-card {
-                        page-break-inside: avoid;
-                    }
-                    
-                    .table-container {
-                        page-break-inside: avoid;
-                    }
-                    
-                    /* Remove browser headers and footers */
-                    @page {
-                        margin: 0.5cm !important;
-                        size: auto;
-                    }
-                    
-                    /* Hide browser-specific headers and footers */
-                    body::before,
-                    body::after {
-                        display: none !important;
-                    }
-                    
-                    /* Additional print optimizations */
-                    html, body {
-                        height: 100% !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                    }
-                }
-                
-                /* Screen styles */
-                @media screen {
-                    .invoice-table {
-                        font-size: 14px;
-                    }
-                    
-                    .company-logo {
-                        max-height: 70px;
-                    }
-                }
-                
-                /* Additional responsive styles */
-                @media (max-width: 768px) {
-                    .card-body {
-                        padding: 15px 10px !important;
-                    }
-                    
-                    .invoice-table {
-                        font-size: 12px;
-                    }
-                }
+    /* Hide buttons */
+    .no-print {
+        display: none !important;
+    }
+
+    /* Page setup */
+    @page {
+        size: A4;
+        margin: 0.5cm;
+    }
+
+    html, body {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 10pt;
+    }
+
+    .container {
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+    }
+
+    /* 🔥 KEY PART: HALF PAGE INVOICE */
+    .invoice-card {
+        height: 50vh;                 /* Half of page */
+        page-break-inside: avoid;
+        border: none !important;
+        box-shadow: none !important;
+        margin-bottom: 0 !important;
+
+        transform: scale(0.85);       /* Reduce size */
+        transform-origin: top center;
+    }
+
+    .card-body {
+        padding: 10px !important;
+    }
+
+    /* Tables */
+    .invoice-table {
+        font-size: 9pt;
+    }
+
+    .invoice-table th,
+    .invoice-table td {
+        padding: 4px !important;
+    }
+
+    .table-dark {
+        background: #f1f1f1 !important;
+        color: #000 !important;
+    }
+
+    /* Text adjustments */
+    h4, h5, h6 {
+        margin-bottom: 4px !important;
+    }
+
+    p {
+        margin-bottom: 2px !important;
+    }
+
+    /* Logo smaller */
+    .company-logo {
+        max-height: 45px !important;
+    }
+
+    /* Avoid breaking tables */
+    table,
+    tr,
+    td,
+    th {
+        page-break-inside: avoid !important;
+    }
+}
+
             `}</style>
         </div>
+        
     );
 }
