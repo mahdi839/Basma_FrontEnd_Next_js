@@ -2225,7 +2225,7 @@ table tr td {
 }
 
 .product_status_badge {
-	top: 3rem;
+	top: 2rem;
 	left: -1;
 	background: #2D64E6;
 	color: white;
@@ -2250,6 +2250,9 @@ table tr td {
 
 /* Responsive Design */
 @media (max-width: 576px) {
+	.product_status_badge{
+		top: 1rem;
+	}
 	.footer_bg {
 		border-radius: 100% / 5% 5% 0 0;
 	}
