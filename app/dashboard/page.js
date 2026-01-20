@@ -4,7 +4,24 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import useFormatDate from "../hooks/useFormatDate";
 
-const STATUSES = ["pending", "placed", "delivered", "cancel"];
+const STATUSES = [
+  'pending',
+  'completed',
+  'placed',
+  'cancelled',
+  'processing',
+  'returned',
+  'first_call',
+  'second_call',
+  'third_call',
+  'stock_sold',
+  'shipped_to_you',
+  'received_in_bd',
+  'order_sent_to_china',
+  'file_completed',
+  'order_confirmed',
+];
+
 
 /** Simple canvas bar chart (no libs) */
 function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
@@ -183,8 +200,8 @@ export default function DashboardHome() {
       prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
     );
   const clearStatuses = () => setSelectedStatuses([]);
- 
-  
+
+
 
   return (
     <div className="container-fluid py-4">

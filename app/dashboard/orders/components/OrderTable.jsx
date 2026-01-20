@@ -207,6 +207,16 @@ export default function OrderTable({
               <option value="placed">Placed</option>
               <option value="cancelled">Cancelled</option>
               <option value="processing">Processing</option>
+              <option value="returned">Returned</option>
+              <option value="first_call">1st Call Done</option>
+              <option value="second_call">2nd Call Done</option>
+              <option value="third_call">3rd Call Done</option>
+              <option value="stock_sold">Stock Sold</option>
+              <option value="shipped_to_you">Shipped To You</option>
+              <option value="received_in_bd">Received In BD</option>
+              <option value="order_sent_to_china">Order Sent To China</option>
+              <option value="file_completed">File Completed</option>
+              <option value="order_confirmed">Order Confirmed</option>
             </select>
           </div>
 
@@ -346,10 +356,21 @@ export default function OrderTable({
                         onChange={(e) => handleStatus(e, order.id)}
                         name="status"
                       >
-                        <option value="cancel">Cancel</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="placed">Placed</option>
                         <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="placed">Placed</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="processing">Processing</option>
+                        <option value="returned">Returned</option>
+                        <option value="first_call">1st Call Done</option>
+                        <option value="second_call">2nd Call Done</option>
+                        <option value="third_call">3rd Call Done</option>
+                        <option value="stock_sold">Stock Sold</option>
+                        <option value="shipped_to_you">Shipped To You</option>
+                        <option value="received_in_bd">Received In BD</option>
+                        <option value="order_sent_to_china">Order Sent To China</option>
+                        <option value="file_completed">File Completed</option>
+                        <option value="order_confirmed">Order Confirmed</option>
                       </select>
                     </td>
                     <td>
