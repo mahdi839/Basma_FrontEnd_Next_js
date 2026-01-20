@@ -50,6 +50,7 @@ export default function CategoryTable({ categories }) {
             <th>Name</th>
             <th>Slug</th>
             <th>Parent</th>
+            <th>Size Guide Type</th>
             <th>Home</th>
             <th>Priority</th>
             <th>Actions</th>
@@ -79,6 +80,7 @@ export default function CategoryTable({ categories }) {
                   <span className="text-muted">Root</span>
                 )}
               </td>
+              <td>{cat.size_guide_type??"N/A"}</td>
               <td>
                 <span className={`badge ${cat.home_category ? "bg-info" : "bg-danger"}`}>
                   {cat.home_category ? "On" : "Off"}
