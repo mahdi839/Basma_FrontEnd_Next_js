@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { FaCartPlus, FaFacebookMessenger, FaWhatsapp } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { SiFoursquarecityguide } from "react-icons/si";
 import { toast } from "react-toastify";
 import Zoom from "react-medium-image-zoom";
 import { addToCart } from "@/redux/slices/CartSlice";
@@ -16,6 +17,7 @@ import useProductLogics from "@/app/hooks/useProductLogics";
 import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
 import VirtualizedRelatedProducts from "./VirtualizedRelatedProducts";
+import axios from "axios";
 
 export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
   const [imgUrl, setImgUrl] = useState("");
@@ -41,7 +43,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
-
+  const [sizeGuideData,setSizeGuideData] = useState(null);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -241,6 +243,16 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     return <SignProdSkeleton />;
   }
 
+  function fetchSizeGuideData (){
+    try{
+       let response = axios.get(`${baseUrl}api/productSizeGuideType/${product.id}`)
+       setSizeGuideData(response)
+    }catch(err){
+       console.log(err)
+    }
+  }
+
+  
   return (
     <div className="container product-page-container">
       <div className="row my-4 my-md-5 g-4">
@@ -381,9 +393,10 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             )}
 
-
-
-
+            {/* size guide btn div */}
+              <div className="my-3"><button className="btn btn-sm" onClick={fetchSizeGuideData}> <SiFoursquarecityguide /> Size Guide</button> </div>
+            
+            
             {/* Action Buttons */}
             <div className="action-buttons-container">
               {/* Quantity Selector */}
