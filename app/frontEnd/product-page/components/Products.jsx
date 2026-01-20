@@ -26,7 +26,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [isLoading, setIsLoading] = useState(true);
   const [modalSelectedSize, setModalSelectedSize] = useState(null);
   const [modalSelectedColor, setModalSelectedColor] = useState(null);
-
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [loadingSizeGuide, setLoadingSizeGuide] = useState(false);
   const {
     handleSelectedColor,
     selectedColor,
@@ -43,7 +44,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
-  const [sizeGuideData,setSizeGuideData] = useState(null);
+  const [sizeGuideData, setSizeGuideData] = useState(null);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -243,16 +244,27 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     return <SignProdSkeleton />;
   }
 
-  function fetchSizeGuideData (){
-    try{
-       let response = axios.get(`${baseUrl}api/productSizeGuideType/${product.id}`)
-       setSizeGuideData(response)
-    }catch(err){
-       console.log(err)
+  async function fetchSizeGuideData() {
+    setLoadingSizeGuide(true);
+    try {
+      const response = await axios.get(`${baseUrl}api/productSizeGuideType/${product.id}`);
+      setSizeGuideData(response.data);
+      setShowSizeGuide(true);
+    } catch (err) {
+      console.log('Error fetching size guide:', err);
+      toast.error('Failed to load size guide');
+    } finally {
+      setLoadingSizeGuide(false);
     }
   }
 
-  
+  // Also update the sizeGuideImage logic:
+  const sizeGuideImage = sizeGuideData?.size_guide_type === "shoe"
+    ? "/img/size_guide/shoe.webp"
+    : "/img/size_guide/dress.jpg";
+
+
+
   return (
     <div className="container product-page-container">
       <div className="row my-4 my-md-5 g-4">
@@ -394,9 +406,18 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             )}
 
             {/* size guide btn div */}
-              <div className="my-3"><button className="btn btn-sm" onClick={fetchSizeGuideData}> <SiFoursquarecityguide /> Size Guide</button> </div>
-            
-            
+            <div className="my-3">
+              <button
+                className="btn btn-sm"
+                onClick={fetchSizeGuideData}
+                disabled={loadingSizeGuide}
+              >
+                <SiFoursquarecityguide />
+                {loadingSizeGuide ? 'Loading...' : 'Size Guide'}
+              </button>
+            </div>
+
+
             {/* Action Buttons */}
             <div className="action-buttons-container">
               {/* Quantity Selector */}
@@ -534,6 +555,28 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           )}
         </div>
       </div>
+
+      {showSizeGuide && sizeGuideData && (
+        <div className="size-guide-overlay">
+          <div className="size-guide-content">
+            <button
+              className="size-guide-close"
+              onClick={() => setShowSizeGuide(false)}
+            >
+              ✕
+            </button>
+
+            <Image
+              src={sizeGuideImage}
+              alt="Size Guide"
+              width={600}
+              height={800}
+              className="img-fluid"
+            />
+          </div>
+        </div>
+      )}
+
 
 
       {/* VIRTUALIZED Related Products with Infinite Scroll */}
