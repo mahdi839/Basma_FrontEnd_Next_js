@@ -77,8 +77,9 @@ export default function Page({ params }) {
         {
           name: data.name,
           parent_id: data.parent_id || null,
-          home_category: data.home_category, // ✅ INCLUDED
+          home_category: data.home_category, 
           priority: parseInt(data.priority) || 0,
+          size_guide_type: data.size_guide_type || null,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -153,6 +154,35 @@ export default function Page({ params }) {
                   ))}
               </select>
             </div>
+
+            {/* SIZE GUIDE TYPE */}
+            <div className="mb-3">
+              <label className="form-label fw-bold">
+                Size Guide Type
+              </label>
+
+              <select
+                className={`form-select ${errors.size_guide_type ? "is-invalid" : ""}`}
+                name="size_guide_type"
+                value={data.size_guide_type || ""}
+                onChange={handleChange}
+              >
+                <option value="">-- No Size Guide --</option>
+                <option value="shoe">Shoe Size Guide</option>
+                <option value="dress">Dress Size Guide</option>
+              </select>
+
+              {errors.size_guide_type && (
+                <div className="invalid-feedback d-block">
+                  {errors.size_guide_type[0]}
+                </div>
+              )}
+
+              <small className="text-muted">
+                Select size guide only if category needs sizing
+              </small>
+            </div>
+
 
             {/* PRIORITY */}
             <div className="mb-3">
