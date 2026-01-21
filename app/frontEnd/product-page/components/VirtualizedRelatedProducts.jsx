@@ -117,7 +117,7 @@ export default function VirtualizedRelatedProducts({
   return (
     <div className="related-products-section mt-5">
       {/* Main Container */}
-      <div className="rounded-3 shadow-sm border border-gray-200 p-4">
+      <div className="rounded-3 shadow-sm border border-gray-200 p-md-4 p-sm-1">
         {/* Header Section */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
           <div className="mb-3 mb-md-0">
@@ -456,13 +456,7 @@ export default function VirtualizedRelatedProducts({
           background-color: transparent;
         }
 
-        /* Adjust column count for very small screens */
-        @media (max-width: 374px) {
-          .col-6 {
-            flex: 0 0 100%;
-            max-width: 100%;
-          }
-        }
+       
       `}</style>
     </div>
   );
