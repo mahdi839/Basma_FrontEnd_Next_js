@@ -27,7 +27,7 @@ export default function VirtualizedRelatedProducts({
       const width = window.innerWidth;
       setWindowWidth(width);
       
-      if (width < 375) setColumnCount(1);
+      if (width < 375) setColumnCount(2);
       else if (width < 576) setColumnCount(2);
       else if (width < 768) setColumnCount(2);
       else if (width < 992) setColumnCount(3);
@@ -455,8 +455,6 @@ export default function VirtualizedRelatedProducts({
         .virtualized-grid-container {
           background-color: transparent;
         }
-
-       
       `}</style>
     </div>
   );
