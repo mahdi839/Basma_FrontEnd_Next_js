@@ -26,7 +26,7 @@ export default function VirtualizedRelatedProducts({
     const updateColumns = () => {
       const width = window.innerWidth;
       setWindowWidth(width);
-      
+
       if (width < 375) setColumnCount(2);
       else if (width < 576) setColumnCount(2);
       else if (width < 768) setColumnCount(2);
@@ -120,16 +120,15 @@ export default function VirtualizedRelatedProducts({
       <div className="rounded-3 shadow-sm border border-gray-200 p-md-4 p-sm-1">
         {/* Header Section */}
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
-          <div className="mb-3 mb-md-0">
+          <div className="mb-3 mb-md-0 px-2 rel_product_div">
             <h3 className="h4 fw-semibold mb-1 text-dark">Related Products</h3>
             <p className="text-muted mb-0">
               {products.length.toLocaleString()} products available
-              {hasMore && !isLoading && ' • Scroll to load more'}
             </p>
           </div>
 
           {/* Filter Tabs - Responsive */}
-          <div className="nav nav-pills related-products-nav">
+          <div className="nav nav-pills related-products-nav ">
             {[
               { key: "new", label: "New Arrivals" },
               { key: "top", label: "Best Sellers" },
@@ -150,10 +149,10 @@ export default function VirtualizedRelatedProducts({
         {/* Scroll Progress Bar - Only show if there are more than 3 rows */}
         {rowCount > 3 && (
           <div className="progress mb-3" style={{ height: '3px' }}>
-            <div 
-              className="progress-bar" 
-              role="progressbar" 
-              style={{ 
+            <div
+              className="progress-bar"
+              role="progressbar"
+              style={{
                 width: `${scrollProgress}%`,
                 backgroundColor: '#7d0ba7'
               }}
@@ -387,7 +386,12 @@ export default function VirtualizedRelatedProducts({
           .virtualized-grid-container {
             height: ${340 * 3}px !important;
           }
-          
+          .rel_product_div{
+              margin: 15px 65px
+            }
+            .related-products-nav{
+              margin: 15px 65px
+            }
           h3.h4 {
             font-size: 1.25rem;
           }
@@ -421,6 +425,7 @@ export default function VirtualizedRelatedProducts({
           .virtualized-grid-container {
             height: ${320 * 3}px !important;
           }
+            
           
           h3.h4 {
             font-size: 1.1rem;
