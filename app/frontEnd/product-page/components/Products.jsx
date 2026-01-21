@@ -244,24 +244,22 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     return <SignProdSkeleton />;
   }
 
-  async function fetchSizeGuideData() {
-    setLoadingSizeGuide(true);
-    try {
-      const response = await axios.get(`${baseUrl}api/productSizeGuideType/${product.id}`);
-      setSizeGuideData(response.data);
+   function fetchSizeGuideData() {
+    // setLoadingSizeGuide(true);
+    // try {
+    //   const response = await axios.get(`${baseUrl}api/productSizeGuideType/${product.id}`);
+    //   setSizeGuideData(response.data);
       setShowSizeGuide(true);
-    } catch (err) {
-      console.log('Error fetching size guide:', err);
-      toast.error('Failed to load size guide');
-    } finally {
-      setLoadingSizeGuide(false);
-    }
+    // } catch (err) {
+    //   console.log('Error fetching size guide:', err);
+    //   toast.error('Failed to load size guide');
+    // } finally {
+    //   setLoadingSizeGuide(false);
+    // }
   }
 
   // Also update the sizeGuideImage logic:
-  const sizeGuideImage = sizeGuideData?.size_guide_type === "shoe"
-    ? "/img/size_guide/shoe.webp"
-    : "/img/size_guide/dress.jpg";
+  const sizeGuideImage =  "/img/size_guide/shoe.webp";
 
 
 
@@ -410,10 +408,10 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               <button
                 className="btn btn-sm"
                 onClick={fetchSizeGuideData}
-                disabled={loadingSizeGuide}
+                // disabled={loadingSizeGuide}
               >
                 <SiFoursquarecityguide />
-                {loadingSizeGuide ? 'Loading...' : 'Size Guide'}
+                {/* {loadingSizeGuide ? 'Loading...' : 'Size Guide'} */}Size Guide
               </button>
             </div>
 
@@ -556,7 +554,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         </div>
       </div>
 
-      {showSizeGuide && sizeGuideData && (
+      {showSizeGuide  && (
         <div className="size-guide-overlay">
           <div className="size-guide-content">
             <button
