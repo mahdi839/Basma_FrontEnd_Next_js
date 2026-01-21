@@ -145,6 +145,12 @@ const ProductModal = ({
                 <p className="product-subtitle">{product.short_description}</p>
               </div>
 
+              {product?.status === 'prebook' && (
+                <div className="preorder-badge">
+                  ⚡ Pre Order, Delivery Time 20 to 25 Days
+                </div>
+              )}
+
               {/* Price Section */}
               <div className="price-section">
                 <div className="price-main">
@@ -169,9 +175,9 @@ const ProductModal = ({
                         className={`color-img-div ${selectedColor === color.image ? "active" : ""}`}
                         onClick={() => onSelectColor(color?.image)}
                       >
-                        <img 
-                          src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""} 
-                          alt="color variant" 
+                        <img
+                          src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""}
+                          alt="color variant"
                         />
                       </div>
                     ))}
@@ -239,8 +245,8 @@ const ProductModal = ({
                   Add to Cart
                 </button>
 
-                <button 
-                  className="action-cart-btn btn-grad" 
+                <button
+                  className="action-cart-btn btn-grad"
                   onClick={() => onAddToCart(product, 'buy', preQty)}
                 >
                   <BiSolidPurchaseTag className="btn-icon" />
@@ -249,8 +255,8 @@ const ProductModal = ({
               </div>
 
               {/* View Details Link */}
-              <Link 
-                href={`/frontEnd/product-page/${product.id}`} 
+              <Link
+                href={`/frontEnd/product-page/${product.id}`}
                 className="view-details-link"
               >
                 <CiSearch className="link-icon" />
