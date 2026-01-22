@@ -337,7 +337,7 @@ export default function Navbar({ onCartClick }) {
                   </button>
                 </div>
                 <div className="header__cart__price d-none d-lg-block">
-                  <span className="fw-bold">{isClient ? CartItemsPrice : 0} Tk</span>
+                  <span className="fw-bold">Cart Total: {isClient ? CartItemsPrice : 0} Tk</span>
                 </div>
               </div>
             </div>
