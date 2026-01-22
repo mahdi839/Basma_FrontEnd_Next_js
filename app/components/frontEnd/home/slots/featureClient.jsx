@@ -43,8 +43,7 @@ function FeatureClient({ homeCategories: initialData }) {
       toast.error(initialData.error);
     }
   }, [homeCategories, initialData]);
-
-
+  
   function NextArrow({ onClick }) {
     return (
       <button

@@ -64,7 +64,7 @@ export default function VirtualizedRelatedProducts({
       setIsLoading(false);
     }
   }, [page, isLoading, hasMore, productId, baseUrl]);
-
+ console.log(products);
   // Calculate row count
   const rowCount = Math.ceil(products.length / columnCount);
 

@@ -63,6 +63,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     if (product?.error) toast.error(product.error);
   }, [product]);
 
+  console.log(initialRelatedProducts);
+
   function handleThumbClick(id) {
     const clickedImg = images.find((img) => String(img.id) === String(id));
     if (clickedImg?.image) setImgUrl(baseUrl + clickedImg.image);
