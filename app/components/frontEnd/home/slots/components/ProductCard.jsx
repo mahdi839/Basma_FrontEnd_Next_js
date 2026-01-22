@@ -9,13 +9,16 @@ const ProductCard = React.memo(function ProductCard({
   slotLength,
   className
 }) {
-  const [selectedImage,setSelectedImage] = useState();
+  const [selectedImage, setSelectedImage] = useState({
+    url: null,
+    index: null
+  });
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  function handleShowImage(colorImage){
-     setSelectedImage(colorImage)
+  function handleShowImage(index, colorImage) {
+    setSelectedImage({ url: colorImage, index })
   }
-  
+
   return (
     <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
       <div className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative">
@@ -27,9 +30,13 @@ const ProductCard = React.memo(function ProductCard({
               width={500}
               height={400}
               src={
-                   selectedImage
-                  ? baseUrl + selectedImage
-                  : slotProducts?.images?.[0]?.image ? baseUrl + slotProducts?.images[0]?.image : ""
+                selectedImage?.url
+                  ? baseUrl + selectedImage.url
+                  : slotProducts?.images?.[0]?.image
+                    ? baseUrl + slotProducts.images[0].image
+                    : slotProducts?.image
+                      ? baseUrl + slotProducts.image
+                      : ""
               }
               className="product-image p-0 p-md-3"
               alt={slotProducts?.title || "Product"}
@@ -58,7 +65,7 @@ const ProductCard = React.memo(function ProductCard({
         {slotProducts?.colors?.length > 0 && (
           <div className="product-color-wrapper">
             {slotProducts?.colors?.map((color, index) => (
-              <div key={index} className="product_color_image_div" onClick={()=>handleShowImage(color?.image)}>
+              <div key={index} className={`${selectedImage.url && index == selectedImage.index ? "SelectedImageStyle" : "product_color_image_div"}`} onClick={() => handleShowImage(index, color?.image)}>
                 <Image
                   width={30}
                   height={30}
