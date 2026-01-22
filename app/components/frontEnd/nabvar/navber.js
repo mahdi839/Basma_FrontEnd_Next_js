@@ -29,6 +29,10 @@ export default function Navbar({ onCartClick }) {
   const [isShowCollapsMenu, setIsShowCollapsMenu] = useState("category");
   const [footerData, setFooterData] = useState(null);
   const cartPopupRef = useRef(null);
+  const [mobileQuery, setMobileQuery] = useState("");
+  const [mobileResults, setMobileResults] = useState([]);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
 
   useEffect(() => {
     setIsClient(true);
@@ -65,6 +69,34 @@ export default function Navbar({ onCartClick }) {
   function handleCollaps_menu(menu) {
     setIsShowCollapsMenu(menu);
   }
+
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  useEffect(() => {
+    if (mobileQuery.length >= 3) {
+      fetch(`${baseUrl}api/product-search?q=${mobileQuery}`)
+        .then(res => res.json())
+        .then(data => {
+          setMobileResults(data.data || []);
+          setMobileOpen(true);
+        })
+        .catch(() => {
+          setMobileResults([]);
+          setMobileOpen(false);
+        });
+    } else {
+      setMobileResults([]);
+      setMobileOpen(false);
+    }
+  }, [mobileQuery]);
+
+  useEffect(() => {
+    const close = () => setMobileOpen(false);
+    document.addEventListener("click", close);
+    return () => document.removeEventListener("click", close);
+  }, []);
+
+
 
 
   return (
@@ -182,8 +214,8 @@ export default function Navbar({ onCartClick }) {
               </div>
             </div>
 
-            <div className="d-flex justify-content-center d-xl-none w-90 my-3 px-3">
-              <div className="input-group shadow-sm">
+            <div className="d-flex justify-content-center d-xl-none w-100 my-3 px-3 position-relative">
+              <div className="input-group shadow-sm w-100">
                 <span className="input-group-text bg-white border-end-0">
                   <i className="bi bi-search"></i>
                 </span>
@@ -192,11 +224,59 @@ export default function Navbar({ onCartClick }) {
                   type="text"
                   className="form-control border-start-0"
                   placeholder="Search Products By Name"
-                  aria-label="Search"
+                  value={mobileQuery}
+                  onChange={(e) => setMobileQuery(e.target.value)}
                 />
               </div>
-            </div>
 
+              {/* 🔽 Mobile Results Dropdown */}
+              {mobileOpen && (
+                <ul
+                  className="list-group position-absolute w-100 shadow"
+                  style={{
+                    top: "100%",
+                    zIndex: 1050,
+                    maxHeight: "300px",
+                    overflowY: "auto"
+                  }}
+                >
+                  {mobileResults.length > 0 ? (
+                    mobileResults.map(product => (
+                      <Link
+                        key={product.id}
+                        href={`/frontEnd/product-page/${product.id}`}
+                        className="text-decoration-none"
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        <li className="list-group-item d-flex align-items-center">
+                          <img
+                            src={baseUrl + product.images?.[0]?.image}
+                            alt={product.title}
+                            width="45"
+                            height="45"
+                            className="rounded me-3 object-fit-cover"
+                          />
+
+                          <div>
+                            <strong className="d-block">{product.title}</strong>
+
+                            {product.sizes?.length > 0 && (
+                              <small className="text-muted">
+                                Sizes: {product.sizes.map(s => s.size).join(", ")}
+                              </small>
+                            )}
+                          </div>
+                        </li>
+                      </Link>
+                    ))
+                  ) : (
+                    <li className="list-group-item text-center text-muted">
+                      No products found
+                    </li>
+                  )}
+                </ul>
+              )}
+            </div>
 
             {/* Desktop logo */}
             <div className="col-lg-3 d-none d-xl-block">
