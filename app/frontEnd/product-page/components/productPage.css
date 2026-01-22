@@ -665,3 +665,122 @@
   font-size: 18px;
   line-height: 1;
 }
+
+.thumbnails-container {
+  padding: 10px 0;
+  margin-top: 15px;
+  position: relative;
+  padding-left: 35px;
+  padding-right: 35px;
+}
+
+.thumbnails-container .slick-slider {
+  width: 100%;
+  position: relative;
+}
+
+.thumbnails-container .slick-list {
+  margin: 0 -5px;
+  overflow: hidden !important;
+}
+
+.thumbnails-container .slick-track {
+  display: flex !important;
+  align-items: center;
+}
+
+.thumbnails-container .slick-slide {
+  padding: 0 5px;
+  height: inherit !important;
+}
+
+.thumbnails-container .slick-slide > div {
+  height: 100%;
+}
+
+/* Thumbnail button styling */
+.thumbnails-container .thumbnail-btn {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  display: block;
+}
+
+.thumbnails-container .thumbnail-btn:hover {
+  border-color: #999;
+  transform: scale(1.05);
+}
+
+.thumbnails-container .thumbnail-btn.active {
+  border-color: #DB3340;
+  box-shadow: 0 0 0 1px #DB3340;
+}
+
+.thumbnails-container .thumbnail-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Arrow styling for carousel */
+.thumbnails-container .slick-prev,
+.thumbnails-container .slick-next {
+  width: 30px;
+  height: 30px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  top: 50%;
+}
+
+.thumbnails-container .slick-prev:hover,
+.thumbnails-container .slick-next:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.thumbnails-container .slick-prev {
+  left: 0;
+}
+
+.thumbnails-container .slick-next {
+  right: 0;
+}
+
+.thumbnails-container .slick-prev:before,
+.thumbnails-container .slick-next:before {
+  font-size: 20px;
+  opacity: 1;
+}
+
+/* Disabled arrow state */
+.thumbnails-container .slick-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .thumbnails-container {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+  
+  .thumbnails-container .slick-prev,
+  .thumbnails-container .slick-next {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .thumbnails-container .slick-prev:before,
+  .thumbnails-container .slick-next:before {
+    font-size: 16px;
+  }
+}

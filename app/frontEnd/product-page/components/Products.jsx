@@ -17,6 +17,9 @@ import useProductLogics from "@/app/hooks/useProductLogics";
 import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
 import VirtualizedRelatedProducts from "./VirtualizedRelatedProducts";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 
 export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
   const [imgUrl, setImgUrl] = useState("");
@@ -48,7 +51,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const router = useRouter();
-  
+
 
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
@@ -58,7 +61,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
   const cartItem = cartItems.find(item => product.id == item.id);
 
- 
+
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
@@ -176,7 +179,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     setSelectedProduct(null);
   }
 
- 
+
   function handleRelatedAddToCart(product, type, preQty) {
     const existing = cartItems.find((item) => item.id === product.id);
     if (existing) {
@@ -248,12 +251,12 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     return <SignProdSkeleton />;
   }
 
-   function fetchSizeGuideData() {
+  function fetchSizeGuideData() {
     // setLoadingSizeGuide(true);
     // try {
     //   const response = await axios.get(`${baseUrl}api/productSizeGuideType/${product.id}`);
     //   setSizeGuideData(response.data);
-      setShowSizeGuide(true);
+    setShowSizeGuide(true);
     // } catch (err) {
     //   console.log('Error fetching size guide:', err);
     //   toast.error('Failed to load size guide');
@@ -263,8 +266,33 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   }
 
   // Also update the sizeGuideImage logic:
-  const sizeGuideImage =  "/img/size_guide/shoe.webp";
+  const sizeGuideImage = "/img/size_guide/shoe.webp";
 
+
+  const showCarousel = images.length >= 4;
+  const thumbSliderSettings = {
+    dots: false,
+    arrows: true,
+    infinite: false,
+    speed: 300,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    swipeToSlide: true,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 3,
+        },
+      },
+    ],
+  };
 
 
   return (
@@ -282,7 +310,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                       ? `${baseUrl}${images[0].image}`
                       : "/placeholder.png")
                   }
-                  alt={product?.title || "product image"}
+                  alt={product?.title}
                   width={600}
                   height={600}
                   className="img-fluid"
@@ -291,30 +319,48 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 />
               </Zoom>
             </div>
-
             {images?.length > 1 && (
               <div className="thumbnails-container">
-                {images?.map((img, index) => (
-                  <button
-                    type="button"
-                    key={img.id}
-                    className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
-                      }`}
-                    onClick={() => {
-                      handleThumbClick(img.id);
-                    }}
-                    aria-label={`View product image ${index + 1}`}
-                  >
-                    <Image
-                      src={baseUrl + img.image}
-                      alt="product thumbnail"
-                      width={80}
-                      height={80}
-                    />
-                  </button>
-                ))}
+                {images.length > 4 ? (
+                  <Slider {...thumbSliderSettings}>
+                    {images.map((img, index) => (
+                      <div key={img.id}>
+                        <button
+                          type="button"
+                          className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                            }`}
+                          onClick={() => handleThumbClick(img.id)}
+                        >
+                          <Image
+                            src={baseUrl + img.image}
+                            alt="product thumbnail"
+                            width={80}
+                            height={80}
+                          />
+                        </button>
+                      </div>
+                    ))}
+                  </Slider>
+                ) : (
+                  images.map((img, index) => (
+                    <button
+                      key={img.id}
+                      className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                        }`}
+                      onClick={() => handleThumbClick(img.id)}
+                    >
+                      <Image
+                        src={baseUrl + img.image}
+                        alt="product thumbnail"
+                        width={80}
+                        height={80}
+                      />
+                    </button>
+                  ))
+                )}
               </div>
             )}
+
           </div>
         </div>
 
@@ -412,7 +458,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               <button
                 className="btn btn-sm"
                 onClick={fetchSizeGuideData}
-                // disabled={loadingSizeGuide}
+              // disabled={loadingSizeGuide}
               >
                 <SiFoursquarecityguide />
                 {/* {loadingSizeGuide ? 'Loading...' : 'Size Guide'} */}Size Guide
@@ -558,7 +604,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         </div>
       </div>
 
-      {showSizeGuide  && (
+      {showSizeGuide && (
         <div className="size-guide-overlay">
           <div className="size-guide-content">
             <button
