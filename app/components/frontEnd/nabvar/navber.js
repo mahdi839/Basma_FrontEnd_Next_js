@@ -1,10 +1,8 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-
 import {
   FaEnvelope,
   FaUser,
@@ -13,33 +11,34 @@ import {
   FaTwitter,
   FaLinkedin,
   FaPinterest,
+  FaShoppingCart,
 } from "react-icons/fa";
 import { IoMenuOutline } from "react-icons/io5";
 import { ImCancelCircle } from "react-icons/im";
-import { BiCategory } from "react-icons/bi";
-
 import LogButtons from "./LogButtons";
 import NavSearch from "./navSearch/NavSearch";
 import NavCategories from "./components/NavCategories";
 import style from "./hero.module.css";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function Navbar() {
+export default function Navbar({ onCartClick }) {
   const cartCount = useSelector((state) => state.cart.count);
   const cartItems = useSelector((state) => state.cart.items);
   const [isClient, setIsClient] = useState(false);
   const [isShowCollaps, setIsShowCollaps] = useState(false);
-  const [isShowCollapsMenu, setIsShowCollapsMenu] = useState('category');
-  const [showCategoryMenu, setShowCategoryMenu] = useState(false);
+  const [isShowCollapsMenu, setIsShowCollapsMenu] = useState("category");
   const [footerData, setFooterData] = useState(null);
-  const [logoUrl, setLogoUrl] = useState(null);
-  
+  const cartPopupRef = useRef(null);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   async function fetchFooterData() {
     try {
-      const { data } = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/footer-settings`);
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/footer-settings`
+      );
       setFooterData(data);
     } catch (error) {
       console.error("Error fetching footer data:", error);
@@ -50,31 +49,23 @@ export default function Navbar() {
     fetchFooterData();
   }, []);
 
-  useEffect(() => {
-    if (footerData?.logo_path) {
-      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL.endsWith("/")
-        ? process.env.NEXT_PUBLIC_BACKEND_URL.slice(0, -1)
-        : process.env.NEXT_PUBLIC_BACKEND_URL;
-      setLogoUrl(backendUrl + footerData.logo_path);
-    }
-  }, [footerData]);
-
   let CartItemsPrice = cartItems.reduce(
     (total, item) => total + item.totalPrice,
     0
   );
 
   function handleCollaps() {
-    setIsShowCollaps(true)
+    setIsShowCollaps(true);
   }
-  
+
   function handleCollapsCancel() {
-    setIsShowCollaps(false)
+    setIsShowCollaps(false);
   }
-  
+
   function handleCollaps_menu(menu) {
-    setIsShowCollapsMenu(menu)
+    setIsShowCollapsMenu(menu);
   }
+
 
   return (
     <div className="position-relative">
@@ -96,7 +87,8 @@ export default function Navbar() {
                 <div className="header__top__left d-none d-xl-block">
                   <ul className="mb-0">
                     <li>
-                      <FaEnvelope className="me-2" /> {footerData?.company_email??""}
+                      <FaEnvelope className="me-2" />{" "}
+                      {footerData?.company_email ?? ""}
                     </li>
                   </ul>
                 </div>
@@ -138,24 +130,42 @@ export default function Navbar() {
             </div>
           </div>
         </div>
-        
+
         <div className="container">
           <div className="row align-items-center py-2">
             {/* Mobile menu */}
-            <div className="d-flex d-xl-none justify-content-between align-items-center w-100 px-3">
+            <div className="d-flex d-xl-none justify-content-around align-items-center w-100 px-3 mt-3">
               <div className="mobile_humberger_icon" onClick={handleCollaps}>
                 <IoMenuOutline size={24} />
               </div>
 
               <div className="mobile_logo">
                 <Link href="/">
-                 
-                    <Image src="/img/logo.png" alt="" width={150} height={40} />
-       
+                  <Image
+                    src="/img/logo.png"
+                    alt=""
+                    width={150}
+                    height={40}
+                  />
                 </Link>
               </div>
 
-              <div className="dropdown">
+              <div className="position-relative border-0 ">
+                <button
+                  // onClick={onCartClick}
+                  className="cart-icon-btn d-flex align-items-center position-relative border-0 bg-transparent"
+                >
+                  <FaShoppingCart size={20} />
+                  {isClient && (
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style={{ background: '#7d0ba7' }}>
+                      {cartCount}
+                    </span>
+
+                  )}
+                </button>
+              </div>
+
+              <div className="dropdown pb-1">
                 <FaUser
                   className="dropdown-toggle"
                   type="button"
@@ -171,24 +181,39 @@ export default function Navbar() {
                 </ul>
               </div>
             </div>
-            
+
+            <div className="d-flex justify-content-center d-xl-none w-90 my-3 px-3">
+              <div className="input-group shadow-sm">
+                <span className="input-group-text bg-white border-end-0">
+                  <i className="bi bi-search"></i>
+                </span>
+
+                <input
+                  type="text"
+                  className="form-control border-start-0"
+                  placeholder="Search Products By Name"
+                  aria-label="Search"
+                />
+              </div>
+            </div>
+
+
             {/* Desktop logo */}
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo py-2">
-                
-                  <Link href="/">
-                    <Image
-                      src="/img/logo.png"
-                      alt=""
-                      width={200}
-                      height={60}
-                      style={{ objectFit: 'contain' }}
-                      priority
-                    />
-                  </Link>
+                <Link href="/">
+                  <Image
+                    src="/img/logo.png"
+                    alt=""
+                    width={200}
+                    height={60}
+                    style={{ objectFit: "contain" }}
+                    priority
+                  />
+                </Link>
               </div>
             </div>
-            
+
             {/* Desktop navigation */}
             <div className="col-lg-6 d-none d-xl-block">
               <nav className="header__menu">
@@ -196,66 +221,124 @@ export default function Navbar() {
                   <li className="mx-3">
                     <Link href="/">Home</Link>
                   </li>
-                  
-               <li className="mx-3">
+
+                  <li className="mx-3">
                     <Link href="/frontEnd/shop">Shop</Link>
                   </li>
-                  
+
                   <li className="mx-3">
                     <Link href="/frontEnd/about_us">About Us</Link>
                   </li>
                 </ul>
               </nav>
             </div>
-            
-            {/* Desktop cart */}
+
+            {/* Desktop cart - FIXED */}
             <div className="col-lg-3 d-none d-xl-block">
-              <div className="header__cart text-end">
-                <div className="header__cart__price">
-                  Cart Total: <span>{isClient ? CartItemsPrice : 0} Tk</span>
+              <div className="d-flex align-items-center justify-content-end">
+                <div className="position-relative me-3 border-0 pr-2">
+                  <button
+                    // onClick={onCartClick}
+                    className="cart-icon-btn d-flex align-items-center position-relative border-0 bg-transparent"
+                  >
+                    <FaShoppingCart size={20} />
+                    {isClient && (
+                      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style={{ background: '#7d0ba7' }}>
+                        {cartCount}
+                      </span>
+
+                    )}
+                  </button>
+                </div>
+                <div className="header__cart__price d-none d-lg-block">
+                  <span className="fw-bold">{isClient ? CartItemsPrice : 0} Tk</span>
                 </div>
               </div>
             </div>
           </div>
-          
+
           {/* Search and menu toggle */}
           <div className="d-xl-none humberger__open text-center my-2">
             <FaBars />
           </div>
-          <NavSearch footerData={footerData}/>
+          <NavSearch footerData={footerData} />
         </div>
       </header>
-      
+
       {/* Mobile collaps menu */}
-      <div className={`${style.collaps_div} ${isShowCollaps ? style.show_col_menu : style.hide_col_menu}`}>
-        <div className={`${style.collaps_cancel_div}`} onClick={handleCollapsCancel}>
+      <div
+        className={`${style.collaps_div} ${isShowCollaps ? style.show_col_menu : style.hide_col_menu
+          }`}
+      >
+        <div
+          className={`${style.collaps_cancel_div}`}
+          onClick={handleCollapsCancel}
+        >
           <ImCancelCircle size={22} />
         </div>
         <div className={`${style.menu_category_main}`}>
           <div className={`${style.menu_category_sub}`}>
-            <div className={`${style.menu_category_label_one} `} onClick={() => handleCollaps_menu('category')}> 
-              <span className={`${isShowCollapsMenu === 'category' ? style.collaps_border_one : ''}`}>Category</span> 
+            <div
+              className={`${style.menu_category_label_one} `}
+              onClick={() => handleCollaps_menu("category")}
+            >
+              <span
+                className={`${isShowCollapsMenu === "category"
+                  ? style.collaps_border_one
+                  : ""
+                  }`}
+              >
+                Category
+              </span>
             </div>
-            <div className={`${style.menu_category_label_two}`} onClick={() => handleCollaps_menu('menu')}>
-              <span className={`${isShowCollapsMenu === 'menu' ? style.collaps_border_two : ''}`}>Menu</span>
+            <div
+              className={`${style.menu_category_label_two}`}
+              onClick={() => handleCollaps_menu("menu")}
+            >
+              <span
+                className={`${isShowCollapsMenu === "menu"
+                  ? style.collaps_border_two
+                  : ""
+                  }`}
+              >
+                Menu
+              </span>
             </div>
           </div>
           <div className={`${style.collaps_category_list_div}`}>
-            {isShowCollapsMenu === 'category' && (
+            {isShowCollapsMenu === "category" && (
               <ul className={`my-3 ${style.collaps_category_list}`}>
-                <NavCategories onClick={handleCollapsCancel} isMobile={true} />
+                <NavCategories
+                  onClick={handleCollapsCancel}
+                  isMobile={true}
+                />
               </ul>
             )}
-            {isShowCollapsMenu === 'menu' && (
+            {isShowCollapsMenu === "menu" && (
               <ul className={`my-3 ${style.collaps_category_list}`}>
                 <li>
-                  <Link href='/' onClick={() => handleCollapsCancel()}>Home</Link>
+                  <Link
+                    href="/"
+                    onClick={() => handleCollapsCancel()}
+                  >
+                    Home
+                  </Link>
                 </li>
                 <li>
-                  <Link onClick={() => handleCollapsCancel()} href='/frontEnd/about_us'>About Us</Link>
+                  <Link
+                    onClick={() => handleCollapsCancel()}
+                    href="/frontEnd/about_us"
+                  >
+                    About Us
+                  </Link>
                 </li>
-                 <li>
-                  <Link onClick={() => handleCollapsCancel()} href='/frontEnd/shop'>Shop</Link>
+                <li>
+                  <Link
+                    onClick={() => handleCollapsCancel()}
+                    href="/frontEnd/shop"
+                  >
+                    Shop
+                  </Link>
                 </li>
               </ul>
             )}
