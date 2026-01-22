@@ -20,6 +20,7 @@ import NavSearch from "./navSearch/NavSearch";
 import NavCategories from "./components/NavCategories";
 import style from "./hero.module.css";
 import { useDispatch, useSelector } from "react-redux";
+import CartDrawer from "../components/CartDrawer";
 
 export default function Navbar({ onCartClick }) {
   const cartCount = useSelector((state) => state.cart.count);
@@ -32,7 +33,7 @@ export default function Navbar({ onCartClick }) {
   const [mobileQuery, setMobileQuery] = useState("");
   const [mobileResults, setMobileResults] = useState([]);
   const [mobileOpen, setMobileOpen] = useState(false);
-
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -97,7 +98,12 @@ export default function Navbar({ onCartClick }) {
   }, []);
 
 
-
+  const handleCloseDrawer = () => {
+    setIsCartDrawerOpen(false);
+  };
+  const handleClick = () => {
+    setIsCartDrawerOpen(true);
+  };
 
   return (
     <div className="position-relative">
@@ -184,7 +190,7 @@ export default function Navbar({ onCartClick }) {
 
               <div className="position-relative border-0 ">
                 <button
-                  // onClick={onCartClick}
+                  onClick={handleClick}
                   className="cart-icon-btn d-flex align-items-center position-relative border-0 bg-transparent"
                 >
                   <FaShoppingCart size={20} />
@@ -318,7 +324,7 @@ export default function Navbar({ onCartClick }) {
               <div className="d-flex align-items-center justify-content-end">
                 <div className="position-relative me-3 border-0 pr-2">
                   <button
-                    // onClick={onCartClick}
+                    onClick={handleClick}
                     className="cart-icon-btn d-flex align-items-center position-relative border-0 bg-transparent"
                   >
                     <FaShoppingCart size={20} />
@@ -425,6 +431,10 @@ export default function Navbar({ onCartClick }) {
           </div>
         </div>
       </div>
+      <CartDrawer
+        isOpen={isCartDrawerOpen}
+        onClose={handleCloseDrawer}
+      />
     </div>
   );
 }

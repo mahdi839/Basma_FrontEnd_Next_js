@@ -17,7 +17,6 @@ import useProductLogics from "@/app/hooks/useProductLogics";
 import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
 import VirtualizedRelatedProducts from "./VirtualizedRelatedProducts";
-import axios from "axios";
 
 export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
   const [imgUrl, setImgUrl] = useState("");
@@ -49,6 +48,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const router = useRouter();
+  
 
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
@@ -57,6 +57,14 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const images = product?.images || [];
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
   const cartItem = cartItems.find(item => product.id == item.id);
+
+ 
+  const handleCloseDrawer = () => {
+    setIsCartDrawerOpen(false);
+  };
+  const handleClick = () => {
+    setIsCartDrawerOpen(true);
+  };
 
   useEffect(() => {
     if (product) setIsLoading(false);
@@ -132,10 +140,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     );
 
     toast.success("Added to cart!");
-
-    if (type === "order") {
-      router.push("/frontEnd/checkout");
-    }
+    handleClick();
   }
 
   function handleSizeSelect(sizeId) {
@@ -171,10 +176,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     setSelectedProduct(null);
   }
 
-  const handleCloseDrawer = () => {
-    setIsCartDrawerOpen(false);
-  };
-
+ 
   function handleRelatedAddToCart(product, type, preQty) {
     const existing = cartItems.find((item) => item.id === product.id);
     if (existing) {
