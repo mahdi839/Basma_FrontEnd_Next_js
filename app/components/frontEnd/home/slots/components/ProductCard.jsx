@@ -1,144 +1,87 @@
-import React from "react";
+"use client"
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import './productCard.css';
+
 const ProductCard = React.memo(function ProductCard({
   slotProducts,
   slotLength,
   className
 }) {
+  const [selectedImage,setSelectedImage] = useState();
   let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-  return (
-    <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
-      <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
-        <div
-          className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative"
-        >
-          {/* Product Image */}
-          <div
-            className="position-relative overflow-hidden product-image-container"
-          >
 
+  function handleShowImage(colorImage){
+     setSelectedImage(colorImage)
+  }
+  
+  return (
+    <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
+      <div className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative">
+        {/* Wrap only the content that should be clickable */}
+        <Link href={`/frontEnd/product-page/${slotProducts?.id}`} style={{ textDecoration: 'none' }}>
+          {/* Product Image - This is now properly clickable */}
+          <div className="position-relative overflow-hidden product-image-container">
             <Image
               width={500}
               height={400}
               src={
-                slotProducts?.images?.[0]?.image
-                  ? baseUrl + slotProducts?.images[0]?.image
-                  : slotProducts?.image ? baseUrl + slotProducts?.image : ""
+                   selectedImage
+                  ? baseUrl + selectedImage
+                  : slotProducts?.images?.[0]?.image ? baseUrl + slotProducts?.images[0]?.image : ""
               }
-              className="position-absolute w-100 h-100 object-fit-cover p-0 p-md-3 product-image"
-              alt={slotProducts?.title}
+              className="product-image p-0 p-md-3"
+              alt={slotProducts?.title || "Product"}
               priority={false}
             />
-
-            {/* Product Actions */}
-            {/* <div
-            className="quick-add-btn product-actions position-absolute d-flex flex-column"
-          >
-            <Link href={`/frontEnd/product-page/${slotProducts?.id}`}>
-              <button
-                className="rounded-circle mb-2 p-2 action-btn d-flex justify-content-center"
-              >
-                <CiSearch className="fs-5" />
-              </button>
-            </Link>
-          </div> */}
           </div>
 
           {/* Product Body */}
           <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
             <p className="mb-1">
-              <Link
-                href={`/frontEnd/product-page/${slotProducts?.id}`}
-                className="text-decoration-none text-dark fw-bold"
-              >
+              <span className="text-decoration-none text-dark fw-bold">
                 {slotProducts?.title}
-              </Link>
+              </span>
             </p>
             <div className="d-flex justify-content-between align-items-center mt-1 mt-md-2">
               <div>
-                <span
-                  className="fw-bold product-price"
-                >
+                <span className="fw-bold product-price">
                   {`${slotProducts?.price ? "৳" : ""} ${slotProducts?.price ?? ""}`}
                 </span>
               </div>
             </div>
           </div>
+        </Link>
 
-          {/* <div
-          className="card-footer bg-transparent border-0 pt-0 add-to-cart-footer d-lg-none d-block px-2 px-md-3"
-        >
-          {showSelectOptions ? (
-            <button
-              type="button"
-              className="btn-grad w-100 rounded-0 select-options-btn-sm py-1"
-              onClick={() => handleOpenModal(slotProducts)}
-            >
-              Select options
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn-grad w-100 rounded-0 add-to-cart-btn-sm py-1"
-              onClick={() => handleAddToCart(slotProducts)}
-            >
-              Add to cart
-            </button>
-          )}
-
-        </div> */}
-
-          {/* <div
-          className="card-footer bg-transparent border-0 pt-0 pb-3 px-3 add-to-cart-footer-lg d-none d-lg-block"
-        >
-          {showSelectOptions ? (
-            <button
-              type="button"
-              className="btn-grad w-100 rounded-0 select-options-btn-sm py-1"
-              onClick={() => handleOpenModal(slotProducts)}
-            >
-              Select options
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn-grad w-100 rounded-0 add-to-cart-btn-sm py-1"
-              onClick={() => handleAddToCart(slotProducts)}
-            >
-              Add to cart
-            </button>
-          )}
-
-        </div> */}
-          {slotProducts?.colors?.length > 0 && (
-            <div className="product-color-wrapper">
-              {slotProducts?.colors?.map((color, index) => (
-                <div key={index} className="product_color_image_div">
-                  <Image
-                    width={30}
-                    height={30}
-                    src={baseUrl + color?.image}
-                    alt={slotProducts?.title}
-                    className="h-100 w-100"
-                  />
-                </div>
-              ))}
-            </div>
-
-          )}
-        </div>
-        {slotProducts.status === 'prebook' && (
-          <div
-            className="position-absolute  m-2 px-3 py-1  shadow-sm product_status_badge"
-            style={{ fontSize: "12px", letterSpacing: "0.5px" }}
-          >
-            PRE-BOOK
+        {/* Color swatches - outside Link if you don't want them clickable */}
+        {slotProducts?.colors?.length > 0 && (
+          <div className="product-color-wrapper">
+            {slotProducts?.colors?.map((color, index) => (
+              <div key={index} className="product_color_image_div" onClick={()=>handleShowImage(color?.image)}>
+                <Image
+                  width={30}
+                  height={30}
+                  src={baseUrl + color?.image}
+                  alt={slotProducts?.title || "Color variant"}
+                  className="h-100 w-100"
+                />
+              </div>
+            ))}
           </div>
         )}
       </div>
-    </Link>
+
+      {/* Status badge */}
+      {slotProducts?.status === 'prebook' && (
+        <div
+          className="position-absolute m-2 px-3 py-1 shadow-sm product_status_badge"
+          style={{ fontSize: "12px", letterSpacing: "0.5px" }}
+        >
+          PRE-BOOK
+        </div>
+      )}
+    </div>
   );
 });
 

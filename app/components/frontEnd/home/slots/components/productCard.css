@@ -1,8 +1,12 @@
+/* Product Card Color Wrapper */
 .product-color-wrapper {
     display: flex;
     gap: 6px;
     align-items: center;
     margin-left: 15px;
+    position: relative;
+    z-index: 2;
+    cursor: pointer;
 }
 
 .product_color_image_div {
@@ -13,6 +17,48 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Product Image Container - CRITICAL FIX */
+.product-image-container {
+  position: relative;
+  padding-top: 100%;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Product Image - CRITICAL FIX */
+.product-image {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 0.3s ease !important;
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Ensure the Link wrapper is fully clickable */
+.product-card > div > a {
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* Product card base styles */
+.product-card {
+  position: relative;
+}
+
+/* Ensure pseudo-elements don't block clicks */
+.product-card::before,
+.product-card::after {
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {
