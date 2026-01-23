@@ -351,28 +351,32 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                             alt="product thumbnail"
                             width={80}
                             height={80}
+                            style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
                           />
                         </button>
                       </div>
                     ))}
                   </Slider>
                 ) : (
-                  <div className="d-flex gap-2">
+                  <div className="d-flex gap-2 flex-wrap">
                     {images.map((img) => (
-                      <button
-                        key={img.id}
-                        className={`thumbnail-btn ${
-                          imgUrl === `${baseUrl}${img.image}` ? "active" : ""
-                        }`}
-                        onClick={() => handleThumbClick(img.id)}
-                      >
-                        <Image
-                          src={baseUrl + img.image}
-                          alt="product thumbnail"
-                          width={80}
-                          height={80}
-                        />
-                      </button>
+                      <div key={img.id} style={{ flex: '0 0 auto', width: '80px' }}>
+                        <button
+                          className={`thumbnail-btn ${
+                            imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                          }`}
+                          onClick={() => handleThumbClick(img.id)}
+                          style={{ width: '100%', height: '80px', padding: 0 }}
+                        >
+                          <Image
+                            src={baseUrl + img.image}
+                            alt="product thumbnail"
+                            width={80}
+                            height={80}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
