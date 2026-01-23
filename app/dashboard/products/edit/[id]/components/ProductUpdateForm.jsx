@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FaTrash, FaPlus, FaChevronDown, FaChevronUp, FaImage, FaPalette, FaRuler, FaTags, FaQuestionCircle } from "react-icons/fa";
 import CreateCategory from "./updateFormComponents/CreateCategory";
 import CreateSize from "./updateFormComponents/CreateSize";
 import './productEdit.css';
@@ -347,7 +346,6 @@ export default function ProductUpdateForm({
         {/* Main Form - Left Side */}
         <div className="col-lg-8">
           <div className="d-flex align-items-center mb-4">
-
           </div>
 
           <form onSubmit={handleSubmit} className="product-form">

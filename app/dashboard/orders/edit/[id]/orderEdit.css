@@ -1,0 +1,46 @@
+/* app/dashboard/orders/edit/[id]/orderEdit.css */
+
+.hover-shadow {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.color-image-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.color-image-selector img {
+  transition: all 0.3s ease;
+}
+
+.color-image-selector:hover img {
+  opacity: 0.8;
+}
+
+/* Active color indicator */
+.color-active {
+  position: relative;
+}
+
+.color-active::after {
+  content: "✓";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  background: rgba(13, 110, 253, 0.9);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}

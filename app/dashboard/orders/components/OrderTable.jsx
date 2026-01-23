@@ -340,13 +340,19 @@ export default function OrderTable({
                     </td>
                     <td>
                       <p>
-                        <strong>Shipping Cost:</strong> {order.shipping_cost}
-                      </p>
-                      <p>
                         <strong>Payment Method:</strong> {order.payment_method}
                       </p>
                       <p>
+                        <strong>Shipping Cost:</strong> {order.shipping_cost}
+                      </p>
+                      <p >
+                        <strong>Advance Payment:</strong> {order?.advance_payment ?? 0}
+                      </p>
+                      <p>
                         <strong>Total:</strong> {order.total} TK
+                      </p>
+                      <p>
+                        <strong>Total Due:</strong> {order?.total - order?.advance_payment ?? 0} TK
                       </p>
                     </td>
                     <td>
@@ -393,7 +399,14 @@ export default function OrderTable({
                     </td>
 
                     <td className="d-flex gap-2">
-                      {/* <button className="btn btn-sm btn-primary">View</button> */}
+                      <Link href={`/dashboard/orders/edit/${order.id}`}>
+                        <button
+                          className="btn btn-sm btn-warning"
+                          title="Edit Order"
+                        >
+                          <i className="bi bi-pencil"></i> Edit
+                        </button>
+                      </Link>
                       <Link href={`/dashboard/orders/invoice/${order.id}`}>
                         <button
                           className="order_print_btn"
@@ -484,13 +497,19 @@ export default function OrderTable({
                     <div className="mb-3">
                       <h6 className="border-bottom pb-2">Order Summary</h6>
                       <p className="mb-1">
+                        <strong>Payment Method:</strong> {order.payment_method}
+                      </p>
+                      <p className="mb-1">
                         <strong>Shipping Cost:</strong> {order.shipping_cost}
                       </p>
                       <p className="mb-1">
-                        <strong>Payment Method:</strong> {order.payment_method}
+                        <strong>Advance Payment:</strong> {order?.advance_payment ?? 0}
                       </p>
                       <p className="mb-0">
                         <strong>Total:</strong> {order.total} TK
+                      </p>
+                      <p className="mb-0">
+                        <strong>Total Due:</strong> {order?.total - order?.advance_payment ?? 0} TK
                       </p>
                     </div>
 
