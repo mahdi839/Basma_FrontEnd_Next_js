@@ -240,9 +240,13 @@ export default function InvoicePage() {
                                             <td className="fw-semibold">Shipping Cost:</td>
                                             <td className="text-end">{order.shipping_cost} TK</td>
                                         </tr>
+                                        <tr>
+                                            <td className="fw-semibold">Advance Payment:</td>
+                                            <td className="text-end">{order?.advance_payment??0} TK</td>
+                                        </tr>
                                         <tr className="table-active">
-                                            <td className="fw-bold">Total Amount:</td>
-                                            <td className="text-end fw-bold">{order.total} TK</td>
+                                            <td className="fw-bold">Total Due:</td>
+                                            <td className="text-end fw-bold">{order.total - order?.advance_payment??0} TK</td>
                                         </tr>
                                     </tbody>
                                 </table>
