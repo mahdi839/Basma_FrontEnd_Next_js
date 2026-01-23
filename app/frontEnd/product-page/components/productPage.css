@@ -29,6 +29,7 @@
   display: flex;
   gap: 10px;
   padding: 10px 0;
+  overflow-x: auto;
   scrollbar-width: thin;
   scrollbar-color: #e0e0e0 transparent;
 }
@@ -781,5 +782,65 @@
   .thumbnails-container .slick-prev:before,
   .thumbnails-container .slick-next:before {
     font-size: 16px;
+  }
+}
+/* Custom Slick Arrows */
+.custom-slick-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-slick-arrow:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.custom-slick-arrow.custom-slick-prev {
+  left: -15px;
+}
+
+.custom-slick-arrow.custom-slick-next {
+  right: -15px;
+}
+
+.custom-slick-arrow svg {
+  font-size: 14px;
+}
+
+/* Hide default slick arrows since we're using custom ones */
+.thumbnails-container .slick-prev:before,
+.thumbnails-container .slick-next:before {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .custom-slick-arrow {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .custom-slick-arrow svg {
+    font-size: 12px;
+  }
+  
+  .custom-slick-arrow.custom-slick-prev {
+    left: -10px;
+  }
+  
+  .custom-slick-arrow.custom-slick-next {
+    right: -10px;
   }
 }

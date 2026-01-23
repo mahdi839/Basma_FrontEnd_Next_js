@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { FaCartPlus, FaFacebookMessenger, FaWhatsapp } from "react-icons/fa";
+import { FaCartPlus, FaChevronLeft, FaChevronRight, FaFacebookMessenger, FaWhatsapp } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { SiFoursquarecityguide } from "react-icons/si";
 import { toast } from "react-toastify";
@@ -268,30 +268,55 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
 
   const showCarousel = images.length >= 4;
-  const thumbSliderSettings = {
-    dots: false,
-    arrows: true,
-    infinite: false,
-    speed: 300,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    swipeToSlide: true,
-    responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 3,
-        },
-      },
-    ],
-  };
+  // Add these arrow components (copy from your FeatureClient)
+function NextArrow({ onClick }) {
+  return (
+    <button
+      className="custom-slick-arrow custom-slick-next"
+      onClick={onClick}
+    >
+      <FaChevronRight />
+    </button>
+  );
+}
 
+function PrevArrow({ onClick }) {
+  return (
+    <button
+      className="custom-slick-arrow custom-slick-prev"
+      onClick={onClick}
+    >
+      <FaChevronLeft />
+    </button>
+  );
+}
+
+// Update your thumbSliderSettings
+const thumbSliderSettings = {
+  dots: false,
+  arrows: true,
+  infinite: false,
+  speed: 300,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  swipeToSlide: true,
+  nextArrow: <NextArrow />,  // Add this
+  prevArrow: <PrevArrow />,  // Add this
+  responsive: [
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 3,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 3,
+      },
+    },
+  ],
+};
 
   return (
     <div className="container product-page-container">
