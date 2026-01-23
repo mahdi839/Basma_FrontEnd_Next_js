@@ -18,6 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
 import VirtualizedRelatedProducts from "./VirtualizedRelatedProducts";
 import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
   const [imgUrl, setImgUrl] = useState("");
@@ -28,6 +30,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [modalSelectedColor, setModalSelectedColor] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [loadingSizeGuide, setLoadingSizeGuide] = useState(false);
+  
   const {
     handleSelectedColor,
     selectedColor,
@@ -45,11 +48,11 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
   const [sizeGuideData, setSizeGuideData] = useState(null);
+  
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const router = useRouter();
-
 
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
@@ -59,10 +62,10 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
   const cartItem = cartItems.find(item => product.id == item.id);
 
-
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
+  
   const handleClick = () => {
     setIsCartDrawerOpen(true);
   };
@@ -145,7 +148,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   }
 
   function handleSizeSelect(sizeId) {
-    setRelatedProdSize(sizeId);
+    setModalSelectedSize(sizeId);
   }
 
   async function handleOpenModal(product) {
@@ -153,7 +156,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     setModalSelectedColor(null);
     setIsModalOpen(true);
     try {
-      // Fetch full product details with sizes and colors
       const response = await fetch(
         `${baseUrl}api/products/${product.id}`,
         { cache: 'no-store' }
@@ -176,7 +178,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     setIsModalOpen(false);
     setSelectedProduct(null);
   }
-
 
   function handleRelatedAddToCart(product, type, preQty) {
     const existing = cartItems.find((item) => item.id === product.id);
@@ -250,73 +251,63 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   }
 
   function fetchSizeGuideData() {
-    // setLoadingSizeGuide(true);
-    // try {
-    //   const response = await axios.get(`${baseUrl}api/productSizeGuideType/${product.id}`);
-    //   setSizeGuideData(response.data);
     setShowSizeGuide(true);
-    // } catch (err) {
-    //   console.log('Error fetching size guide:', err);
-    //   toast.error('Failed to load size guide');
-    // } finally {
-    //   setLoadingSizeGuide(false);
-    // }
   }
 
-  // Also update the sizeGuideImage logic:
   const sizeGuideImage = "/img/size_guide/shoe.webp";
 
+  // Arrow components for slider
+  function NextArrow({ onClick }) {
+    return (
+      <button
+        className="custom-slick-arrow custom-slick-next"
+        onClick={onClick}
+      >
+        <FaChevronRight />
+      </button>
+    );
+  }
 
-  const showCarousel = images.length >= 4;
-  // Add these arrow components (copy from your FeatureClient)
-function NextArrow({ onClick }) {
-  return (
-    <button
-      className="custom-slick-arrow custom-slick-next"
-      onClick={onClick}
-    >
-      <FaChevronRight />
-    </button>
-  );
-}
+  function PrevArrow({ onClick }) {
+    return (
+      <button
+        className="custom-slick-arrow custom-slick-prev"
+        onClick={onClick}
+      >
+        <FaChevronLeft />
+      </button>
+    );
+  }
 
-function PrevArrow({ onClick }) {
-  return (
-    <button
-      className="custom-slick-arrow custom-slick-prev"
-      onClick={onClick}
-    >
-      <FaChevronLeft />
-    </button>
-  );
-}
-
-// Update your thumbSliderSettings
-const thumbSliderSettings = {
-  dots: false,
-  arrows: true,
-  infinite: false,
-  speed: 300,
-  slidesToShow: 4,
-  slidesToScroll: 1,
-  swipeToSlide: true,
-  nextArrow: <NextArrow />,  // Add this
-  prevArrow: <PrevArrow />,  // Add this
-  responsive: [
-    {
-      breakpoint: 768,
-      settings: {
-        slidesToShow: 3,
+  // Slider settings for thumbnails
+  const thumbSliderSettings = {
+    dots: false,
+    arrows: true,
+    infinite: images.length > 4,
+    speed: 300,
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    swipeToSlide: true,
+    pauseOnHover: true,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
       },
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 3,
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
       },
-    },
-  ],
-};
+    ],
+  };
 
   return (
     <div className="container product-page-container">
@@ -344,14 +335,15 @@ const thumbSliderSettings = {
             </div>
             {images?.length > 1 && (
               <div className="thumbnails-container">
-                {images.length > 4 ? (
+                {images.length >= 4 ? (
                   <Slider {...thumbSliderSettings}>
-                    {images.map((img, index) => (
-                      <div key={img.id}>
+                    {images.map((img) => (
+                      <div key={img.id} className="px-1">
                         <button
                           type="button"
-                          className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
-                            }`}
+                          className={`thumbnail-btn ${
+                            imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                          }`}
                           onClick={() => handleThumbClick(img.id)}
                         >
                           <Image
@@ -365,25 +357,27 @@ const thumbSliderSettings = {
                     ))}
                   </Slider>
                 ) : (
-                  images.map((img, index) => (
-                    <button
-                      key={img.id}
-                      className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                  <div className="d-flex gap-2">
+                    {images.map((img) => (
+                      <button
+                        key={img.id}
+                        className={`thumbnail-btn ${
+                          imgUrl === `${baseUrl}${img.image}` ? "active" : ""
                         }`}
-                      onClick={() => handleThumbClick(img.id)}
-                    >
-                      <Image
-                        src={baseUrl + img.image}
-                        alt="product thumbnail"
-                        width={80}
-                        height={80}
-                      />
-                    </button>
-                  ))
+                        onClick={() => handleThumbClick(img.id)}
+                      >
+                        <Image
+                          src={baseUrl + img.image}
+                          alt="product thumbnail"
+                          width={80}
+                          height={80}
+                        />
+                      </button>
+                    ))}
+                  </div>
                 )}
               </div>
             )}
-
           </div>
         </div>
 
@@ -481,13 +475,11 @@ const thumbSliderSettings = {
               <button
                 className="btn btn-sm"
                 onClick={fetchSizeGuideData}
-              // disabled={loadingSizeGuide}
               >
                 <SiFoursquarecityguide />
-                {/* {loadingSizeGuide ? 'Loading...' : 'Size Guide'} */}Size Guide
+                Size Guide
               </button>
             </div>
-
 
             {/* Action Buttons */}
             <div className="action-buttons-container">
@@ -647,8 +639,6 @@ const thumbSliderSettings = {
           </div>
         </div>
       )}
-
-
 
       {/* VIRTUALIZED Related Products with Infinite Scroll */}
       <VirtualizedRelatedProducts
