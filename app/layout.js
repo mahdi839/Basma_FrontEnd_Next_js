@@ -8,7 +8,8 @@ import { ToastContainer } from "react-toastify";
 import "react-medium-image-zoom/dist/styles.css";
 import Bootstrap_js from "./components/bootstrapJs/Bootstrap_js";
 import Providers from "./Providers";
-
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 export const metadata = {
   title: "Eyara Fashion",

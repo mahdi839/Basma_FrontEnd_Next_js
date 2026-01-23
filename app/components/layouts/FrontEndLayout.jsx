@@ -4,6 +4,7 @@ import Footer from "../footer/footer";
 import CartIcon from "../frontEnd/components/CartIcon";
 import ScrollToTop from "../frontEnd/scrollToTop/ScrollToTop";
 
+
 export default function FrontEndLayout({ children }) {
   return (
     <>
