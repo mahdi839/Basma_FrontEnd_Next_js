@@ -63,7 +63,7 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
                       onChange={(e) =>
                         handleSizeChange(index, "price", e.target.value)
                       }
-                      required
+                      
                     />
                   </div>
                 </div>

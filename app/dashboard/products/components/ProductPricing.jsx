@@ -40,7 +40,7 @@ export default function ProductPricing({ product, onShowVariants, variant = "des
   // Desktop view
   return (
     <div className="d-flex flex-column gap-1">
-      {hasSizes ? (
+      {hasSizes && (
         <>
           {product.sizes.slice(0, 3).map((size) => (
             <div key={size.id} className="d-flex align-items-center gap-1 small">
@@ -49,7 +49,7 @@ export default function ProductPricing({ product, onShowVariants, variant = "des
               </span>
               <FaArrowRight size={10} className="text-muted" />
               <span className="text-success fw-semibold">
-                ৳{size.pivot?.price || size.price}
+               {size.pivot?.price || size.price && "৳"}{size.pivot?.price || size.price}
               </span>
               <span className="text-muted">({size.pivot?.stock || 0} stock)</span>
             </div>
@@ -63,15 +63,16 @@ export default function ProductPricing({ product, onShowVariants, variant = "des
             </button>
           )}
         </>
-      ) : basePrice ? (
+      )}  
+      {
+        basePrice &&(
         <div>
           <span className="badge bg-success" style={{ width: 'fit-content' }}>
             Base Price: ৳{basePrice}
           </span>
         </div>
-      ) : (
-        <span className="text-muted small">No pricing set</span>
-      )}
+      ) 
+      }
     </div>
   );
 }
