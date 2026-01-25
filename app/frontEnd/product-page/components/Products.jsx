@@ -30,7 +30,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [modalSelectedColor, setModalSelectedColor] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [loadingSizeGuide, setLoadingSizeGuide] = useState(false);
-  
+
   const {
     handleSelectedColor,
     selectedColor,
@@ -48,7 +48,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
   const [sizeGuideData, setSizeGuideData] = useState(null);
-  
+
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
@@ -64,10 +64,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
-  };
-  
-  const handleClick = () => {
-    setIsCartDrawerOpen(true);
   };
 
   useEffect(() => {
@@ -143,8 +139,15 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       })
     );
 
+    if (type === 'buy') {
+      setIsDirectBuy(true);
+      setIsCartDrawerOpen(true);
+    }
+    if (type === 'add') {
+      setIsDirectBuy(false);
+      setIsCartDrawerOpen(true);
+    }
     toast.success("Added to cart!");
-    handleClick();
   }
 
   function handleSizeSelect(sizeId) {
@@ -242,7 +245,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     if (type === "buy") {
       setIsCartDrawerOpen(true);
       setIsDirectBuy(true);
-      handleCloseModal();
     }
   }
 
@@ -341,9 +343,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                       <div key={img.id} className="px-1">
                         <button
                           type="button"
-                          className={`thumbnail-btn ${
-                            imgUrl === `${baseUrl}${img.image}` ? "active" : ""
-                          }`}
+                          className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                            }`}
                           onClick={() => handleThumbClick(img.id)}
                         >
                           <Image
@@ -362,9 +363,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                     {images.map((img) => (
                       <div key={img.id} style={{ flex: '0 0 auto', width: '80px' }}>
                         <button
-                          className={`thumbnail-btn ${
-                            imgUrl === `${baseUrl}${img.image}` ? "active" : ""
-                          }`}
+                          className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                            }`}
                           onClick={() => handleThumbClick(img.id)}
                           style={{ width: '100%', height: '80px', padding: 0 }}
                         >
@@ -514,6 +514,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               >
                 <FaCartPlus size={16} />
                 Add to Cart
+              </button>
+              <button
+                className="single-prod-action-btn btn-grad"
+                onClick={() => handleAddToCart("buy")}
+              >
+                <FaCartPlus size={16} />
+                Buy Now
               </button>
             </div>
 

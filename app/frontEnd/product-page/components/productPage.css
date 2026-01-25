@@ -112,12 +112,6 @@
   flex-wrap: wrap;
 }
 
-.product-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--primary-color);
-}
-
 .product-original-price {
   font-size: 1.125rem;
   color: #999;
@@ -465,11 +459,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .product-title {
-    font-size: 1.25rem;
-  }
-  
-  .product-price {
-    font-size: 1.25rem;
+    font-size: 0.8rem;
   }
   
   .action-btn, .social-btn {

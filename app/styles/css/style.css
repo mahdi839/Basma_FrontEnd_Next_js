@@ -2254,8 +2254,6 @@ table tr td {
 }
 
 
-
-
 /* Responsive Design */
 @media (max-width: 576px) {
 	.product_status_badge {
@@ -2324,7 +2322,7 @@ table tr td {
 @media (max-width: 768px) {
 
 	.product-price {
-		font-size: 0.8rem;
+		font-size: 0.9rem;
 	}
 
 	.tab-btn {
