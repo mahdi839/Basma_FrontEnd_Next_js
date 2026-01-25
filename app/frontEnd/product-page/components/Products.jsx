@@ -343,16 +343,24 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                       <div key={img.id} className="px-1">
                         <button
                           type="button"
-                          className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                          className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
                             }`}
                           onClick={() => handleThumbClick(img.id)}
+                          style={{ 
+                            padding: 0, 
+                            overflow: 'hidden',
+                            background: '#f8f9fa',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                          }}
                         >
                           <Image
                             src={baseUrl + img.image}
                             alt="product thumbnail"
                             width={80}
                             height={80}
-                            style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                           />
                         </button>
                       </div>
@@ -363,17 +371,26 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                     {images.map((img) => (
                       <div key={img.id} style={{ flex: '0 0 auto', width: '80px' }}>
                         <button
-                          className={`thumbnail-btn ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                          className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
                             }`}
                           onClick={() => handleThumbClick(img.id)}
-                          style={{ width: '100%', height: '80px', padding: 0 }}
+                          style={{ 
+                            width: '100%', 
+                            height: '80px', 
+                            padding: 0,
+                            background: '#f8f9fa',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            overflow: 'hidden'
+                          }}
                         >
                           <Image
                             src={baseUrl + img.image}
                             alt="product thumbnail"
                             width={80}
                             height={80}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                           />
                         </button>
                       </div>

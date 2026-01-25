@@ -59,11 +59,15 @@
   transition: all 0.2s ease;
 }
 
-.thumbnail-btn:hover {
+.sub-img{
+   padding: 2px;
+}
+
+.sub-img:hover {
   border-color: var(--primary-color);
 }
 
-.thumbnail-btn.active {
+.sub-img.active {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 2px rgba(125, 11, 167, 0.1);
 }
@@ -834,3 +838,4 @@
     right: -10px;
   }
 }
+
