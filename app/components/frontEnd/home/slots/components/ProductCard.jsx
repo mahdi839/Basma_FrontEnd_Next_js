@@ -18,7 +18,7 @@ const ProductCard = React.memo(function ProductCard({
   function handleShowImage(index, colorImage) {
     setSelectedImage({ url: colorImage, index })
   }
-
+console.log(slotProducts)
   return (
     <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
       <div className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative">
