@@ -18,7 +18,16 @@ const ProductCard = React.memo(function ProductCard({
   function handleShowImage(index, colorImage) {
     setSelectedImage({ url: colorImage, index })
   }
-console.log(slotProducts)
+
+
+  const originalPrice = parseInt(slotProducts?.price, 10) || 0;
+  const discount = parseInt(slotProducts?.discount, 10) || 0;
+
+  const discountedPrice =
+    originalPrice && discount
+      ? Math.round(originalPrice - (originalPrice * discount) / 100)
+      : originalPrice;
+
   return (
     <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
       <div className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative">
@@ -51,10 +60,16 @@ console.log(slotProducts)
                 {slotProducts?.title}
               </span>
             </p>
-            <div className="d-flex justify-content-between align-items-center mt-1 mt-md-2">
+            <div className="d-flex gap-3 align-items-center mt-1 mt-md-2">
+              {slotProducts?.discount && (
+                <div className="product-price text-muted text-decoration-line-through">
+                  ৳ {slotProducts?.price}
+                </div>
+              )}
+
               <div>
-                <span className="fw-bold product-price">
-                  {`${slotProducts?.price ? "৳" : ""} ${slotProducts?.price ?? ""}`}
+                <span className="fw-bold product-price ">
+                  ৳ {discountedPrice}
                 </span>
               </div>
             </div>
@@ -82,8 +97,7 @@ console.log(slotProducts)
       {/* Status badge */}
       {slotProducts?.status === 'prebook' && (
         <div
-          className="position-absolute m-2 px-3 py-1 shadow-sm product_status_badge"
-          style={{ fontSize: "12px", letterSpacing: "0.5px" }}
+          className="position-absolute m-2 px-2 px-md-3 py-1 shadow-sm product_status_badge"
         >
           PRE-BOOK
         </div>

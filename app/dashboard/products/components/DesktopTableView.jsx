@@ -78,8 +78,11 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                                 {truncateText(product.short_description, 60)}
                                             </small>
                                         )}
-                                        <small className="text-muted">
+                                        <small className="text-muted d-block">
                                             Created: {formatCreatedAt(product.created_at)}
+                                        </small>
+                                         <small className="text-muted">
+                                            Discount: {product.discount}
                                         </small>
                                         <div className="mt-1">
                                             <span className="badge bg-secondary">ID: {product.id}</span>
