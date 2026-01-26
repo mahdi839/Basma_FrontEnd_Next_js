@@ -426,7 +426,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             {displayPrice && (
               <div className="price-section">
                 <div className="product-price">
-                  ৳ {displayPrice}
+                  ৳{displayPrice * preQty??0}
                 </div>
                 {product?.original_price && product.original_price > displayPrice && (
                   <div className="product-original-price">
