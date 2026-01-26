@@ -343,7 +343,7 @@ export default function ProductUploadForm() {
                     <div className="col-md-6">
                       <label className="form-label fw-semibold text-gray-700">Discount</label>
                       <input
-                        type="text"
+                        type="number"
                         className="form-control border-gray-300 focus-border-primary"
                         value={formData.discount}
                         onChange={(e) =>
