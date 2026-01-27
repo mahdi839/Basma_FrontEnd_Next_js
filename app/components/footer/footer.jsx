@@ -7,16 +7,18 @@ import {
   FaYoutube,
   FaWhatsappSquare,
   FaPhone,
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaChevronRight,
+  FaShieldAlt,
+  FaTruck,
+  FaCreditCard,
+  FaHeadset
 } from "react-icons/fa";
-import { CiLocationOn, CiMail } from "react-icons/ci";
-
+import './footer.css'
 export default async function Footer() {
   let data = {};
   let socialData = {};
-
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.endsWith("/")
-    ? process.env.NEXT_PUBLIC_BACKEND_URL.slice(0, -1)
-    : process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
   try {
     const footerResponse = await fetch(
@@ -60,178 +62,179 @@ export default async function Footer() {
 
   const currentYear = new Date().getFullYear();
 
+  const footerLinks = {
+    shop: [
+      { name: "All Products", href: "/products" },
+      { name: "New Arrivals", href: "/products/new" },
+      { name: "Best Sellers", href: "/products/best-sellers" },
+      { name: "Sale", href: "/products/sale" },
+      { name: "Gift Cards", href: "/gift-cards" }
+    ],
+    support: [
+      { name: "Contact Us", href: "/contact" },
+      { name: "FAQ", href: "/faq" },
+      { name: "Shipping Info", href: "/shipping" },
+      { name: "Returns & Exchanges", href: "/returns" },
+      { name: "Size Guide", href: "/size-guide" }
+    ],
+    company: [
+      { name: "About Us", href: "/about" },
+      { name: "Our Story", href: "/story" },
+      { name: "Careers", href: "/careers" },
+      { name: "Blog", href: "/blog" },
+      { name: "Store Locator", href: "/stores" }
+    ],
+    legal: [
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms of Service", href: "/terms" },
+      { name: "Cookie Policy", href: "/cookies" },
+      { name: "Accessibility", href: "/accessibility" },
+      { name: "Sitemap", href: "/sitemap" }
+    ]
+  };
+
   return (
-    <footer
-      className="footer_bg position-relative overflow-hidden "
-      style={{ paddingTop: "120px" }} // padding fixed so content stays below SVG
-    >
-
-      <div className="container position-relative py-4">
+    <footer className="footer_bg position-relative overflow-hidden pt-5">
+     
+      {/* Main Footer Content */}
+      <div className="container py-4">
         <div className="row g-4">
-          {/* Logo Section */}
-          <div className="col-md-6 col-lg-3 mb-1 mb-lg-4 mb-lg-0 footer_logo_section">
-            <div className="logo_section_mobile_border">
-              <div className="rounded footer_logo_div pb-2">
-                <Link href="/">
-                  <Image
-                    src="/img/logo.png"
-                    alt=""
-                    width={200}
-                    height={60}
-                    style={{ objectFit: 'contain' }}
-                    priority
-                  />
-                </Link>
-              </div>
-
-
-              <div>
-                {data.company_description ?? ''}
-              </div>
-
-
-
-              <div className="d-flex gap-3">
+          {/* Brand Column */}
+          <div className="col-lg-4 col-md-6">
+            <div className="footer-box rounded-4 p-4 h-100">
+              <Link href="/" className="d-block mb-3">
+                <Image
+                  src="/img/logo.png"
+                  alt={data?.company_name || "Eyara Fashion"}
+                  width={180}
+                  height={50}
+                  style={{ objectFit: 'contain' }}
+                  priority
+                  className="img-fluid"
+                />
+              </Link>
+              
+              <p className="text-white mb-4 small">
+                {data.company_description || "Premium fashion for the modern lifestyle. Quality products with exceptional customer service."}
+              </p>
+              
+              {/* Social Links */}
+              <div className="d-flex gap-2 mb-4">
                 {socialData?.facebook && (
-                  <Link href={socialData.facebook} className="text-white fs-5">
-                    <FaFacebook />
-                  </Link>
-                )}
-                {socialData?.instagram && (
-                  <Link href={socialData.instagram} className="text-white fs-5">
-                    <FaInstagram />
-                  </Link>
-                )}
-                {data?.company_phone && (
-                  <a
-                    href={`https://wa.me/880${data.company_phone}`}
+                  <a 
+                    href={socialData.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-white fs-5"
+                    className="social-btn btn-sm rounded-circle p-2"
                   >
-                    <FaWhatsappSquare />
+                    <FaFacebook className="text-white" />
+                  </a>
+                )}
+                {socialData?.instagram && (
+                  <a 
+                    href={socialData.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-btn btn-sm rounded-circle p-2"
+                  >
+                    <FaInstagram className="text-white" />
                   </a>
                 )}
                 {socialData?.youtube && (
-                  <Link href={socialData.youtube} className="text-white fs-5">
-                    <FaYoutube />
-                  </Link>
+                  <a 
+                    href={socialData.youtube}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-btn btn-sm rounded-circle p-2"
+                  >
+                    <FaYoutube className="text-white" />
+                  </a>
+                )}
+                {data?.company_phone && (
+                  <a 
+                    href={`https://wa.me/880${data.company_phone}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="social-btn btn-sm rounded-circle p-2"
+                  >
+                    <FaWhatsappSquare className="text-white" />
+                  </a>
+                )}
+              </div>
+              
+              {/* Contact Info Box */}
+              <div className="contact-box rounded-3 p-3">
+                <h6 className="text-white mb-3 fw-bold">Contact Info</h6>
+                {data?.company_phone && (
+                  <div className="d-flex align-items-center mb-2">
+                    <FaPhone className="text-white me-2 fs-6" />
+                    <a href={`tel:${data.company_phone}`} className="text-white small">
+                      {data.company_phone}
+                    </a>
+                  </div>
+                )}
+                {data?.company_email && (
+                  <div className="d-flex align-items-center mb-2">
+                    <FaEnvelope className="text-white me-2 fs-6" />
+                    <a href={`mailto:${data.company_email}`} className="text-white small">
+                      {data.company_email}
+                    </a>
+                  </div>
+                )}
+                {data?.company_address && (
+                  <div className="d-flex align-items-start">
+                    <FaMapMarkerAlt className="text-white me-2 mt-1 fs-6" />
+                    <span className="text-white small">
+                      {data.company_address}
+                    </span>
+                  </div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Store Information */}
-          <div className="col-md-6 col-lg-3 mb-1 mb-md-4 mb-lg-0 pt-2 pt-lg-0">
-            <div className="footer_store_info">
-              <h5 className="fw-bold text-white mb-2 mb-md-4 pb-2">Store Information</h5>
-              <ul className="list-unstyled text-muted">
-                {data?.company_address && (
-                  <li className="mb-3 d-flex">
-                    <CiLocationOn className="text-white mt-1 me-md-3 fs-5" />
-                    <span className="text-white">{data.company_address}</span>
-                  </li>
-                )}
-                {data?.company_phone && (
-                  <li className="mb-3 d-flex">
-                    <FaPhone className="text-white mt-1 me-3 fs-5" />
-                    <span className="text-white">{data.company_phone}</span>
-                  </li>
-                )}
-                {data?.company_email && (
-                  <li className="d-flex">
-                    <CiMail className="text-white mt-1 me-3 fs-5" />
-                    <span className="text-white">{data.company_email}</span>
-                  </li>
-                )}
-              </ul>
-            </div>
-          </div>
-
-          {/* Account Links */}
-          <div className="col-md-6 col-lg-3 mb-1 mb-md-4 mb-lg-0">
-            <div className="footer_account">
-              <h5 className="fw-bold text-white mb-4 pb-2">My Account</h5>
-              <ul className="list-unstyled text-muted">
-                <li className="mb-2">
-                  <Link
-                    href="#"
-                    className="text-white text-decoration-none d-block mb-3"
-                  >
-                    My Profile
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="#"
-                    className="text-white text-decoration-none d-block mb-3"
-                  >
-                    Login/Register
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-white text-decoration-none d-block"
-                  >
-                    My Orders
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Useful Links */}
-          <div className="col-md-6 col-lg-3 mb-4 mb-lg-0">
-            <div className="footer_links">
-              <h5 className="fw-bold text-white mb-4 pb-2">Useful Links</h5>
-              <ul className="list-unstyled text-white">
-                <li className="mb-2">
-                  <Link
-                    href="#"
-                    className="text-white text-decoration-none d-block mb-3"
-                  >
-                    About
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="#"
-                    className="text-white text-decoration-none d-block mb-3"
-                  >
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="#"
-                    className="text-white text-decoration-none d-block mb-3"
-                  >
-                    Terms & Condition
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="text-white text-decoration-none d-block"
-                  >
-                    FAQ
-                  </Link>
-                </li>
-              </ul>
+          {/* Links Columns */}
+          <div className="col-lg-8">
+            <div className="row g-4">
+              {Object.entries(footerLinks).map(([key, links]) => (
+                <div key={key} className="col-sm-6 col-md-3 col-lg-3">
+                  <div className="footer-box rounded-4 p-4 h-100">
+                    <h6 className="text-white mb-3 fw-bold text-uppercase small" style={{ letterSpacing: '1px' }}>
+                      {key}
+                    </h6>
+                    <ul className="list-unstyled mb-0">
+                      {links.map((link, index) => (
+                        <li key={index} className="mb-2">
+                          <Link 
+                            href={link.href}
+                            className="text-white d-flex align-items-center text-decoration-none link-hover"
+                          >
+                            <FaChevronRight className="me-2 fs-6 text-white" />
+                            <span className="small text-white">{link.name}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Divider */}
-        <hr className="my-5 text-white" />
+        <hr className="my-4 border-white border-opacity-25" />
 
-        {/* Copyright */}
-        <div className="d-flex flex-wrap align-items-center justify-content-center pb-3">
-          <p className="text-white mb-0 me-3">
-            &copy; {currentYear} {data?.company_name || "Eyara Fashion"}. All rights
-            reserved.
-          </p>
+        {/* Bottom Bar */}
+        <div className="row align-items-center  py-3">
+          <div className="col-md-6 mb-3 mb-md-0">
+            <p className="text-white mb-0 small">
+              © {currentYear} {data?.company_name || "Eyara Fashion"}. All rights reserved.
+            </p>
+          </div>
+          <div className="col-md-6">
+            <h6 className="text-white">Developed By - Mehedi Hasan</h6>
+          </div>
         </div>
       </div>
     </footer>
