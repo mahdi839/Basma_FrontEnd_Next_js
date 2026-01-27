@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import './productCard.css';
+import useDiscountedPrice from "@/app/hooks/useDiscountedPrice";
 
 const ProductCard = React.memo(function ProductCard({
   slotProducts,
@@ -18,15 +19,9 @@ const ProductCard = React.memo(function ProductCard({
   function handleShowImage(index, colorImage) {
     setSelectedImage({ url: colorImage, index })
   }
-
-
-  const originalPrice = parseInt(slotProducts?.price, 10) || 0;
-  const discount = parseInt(slotProducts?.discount, 10) || 0;
-
-  const discountedPrice =
-    originalPrice && discount
-      ? Math.round(originalPrice - (originalPrice * discount) / 100)
-      : originalPrice;
+  // ✅ Custom hook usage
+  const { discountedPrice, originalPrice, discount } =
+    useDiscountedPrice(slotProducts);
 
   return (
     <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
@@ -56,22 +51,19 @@ const ProductCard = React.memo(function ProductCard({
           {/* Product Body */}
           <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
             <p className="mb-1">
-              <span className="text-decoration-none text-dark fw-bold">
+              <span className="text-decoration-none text-dark fw-bold product-card-title">
                 {slotProducts?.title}
               </span>
             </p>
-            <div className="d-flex gap-3 align-items-center mt-1 mt-md-2">
-              {slotProducts?.discount && (
-                <div className="product-price text-muted text-decoration-line-through">
-                  ৳ {slotProducts?.price}
-                </div>
-              )}
-
-              <div>
-                <span className="fw-bold product-price ">
-                  ৳ {discountedPrice}
+            <div className="d-flex gap-3 align-items-left mt-1 mt-md-2">
+              {discount > 0 && (
+                <span className="discount-price text-decoration-line-through">
+                  {originalPrice}৳
                 </span>
-              </div>
+              )}
+              <span className="fw-bold product-price">
+                {discountedPrice}৳
+              </span>
             </div>
           </div>
         </Link>

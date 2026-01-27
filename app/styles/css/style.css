@@ -1011,20 +1011,16 @@ ol {
 	color: #000;
 }
 
-.product-title {
-	font-size: 1px;
-	font-weight: 600;
-	color: #222;
-	transition: color 0.2s ease;
-	display: -webkit-box;
-	-webkit-line-clamp: 1;
-	-webkit-box-orient: vertical;
-	overflow: hidden;
-}
-
 .product-price {
 	font-size: 16px;
-	font-weight: 600;
+	color: red;
+	font-weight: bold;
+}
+
+.discount-price {
+	font-size: 16px;
+	color: var(--primary-color);
+	font-weight: bold;
 }
 
 .product-card:hover .product-actions {
@@ -1427,12 +1423,6 @@ table tr td {
 	border-color: var(--primary-color);
 }
 
-
-
-.product-price {
-	color: var(--primary-color);
-	font-weight: bold;
-}
 
 .size-selector {
 	padding: 15px 0;
@@ -2234,14 +2224,11 @@ table tr td {
 	left: 0;
 	font-size: 12px;
 	letter-spacing: 0.5px;
-	background: #2D64E6;
+	background: var(--primary-color);
 	color: white;
 	font-weight: 600;
 }
 
-.product-price {
-	color: var(--primary-color);
-}
 
 @media (min-width: 992px) {
 	.custom-slick-prev {
@@ -2256,9 +2243,13 @@ table tr td {
 
 /* Responsive Design */
 @media (max-width: 576px) {
+	.product-card-title {
+	  font-size: 14px;
+	}
+
 	.product_status_badge {
 		top: 0.2rem;
-		font-size: 8px;
+		font-size: 10px;
 	}
 
 	.footer_bg {
@@ -2291,6 +2282,16 @@ table tr td {
 
 	.form-section {
 		padding: 1.25rem;
+	}
+		.size-label {
+		display: block;
+		margin-bottom: 10px;
+		margin-right: 0;
+	}
+
+	.tab-btn {
+		padding: 6px 10px;
+		font-size: 0.85rem;
 	}
 }
 
@@ -2380,25 +2381,7 @@ table tr td {
 		border: 1px solid rgb(165, 161, 161);
 		padding: 1rem 0;
 	}
-}
 
-@media (max-width: 576px) {
-
-
-	.size-label {
-		display: block;
-		margin-bottom: 10px;
-		margin-right: 0;
-	}
-
-	.tab-btn {
-		padding: 6px 10px;
-		font-size: 0.85rem;
-	}
-}
-
-
-@media screen and (max-width: 768px) {
 	.header__logo {
 		text-align: center;
 
@@ -2424,11 +2407,6 @@ table tr td {
 		background: transparent;
 		margin-left: 0;
 	}
-
-}
-
-/* Mobile-specific fixes for product grid */
-@media (max-width: 768px) {
 	.product-card .card-body {
 		padding: 0.5rem;
 	}
@@ -2457,10 +2435,6 @@ table tr td {
 	.home_page_card_header {
 		margin-top: 2rem;
 	}
-}
-
-/* Ensure slider items have proper spacing on mobile */
-@media (max-width: 768px) {
 	.slick-slide>div {
 		padding: 0 4px;
 	}

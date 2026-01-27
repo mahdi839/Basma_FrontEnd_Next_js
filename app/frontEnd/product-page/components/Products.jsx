@@ -20,6 +20,7 @@ import VirtualizedRelatedProducts from "./VirtualizedRelatedProducts";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import useDiscountedPrice from "@/app/hooks/useDiscountedPrice";
 
 export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
   const [imgUrl, setImgUrl] = useState("");
@@ -30,7 +31,11 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [modalSelectedColor, setModalSelectedColor] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [loadingSizeGuide, setLoadingSizeGuide] = useState(false);
-
+  const {
+    originalPrice,
+    discount,
+    discountedPrice
+  } = useDiscountedPrice(product);
   const {
     handleSelectedColor,
     selectedColor,
@@ -70,8 +75,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     if (product) setIsLoading(false);
     if (product?.error) toast.error(product.error);
   }, [product]);
-
-  console.log(initialRelatedProducts);
 
   function handleThumbClick(id) {
     const clickedImg = images.find((img) => String(img.id) === String(id));
@@ -346,8 +349,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                           className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
                             }`}
                           onClick={() => handleThumbClick(img.id)}
-                          style={{ 
-                            padding: 0, 
+                          style={{
+                            padding: 0,
                             overflow: 'hidden',
                             background: '#f8f9fa',
                             display: 'flex',
@@ -374,9 +377,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                           className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
                             }`}
                           onClick={() => handleThumbClick(img.id)}
-                          style={{ 
-                            width: '100%', 
-                            height: '80px', 
+                          style={{
+                            width: '100%',
+                            height: '80px',
                             padding: 0,
                             background: '#f8f9fa',
                             display: 'flex',
@@ -421,20 +424,23 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 </div>
               )}
             </div>
-
             {/* Price Display */}
-            {displayPrice && (
-              <div className="price-section">
-                <div className="product-price">
-                  ৳{displayPrice * preQty??0}
+            <div className="price-section">
+              {/* Show original price only if discount exists */}
+              {discount > 0 && (
+                <div className="discount-price text-decoration-line-through">
+                  ৳ {originalPrice * (preQty ?? 1)}
                 </div>
-                {product?.original_price && product.original_price > displayPrice && (
-                  <div className="product-original-price">
-                    ৳ {product.original_price}
-                  </div>
-                )}
+              )}
+              <div className="product-price">
+                ৳
+                {(selectedSize
+                  ? product?.sizes?.find(s => s.id == selectedSize)?.pivot?.price
+                  : discountedPrice) * (preQty ?? 1)}
               </div>
-            )}
+
+
+            </div>
 
             {/* Colors Selection */}
             {product.colors?.length > 0 && (
