@@ -2,17 +2,17 @@
 
 import axios from "axios";
 import Link from "next/link";
-import React, { useState } from "react";
+import React from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 
 export default function CategoryTable({ categories }) {
-  const [data, setData] = useState(categories);
 
   async function handleDelete(id) {
     const token = localStorage.getItem("token");
-    const url = process.env.NEXT_PUBLIC_BACKEND_URL + `api/categories/${id}`;
+    const url =
+      process.env.NEXT_PUBLIC_BACKEND_URL + `api/categories/${id}`;
 
     const result = await Swal.fire({
       title: "Are you sure?",
@@ -32,10 +32,7 @@ export default function CategoryTable({ categories }) {
 
       Swal.fire("Deleted!", "", "success");
 
-      setData((prev) => ({
-        ...prev,
-        data: prev.data.filter((cat) => cat.id !== id),
-      }));
+      toast.success("Category deleted. Refresh to see updated list.");
     } catch (err) {
       toast.error("Failed to delete category");
     }
@@ -46,7 +43,7 @@ export default function CategoryTable({ categories }) {
       <table className="table table-bordered table-hover">
         <thead>
           <tr>
-            <th>ID</th>
+            <th>#</th>
             <th>Name</th>
             <th>Slug</th>
             <th>Parent</th>
@@ -58,17 +55,17 @@ export default function CategoryTable({ categories }) {
         </thead>
 
         <tbody>
-          {data?.data?.length === 0 && (
+          {categories.length === 0 && (
             <tr>
-              <td colSpan="7" className="text-center text-danger">
+              <td colSpan="8" className="text-center text-danger">
                 No Categories Found
               </td>
             </tr>
           )}
 
-          {data?.data?.map((cat) => (
+          {categories.map((cat, index) => (
             <tr key={cat.id}>
-              <td>{cat.id}</td>
+              <td>{index + 1}</td>
               <td>{cat.name}</td>
               <td><code>{cat.slug}</code></td>
               <td>
@@ -80,9 +77,13 @@ export default function CategoryTable({ categories }) {
                   <span className="text-muted">Root</span>
                 )}
               </td>
-              <td>{cat.size_guide_type??"N/A"}</td>
+              <td>{cat.size_guide_type ?? "N/A"}</td>
               <td>
-                <span className={`badge ${cat.home_category ? "bg-info" : "bg-danger"}`}>
+                <span
+                  className={`badge ${
+                    cat.home_category ? "bg-info" : "bg-danger"
+                  }`}
+                >
                   {cat.home_category ? "On" : "Off"}
                 </span>
               </td>

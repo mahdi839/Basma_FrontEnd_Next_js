@@ -1,40 +1,51 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import CategoryTable from "./components/CategoryTable";
 import Button from "@/app/components/dashboard/components/button/Button";
 import Link from "next/link";
 import PageLoader from "@/app/components/loader/pageLoader";
+import Pagination from "../orders/components/Pagination"; // reuse same component
 
 export default function Page() {
-  const [categories, setCategories] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    last_page: 1,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchCategories = useCallback(async () => {
+  const fetchCategories = async () => {
     setLoading(true);
     setError("");
 
     try {
       const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-      const res = await fetch(`${baseUrl}api/categories`, {
+      const res = await fetch(`${baseUrl}api/categories?page=${page}`, {
         cache: "no-store",
       });
 
       if (!res.ok) throw new Error("Failed to load categories");
 
       const data = await res.json();
-      setCategories(data);
+
+      setCategories(data.data || []);
+      setPagination({
+        current_page: data.current_page,
+        last_page: data.last_page,
+      });
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     fetchCategories();
-  }, [fetchCategories]);
+  }, [page]);
 
   if (loading) return <PageLoader />;
 
@@ -52,7 +63,17 @@ export default function Page() {
       )}
 
       {!error && (
-        <CategoryTable categories={categories} />
+        <>
+          <CategoryTable categories={categories} />
+
+          {pagination.last_page > 1 && (
+            <Pagination
+              page={page}
+              setPage={setPage}
+              pagination={pagination}
+            />
+          )}
+        </>
       )}
     </div>
   );
