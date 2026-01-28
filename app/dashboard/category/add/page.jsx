@@ -4,6 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Select from "react-select";
 
 export default function CreateCategoryPage() {
   const router = useRouter();
@@ -24,10 +25,10 @@ export default function CreateCategoryPage() {
     async function fetchCategories() {
       try {
         setLoading(true);
-        const url = process.env.NEXT_PUBLIC_BACKEND_URL + "api/categories";
+        const url = process.env.NEXT_PUBLIC_BACKEND_URL + "api/frontend/categories";
         const res = await fetch(url);
         const data = await res.json();
-        setCategories(data.data || []);
+        setCategories(data || []);
       } catch (error) {
         toast.error("Failed to load categories");
       } finally {
@@ -37,19 +38,49 @@ export default function CreateCategoryPage() {
     fetchCategories();
   }, []);
 
-  // Build hierarchical category tree for display
-  const buildCategoryTree = (categories, parentId = null, level = 0) => {
-    const result = [];
-    categories
-      .filter(cat => cat.parent_id === parentId)
-      .forEach(cat => {
-        result.push({ ...cat, level });
-        result.push(...buildCategoryTree(categories, cat.id, level + 1));
+  // Flatten nested categories recursively for the select dropdown
+  const flattenCategories = (categories, level = 0, result = []) => {
+    categories.forEach((cat) => {
+      result.push({
+        id: cat.id,
+        name: cat.name,
+        level: level,
+        parent_id: cat.parent_id,
       });
+      
+      if (cat.all_children && cat.all_children.length > 0) {
+        flattenCategories(cat.all_children, level + 1, result);
+      }
+    });
     return result;
   };
 
-  const categoryTree = buildCategoryTree(categories);
+  const flatCategories = flattenCategories(categories);
+
+  // Count total categories recursively
+  const countCategories = (categories) => {
+    let count = categories.length;
+    categories.forEach((cat) => {
+      if (cat.all_children && cat.all_children.length > 0) {
+        count += countCategories(cat.all_children);
+      }
+    });
+    return count;
+  };
+
+  const totalCategories = countCategories(categories);
+
+  // Prepare options for React Select
+  const categoryOptions = flatCategories.map((cat) => ({
+    value: cat.id,
+    label: `${"└─ ".repeat(cat.level)}${cat.name}`,
+    level: cat.level,
+  }));
+
+  // Get selected category option
+  const selectedCategory = form.parent_id
+    ? categoryOptions.find((opt) => opt.value === form.parent_id)
+    : null;
 
   const validateForm = () => {
     const newErrors = {};
@@ -93,7 +124,7 @@ export default function CreateCategoryPage() {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
         }
       );
@@ -109,7 +140,8 @@ export default function CreateCategoryPage() {
       router.push("/dashboard/category");
       router.refresh();
     } catch (err) {
-      const errorMessage = err.response?.data?.message || "Failed to create category";
+      const errorMessage =
+        err.response?.data?.message || "Failed to create category";
       toast.error(errorMessage);
 
       if (err.response?.data?.errors) {
@@ -121,23 +153,42 @@ export default function CreateCategoryPage() {
   }
 
   const handleInputChange = (field, value) => {
-    setForm(prev => ({ ...prev, [field]: value }));
+    setForm((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
-  // Get indent style based on level
-  const getIndentStyle = (level) => {
-    return {
-      paddingLeft: `${level * 20 + 12}px`
-    };
-  };
-
-  // Get prefix based on level
-  const getLevelPrefix = (level) => {
-    if (level === 0) return '';
-    return '└─ '.repeat(level);
+  // Custom styles for React Select
+  const customSelectStyles = {
+    control: (base, state) => ({
+      ...base,
+      borderColor: state.isFocused ? "#86b7fe" : "#dee2e6",
+      boxShadow: state.isFocused ? "0 0 0 0.25rem rgba(13, 110, 253, 0.25)" : "none",
+      "&:hover": {
+        borderColor: "#86b7fe",
+      },
+      minHeight: "38px",
+      fontFamily: "monospace",
+    }),
+    option: (base, state) => ({
+      ...base,
+      paddingLeft: `${state.data.level * 20 + 12}px`,
+      backgroundColor: state.isSelected
+        ? "#0d6efd"
+        : state.isFocused
+        ? "#e7f1ff"
+        : "white",
+      color: state.isSelected ? "white" : "#212529",
+      fontFamily: "monospace",
+      "&:active": {
+        backgroundColor: "#0d6efd",
+      },
+    }),
+    menu: (base) => ({
+      ...base,
+      zIndex: 9999,
+    }),
   };
 
   return (
@@ -163,7 +214,9 @@ export default function CreateCategoryPage() {
                   <div className="text-xs fw-bold text-primary text-uppercase mb-1">
                     Total Categories
                   </div>
-                  <div className="h5 mb-0 fw-bold text-gray-800">{categories.length}</div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">
+                    {totalCategories}
+                  </div>
                 </div>
                 <div className="col-auto">
                   <i className="fas fa-folder fa-2x text-gray-300"></i>
@@ -182,7 +235,7 @@ export default function CreateCategoryPage() {
                     Root Categories
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">
-                    {categories.filter(cat => !cat.parent_id).length}
+                    {categories.length}
                   </div>
                 </div>
                 <div className="col-auto">
@@ -250,7 +303,9 @@ export default function CreateCategoryPage() {
                         <i className="fas fa-list"></i>
                       </span>
                       <select
-                        className={`form-select ${errors.size_guide_type ? "is-invalid" : ""}`}
+                        className={`form-select ${
+                          errors.size_guide_type ? "is-invalid" : ""
+                        }`}
                         value={form.size_guide_type}
                         onChange={(e) =>
                           handleInputChange("size_guide_type", e.target.value)
@@ -282,33 +337,23 @@ export default function CreateCategoryPage() {
                       <i className="fas fa-sitemap me-2"></i>
                       Parent Category
                     </label>
-                    <div className="input-group">
-                      <span className="input-group-text">
-                        <i className="fas fa-level-up-alt"></i>
-                      </span>
-                      <select
-                        className="form-select"
-                        id="parentCategory"
-                        value={form.parent_id}
-                        onChange={(e) => handleInputChange("parent_id", e.target.value)}
-                        disabled={isSubmitting || loading}
-                        style={{ fontFamily: 'monospace' }}
-                      >
-                        <option value="">-- Root Category (No Parent) --</option>
-                        {categoryTree.map((cat) => (
-                          <option
-                            key={cat.id}
-                            value={cat.id}
-                            style={getIndentStyle(cat.level)}
-                          >
-                            {getLevelPrefix(cat.level)}{cat.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    <Select
+                      id="parentCategory"
+                      options={categoryOptions}
+                      value={selectedCategory}
+                      onChange={(option) =>
+                        handleInputChange("parent_id", option ? option.value : "")
+                      }
+                      isClearable
+                      isSearchable
+                      placeholder="-- Root Category (No Parent) --"
+                      isDisabled={isSubmitting || loading}
+                      styles={customSelectStyles}
+                      noOptionsMessage={() => "No categories found"}
+                    />
                     <small className="form-text text-muted">
                       <i className="fas fa-info-circle me-1"></i>
-                      You can nest categories at any level
+                      You can nest categories at any level. Type to search.
                     </small>
                   </div>
 
@@ -323,7 +368,9 @@ export default function CreateCategoryPage() {
                       </span>
                       <input
                         type="number"
-                        className={`form-control ${errors.priority ? "is-invalid" : ""}`}
+                        className={`form-control ${
+                          errors.priority ? "is-invalid" : ""
+                        }`}
                         id="priority"
                         min="0"
                         max="999"
@@ -363,10 +410,15 @@ export default function CreateCategoryPage() {
                                 id="showOnHomepage"
                                 value="1"
                                 checked={form.home_category === "1"}
-                                onChange={(e) => handleInputChange("home_category", e.target.value)}
+                                onChange={(e) =>
+                                  handleInputChange("home_category", e.target.value)
+                                }
                                 disabled={isSubmitting}
                               />
-                              <label className="form-check-label fw-bold" htmlFor="showOnHomepage">
+                              <label
+                                className="form-check-label fw-bold"
+                                htmlFor="showOnHomepage"
+                              >
                                 <i className="fas fa-eye text-success me-2"></i>
                                 Show on Homepage
                               </label>
@@ -384,10 +436,15 @@ export default function CreateCategoryPage() {
                                 id="hideFromHomepage"
                                 value="0"
                                 checked={form.home_category === "0"}
-                                onChange={(e) => handleInputChange("home_category", e.target.value)}
+                                onChange={(e) =>
+                                  handleInputChange("home_category", e.target.value)
+                                }
                                 disabled={isSubmitting}
                               />
-                              <label className="form-check-label fw-bold" htmlFor="hideFromHomepage">
+                              <label
+                                className="form-check-label fw-bold"
+                                htmlFor="hideFromHomepage"
+                              >
                                 <i className="fas fa-eye-slash text-secondary me-2"></i>
                                 Hide from Homepage
                               </label>
@@ -423,7 +480,10 @@ export default function CreateCategoryPage() {
                         >
                           {isSubmitting ? (
                             <>
-                              <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                              <span
+                                className="spinner-border spinner-border-sm me-2"
+                                role="status"
+                              ></span>
                               Creating...
                             </>
                           ) : (
@@ -441,12 +501,14 @@ export default function CreateCategoryPage() {
             </div>
           </div>
         </div>
-
       </div>
 
       {/* Loading Overlay */}
       {loading && (
-        <div className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25" style={{ zIndex: 9999 }}>
+        <div
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-25"
+          style={{ zIndex: 9999 }}
+        >
           <div className="text-center">
             <div className="spinner-border text-primary mb-3" role="status">
               <span className="visually-hidden">Loading...</span>
