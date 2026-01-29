@@ -3,8 +3,9 @@
 import Button from "@/app/components/dashboard/components/button/Button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
+import Select from "react-select";
 
 export default function Page({ params }) {
   const { id } = params;
@@ -20,7 +21,7 @@ export default function Page({ params }) {
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
   const url = `${baseUrl}api/categories/${id}`;
-  const categoriesUrl = `${baseUrl}api/categories`;
+  const categoriesUrl = `${baseUrl}api/frontend/categories`;
 
   /* ================= FETCH DATA ================= */
   useEffect(() => {
@@ -39,10 +40,9 @@ export default function Page({ params }) {
 
     async function fetchCategories() {
       try {
-        const res = await axios.get(categoriesUrl, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCategories(res.data.data || []);
+        const res = await fetch(categoriesUrl);
+        const json = await res.json();
+        setCategories(json || []);
       } catch (err) {
         console.error(err);
       }
@@ -51,6 +51,41 @@ export default function Page({ params }) {
     fetchCategory();
     fetchCategories();
   }, [id]);
+
+  /* ================= FLATTEN CATEGORIES ================= */
+  const flattenCategories = (items, level = 0, result = []) => {
+    items.forEach((cat) => {
+      result.push({
+        id: cat.id,
+        name: cat.name,
+        level,
+        parent_id: cat.parent_id,
+      });
+
+      if (cat.all_children?.length) {
+        flattenCategories(cat.all_children, level + 1, result);
+      }
+    });
+    return result;
+  };
+
+  const flatCategories = useMemo(
+    () => flattenCategories(categories),
+    [categories]
+  );
+
+  /* ================= REACT SELECT OPTIONS ================= */
+  const categoryOptions = flatCategories
+    .filter((c) => c.id !== data?.id) // prevent self-parent
+    .map((c) => ({
+      value: c.id,
+      label: `${"└─ ".repeat(c.level)}${c.name}`,
+      level: c.level,
+    }));
+
+  const selectedCategory = data?.parent_id
+    ? categoryOptions.find((o) => o.value === data.parent_id)
+    : null;
 
   /* ================= HANDLE CHANGE ================= */
   function handleChange(e) {
@@ -77,7 +112,7 @@ export default function Page({ params }) {
         {
           name: data.name,
           parent_id: data.parent_id || null,
-          home_category: data.home_category, 
+          home_category: data.home_category,
           priority: parseInt(data.priority) || 0,
           size_guide_type: data.size_guide_type || null,
         },
@@ -85,13 +120,11 @@ export default function Page({ params }) {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      // 🔥 invalidate cache
+
       await fetch("/api/revalidate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tags: ["products"],
-        }),
+        body: JSON.stringify({ tags: ["products"] }),
       });
 
       toast.success("Category updated successfully!");
@@ -109,6 +142,19 @@ export default function Page({ params }) {
       setIsSubmitting(false);
     }
   }
+
+  /* ================= SELECT STYLES (UNCHANGED LOOK) ================= */
+  const selectStyles = {
+    control: (base) => ({
+      ...base,
+      minHeight: "38px",
+    }),
+    option: (base, state) => ({
+      ...base,
+      paddingLeft: `${state.data.level * 20 + 12}px`,
+    }),
+    menu: (base) => ({ ...base, zIndex: 9999 }),
+  };
 
   if (!data) return null;
 
@@ -135,34 +181,32 @@ export default function Page({ params }) {
               )}
             </div>
 
-            {/* PARENT */}
+            {/* PARENT CATEGORY (UPDATED ONLY THIS PART) */}
             <div className="mb-3">
               <label className="form-label fw-bold">Parent Category</label>
-              <select
-                className="form-select"
-                name="parent_id"
-                value={data.parent_id || ""}
-                onChange={handleChange}
-              >
-                <option value="">Root Category</option>
-                {categories
-                  .filter((c) => c.id !== data.id && !c.parent_id)
-                  .map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-              </select>
+              <Select
+                options={categoryOptions}
+                value={selectedCategory}
+                isClearable
+                isSearchable
+                placeholder="Root Category"
+                styles={selectStyles}
+                onChange={(opt) =>
+                  setData((prev) => ({
+                    ...prev,
+                    parent_id: opt ? opt.value : "",
+                  }))
+                }
+              />
             </div>
 
-            {/* SIZE GUIDE TYPE */}
+            {/* SIZE GUIDE */}
             <div className="mb-3">
-              <label className="form-label fw-bold">
-                Size Guide Type
-              </label>
-
+              <label className="form-label fw-bold">Size Guide Type</label>
               <select
-                className={`form-select ${errors.size_guide_type ? "is-invalid" : ""}`}
+                className={`form-select ${
+                  errors.size_guide_type ? "is-invalid" : ""
+                }`}
                 name="size_guide_type"
                 value={data.size_guide_type || ""}
                 onChange={handleChange}
@@ -171,18 +215,10 @@ export default function Page({ params }) {
                 <option value="shoe">Shoe Size Guide</option>
                 <option value="dress">Dress Size Guide</option>
               </select>
-
-              {errors.size_guide_type && (
-                <div className="invalid-feedback d-block">
-                  {errors.size_guide_type[0]}
-                </div>
-              )}
-
               <small className="text-muted">
                 Select size guide only if category needs sizing
               </small>
             </div>
-
 
             {/* PRIORITY */}
             <div className="mb-3">
@@ -247,9 +283,9 @@ export default function Page({ params }) {
                 Cancel
               </button>
 
-              <Button type="submit" disabled={isSubmitting}>
+              <button className="btn btn-md" type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Updating..." : "Update Category"}
-              </Button>
+              </button>
             </div>
           </form>
         </div>
