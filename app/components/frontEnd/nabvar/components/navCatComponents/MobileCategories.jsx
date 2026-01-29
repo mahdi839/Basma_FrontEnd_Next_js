@@ -8,11 +8,48 @@ import './mobileCategories.css'
 export default function MobileCategories({ categories, onClick }) {
   const [expandedCategories, setExpandedCategories] = useState({})
 
-  const toggleCategory = (categoryId) => {
-    setExpandedCategories(prev => ({
-      ...prev,
-      [categoryId]: !prev[categoryId]
-    }))
+  // Helper function to find category by ID
+  const findCategoryById = (cats, id) => {
+    for (const cat of cats) {
+      if (cat.id === id) return cat
+      if (cat.children) {
+        const found = findCategoryById(cat.children, id)
+        if (found) return found
+      }
+    }
+    return null
+  }
+
+  const toggleCategory = (categoryId, level = 0) => {
+    setExpandedCategories(prev => {
+      const newState = { ...prev }
+      
+      // If clicking on a top-level parent category (level 0)
+      if (level === 0) {
+        // Get all top-level category IDs
+        const topLevelIds = categories.map(cat => cat.id)
+        
+        // Close all other top-level categories and their children
+        topLevelIds.forEach(id => {
+          if (id !== categoryId) {
+            // Recursively close the parent and all its children
+            const closeChildren = (catId) => {
+              delete newState[catId]
+              const category = findCategoryById(categories, catId)
+              if (category?.children) {
+                category.children.forEach(child => closeChildren(child.id))
+              }
+            }
+            closeChildren(id)
+          }
+        })
+      }
+      
+      // Toggle the clicked category
+      newState[categoryId] = !prev[categoryId]
+      
+      return newState
+    })
   }
 
   const handleLinkClick = () => {
@@ -39,7 +76,7 @@ export default function MobileCategories({ categories, onClick }) {
           {hasChildren && (
             <button
               className="mobile-toggle-btn"
-              onClick={() => toggleCategory(category.id)}
+              onClick={() => toggleCategory(category.id, level)}
               aria-label={isExpanded ? 'Collapse' : 'Expand'}
             >
               {isExpanded ? <FaChevronDown /> : <FaChevronRight />}

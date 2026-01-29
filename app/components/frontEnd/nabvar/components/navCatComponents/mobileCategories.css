@@ -1,76 +1,136 @@
-/* ===============================
-   MOBILE CATEGORIES STYLES
-================================ */
-
+/* Mobile Categories Wrapper - Scrollable Container */
 .mobile-categories-wrapper {
   list-style: none;
   padding: 0;
   margin: 0;
-  width: 100%;
+  max-height: calc(100vh - 120px); /* Full viewport height minus header/padding */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
+/* Custom scrollbar for mobile */
+.mobile-categories-wrapper::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-categories-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.mobile-categories-wrapper::-webkit-scrollbar-thumb {
+  background: #7d0ba7;
+  border-radius: 2px;
+}
+
+.mobile-categories-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #5d0887;
+}
+
+/* Mobile Category Item */
 .mobile-category-item {
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #eee;
 }
 
 .mobile-category-item:last-child {
   border-bottom: none;
 }
 
+/* Mobile Category Header */
 .mobile-category-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #fff;
-  transition: background 0.3s ease;
+  padding: 0;
+  background: white;
+  transition: background 0.2s ease;
 }
 
-.mobile-category-header:hover {
-  background: #f8f9fa;
+.mobile-category-header:active {
+  background: #f5f5f5;
 }
 
+/* Mobile Category Link */
 .mobile-category-link {
   flex: 1;
   padding: 14px 20px;
   color: #333;
-  font-size: 15px;
-  font-weight: 500;
   text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
   display: block;
-  transition: color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
-.mobile-category-link:hover {
+.mobile-category-link:active {
   color: #7d0ba7;
 }
 
+/* Mobile Toggle Button */
 .mobile-toggle-btn {
-  background: transparent;
+  background: none;
   border: none;
   padding: 14px 20px;
-  color: #666;
+  color: #999;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.mobile-toggle-btn:hover {
-  color: #7d0ba7;
-}
-
-.mobile-toggle-btn svg {
   font-size: 14px;
+  transition: all 0.2s ease;
+  min-width: 50px;
 }
 
-/* Subcategory List */
+.mobile-toggle-btn:active {
+  color: #7d0ba7;
+  background: #f5f5f5;
+}
+
+/* Mobile Subcategory List */
 .mobile-subcategory-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  background: #f8f9fa;
-  animation: slideDown 0.3s ease;
+  background: #fafafa;
+  border-left: 3px solid #7d0ba7;
+}
+
+/* Nested Level Styling */
+.mobile-category-item.level-0 {
+  background: white;
+}
+
+.mobile-category-item.level-1 .mobile-category-link {
+  padding-left: 35px;
+  font-size: 14px;
+}
+
+.mobile-category-item.level-1 .mobile-toggle-btn {
+  padding-right: 20px;
+}
+
+.mobile-category-item.level-2 .mobile-category-link {
+  padding-left: 50px;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.mobile-category-item.level-2 .mobile-toggle-btn {
+  padding-right: 20px;
+}
+
+.mobile-category-item.level-3 .mobile-category-link {
+  padding-left: 65px;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.mobile-category-item.level-3 .mobile-toggle-btn {
+  padding-right: 20px;
+}
+
+/* Smooth expand/collapse animation */
+.mobile-subcategory-list {
+  animation: slideDown 0.3s ease-out;
 }
 
 @keyframes slideDown {
@@ -80,106 +140,42 @@
   }
   to {
     opacity: 1;
-    max-height: 1000px;
+    max-height: 2000px;
   }
 }
 
-/* Level Indentation */
-.mobile-category-item.level-1 .mobile-category-link {
-  padding-left: 35px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #555;
+/* Touch feedback */
+@media (hover: none) {
+  .mobile-category-link:hover {
+    background: none;
+  }
+  
+  .mobile-toggle-btn:hover {
+    background: none;
+  }
 }
 
-.mobile-category-item.level-1 .mobile-category-header {
-  background: #f8f9fa;
-}
-
-.mobile-category-item.level-2 .mobile-category-link {
-  padding-left: 50px;
-  font-size: 13px;
-  font-weight: 400;
-  color: #666;
-}
-
-.mobile-category-item.level-2 .mobile-category-header {
-  background: #f0f0f0;
-}
-
-.mobile-category-item.level-3 .mobile-category-link {
-  padding-left: 65px;
-  font-size: 12px;
-  font-weight: 400;
-  color: #777;
-}
-
-.mobile-category-item.level-3 .mobile-category-header {
-  background: #e8e8e8;
-}
-
-/* Active/Selected State */
-.mobile-category-link.active,
-.mobile-category-link:active {
-  color: #7d0ba7;
-  background: linear-gradient(to right, #7d0ba7 3px, transparent 3px);
-}
-
-/* Toggle Button Animation */
-.mobile-toggle-btn svg {
-  transition: transform 0.3s ease;
-}
-
-/* Hover Effects for Nested Items */
-.mobile-category-item.level-1 .mobile-category-header:hover {
-  background: #e9ecef;
-}
-
-.mobile-category-item.level-2 .mobile-category-header:hover {
-  background: #dee2e6;
-}
-
-.mobile-category-item.level-3 .mobile-category-header:hover {
-  background: #d3d3d3;
-}
-
-/* Divider for Better Visual Separation */
-.mobile-category-item.level-0 {
-  border-bottom: 1px solid #d0d0d0;
-}
-
-.mobile-category-item.level-1,
-.mobile-category-item.level-2,
-.mobile-category-item.level-3 {
-  border-bottom: 1px solid #e8e8e8;
-}
-
-/* Empty State */
-.mobile-categories-wrapper:empty::before {
-  content: 'No categories available';
-  display: block;
-  padding: 20px;
-  text-align: center;
-  color: #999;
-  font-size: 14px;
-}
-
-/* Smooth Transitions */
-.mobile-category-item * {
-  transition: all 0.2s ease;
-}
-
-/* Accessibility - Focus States */
-.mobile-category-link:focus,
-.mobile-toggle-btn:focus {
-  outline: 2px solid #7d0ba7;
-  outline-offset: -2px;
-}
-
-/* Better Touch Targets for Mobile */
-@media (max-width: 768px) {
-  .mobile-category-link,
+/* Small mobile devices */
+@media only screen and (max-width: 360px) {
+  .mobile-category-link {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+  
   .mobile-toggle-btn {
-    min-height: 48px;
+    padding: 12px 16px;
+    min-width: 45px;
+  }
+  
+  .mobile-category-item.level-1 .mobile-category-link {
+    padding-left: 28px;
+  }
+  
+  .mobile-category-item.level-2 .mobile-category-link {
+    padding-left: 40px;
+  }
+  
+  .mobile-category-item.level-3 .mobile-category-link {
+    padding-left: 52px;
   }
 }
