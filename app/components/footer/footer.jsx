@@ -16,6 +16,7 @@ import {
   FaHeadset
 } from "react-icons/fa";
 import './footer.css'
+
 export default async function Footer() {
   let data = {};
   let socialData = {};
@@ -65,31 +66,29 @@ export default async function Footer() {
   const footerLinks = {
     shop: [
       { name: "All Products", href: "/products" },
-      { name: "New Arrivals", href: "/products/new" },
-      { name: "Best Sellers", href: "/products/best-sellers" },
+      { name: "New Arrivals", href: "/" },
+      { name: "Best Sellers", href: "/" },
       { name: "Sale", href: "/products/sale" },
-      { name: "Gift Cards", href: "/gift-cards" }
+      // { name: "Gift Cards", href: "/gift-cards" }
     ],
     support: [
-      { name: "Contact Us", href: "/contact" },
+      { name: "Contact Us", href: "/" },
       { name: "FAQ", href: "/faq" },
-      { name: "Shipping Info", href: "/shipping" },
+      // { name: "Shipping Info", href: "/" },
       { name: "Returns & Exchanges", href: "/returns" },
       { name: "Size Guide", href: "/size-guide" }
     ],
     company: [
       { name: "About Us", href: "/about" },
-      { name: "Our Story", href: "/story" },
-      { name: "Careers", href: "/careers" },
-      { name: "Blog", href: "/blog" },
-      { name: "Store Locator", href: "/stores" }
+      { name: "Our Story", href: "/" },
+      { name: "Careers", href: "/" },
+      // { name: "Store Locator", href: "/stores" }
     ],
     legal: [
       { name: "Privacy Policy", href: "/privacy" },
       { name: "Terms of Service", href: "/terms" },
-      { name: "Cookie Policy", href: "/cookies" },
-      { name: "Accessibility", href: "/accessibility" },
-      { name: "Sitemap", href: "/sitemap" }
+      // { name: "Accessibility", href: "/accessibility" },
+      // { name: "Sitemap", href: "/sitemap" }
     ]
   };
 
@@ -119,7 +118,7 @@ export default async function Footer() {
               </p>
               
               {/* Social Links */}
-              <div className="d-flex gap-2 mb-4">
+              <div className="d-flex gap-2 mb-4 flex-wrap">
                 {socialData?.facebook && (
                   <a 
                     href={socialData.facebook}
@@ -168,7 +167,7 @@ export default async function Footer() {
                 {data?.company_phone && (
                   <div className="d-flex align-items-center mb-2">
                     <FaPhone className="text-white me-2 fs-6" />
-                    <a href={`tel:${data.company_phone}`} className="text-white small">
+                    <a href={`tel:${data.company_phone}`} className="text-white small text-decoration-none">
                       {data.company_phone}
                     </a>
                   </div>
@@ -176,7 +175,7 @@ export default async function Footer() {
                 {data?.company_email && (
                   <div className="d-flex align-items-center mb-2">
                     <FaEnvelope className="text-white me-2 fs-6" />
-                    <a href={`mailto:${data.company_email}`} className="text-white small">
+                    <a href={`mailto:${data.company_email}`} className="text-white small text-decoration-none">
                       {data.company_email}
                     </a>
                   </div>
@@ -197,7 +196,7 @@ export default async function Footer() {
           <div className="col-lg-8">
             <div className="row g-4">
               {Object.entries(footerLinks).map(([key, links]) => (
-                <div key={key} className="col-sm-6 col-md-3 col-lg-3">
+                <div key={key} className="col-6 col-md-3">
                   <div className="footer-box rounded-4 p-4 h-100">
                     <h6 className="text-white mb-3 fw-bold text-uppercase small" style={{ letterSpacing: '1px' }}>
                       {key}
@@ -209,7 +208,7 @@ export default async function Footer() {
                             href={link.href}
                             className="text-white d-flex align-items-center text-decoration-none link-hover"
                           >
-                            <FaChevronRight className="me-2 fs-6 text-white" />
+                            <FaChevronRight className="me-2 chevron-icon" style={{ fontSize: '10px' }} />
                             <span className="small text-white">{link.name}</span>
                           </Link>
                         </li>
@@ -226,14 +225,23 @@ export default async function Footer() {
         <hr className="my-4 border-white border-opacity-25" />
 
         {/* Bottom Bar */}
-        <div className="row align-items-center  py-3">
-          <div className="col-md-6 mb-3 mb-md-0">
+        <div className="row align-items-center py-3">
+          <div className="col-md-6 mb-3 mb-md-0 text-center text-md-start">
             <p className="text-white mb-0 small">
               © {currentYear} {data?.company_name || "Eyara Fashion"}. All rights reserved.
             </p>
           </div>
-          <div className="col-md-6">
-            <h6 className="text-white">Developed By - Mehedi Hasan</h6>
+          <div className="col-md-6 text-center text-md-end">
+            <p className="text-white mb-0 small">
+              Developed By - <a 
+                href="https://wa.me/8801795802507" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="developer-link text-white text-decoration-none fw-bold"
+              >
+                Mehedi Hasan
+              </a>
+            </p>
           </div>
         </div>
       </div>

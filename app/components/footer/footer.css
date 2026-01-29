@@ -42,18 +42,60 @@
   transform: translateX(5px);
 }
 
+.link-hover .chevron-icon {
+  transition: transform 0.2s ease;
+}
+
+.link-hover:hover .chevron-icon {
+  transform: translateX(3px);
+}
+
 /* Social Buttons */
 .social-btn {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
   transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
 }
 
 .social-btn:hover {
   background: white;
   color: var(--primary-color);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.1);
+}
+
+/* Developer Link */
+.developer-link {
+  position: relative;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.developer-link:hover {
+  color: white !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  transform: scale(1.05);
+}
+
+.developer-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 50%;
+  background: white;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.developer-link:hover::after {
+  width: 100%;
 }
 
 /* Form Styles */
@@ -133,10 +175,16 @@
 }
 
 /* Responsive Styles */
+@media (max-width: 991px) {
+  .footer_bg .col-lg-8 .row .col-6 {
+    width: 50%;
+  }
+}
+
 @media (max-width: 768px) {
   .footer_bg {
-    border-radius: 100% / 5% 5% 0 0;
-    padding-top: 80px !important;
+    border-radius: 100% / 8% 8% 0 0;
+    padding-top: 60px !important;
   }
   
   .footer_bg .container {
@@ -149,14 +197,22 @@
   .contact-box,
   .newsletter-box {
     backdrop-filter: none;
+    margin-bottom: 1rem;
   }
   
-  .row.g-4 > div {
-    margin-bottom: 20px;
+  /* Mobile: Full width for brand column */
+  .footer_bg .col-lg-4 {
+    width: 100%;
+    margin-bottom: 1.5rem;
   }
   
-  .row.g-4 > div:last-child {
-    margin-bottom: 0;
+  .footer_bg .col-lg-8 {
+    width: 100%;
+  }
+  
+  /* Two columns on tablet */
+  .footer_bg .col-lg-8 .row .col-6 {
+    width: 50%;
   }
   
   /* Mobile: Stack features vertically */
@@ -183,22 +239,54 @@
     border-radius: 0 0 0.375rem 0.375rem !important;
     width: 100%;
   }
+  
+  /* Center social icons on mobile */
+  .footer_bg .d-flex.gap-2 {
+    justify-content: center;
+  }
+  
+  /* Bottom bar - center on mobile */
+  .row.align-items-center.py-3 .col-md-6 {
+    text-align: center !important;
+  }
 }
 
 /* Small mobile devices */
 @media (max-width: 576px) {
   .footer_bg {
-    border-radius: 100% / 3% 3% 0 0;
+    border-radius: 100% / 5% 5% 0 0;
+    padding-top: 40px !important;
   }
   
-  .footer_bg .col-sm-6 {
+  /* Single column layout */
+  .footer_bg .col-6,
+  .footer_bg .col-lg-8 .row .col-6 {
+    width: 100% !important;
+  }
+  
+  .footer_bg .col-md-3 {
     width: 100%;
+    margin-bottom: 1rem;
+  }
+  
+  .footer_bg .col-md-3:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Reduce padding */
+  .feature-box,
+  .footer-box {
+    padding: 1rem !important;
+  }
+  
+  .contact-box {
+    padding: 0.75rem !important;
   }
   
   /* Stack bottom bar vertically */
   .row.align-items-center.py-3 .col-md-6 {
     text-align: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
   }
   
   .row.align-items-center.py-3 .col-md-6:last-child {
@@ -209,9 +297,45 @@
     justify-content: center !important;
   }
   
-  .feature-box,
-  .footer-box {
-    padding: 1rem !important;
+  /* Adjust heading sizes */
+  .footer_bg h6 {
+    font-size: 0.9rem;
+  }
+  
+  .footer_bg .small {
+    font-size: 0.85rem;
+  }
+  
+  /* Social buttons - smaller on mobile */
+  .social-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 360px) {
+  .footer_bg {
+    padding-top: 30px !important;
+  }
+  
+  .footer-box,
+  .contact-box {
+    padding: 0.75rem !important;
+  }
+  
+  .footer_bg h6 {
+    font-size: 0.85rem;
+  }
+  
+  .footer_bg .small {
+    font-size: 0.8rem;
+  }
+  
+  .social-btn {
+    width: 32px;
+    height: 32px;
   }
 }
 
@@ -254,4 +378,22 @@
 
 .footer_bg ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
+}
+
+/* Disable hover effects on mobile */
+@media (hover: none) {
+  .feature-box:hover,
+  .footer-box:hover,
+  .contact-box:hover,
+  .newsletter-box:hover {
+    transform: none;
+  }
+  
+  .social-btn:hover {
+    transform: none;
+  }
+  
+  .link-hover:hover {
+    transform: none;
+  }
 }
