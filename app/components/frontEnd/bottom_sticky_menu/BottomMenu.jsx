@@ -13,6 +13,7 @@ import NavCategories from '../nabvar/components/NavCategories';
 export default function BottomMenu() {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
+  const [isShowCollapsMenu, setIsShowCollapsMenu] = useState("category");
   const [isClient, setIsClient] = useState(false);
   const cartCount = useSelector((state) => state.cart.count);
 
@@ -34,6 +35,10 @@ export default function BottomMenu() {
 
   const handleOpenCategory = () => {
     setIsCategoryDrawerOpen(true);
+  };
+
+  const handleCollaps_menu = (menu) => {
+    setIsShowCollapsMenu(menu);
   };
 
   return (
@@ -94,8 +99,8 @@ export default function BottomMenu() {
 
             {/* WhatsApp */}
             <div className="col px-1">
-              
-               <a href="https://wa.me/8801614477721"
+              <a 
+                href="https://wa.me/8801614477721"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-decoration-none d-block"
@@ -140,50 +145,175 @@ export default function BottomMenu() {
 
       {/* Category Drawer */}
       {isCategoryDrawerOpen && (
-        <div 
-          className="position-fixed top-0 start-0 w-100 h-100 d-md-none"
-          style={{ 
-            background: 'rgba(0, 0, 0, 0.5)', 
-            zIndex: 10000
-          }}
-          onClick={handleCloseCategoryDrawer}
-        >
+        <>
+          {/* Backdrop */}
           <div 
-            className="position-absolute top-0 start-0 h-100 bg-white"
+            className="position-fixed top-0 start-0 w-100 h-100 d-md-none"
+            style={{ 
+              background: 'rgba(0, 0, 0, 0.5)', 
+              zIndex: 10000
+            }}
+            onClick={handleCloseCategoryDrawer}
+          />
+          
+          {/* Drawer */}
+          <div 
+            className="position-fixed top-0 start-0 h-100 bg-white d-md-none"
             style={{ 
               width: '80vw',
               maxWidth: '350px',
               boxShadow: '2px 0 10px rgba(0,0,0,0.1)',
               overflowY: 'auto',
-              transition: 'transform 0.3s ease'
+              zIndex: 10001,
+              animation: 'slideInLeft 0.3s ease'
             }}
-            onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
+            {/* Close Button */}
             <div 
-              className="d-flex justify-content-between align-items-center p-3 border-bottom"
-              style={{ background: '#7d0ba7' }}
+              className="position-absolute"
+              style={{ top: '10px', right: '1.5rem', zIndex: 10, cursor: 'pointer' }}
+              onClick={handleCloseCategoryDrawer}
             >
-              <h5 className="mb-0 text-white fw-bold">Categories</h5>
-              <button 
-                onClick={handleCloseCategoryDrawer}
-                className="border-0 bg-transparent text-white"
-                style={{ fontSize: '24px', cursor: 'pointer' }}
-                type="button"
-              >
-                <ImCancelCircle />
-              </button>
+              <ImCancelCircle size={22} style={{ color: 'red' }} />
             </div>
 
-            {/* Categories List */}
-            <div className="p-3">
-              <NavCategories 
-                onClick={handleCloseCategoryDrawer}
-                isMobile={true}
-              />
+            {/* Category/Menu Tabs */}
+            <div style={{ position: 'absolute', top: '3rem', width: '100%' }}>
+              <div 
+                style={{
+                  width: '100%',
+                  height: '50px',
+                  background: 'rgb(248, 248, 248)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  paddingLeft: '2.5rem'
+                }}
+              >
+                <div 
+                  style={{ 
+                    width: '50%', 
+                    fontWeight: 600, 
+                    position: 'relative', 
+                    cursor: 'pointer' 
+                  }}
+                  onClick={() => handleCollaps_menu("category")}
+                >
+                  <span style={{ position: 'relative' }}>
+                    Category
+                    {isShowCollapsMenu === "category" && (
+                      <span 
+                        style={{
+                          position: 'absolute',
+                          content: '',
+                          width: '50%',
+                          height: '2px',
+                          background: '#7d0ba7',
+                          bottom: 0,
+                          left: 0,
+                          transform: 'translateY(12px)'
+                        }}
+                      />
+                    )}
+                  </span>
+                </div>
+                <div 
+                  style={{ 
+                    width: '50%', 
+                    fontWeight: 600, 
+                    position: 'relative', 
+                    cursor: 'pointer' 
+                  }}
+                  onClick={() => handleCollaps_menu("menu")}
+                >
+                  <span style={{ position: 'relative' }}>
+                    Menu
+                    {isShowCollapsMenu === "menu" && (
+                      <span 
+                        style={{
+                          position: 'absolute',
+                          content: '',
+                          width: '50%',
+                          height: '2px',
+                          background: '#7d0ba7',
+                          bottom: 0,
+                          left: 0,
+                          transform: 'translateY(12px)'
+                        }}
+                      />
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div style={{ marginTop: '1rem', cursor: 'pointer' }}>
+                {isShowCollapsMenu === "category" && (
+                  <ul style={{ listStyle: 'none', padding: 0, margin: '1rem 0' }}>
+                    <NavCategories 
+                      onClick={handleCloseCategoryDrawer}
+                      isMobile={true}
+                    />
+                  </ul>
+                )}
+                {isShowCollapsMenu === "menu" && (
+                  <ul style={{ listStyle: 'none', padding: 0, margin: '1rem 0' }}>
+                    <li>
+                      <Link
+                        href="/"
+                        onClick={handleCloseCategoryDrawer}
+                        style={{
+                          display: 'block',
+                          color: '#333',
+                          fontWeight: 500,
+                          fontSize: '17px',
+                          borderBottom: '1px solid #d6d3d3',
+                          padding: '10px 1.25rem',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        Home
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/frontEnd/about_us"
+                        onClick={handleCloseCategoryDrawer}
+                        style={{
+                          display: 'block',
+                          color: '#333',
+                          fontWeight: 500,
+                          fontSize: '17px',
+                          borderBottom: '1px solid #d6d3d3',
+                          padding: '10px 1.25rem',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        About Us
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href="/frontEnd/shop"
+                        onClick={handleCloseCategoryDrawer}
+                        style={{
+                          display: 'block',
+                          color: '#333',
+                          fontWeight: 500,
+                          fontSize: '17px',
+                          borderBottom: '1px solid #d6d3d3',
+                          padding: '10px 1.25rem',
+                          textDecoration: 'none'
+                        }}
+                      >
+                        Shop
+                      </Link>
+                    </li>
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Cart Drawer */}
@@ -191,6 +321,17 @@ export default function BottomMenu() {
         isOpen={isCartDrawerOpen}
         onClose={handleCloseCartDrawer}
       />
+
+      <style jsx>{`
+        @keyframes slideInLeft {
+          from {
+            transform: translateX(-100%);
+          }
+          to {
+            transform: translateX(0);
+          }
+        }
+      `}</style>
     </>
   );
 }
