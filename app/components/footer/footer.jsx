@@ -65,7 +65,7 @@ export default async function Footer() {
 
   const footerLinks = {
     shop: [
-      { name: "All Products", href: "/products" },
+      { name: "All Products", href: "/frontEnd/shop" },
       { name: "New Arrivals", href: "/" },
       { name: "Best Sellers", href: "/" },
       // { name: "Sale", href: "/products/sale" },
