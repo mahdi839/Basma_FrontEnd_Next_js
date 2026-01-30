@@ -19,7 +19,7 @@ import LogButtons from "./LogButtons";
 import NavSearch from "./navSearch/NavSearch";
 import NavCategories from "./components/NavCategories";
 import style from "./hero.module.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import CartDrawer from "../components/CartDrawer";
 
 export default function Navbar({ onCartClick }) {
@@ -29,7 +29,6 @@ export default function Navbar({ onCartClick }) {
   const [isShowCollaps, setIsShowCollaps] = useState(false);
   const [isShowCollapsMenu, setIsShowCollapsMenu] = useState("category");
   const [footerData, setFooterData] = useState(null);
-  const cartPopupRef = useRef(null);
   const [mobileQuery, setMobileQuery] = useState("");
   const [mobileResults, setMobileResults] = useState([]);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -101,6 +100,7 @@ export default function Navbar({ onCartClick }) {
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
+
   const handleClick = () => {
     setIsCartDrawerOpen(true);
   };
