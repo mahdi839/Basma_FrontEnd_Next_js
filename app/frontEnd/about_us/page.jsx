@@ -558,7 +558,7 @@ const AboutUs = () => {
         <div className="container">
           <div className="row text-center">
             <div className="col-md-3 mb-4 mb-md-0">
-              <div className="display-4 fw-bold" style={{ color: '#7d0ba7' }}>1000+</div>
+              <div className="display-4 fw-bold" style={{ color: '#7d0ba7' }}>10000+</div>
               <p className="text-muted mb-0">Happy Customers</p>
             </div>
             <div className="col-md-3 mb-4 mb-md-0">
