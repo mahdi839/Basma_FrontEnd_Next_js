@@ -68,28 +68,28 @@ export default async function Footer() {
       { name: "All Products", href: "/products" },
       { name: "New Arrivals", href: "/" },
       { name: "Best Sellers", href: "/" },
-      { name: "Sale", href: "/products/sale" },
+      // { name: "Sale", href: "/products/sale" },
       // { name: "Gift Cards", href: "/gift-cards" }
     ],
     support: [
-      { name: "Contact Us", href: "/" },
-      { name: "FAQ", href: "/faq" },
-      // { name: "Shipping Info", href: "/" },
-      { name: "Returns & Exchanges", href: "/returns" },
+      // { name: "Contact Us", href: "/" },
+      // { name: "FAQ", href: "/faq" },
+      { name: "Privacy Policy", href: "/frontEnd/privacy_policy" },
+      { name: "Returns & Exchanges", href: "/frontEnd/return_policy" },
       { name: "Size Guide", href: "/size-guide" }
     ],
     company: [
-      { name: "About Us", href: "/about" },
+      { name: "About Us", href: "/frontEnd/about_us" },
       { name: "Our Story", href: "/" },
       { name: "Careers", href: "/" },
       // { name: "Store Locator", href: "/stores" }
     ],
-    legal: [
-      { name: "Privacy Policy", href: "/privacy" },
-      { name: "Terms of Service", href: "/terms" },
-      // { name: "Accessibility", href: "/accessibility" },
-      // { name: "Sitemap", href: "/sitemap" }
-    ]
+    // legal: [
+      
+    //   { name: "Terms of Service", href: "/terms" },
+    //   // { name: "Accessibility", href: "/accessibility" },
+    //   // { name: "Sitemap", href: "/sitemap" }
+    // ]
   };
 
   return (
