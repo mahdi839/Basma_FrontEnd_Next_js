@@ -19,9 +19,6 @@ const ProductCard = React.memo(function ProductCard({
   function handleShowImage(index, colorImage) {
     setSelectedImage({ url: colorImage, index })
   }
-  // ✅ Custom hook usage
-  const { discountedPrice, originalPrice, discount } =
-    useDiscountedPrice(slotProducts);
 
   return (
     <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
@@ -56,14 +53,16 @@ const ProductCard = React.memo(function ProductCard({
               </span>
             </p>
             <div className="d-flex gap-3 align-items-left mt-1 mt-md-2">
-              {discount > 0 && (
-                <span className="discount-price text-decoration-line-through">
-                  {originalPrice}৳
-                </span>
-              )}
-              <span className="fw-bold product-price">
-                {discountedPrice}৳
+              <span className="discount-price text-decoration-line-through">
+                {slotProducts?.price??0}৳
               </span>
+              {
+                slotProducts.discount && (
+                  <span className="fw-bold product-price">
+                    {slotProducts.discount ?? ""}৳
+                  </span>
+                )
+              }
             </div>
           </div>
         </Link>

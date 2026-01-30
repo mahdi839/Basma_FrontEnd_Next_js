@@ -135,7 +135,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         id: product.id,
         title: product.title,
         size: selectedSize ? selectedVariant.id : "",
-        price: selectedVariant?.pivot?.price ?? product.price,
+        price: selectedVariant?.pivot?.price ?? product.discount ?? 0,
         image: imageUrl,
         colorImage: selectedColor ? baseUrl + selectedColor : null,
         preQty: preQty ?? 1,
@@ -236,7 +236,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         id: baseProduct.id,
         title: baseProduct.title,
         size: modalSelectedSize ?? "",
-        price: selectedVariant?.pivot?.price ?? baseProduct.price,
+        price: selectedVariant?.pivot?.price ?? baseProduct.discount ?? 0,
         image: imageUrl,
         colorImage: modalSelectedColor ? baseUrl + modalSelectedColor : null,
         preQty: preQty ?? 1,
@@ -427,18 +427,17 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             {/* Price Display */}
             <div className="price-section">
               {/* Show original price only if discount exists */}
-              {discount > 0 && (
-                <div className="discount-price text-decoration-line-through">
-                  ৳ {originalPrice * (preQty ?? 1)}
-                </div>
-              )}
-              <div className="product-price">
-                ৳
-                {(selectedSize
-                  ? product?.sizes?.find(s => s.id == selectedSize)?.pivot?.price
-                  : discountedPrice) * (preQty ?? 1)}
+
+              <div className="discount-price text-decoration-line-through">
+                {product?.price ?? 0}৳
               </div>
 
+
+              {product?.discount > 0 && (
+                <div className="product-price">
+                  {(product?.discount ?? 0) * (preQty ?? 1)}৳
+                </div>
+              )}
 
             </div>
 

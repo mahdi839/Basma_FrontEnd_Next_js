@@ -72,7 +72,7 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                             </select>
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label fw-semibold text-gray-700">Base Price</label>
+                            <label className="form-label fw-semibold text-gray-700">Original Price</label>
                             <div className="input-group">
                                 <span className="input-group-text bg-light border-gray-300">৳</span>
                                 <input
@@ -87,7 +87,7 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                             </div>
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label fw-semibold text-gray-700">Discount</label>
+                            <label className="form-label fw-semibold text-gray-700">Discounted Price</label>
                             <input
                                 type="text"
                                 className="form-control border-gray-300 focus-border-primary"
