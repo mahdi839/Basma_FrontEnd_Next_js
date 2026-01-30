@@ -172,7 +172,7 @@ export default function Navbar({ onCartClick }) {
         <div className="container">
           <div className="row align-items-center py-2">
             {/* Mobile menu */}
-            <div className="d-flex d-xl-none justify-content-around align-items-center w-100 px-3 mt-3" style={{position:'sticky',top:0}}>
+            <div className="d-flex d-xl-none justify-content-around align-items-center w-100 px-3 mt-3">
               <div className="mobile_humberger_icon" onClick={handleCollaps}>
                 <IoMenuOutline size={24} />
               </div>
