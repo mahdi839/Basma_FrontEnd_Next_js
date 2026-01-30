@@ -432,13 +432,11 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 {product?.price ?? 0}৳
               </div>
 
-
               {product?.discount > 0 && (
                 <div className="product-price">
                   {(product?.discount ?? 0) * (preQty ?? 1)}৳
                 </div>
               )}
-
             </div>
 
             {/* Colors Selection */}
