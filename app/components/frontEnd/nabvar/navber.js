@@ -353,8 +353,16 @@ export default function Navbar({ onCartClick }) {
 
       {/* Mobile collaps menu */}
       <div
-        className={`${style.collaps_div} ${isShowCollaps ? style.show_col_menu : style.hide_col_menu
+        className={`${style.collaps_div} ${isShowCollaps ? "position-fixed top-0 start-0 h-100 bg-white d-md-none" : style.hide_col_menu
           }`}
+           style={{ 
+              width: '80vw',
+              maxWidth: '350px',
+              boxShadow: '2px 0 10px rgba(0,0,0,0.1)',
+              overflowY: 'auto',
+              zIndex: 10001,
+              animation: 'slideInLeft 0.3s ease'
+            }}
       >
         <div
           className={`${style.collaps_cancel_div}`}
