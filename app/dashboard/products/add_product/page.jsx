@@ -7,6 +7,7 @@ import { FaTrash, FaPlus, FaChevronDown, FaChevronUp, FaImage, FaPalette, FaRule
 import { useRouter } from "next/navigation";
 import SidebarCreateSize from "./components/SidebarCreateSize";
 import SidebarCreateCategory from "./components/SidebarCreateCategory";
+import Select from "react-select";
 
 export default function ProductUploadForm() {
   const [categories, setCategories] = useState([]);
@@ -159,6 +160,18 @@ export default function ProductUploadForm() {
     }));
   };
 
+  const categoryOptions = categories.map((category) => ({
+    value: category.id,
+    label: category.name,
+  }));
+
+  const selectedCategories = categoryOptions.filter((opt) =>
+    formData.categories.some(
+      (c) => String(c.category_id) === String(opt.value)
+    )
+  );
+
+
   // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -231,13 +244,13 @@ export default function ProductUploadForm() {
         faqs: [],
         categories: [],
       });
-         await fetch("/api/revalidate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            tags: ["social-links"],
-          }),
-        });
+      await fetch("/api/revalidate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tags: ["social-links"],
+        }),
+      });
 
       toast.success("Product Successfully Uploaded");
       router.push('/dashboard/products')
@@ -674,31 +687,36 @@ export default function ProductUploadForm() {
                   <label className="form-label fw-semibold text-gray-700">
                     Select Categories <span className="text-danger">*</span>
                   </label>
-                  <select
-                    multiple
-                    className="form-select border-gray-300"
-                    size="6"
-                    value={formData.categories.map((c) => c.category_id)}
-                    onChange={(e) => {
-                      const selectedIds = Array.from(
-                        e.target.selectedOptions,
-                        (o) => o.value
-                      );
+                  <Select
+                    isMulti
+                    isSearchable
+                    options={categoryOptions}
+                    value={selectedCategories}
+                    placeholder="Search & select categories..."
+                    onChange={(selectedOptions) => {
                       setFormData((s) => ({
                         ...s,
-                        categories: selectedIds.map((category_id) => ({
-                          category_id,
-                        })),
+                        categories: selectedOptions
+                          ? selectedOptions.map((opt) => ({
+                            category_id: opt.value,
+                          }))
+                          : [],
                       }));
                     }}
-                    required
-                  >
-                    {categories?.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
+                    classNamePrefix="react-select"
+                    styles={{
+                      control: (base) => ({
+                        ...base,
+                        borderColor: "#d1d3e2",
+                        minHeight: "38px",
+                      }),
+                      menu: (base) => ({
+                        ...base,
+                        zIndex: 9999,
+                      }),
+                    }}
+                  />
+
                   <div className="d-flex justify-content-between align-items-center mt-2">
                     <small className="text-muted">Hold Ctrl/Cmd to select multiple</small>
                     <span className="badge bg-primary">{formData.categories.length} selected</span>

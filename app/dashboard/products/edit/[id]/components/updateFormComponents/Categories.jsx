@@ -1,13 +1,23 @@
 import React from 'react'
 import { FaChevronDown, FaChevronUp, FaTags } from 'react-icons/fa';
-
+import Select from "react-select";
 
 export default function Categories({
     toggleSection,
     expandedSections,
     formData,
     setFormData,
-    categories,}) {
+    categories, }) {
+    // 1️⃣ Convert backend categories → react-select format
+    const options = categories?.map((category) => ({
+        value: category.id,
+        label: category.name,
+    })) || [];
+
+    // 2️⃣ Convert saved form data → selected options
+    const selectedOptions = options.filter((opt) =>
+        formData.categories.some((c) => c.category_id == opt.value)
+    );
     return (
         <div className="card mb-4 border-top">
             <div
@@ -29,31 +39,21 @@ export default function Categories({
                     <label className="form-label fw-semibold text-gray-700">
                         Select Categories <span className="text-danger">*</span>
                     </label>
-                    <select
-                        multiple
-                        className="form-select border-gray-300"
-                        size="6"
-                        value={formData.categories.map((c) => c.category_id)}
-                        onChange={(e) => {
-                            const selectedIds = Array.from(
-                                e.target.selectedOptions,
-                                (o) => o.value
-                            );
+                    <Select
+                        isMulti
+                        options={options}
+                        value={selectedOptions}
+                        onChange={(selectedOptions) => {
                             setFormData((s) => ({
                                 ...s,
-                                categories: selectedIds.map((category_id) => ({
-                                    category_id,
+                                categories: selectedOptions.map((opt) => ({
+                                    category_id: opt.value,
                                 })),
                             }));
                         }}
-                        required
-                    >
-                        {categories?.map((category) => (
-                            <option key={category.id} value={category.id}>
-                                {category.name}
-                            </option>
-                        ))}
-                    </select>
+                        placeholder="Search and select categories..."
+                    />
+
                     <div className="d-flex justify-content-between align-items-center mt-2">
                         <small className="text-muted">Hold Ctrl/Cmd to select multiple</small>
                         <span className="badge bg-primary">{formData.categories.length} selected</span>
