@@ -13,6 +13,7 @@ import SubmitButtonDiv from "./updateFormComponents/SubmitButtonDiv";
 import Colors from "./updateFormComponents/Colors";
 import BasicInfo from "./updateFormComponents/BasicInfo";
 import { useRouter } from "next/navigation";
+
 export default function ProductUpdateForm({
   isEditMode = false,
   initialData = null,
@@ -63,6 +64,30 @@ export default function ProductUpdateForm({
 
   useEffect(() => {
     if (isEditMode && initialData) {
+      // Parse colors if it's a JSON string
+      let parsedColors = [];
+      if (initialData.colors) {
+        if (typeof initialData.colors === 'string') {
+          try {
+            parsedColors = JSON.parse(initialData.colors);
+          } catch (e) {
+            console.error('Error parsing colors:', e);
+            parsedColors = [];
+          }
+        } else if (Array.isArray(initialData.colors)) {
+          parsedColors = initialData.colors;
+        }
+      }
+
+      // Transform colors to include all necessary fields
+      const transformedColors = parsedColors.map(color => ({
+        id: color.id,
+        code: color.code || "#000000",
+        name: color.name || "",
+        image: null, // New uploads will go here
+        existing_image: color.image || null // Keep track of existing image path
+      }));
+
       // Transform initial data to match backend structure
       const transformedData = {
         title: initialData.title || "",
@@ -73,15 +98,7 @@ export default function ProductUpdateForm({
         status: initialData.status || "in-stock",
         price: initialData.price || "",
         images: [],
-        colors: Array.isArray(initialData.colors)
-          ? initialData.colors.map(color => ({
-            id: color.id,
-            code: color.code || "#000000",
-            name: color.name || "",
-            image: null,
-            existing_image: color.image
-          }))
-          : (initialData.colors ? JSON.parse(initialData.colors) : []),
+        colors: transformedColors,
         sizes: initialData.sizes?.map(size => ({
           id: size.pivot?.id,
           size_id: size.id,
@@ -247,15 +264,27 @@ export default function ProductUpdateForm({
       data.append("_method", "PUT");
     }
 
-    // Colors with images
+    // Colors with images and names
     formData.colors.forEach((color, i) => {
-      data.append(`colors[${i}][code]`, color.code);
+      // Always include code (backend requires it)
+      data.append(`colors[${i}][code]`, color.code || "#000000");
+      
+      // Include name if provided
       if (color.name) {
         data.append(`colors[${i}][name]`, color.name);
       }
+      
+      // Include ID if editing existing color
+      if (color.id) {
+        data.append(`colors[${i}][id]`, color.id);
+      }
+      
+      // Handle new image upload
       if (color.image) {
         data.append(`colors[${i}][image]`, color.image);
-      } else if (color.existing_image) {
+      } 
+      // Keep existing image if no new upload
+      else if (color.existing_image) {
         data.append(`colors[${i}][existing_image]`, color.existing_image);
       }
     });

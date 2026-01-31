@@ -1,5 +1,5 @@
 "use client"
-import {FaQuestionCircle, FaVideo, FaBox } from "react-icons/fa";
+import { FaQuestionCircle, FaVideo, FaBox } from "react-icons/fa";
 import ProductImage from "./ProductImage";
 import ProductCategories from "./ProductCategories";
 import ProductPricing from "./ProductPricing";
@@ -81,7 +81,7 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                         <small className="text-muted d-block">
                                             Created: {formatCreatedAt(product.created_at)}
                                         </small>
-                                         <small className="text-muted">
+                                        <small className="text-muted">
                                             Discount: {product.discount}
                                         </small>
                                         <div className="mt-1">
@@ -90,28 +90,45 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                     </td>
                                     <td>{product.sku}</td>
                                     <td>
-                                        <div className="d-flex gap-2 mt-2">
-                                            {
-                                                product?.colors?.map((color) => (
-                                                    <div>
-                                                        <Zoom>
+                                        <div className="d-flex flex-wrap gap-2 mt-2">
+                                            {product?.colors?.map((color, index) => (
+                                                <div
+                                                    key={index}
+                                                    className="d-flex flex-column align-items-center p-1 border rounded"
+                                                    style={{ width: '60px', backgroundColor: '#f8f9fa' }}
+                                                >
+                                                    <Zoom>
+                                                        {color.image ? (
                                                             <img
-                                                                width={28}
-                                                                height={28}
-                                                                src={baseUrl + color.image ?? ""}
-                                                                alt=""
+                                                                src={baseUrl + color.image}
+                                                                alt={color.name || "Color"}
                                                                 className="rounded-circle border"
-                                                                style={{ objectFit: 'cover' }}
-                                                                onError={(e) => {
-                                                                    // Fallback to color code if image fails to load
-                                                                    e.target.style.display = 'none';
-                                                                }}
+                                                                style={{ width: '28px', height: '28px', objectFit: 'cover' }}
+                                                                onError={(e) => (e.target.style.display = 'none')}
                                                             />
-                                                        </Zoom>
-                                                    </div>
-                                                ))
-                                            }
+                                                        ) : (
+                                                            <div
+                                                                className="rounded-circle border"
+                                                                style={{
+                                                                    width: '28px',
+                                                                    height: '28px',
+                                                                    backgroundColor: color.code || '#ccc',
+                                                                }}
+                                                            ></div>
+                                                        )}
+                                                    </Zoom>
+
+                                                    <span
+                                                        className="mt-1 text-center xsmall fw-medium"
+                                                        style={{ fontSize: '10px', wordBreak: 'break-word' }}
+                                                    >
+                                                        {color.name || "Not Found"}
+                                                    </span>
+                                                </div>
+                                            ))}
                                         </div>
+
+
                                     </td>
 
                                     <td>

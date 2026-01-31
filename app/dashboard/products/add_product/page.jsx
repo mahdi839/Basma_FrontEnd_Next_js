@@ -185,7 +185,7 @@ export default function ProductUploadForm() {
     data.append("status", formData.status);
     data.append("price", formData.price || "");
 
-    // Colors with images
+    // Colors with images and names
     formData.colors.forEach((color, i) => {
       data.append(`colors[${i}][code]`, color.code);
       data.append(`colors[${i}][name]`, color.name || "");
@@ -426,7 +426,19 @@ export default function ProductUploadForm() {
                   ) : (
                     formData.colors.map((color, index) => (
                       <div key={index} className="row g-3 mb-3 p-3 border rounded bg-light align-items-end">
-                        <div className="col-md-7">
+                        <div className="col-md-3">
+                          <label className="form-label fw-semibold text-gray-700">Color Name</label>
+                          <input
+                            type="text"
+                            className="form-control border-gray-300"
+                            placeholder="e.g., Red, Blue, Navy"
+                            value={color.name || ""}
+                            onChange={(e) =>
+                              handleColorChange(index, "name", e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="col-md-6">
                           <label className="form-label fw-semibold text-gray-700">Color Image</label>
                           <div className="input-group">
                             <input
@@ -467,7 +479,7 @@ export default function ProductUploadForm() {
                       onClick={() =>
                         setFormData((s) => ({
                           ...s,
-                          colors: [...s.colors, { code: "#000000", image: null }],
+                          colors: [...s.colors, { code: "#000000", name: "", image: null }],
                         }))
                       }
                     >

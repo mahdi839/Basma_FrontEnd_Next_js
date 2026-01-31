@@ -39,7 +39,6 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
                     onChange={(e) =>
                       handleSizeChange(index, "size_id", e.target.value)
                     }
-                    required
                   >
                     <option value="">Select Size</option>
                     {sizes.map((s) => (
@@ -77,7 +76,6 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
                     onChange={(e) =>
                       handleSizeChange(index, "stock", e.target.value)
                     }
-                    required
                   />
                 </div>
                 <div className="col-md-2 d-flex align-items-end">
