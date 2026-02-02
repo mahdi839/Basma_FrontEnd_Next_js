@@ -9,6 +9,7 @@ import SizesPricing from "./updateFormComponents/SizesPricing";
 import ProductImages from "./updateFormComponents/ProductImages";
 import Categories from "./updateFormComponents/Categories";
 import Faq from "./updateFormComponents/Faq";
+import Specifications from "./updateFormComponents/Specifications";
 import SubmitButtonDiv from "./updateFormComponents/SubmitButtonDiv";
 import Colors from "./updateFormComponents/Colors";
 import BasicInfo from "./updateFormComponents/BasicInfo";
@@ -37,6 +38,7 @@ export default function ProductUpdateForm({
     sizes: [],
     faqs: [],
     categories: [],
+    specifications: [],
   });
 
   // Sidebar states
@@ -49,6 +51,7 @@ export default function ProductUpdateForm({
   const [loadingSidebar, setLoadingSidebar] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
+    specifications: false,
     colors: false,
     sizes: false,
     images: false,
@@ -112,6 +115,11 @@ export default function ProductUpdateForm({
         })) || [],
         categories: initialData.category?.map(cat => ({
           category_id: cat.id
+        })) || [],
+        specifications: initialData.specifications?.map(spec => ({
+          id: spec.id,
+          key: spec.key || "",
+          value: spec.value || ""
         })) || [],
       };
 
@@ -207,11 +215,16 @@ export default function ProductUpdateForm({
     .map((item, i) => item.size_id)
     .filter((id, i2) => id !== "" && id !== null);
 
-
   const handleFAQChange = (index, field, value) => {
     const next = [...formData.faqs];
     next[index] = { ...next[index], [field]: value };
     setFormData((s) => ({ ...s, faqs: next }));
+  };
+
+  const handleSpecificationChange = (index, field, value) => {
+    const next = [...formData.specifications];
+    next[index] = { ...next[index], [field]: value };
+    setFormData((s) => ({ ...s, specifications: next }));
   };
 
   const handleImageUpload = (e) => {
@@ -251,9 +264,9 @@ export default function ProductUpdateForm({
     const data = new FormData();
     data.append("title", formData.title);
     data.append("short_description", formData.short_description);
-    data.append("video_url", formData.video_url);
-    data.append("description", formData.description);
-    data.append("discount", formData.discount);
+    data.append("video_url", formData.video_url || "");
+    data.append("description", formData.description || "");
+    data.append("discount", formData.discount || "");
     data.append("status", formData.status);
 
     if (formData.price) {
@@ -291,22 +304,26 @@ export default function ProductUpdateForm({
 
     // Sizes with pricing
     formData.sizes.forEach((size, i) => {
-      data.append(`sizes[${i}][size_id]`, size.size_id);
-      data.append(`sizes[${i}][price]`, size.price);
-      data.append(`sizes[${i}][stock]`, size.stock);
+      if (size.size_id) {
+        data.append(`sizes[${i}][size_id]`, size.size_id);
+        data.append(`sizes[${i}][price]`, size.price || "");
+        data.append(`sizes[${i}][stock]`, size.stock || 0);
+      }
     });
 
     // Product images
     formData.images.forEach((image) => data.append("image[]", image));
 
     // Delete removed existing images
-    const initialImageIds = initialData?.images?.map(img => img.id) || [];
-    const currentImageIds = existingImages.map(img => img.id);
-    const deletedImages = initialImageIds.filter(id => !currentImageIds.includes(id));
+    if (isEditMode) {
+      const initialImageIds = initialData?.images?.map(img => img.id) || [];
+      const currentImageIds = existingImages.map(img => img.id);
+      const deletedImages = initialImageIds.filter(id => !currentImageIds.includes(id));
 
-    deletedImages.forEach(imgId => {
-      data.append("deleted_images[]", imgId);
-    });
+      deletedImages.forEach(imgId => {
+        data.append("deleted_images[]", imgId);
+      });
+    }
 
     // Categories
     formData.categories.forEach((category, i) => {
@@ -322,6 +339,15 @@ export default function ProductUpdateForm({
       data.append(`faqs[${i}][answer]`, faq.answer);
     });
 
+    // Specifications
+    const validSpecs = formData.specifications.filter(
+      (s) => s.key?.trim() !== "" && s.value?.trim() !== ""
+    );
+    validSpecs.forEach((spec, i) => {
+      data.append(`specifications[${i}][key]`, spec.key);
+      data.append(`specifications[${i}][value]`, spec.value);
+    });
+
     let token = null;
     if (typeof window !== "undefined") token = localStorage.getItem("token");
 
@@ -329,13 +355,13 @@ export default function ProductUpdateForm({
       const url = isEditMode
         ? `${baseUrl}api/products/${productId}`
         : `${baseUrl}api/products`;
+      
       const response = await axios.post(url, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       });
-
 
       if (!isEditMode) {
         setFormData({
@@ -351,8 +377,10 @@ export default function ProductUpdateForm({
           sizes: [],
           faqs: [],
           categories: [],
+          specifications: [],
         });
       }
+      
       // 🔥 invalidate cache
       await fetch("/api/revalidate", {
         method: "POST",
@@ -361,8 +389,9 @@ export default function ProductUpdateForm({
           tags: ["products"],
         }),
       });
+      
       toast.success(`Product ${isEditMode ? 'Updated' : 'Created'} Successfully`);
-      router.push('/dashboard/products')
+      router.push('/dashboard/products');
     } catch (error) {
       console.error("Error:", error.response?.data);
       toast.error(error.response?.data?.message || "An Error Occurred");
@@ -375,6 +404,9 @@ export default function ProductUpdateForm({
         {/* Main Form - Left Side */}
         <div className="col-lg-8">
           <div className="d-flex align-items-center mb-4">
+            <h3 className="mb-0 fw-bold text-gray-800">
+              {isEditMode ? 'Edit Product' : 'Create New Product'}
+            </h3>
           </div>
 
           <form onSubmit={handleSubmit} className="product-form">
@@ -384,6 +416,15 @@ export default function ProductUpdateForm({
               formData={formData}
               setFormData={setFormData}
               expandedSections={expandedSections}
+            />
+
+            {/* Specifications */}
+            <Specifications
+              toggleSection={toggleSection}
+              expandedSections={expandedSections}
+              formData={formData}
+              handleSpecificationChange={handleSpecificationChange}
+              setFormData={setFormData}
             />
 
             {/* Colors */}
@@ -399,7 +440,6 @@ export default function ProductUpdateForm({
             />
 
             {/* Sizes & Pricing */}
-
             <SizesPricing
               toggleSection={toggleSection}
               expandedSections={expandedSections}
@@ -424,7 +464,6 @@ export default function ProductUpdateForm({
             />
 
             {/* Categories */}
-
             <Categories
               toggleSection={toggleSection}
               expandedSections={expandedSections}
@@ -469,6 +508,22 @@ export default function ProductUpdateForm({
           />
         </div>
       </div>
+
+      <style jsx>{`
+        .border-dashed {
+          border: 2px dashed #dee2e6;
+        }
+        .cursor-pointer {
+          cursor: pointer;
+        }
+        .focus-border-primary:focus {
+          border-color: #4e73df;
+          box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        .border-gray-300 {
+          border-color: #d1d3e2 !important;
+        }
+      `}</style>
     </div>
   );
 }

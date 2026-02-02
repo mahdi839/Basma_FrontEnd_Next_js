@@ -23,7 +23,7 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                     <div className="row g-3">
                         <div className="col-md-6">
                             <label className="form-label fw-semibold text-gray-700">
-                                Title <span className="text-danger">*</span>
+                                Product Title <span className="text-danger">*</span>
                             </label>
                             <input
                                 type="text"
@@ -56,7 +56,7 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                         </div>
                         <div className="col-md-6">
                             <label className="form-label fw-semibold text-gray-700">
-                                Status <span className="text-danger">*</span>
+                                Stock Status <span className="text-danger">*</span>
                             </label>
                             <select
                                 className="form-select border-gray-300 focus-border-primary"
@@ -66,13 +66,16 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                                     setFormData({ ...formData, status: e.target.value })
                                 }
                             >
-                                <option value="in-stock" className="text-success">In Stock</option>
-                                <option value="sold" className="text-danger">Sold</option>
-                                <option value="prebook" className="text-warning">Pre-book</option>
+                                <option value="in-stock">In Stock</option>
+                                <option value="prebook">Pre-book</option>
+                                <option value="sold">Sold Out</option>
                             </select>
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label fw-semibold text-gray-700">Original Price</label>
+                            <label className="form-label fw-semibold text-gray-700">
+                                Base Price
+                                <small className="text-muted ms-1">(Optional if using size variants)</small>
+                            </label>
                             <div className="input-group">
                                 <span className="input-group-text bg-light border-gray-300">৳</span>
                                 <input
@@ -82,12 +85,16 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                                     onChange={(e) =>
                                         setFormData({ ...formData, price: e.target.value })
                                     }
-                                    placeholder="Optional base price"
+                                    placeholder="e.g., 1500"
+                                    min="0"
                                 />
                             </div>
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label fw-semibold text-gray-700">Discounted Price</label>
+                            <label className="form-label fw-semibold text-gray-700">
+                                Discount
+                                <small className="text-muted ms-1">(Optional)</small>
+                            </label>
                             <input
                                 type="text"
                                 className="form-control border-gray-300 focus-border-primary"
@@ -95,11 +102,14 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                                 onChange={(e) =>
                                     setFormData({ ...formData, discount: e.target.value })
                                 }
-                                placeholder="e.g., 10% or 100 BDT"
+                                placeholder="e.g., 10% off or ৳100 off"
                             />
                         </div>
                         <div className="col-md-6">
-                            <label className="form-label fw-semibold text-gray-700">Video URL</label>
+                            <label className="form-label fw-semibold text-gray-700">
+                                Video URL
+                                <small className="text-muted ms-1">(Optional)</small>
+                            </label>
                             <input
                                 type="url"
                                 className="form-control border-gray-300 focus-border-primary"
@@ -111,7 +121,10 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                             />
                         </div>
                         <div className="col-12">
-                            <label className="form-label fw-semibold text-gray-700">Description</label>
+                            <label className="form-label fw-semibold text-gray-700">
+                                Detailed Description
+                                <small className="text-muted ms-1">(Optional)</small>
+                            </label>
                             <textarea
                                 className="form-control border-gray-300 focus-border-primary"
                                 rows={5}
@@ -122,7 +135,7 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                                         description: e.target.value,
                                     })
                                 }
-                                placeholder="Detailed product description..."
+                                placeholder="Enter detailed product description, features, materials, care instructions, etc..."
                             />
                         </div>
                     </div>

@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import DesktopTableView from "./DesktopTableView";
 import MobileCardView from "./MobileCardView";
 import VariantsModal from "./VariantsModal";
+import SpecificationsModal from "./SpecificationsModal";
 
 export default function ProductTable({ productData }) {
   const [products, setProducts] = useState(productData);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showVariantsModal, setShowVariantsModal] = useState(false);
+  const [showSpecificationsModal, setShowSpecificationsModal] = useState(false);
 
   // ✅ FIX — Update table whenever parent sends new data
   useEffect(() => {
@@ -19,10 +21,15 @@ export default function ProductTable({ productData }) {
     setShowVariantsModal(true);
   };
 
+  const handleShowSpecifications = (product) => {
+    setSelectedProduct(product);
+    setShowSpecificationsModal(true);
+  };
+
   const handleDelete = (id) => {
     setProducts(prev => prev.filter(p => p.id !== id));
     // 🔥 invalidate cache
-     fetch("/api/revalidate", {
+    fetch("/api/revalidate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -37,6 +44,7 @@ export default function ProductTable({ productData }) {
         <DesktopTableView
           products={products}
           onShowVariants={handleShowVariants}
+          onShowSpecifications={handleShowSpecifications}
           onDelete={handleDelete}
         />
       </div>
@@ -45,6 +53,7 @@ export default function ProductTable({ productData }) {
         <MobileCardView
           products={products}
           onShowVariants={handleShowVariants}
+          onShowSpecifications={handleShowSpecifications}
           onDelete={handleDelete}
         />
       </div>
@@ -53,6 +62,13 @@ export default function ProductTable({ productData }) {
         <VariantsModal
           product={selectedProduct}
           onClose={() => setShowVariantsModal(false)}
+        />
+      )}
+
+      {showSpecificationsModal && selectedProduct && (
+        <SpecificationsModal
+          product={selectedProduct}
+          onClose={() => setShowSpecificationsModal(false)}
         />
       )}
     </>

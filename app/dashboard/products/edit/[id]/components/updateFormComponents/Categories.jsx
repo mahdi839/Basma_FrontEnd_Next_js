@@ -7,7 +7,8 @@ export default function Categories({
     expandedSections,
     formData,
     setFormData,
-    categories, }) {
+    categories, 
+}) {
     // 1️⃣ Convert backend categories → react-select format
     const options = categories?.map((category) => ({
         value: category.id,
@@ -18,8 +19,9 @@ export default function Categories({
     const selectedOptions = options.filter((opt) =>
         formData.categories.some((c) => c.category_id == opt.value)
     );
+    
     return (
-        <div className="card mb-4 border-top">
+        <div className="card mb-4 border-0 shadow-sm">
             <div
                 className="card-header bg-white border-0 py-3 cursor-pointer"
                 onClick={() => toggleSection('categories')}
@@ -31,7 +33,10 @@ export default function Categories({
                         </div>
                         <h5 className="mb-0 fw-semibold text-dark">Categories</h5>
                     </div>
-                    {expandedSections.categories ? <FaChevronUp /> : <FaChevronDown />}
+                    <div className="d-flex align-items-center">
+                        <span className="badge bg-secondary me-2">{formData.categories.length}</span>
+                        {expandedSections.categories ? <FaChevronUp /> : <FaChevronDown />}
+                    </div>
                 </div>
             </div>
             <div className={`collapse ${expandedSections.categories ? 'show' : ''}`}>
@@ -41,23 +46,48 @@ export default function Categories({
                     </label>
                     <Select
                         isMulti
+                        isSearchable
                         options={options}
                         value={selectedOptions}
                         onChange={(selectedOptions) => {
                             setFormData((s) => ({
                                 ...s,
-                                categories: selectedOptions.map((opt) => ({
+                                categories: selectedOptions ? selectedOptions.map((opt) => ({
                                     category_id: opt.value,
-                                })),
+                                })) : [],
                             }));
                         }}
                         placeholder="Search and select categories..."
+                        classNamePrefix="react-select"
+                        styles={{
+                            control: (base) => ({
+                                ...base,
+                                borderColor: "#d1d3e2",
+                                minHeight: "38px",
+                            }),
+                            menu: (base) => ({
+                                ...base,
+                                zIndex: 9999,
+                            }),
+                        }}
                     />
 
                     <div className="d-flex justify-content-between align-items-center mt-2">
-                        <small className="text-muted">Hold Ctrl/Cmd to select multiple</small>
-                        <span className="badge bg-primary">{formData.categories.length} selected</span>
+                        <small className="text-muted">
+                            Hold Ctrl/Cmd to select multiple | Type to search
+                        </small>
+                        <span className="badge bg-primary">
+                            {formData.categories.length} selected
+                        </span>
                     </div>
+                    
+                    {formData.categories.length === 0 && (
+                        <div className="alert alert-warning mt-3 mb-0" role="alert">
+                            <small>
+                                <strong>Note:</strong> Please select at least one category for this product.
+                            </small>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

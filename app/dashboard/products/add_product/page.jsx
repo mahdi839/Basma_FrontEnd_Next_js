@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "@/app/components/dashboard/components/button/Button";
 import { toast } from "react-toastify";
-import { FaTrash, FaPlus, FaChevronDown, FaChevronUp, FaImage, FaPalette, FaRuler, FaTags, FaQuestionCircle } from "react-icons/fa";
+import { FaTrash, FaPlus, FaChevronDown, FaChevronUp, FaImage, FaPalette, FaRuler, FaTags, FaQuestionCircle, FaListUl } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import SidebarCreateSize from "./components/SidebarCreateSize";
 import SidebarCreateCategory from "./components/SidebarCreateCategory";
@@ -26,6 +26,7 @@ export default function ProductUploadForm() {
     productSizes: [],
     faqs: [],
     categories: [],
+    specifications: [],
   });
 
   // Sidebar states
@@ -38,6 +39,7 @@ export default function ProductUploadForm() {
   const [loadingSidebar, setLoadingSidebar] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
+    specifications: false,
     colors: false,
     sizes: false,
     images: false,
@@ -139,6 +141,12 @@ export default function ProductUploadForm() {
     setFormData((s) => ({ ...s, faqs: next }));
   };
 
+  const handleSpecificationChange = (index, field, value) => {
+    const next = [...formData.specifications];
+    next[index] = { ...next[index], [field]: value };
+    setFormData((s) => ({ ...s, specifications: next }));
+  };
+
   const handleImageUpload = (e) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
@@ -218,6 +226,15 @@ export default function ProductUploadForm() {
       data.append(`answer[${i}]`, faq.answer);
     });
 
+    // Specifications
+    const validSpecs = formData.specifications.filter(
+      (s) => s.key?.trim() !== "" && s.value?.trim() !== ""
+    );
+    validSpecs.forEach((spec, i) => {
+      data.append(`specifications[${i}][key]`, spec.key);
+      data.append(`specifications[${i}][value]`, spec.value);
+    });
+
     let token = null;
     if (typeof window !== "undefined") token = localStorage.getItem("token");
 
@@ -243,6 +260,7 @@ export default function ProductUploadForm() {
         productSizes: [],
         faqs: [],
         categories: [],
+        specifications: [],
       });
       await fetch("/api/revalidate", {
         method: "POST",
@@ -392,6 +410,95 @@ export default function ProductUploadForm() {
                         placeholder="Detailed product description..."
                       />
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Specifications */}
+            <div className="card mb-4 border-0 shadow-sm">
+              <div
+                className="card-header bg-white border-0 py-3 cursor-pointer"
+                onClick={() => toggleSection('specifications')}
+              >
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center">
+                    <div className="bg-opacity-10 p-2 rounded me-3">
+                      <FaListUl size={22} className="text-primary" />
+                    </div>
+                    <h5 className="mb-0 fw-semibold text-dark">Product Specifications</h5>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <span className="badge bg-primary me-2">{formData.specifications.length}</span>
+                    {expandedSections.specifications ? <FaChevronUp /> : <FaChevronDown />}
+                  </div>
+                </div>
+              </div>
+              <div className={`collapse ${expandedSections.specifications ? 'show' : ''}`}>
+                <div className="card-body pt-0">
+                  {formData.specifications.length === 0 ? (
+                    <div className="text-center py-4 text-muted">
+                      <FaListUl className="fs-1 mb-2 opacity-50" />
+                      <p className="mb-3">No specifications added yet</p>
+                    </div>
+                  ) : (
+                    formData.specifications.map((spec, index) => (
+                      <div key={index} className="row g-3 mb-3 p-3 border rounded bg-light">
+                        <div className="col-md-5">
+                          <label className="form-label fw-semibold text-gray-700">Key</label>
+                          <input
+                            type="text"
+                            className="form-control border-gray-300"
+                            placeholder="e.g., Product Code, Upper Material"
+                            value={spec.key}
+                            onChange={(e) =>
+                              handleSpecificationChange(index, "key", e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <label className="form-label fw-semibold text-gray-700">Value</label>
+                          <input
+                            type="text"
+                            className="form-control border-gray-300"
+                            placeholder="e.g., WFS005, Microfiber"
+                            value={spec.value}
+                            onChange={(e) =>
+                              handleSpecificationChange(index, "value", e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="col-md-1 d-flex align-items-end">
+                          <button
+                            type="button"
+                            className="btn btn-outline-danger w-100"
+                            onClick={() => {
+                              const next = formData.specifications.filter(
+                                (_, i) => i !== index
+                              );
+                              setFormData((s) => ({ ...s, specifications: next }));
+                            }}
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+
+                  <div className="text-center mt-3">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary"
+                      onClick={() =>
+                        setFormData((s) => ({
+                          ...s,
+                          specifications: [...s.specifications, { key: "", value: "" }],
+                        }))
+                      }
+                    >
+                      <FaPlus className="me-2" /> Add Specification
+                    </button>
                   </div>
                 </div>
               </div>

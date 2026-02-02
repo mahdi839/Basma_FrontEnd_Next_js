@@ -1,14 +1,15 @@
 "use client"
-import { FaQuestionCircle, FaVideo, FaBox } from "react-icons/fa";
+import { FaQuestionCircle, FaVideo, FaBox, FaListUl } from "react-icons/fa";
 import ProductImage from "./ProductImage";
 import ProductCategories from "./ProductCategories";
 import ProductPricing from "./ProductPricing";
 import ProductActions from "./ProductActions";
+import ProductSpecifications from "./ProductSpecifications";
 import './productIndex.css'
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
 
-export default function DesktopTableView({ products, onShowVariants, onDelete }) {
+export default function DesktopTableView({ products, onShowVariants, onDelete, onShowSpecifications }) {
     const formatCreatedAt = (dateString) => {
         const date = new Date(dateString);
         const day = date.getDate();
@@ -52,6 +53,7 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                 <th style={{ minWidth: '50px' }}>Status</th>
                                 <th style={{ minWidth: '70px' }}>Categories</th>
                                 <th style={{ minWidth: '90px' }}>Pricing & Variants</th>
+                                <th style={{ width: '60px' }}>Specs</th>
                                 <th style={{ width: '60px' }}>FAQ</th>
                                 <th style={{ width: '60px' }}>Video</th>
                                 <th style={{ width: '90px' }}>Actions</th>
@@ -81,58 +83,77 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                         <small className="text-muted d-block">
                                             Created: {formatCreatedAt(product.created_at)}
                                         </small>
-                                        <small className="text-muted">
-                                            Discount: {product.discount}
-                                        </small>
+                                        {product.discount && (
+                                            <small className="text-success fw-semibold d-block">
+                                                Discount: {product.discount}
+                                            </small>
+                                        )}
                                         <div className="mt-1">
                                             <span className="badge bg-secondary">ID: {product.id}</span>
                                         </div>
                                     </td>
-                                    <td>{product.sku}</td>
+                                    
                                     <td>
-                                        <div className="d-flex flex-wrap gap-2 mt-2">
-                                            {product?.colors?.map((color, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="d-flex flex-column align-items-center p-1 border rounded"
-                                                    style={{ width: '60px', backgroundColor: '#f8f9fa' }}
-                                                >
-                                                    <Zoom>
-                                                        {color.image ? (
-                                                            <img
-                                                                src={baseUrl + color.image}
-                                                                alt={color.name || "Color"}
-                                                                className="rounded-circle border"
-                                                                style={{ width: '28px', height: '28px', objectFit: 'cover' }}
-                                                                onError={(e) => (e.target.style.display = 'none')}
-                                                            />
-                                                        ) : (
-                                                            <div
-                                                                className="rounded-circle border"
-                                                                style={{
-                                                                    width: '28px',
-                                                                    height: '28px',
-                                                                    backgroundColor: color.code || '#ccc',
-                                                                }}
-                                                            ></div>
-                                                        )}
-                                                    </Zoom>
-
-                                                    <span
-                                                        className="mt-1 text-center xsmall fw-medium"
-                                                        style={{ fontSize: '10px', wordBreak: 'break-word' }}
+                                        <span className="badge bg-dark">{product.sku}</span>
+                                    </td>
+                                    
+                                    <td>
+                                        {product?.colors && product.colors.length > 0 ? (
+                                            <div className="d-flex flex-wrap gap-2 mt-2">
+                                                {product.colors.slice(0, 3).map((color, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="d-flex flex-column align-items-center p-1 border rounded"
+                                                        style={{ width: '60px', backgroundColor: '#f8f9fa' }}
                                                     >
-                                                        {color.name || "Not Found"}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
+                                                        <Zoom>
+                                                            {color.image ? (
+                                                                <img
+                                                                    src={baseUrl + color.image}
+                                                                    alt={color.name || "Color"}
+                                                                    className="rounded-circle border"
+                                                                    style={{ width: '28px', height: '28px', objectFit: 'cover' }}
+                                                                    onError={(e) => (e.target.style.display = 'none')}
+                                                                />
+                                                            ) : (
+                                                                <div
+                                                                    className="rounded-circle border"
+                                                                    style={{
+                                                                        width: '28px',
+                                                                        height: '28px',
+                                                                        backgroundColor: color.code || '#ccc',
+                                                                    }}
+                                                                ></div>
+                                                            )}
+                                                        </Zoom>
 
-
+                                                        <span
+                                                            className="mt-1 text-center xsmall fw-medium"
+                                                            style={{ fontSize: '10px', wordBreak: 'break-word' }}
+                                                        >
+                                                            {color.name || "Not Found"}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                                {product.colors.length > 3 && (
+                                                    <div className="d-flex align-items-center">
+                                                        <small className="text-muted">+{product.colors.length - 3} more</small>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <span className="text-muted small">No colors</span>
+                                        )}
                                     </td>
 
                                     <td>
-                                        {product?.status ?? "N/A"}
+                                        <span className={`badge ${
+                                            product.status === 'in-stock' ? 'bg-success' :
+                                            product.status === 'prebook' ? 'bg-warning text-dark' :
+                                            'bg-danger'
+                                        }`}>
+                                            {product.status || "N/A"}
+                                        </span>
                                     </td>
 
                                     <td>
@@ -147,7 +168,14 @@ export default function DesktopTableView({ products, onShowVariants, onDelete })
                                     </td>
 
                                     <td className="text-center">
-                                        {product.faqs?.length > 0 ? (
+                                        <ProductSpecifications 
+                                            specifications={product.specifications}
+                                            onShowSpecifications={() => onShowSpecifications(product)}
+                                        />
+                                    </td>
+
+                                    <td className="text-center">
+                                        {product.faqs && product.faqs.length > 0 ? (
                                             <span className="text-primary">
                                                 <FaQuestionCircle className="me-1" />
                                                 {product.faqs.length}

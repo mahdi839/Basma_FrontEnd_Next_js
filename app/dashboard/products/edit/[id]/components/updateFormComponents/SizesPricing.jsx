@@ -1,7 +1,15 @@
 import React from 'react'
 import { FaChevronDown, FaChevronUp, FaPlus, FaRuler, FaTrash } from 'react-icons/fa';
 
-export default function SizesPricing({ toggleSection, expandedSections, formData, sizes, handleSizeChange, setFormData, selectedSizeIds }) {
+export default function SizesPricing({ 
+  toggleSection, 
+  expandedSections, 
+  formData, 
+  sizes, 
+  handleSizeChange, 
+  setFormData, 
+  selectedSizeIds 
+}) {
   return (
     <div className="card mb-4 border-0 shadow-sm">
       <div
@@ -16,7 +24,7 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
             <h5 className="mb-0 fw-semibold text-dark">Sizes & Pricing</h5>
           </div>
           <div className="d-flex align-items-center">
-            <span className="badge bg-warning me-2">{formData.sizes.length}</span>
+            <span className="badge bg-warning text-dark me-2">{formData.sizes.length}</span>
             {expandedSections.sizes ? <FaChevronUp /> : <FaChevronDown />}
           </div>
         </div>
@@ -27,31 +35,45 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
             <div className="text-center py-4 text-muted">
               <FaRuler className="fs-1 mb-2 opacity-50" />
               <p className="mb-3">No sizes added yet</p>
+              <small className="d-block text-muted">
+                Add size variants with individual pricing and stock levels
+              </small>
             </div>
           ) : (
             formData.sizes.map((size, index) => (
               <div key={index} className="row g-3 mb-3 p-3 border rounded bg-light">
                 <div className="col-md-4">
-                  <label className="form-label fw-semibold text-gray-700">Size</label>
+                  <label className="form-label fw-semibold text-gray-700">
+                    Size <span className="text-danger">*</span>
+                  </label>
                   <select
                     className="form-select border-gray-300"
                     value={size.size_id || ""}
                     onChange={(e) =>
                       handleSizeChange(index, "size_id", e.target.value)
                     }
+                    required
                   >
                     <option value="">Select Size</option>
-                    {sizes.map((s) => (
-                      <option className={ selectedSizeIds.includes(s.id) && s.id !== size.size_id?'disabled_size_bg' : ''} key={s.id} value={s.id} disabled={
-                        selectedSizeIds.includes(s.id) && s.id !== size.size_id
-                      }>
-                        {s.size}
-                      </option>
-                    ))}
+                    {sizes.map((s) => {
+                      const isDisabled = selectedSizeIds.includes(s.id) && s.id !== size.size_id;
+                      return (
+                        <option 
+                          key={s.id} 
+                          value={s.id} 
+                          disabled={isDisabled}
+                          className={isDisabled ? 'disabled_size_bg' : ''}
+                        >
+                          {s.size} {isDisabled ? '(Already selected)' : ''}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
                 <div className="col-md-3">
-                  <label className="form-label fw-semibold text-gray-700">Price</label>
+                  <label className="form-label fw-semibold text-gray-700">
+                    Price
+                  </label>
                   <div className="input-group">
                     <span className="input-group-text bg-light border-gray-300">৳</span>
                     <input
@@ -62,12 +84,14 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
                       onChange={(e) =>
                         handleSizeChange(index, "price", e.target.value)
                       }
-                      
+                      min="0"
                     />
                   </div>
                 </div>
                 <div className="col-md-3">
-                  <label className="form-label fw-semibold text-gray-700">Stock</label>
+                  <label className="form-label fw-semibold text-gray-700">
+                    Stock
+                  </label>
                   <input
                     type="number"
                     className="form-control border-gray-300"
@@ -76,6 +100,7 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
                     onChange={(e) =>
                       handleSizeChange(index, "stock", e.target.value)
                     }
+                    min="0"
                   />
                 </div>
                 <div className="col-md-2 d-flex align-items-end">
@@ -88,6 +113,7 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
                       );
                       setFormData((s) => ({ ...s, sizes: next }));
                     }}
+                    title="Remove this size variant"
                   >
                     <FaTrash />
                   </button>
@@ -113,6 +139,15 @@ export default function SizesPricing({ toggleSection, expandedSections, formData
               <FaPlus className="me-2" /> Add Size Variant
             </button>
           </div>
+          
+          {formData.sizes.length > 0 && (
+            <div className="alert alert-info mt-3 mb-0" role="alert">
+              <small>
+                <strong>Tip:</strong> Each size can have its own price and stock level. 
+                Sizes already selected will be disabled in other dropdowns.
+              </small>
+            </div>
+          )}
         </div>
       </div>
     </div>
