@@ -23,7 +23,6 @@ import "slick-carousel/slick/slick-theme.css";
 import useDiscountedPrice from "@/app/hooks/useDiscountedPrice";
 
 export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
-  const [imgUrl, setImgUrl] = useState("");
   const [activeTab, setActiveTab] = useState("desc");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +43,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     whatsappUrl,
     preQty,
     handleQuantityIncrease,
-    handleQuantityDecrease
+    handleQuantityDecrease, handleThumbClick, imgUrl
   } = useProductLogics(product, socialLinksData.whatsapp_number);
 
   // Modal states
@@ -52,7 +51,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
-  const [sizeGuideData, setSizeGuideData] = useState(null);
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
@@ -76,10 +74,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     if (product?.error) toast.error(product.error);
   }, [product]);
 
-  function handleThumbClick(id) {
-    const clickedImg = images.find((img) => String(img.id) === String(id));
-    if (clickedImg?.image) setImgUrl(baseUrl + clickedImg.image);
-  }
+
 
   function toggleFaq(id) {
     setOpenFaqId((prev) => (prev === id ? 0 : id));

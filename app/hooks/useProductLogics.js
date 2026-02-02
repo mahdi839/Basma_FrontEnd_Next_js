@@ -8,13 +8,21 @@ export default function useProductLogics(product, whatsappNumber) {
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
   const [preQty, setPreQty] = useState(1);
+  const [imgUrl, setImgUrl] = useState("");
 
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   function handleSelectedColor(colorImage) {
     setSelectedColor(colorImage);
+    setImgUrl(baseUrl + colorImage)
   }
 
   function handleSelectedSize(sizeId) {
     setSelectedSize(sizeId);
+  }
+
+  function handleThumbClick(imgId) {
+    const clickedImg = product.images.find((img) => String(img.id) === String(imgId));
+    if (clickedImg?.image) setImgUrl(baseUrl + clickedImg.image);
   }
 
   // ---------------------------
@@ -40,8 +48,8 @@ export default function useProductLogics(product, whatsappNumber) {
 
   const whatsappUrl = whatsappNumber
     ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-        generateWhatsAppMessage()
-      )}`
+      generateWhatsAppMessage()
+    )}`
     : "";
 
   return {
@@ -50,7 +58,8 @@ export default function useProductLogics(product, whatsappNumber) {
     selectedSize,
     handleSelectedColor,
     handleSelectedSize,
-
+    handleThumbClick,
+    imgUrl,
     // quantity
     preQty,
     handleQuantityIncrease,
