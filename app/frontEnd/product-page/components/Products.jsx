@@ -13,6 +13,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import './productPage.css';
+import './specification.css';
 import useProductLogics from "@/app/hooks/useProductLogics";
 import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
@@ -65,6 +66,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
   const cartItem = cartItems.find(item => product.id == item.id);
 
+  // Check if product has specifications
+  const hasSpecifications = product?.specifications && product.specifications.length > 0;
+
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
@@ -73,8 +77,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     if (product) setIsLoading(false);
     if (product?.error) toast.error(product.error);
   }, [product]);
-
-
 
   function toggleFaq(id) {
     setOpenFaqId((prev) => (prev === id ? 0 : id));
@@ -568,23 +570,70 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       <div className="desc_tab_container mt-4 mt-md-5">
         {/* Tabs Header */}
         <div className="tabs-header d-flex flex-wrap justify-content-center gap-2 gap-md-3 mb-4">
-          <button className={`tab-btn ${activeTab === "desc" ? "active" : ""}`} onClick={() => setActiveTab("desc")}>
+          {/* <button 
+            className={`tab-btn ${activeTab === "desc" ? "active" : ""}`} 
+            onClick={() => setActiveTab("desc")}
+          >
             Description
-          </button>
-          <button className={`tab-btn ${activeTab === "faq" ? "active" : ""}`} onClick={() => setActiveTab("faq")}>
+          </button> */}
+          
+          {hasSpecifications && (
+            <button 
+              className={`tab-btn ${activeTab === "specs" ? "active" : ""}`} 
+              onClick={() => setActiveTab("specs")}
+            >
+              Description
+            </button>
+          )}
+          
+          <button 
+            className={`tab-btn ${activeTab === "faq" ? "active" : ""}`} 
+            onClick={() => setActiveTab("faq")}
+          >
             FAQ
           </button>
-          <button className={`tab-btn ${activeTab === "video" ? "active" : ""}`} onClick={() => setActiveTab("video")}>
+          
+          <button 
+            className={`tab-btn ${activeTab === "video" ? "active" : ""}`} 
+            onClick={() => setActiveTab("video")}
+          >
             Product Video
           </button>
         </div>
 
         {/* Content Sections */}
         <div className="tab-content">
-          {activeTab === "desc" && (
+          {/* {activeTab === "desc" && (
             <div className="description-content animated-fade">
               <div className="content-card p-3 p-md-4">
-                <div className="description-text">{product?.description}</div>
+                <div className="description-text">
+                  {product?.description || (
+                    <p className="text-muted text-center">No description available.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )} */}
+
+          {activeTab === "specs" && hasSpecifications && (
+            <div className="specifications-content animated-fade">
+              <div className="content-card p-3 p-md-4">
+                <div className="specifications-table-wrapper">
+                  <table className="table table-bordered specifications-table mb-0">
+                    <tbody>
+                      {product.specifications.map((spec, index) => (
+                        <tr key={spec.id || index}>
+                          <td className="spec-key">
+                            {spec.key}
+                          </td>
+                          <td className="spec-value">
+                            {spec.value}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}
@@ -617,7 +666,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                       </div>
                     ))
                   ) : (
-                    <div className="text-center text-danger p-3">No FAQs found.</div>
+                    <div className="text-center text-muted p-3">No FAQs found.</div>
                   )}
                 </div>
               </div>
@@ -637,7 +686,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                     />
                   </div>
                 ) : (
-                  <div className="text-center text-danger">No video available.</div>
+                  <div className="text-center text-muted">No video available.</div>
                 )}
               </div>
             </div>
@@ -694,6 +743,61 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         isDirectBuy={isDirectBuy}
         onClose={handleCloseDrawer}
       />
+
+      <style jsx>{`
+        .specifications-table-wrapper {
+          overflow-x: auto;
+        }
+
+        .specifications-table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        .specifications-table td {
+          padding: 12px 16px;
+          vertical-align: middle;
+          border: 1px solid #dee2e6;
+        }
+
+        .spec-key {
+          font-weight: 600;
+          background-color: #f8f9fa;
+          width: 40%;
+          color: #495057;
+        }
+
+        .spec-value {
+          background-color: #ffffff;
+          color: #212529;
+        }
+
+        @media (max-width: 768px) {
+          .specifications-table td {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+          }
+
+          .spec-key {
+            width: 45%;
+          }
+        }
+
+        .animated-fade {
+          animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
     </div>
   );
 }
