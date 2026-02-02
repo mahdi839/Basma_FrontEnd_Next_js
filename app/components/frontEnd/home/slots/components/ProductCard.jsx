@@ -49,12 +49,13 @@ const ProductCard = React.memo(function ProductCard({
           <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
             <p className="mb-1">
               <span className="text-decoration-none text-dark fw-bold product-card-title">
-                {slotProducts?.title}
+                {slotProducts?.title?.split(' ').slice(0, 3).join(' ')}
+                {slotProducts?.title?.split(' ').length > 3 && '...'}
               </span>
             </p>
             <div className="d-flex gap-3 align-items-left mt-1 mt-md-2">
               <span className="discount-price text-decoration-line-through">
-                {slotProducts?.price??0}৳
+                {slotProducts?.price ?? 0}৳
               </span>
               {
                 slotProducts.discount && (
