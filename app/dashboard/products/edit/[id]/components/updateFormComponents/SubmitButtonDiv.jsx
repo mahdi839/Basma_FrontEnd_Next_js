@@ -1,6 +1,6 @@
 import React from 'react'
 import Button from "@/app/components/dashboard/components/button/Button";
-export default function SubmitButtonDiv({isEditMode}) {
+export default function SubmitButtonDiv({ isEditMode, isSubmitting }) {
     return (
         <div className="card border-0 shadow-sm bg-opacity-5">
             <div className="card-body py-4">
@@ -11,10 +11,28 @@ export default function SubmitButtonDiv({isEditMode}) {
                         </h6>
                         <p className="text-muted mb-0">Review all information before submitting</p>
                     </div>
-                    <div className="col-md-4 text-end">
-                        <Button type="submit" className="btn btn-primary px-4 py-2 fw-semibold">
-                            {isEditMode ? 'Update Product' : 'Create Product'}
-                        </Button>
+                    <div className="mt-4">
+                        <button
+                            type="submit"
+                            className="btn btn-primary w-100 d-flex justify-content-center align-items-center"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting && (
+                                <span
+                                    className="spinner-border spinner-border-sm me-2"
+                                    role="status"
+                                    aria-hidden="true"
+                                />
+                            )}
+
+                            {isSubmitting
+                                ? isEditMode
+                                    ? "Updating..."
+                                    : "Creating..."
+                                : isEditMode
+                                    ? "Update Product"
+                                    : "Create Product"}
+                        </button>
                     </div>
                 </div>
             </div>

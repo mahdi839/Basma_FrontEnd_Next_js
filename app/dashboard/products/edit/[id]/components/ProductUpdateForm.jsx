@@ -40,6 +40,8 @@ export default function ProductUpdateForm({
     categories: [],
     specifications: [],
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   // Sidebar states
   const [newSize, setNewSize] = useState("");
@@ -268,6 +270,9 @@ export default function ProductUpdateForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (isSubmitting) return; // prevent double submit
+    setIsSubmitting(true);
+
     const data = new FormData();
     data.append("title", formData.title);
     data.append("short_description", formData.short_description);
@@ -410,6 +415,8 @@ export default function ProductUpdateForm({
     } catch (error) {
       console.error("Error:", error.response?.data);
       toast.error(error.response?.data?.message || "An Error Occurred");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -498,6 +505,7 @@ export default function ProductUpdateForm({
 
             <SubmitButtonDiv
               isEditMode={isEditMode}
+              isSubmitting={isSubmitting}
             />
           </form>
         </div>
