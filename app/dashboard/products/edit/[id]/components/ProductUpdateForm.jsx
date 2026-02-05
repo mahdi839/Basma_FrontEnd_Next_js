@@ -66,6 +66,13 @@ export default function ProductUpdateForm({
   }, []);
 
   useEffect(() => {
+    const handler = (e) => setExistingImages(e.detail);
+    window.addEventListener("update-existing-images", handler);
+    return () => window.removeEventListener("update-existing-images", handler);
+  }, []);
+
+
+  useEffect(() => {
     if (isEditMode && initialData) {
       // Parse colors if it's a JSON string
       let parsedColors = [];
@@ -273,6 +280,14 @@ export default function ProductUpdateForm({
       data.append("price", formData.price);
     }
 
+    // 🔽 PASTE HERE
+    if (isEditMode && existingImages.length > 0) {
+      existingImages.forEach((img, index) => {
+        data.append(`image_order[${index}][id]`, img.id);
+        data.append(`image_order[${index}][position]`, index);
+      });
+    }
+
     if (isEditMode) {
       data.append("_method", "PUT");
     }
@@ -281,21 +296,21 @@ export default function ProductUpdateForm({
     formData.colors.forEach((color, i) => {
       // Always include code (backend requires it)
       data.append(`colors[${i}][code]`, color.code || "#000000");
-      
+
       // Include name if provided
       if (color.name) {
         data.append(`colors[${i}][name]`, color.name);
       }
-      
+
       // Include ID if editing existing color
       if (color.id) {
         data.append(`colors[${i}][id]`, color.id);
       }
-      
+
       // Handle new image upload
       if (color.image) {
         data.append(`colors[${i}][image]`, color.image);
-      } 
+      }
       // Keep existing image if no new upload
       else if (color.existing_image) {
         data.append(`colors[${i}][existing_image]`, color.existing_image);
@@ -355,7 +370,7 @@ export default function ProductUpdateForm({
       const url = isEditMode
         ? `${baseUrl}api/products/${productId}`
         : `${baseUrl}api/products`;
-      
+
       const response = await axios.post(url, data, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -380,7 +395,7 @@ export default function ProductUpdateForm({
           specifications: [],
         });
       }
-      
+
       // 🔥 invalidate cache
       await fetch("/api/revalidate", {
         method: "POST",
@@ -389,7 +404,7 @@ export default function ProductUpdateForm({
           tags: ["products"],
         }),
       });
-      
+
       toast.success(`Product ${isEditMode ? 'Updated' : 'Created'} Successfully`);
       router.push('/dashboard/products');
     } catch (error) {
