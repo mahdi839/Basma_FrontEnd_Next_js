@@ -73,8 +73,7 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                         </div>
                         <div className="col-md-6">
                             <label className="form-label fw-semibold text-gray-700">
-                                Base Price
-                                <small className="text-muted ms-1">(Optional if using size variants)</small>
+                                Original Price
                             </label>
                             <div className="input-group">
                                 <span className="input-group-text bg-light border-gray-300">৳</span>
@@ -86,6 +85,23 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                                         setFormData({ ...formData, price: e.target.value })
                                     }
                                     placeholder="e.g., 1500"
+                                    min="0"
+                                />
+                            </div>
+                        </div>
+                         <div className="col-md-6">
+                            <label className="form-label fw-semibold text-gray-700">
+                                Sku
+                            </label>
+                            <div className="input-group">
+                                <input
+                                    type="text"
+                                    className="form-control border-gray-300 focus-border-primary"
+                                    value={formData.sku}
+                                    onChange={(e) =>
+                                        setFormData({ ...formData, sku: e.target.value })
+                                    }
+                                    placeholder="Sku"
                                     min="0"
                                 />
                             </div>

@@ -33,6 +33,7 @@ export default function ProductUpdateForm({
     discount: "",
     status: "in-stock",
     price: "",
+    sku: "",
     images: [],
     colors: [],
     sizes: [],
@@ -109,6 +110,7 @@ export default function ProductUpdateForm({
         discount: initialData.discount || "",
         status: initialData.status || "in-stock",
         price: initialData.price || "",
+        sku: initialData.sku || "",
         images: [],
         colors: transformedColors,
         sizes: initialData.sizes?.map(size => ({
@@ -284,6 +286,9 @@ export default function ProductUpdateForm({
     if (formData.price) {
       data.append("price", formData.price);
     }
+     if (formData.sku) {
+      data.append("sku", formData.sku);
+    }
 
     // 🔽 PASTE HERE
     if (isEditMode && existingImages.length > 0) {
@@ -392,6 +397,7 @@ export default function ProductUpdateForm({
           discount: "",
           status: "in-stock",
           price: "",
+          sku: "",
           images: [],
           colors: [],
           sizes: [],
