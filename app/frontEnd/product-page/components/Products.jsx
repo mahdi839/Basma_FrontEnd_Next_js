@@ -22,9 +22,11 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import useDiscountedPrice from "@/app/hooks/useDiscountedPrice";
+import { Tooltip } from "react-tooltip";
+import "react-tooltip/dist/react-tooltip.css";
 
 export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
-  const [activeTab, setActiveTab] = useState("desc");
+  const [activeTab, setActiveTab] = useState("specs");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [modalSelectedSize, setModalSelectedSize] = useState(null);
@@ -61,7 +63,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const pageId = socialLinksData.facebook_id;
   const messengerUrl = `https://m.me/${pageId}`;
 
-  const variants = product?.variants || [];
   const images = product?.images || [];
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
   const cartItem = cartItems.find(item => product.id == item.id);
@@ -450,7 +451,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                       className={`color-option-card ${selectedColor === color.image ? "selected" : ""
                         }`}
                       onClick={() => handleSelectedColor(color?.image)}
-                      title={color.name || `Color option ${color.id}`}
+                      data-tooltip-id="color-tooltip"
+                      data-tooltip-content={color.name}
                     >
                       <img
                         src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""}
@@ -461,6 +463,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 </div>
               </div>
             )}
+
+            <Tooltip
+              id="color-tooltip"
+              place="top"
+              className="custom-color-tooltip"
+            />
+
 
             {/* Sizes Selection */}
             {product.sizes?.length > 0 && (
@@ -576,25 +585,25 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           >
             Description
           </button> */}
-          
-          {hasSpecifications && (
-            <button 
-              className={`tab-btn ${activeTab === "specs" ? "active" : ""}`} 
-              onClick={() => setActiveTab("specs")}
-            >
-              Description
-            </button>
-          )}
-          
-          <button 
-            className={`tab-btn ${activeTab === "faq" ? "active" : ""}`} 
+
+
+          <button
+            className={`tab-btn ${activeTab === "specs" ? "active" : ""}`}
+            onClick={() => setActiveTab("specs")}
+          >
+            Description
+          </button>
+
+
+          <button
+            className={`tab-btn ${activeTab === "faq" ? "active" : ""}`}
             onClick={() => setActiveTab("faq")}
           >
             FAQ
           </button>
-          
-          <button 
-            className={`tab-btn ${activeTab === "video" ? "active" : ""}`} 
+
+          <button
+            className={`tab-btn ${activeTab === "video" ? "active" : ""}`}
             onClick={() => setActiveTab("video")}
           >
             Product Video
