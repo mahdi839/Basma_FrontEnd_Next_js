@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "@/app/components/dashboard/components/button/Button";
 import { toast } from "react-toastify";
-import { FaTrash, FaPlus, FaChevronDown, FaChevronUp, FaImage, FaPalette, FaRuler, FaTags, FaQuestionCircle, FaListUl } from "react-icons/fa";
+import { FaTrash, FaPlus, FaChevronDown, FaChevronUp, FaImage, FaPalette, FaRuler, FaTags, FaQuestionCircle, FaListUl, FaSpinner } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import SidebarCreateSize from "./components/SidebarCreateSize";
 import SidebarCreateCategory from "./components/SidebarCreateCategory";
@@ -21,6 +21,7 @@ export default function ProductUploadForm() {
     discount: "",
     status: "in-stock",
     price: "",
+    sku: "",
     images: [],
     colors: [],
     productSizes: [],
@@ -37,6 +38,7 @@ export default function ProductUploadForm() {
     priority: 0,
   });
   const [loadingSidebar, setLoadingSidebar] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
     specifications: false,
@@ -183,7 +185,7 @@ export default function ProductUploadForm() {
   // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     const data = new FormData();
     data.append("title", formData.title);
     data.append("short_description", formData.short_description);
@@ -192,6 +194,7 @@ export default function ProductUploadForm() {
     data.append("discount", formData.discount);
     data.append("status", formData.status);
     data.append("price", formData.price || "");
+    data.append("sku", formData.sku || "");
 
     // Colors with images and names
     formData.colors.forEach((color, i) => {
@@ -255,6 +258,7 @@ export default function ProductUploadForm() {
         discount: "",
         status: "in-stock",
         price: "",
+        sku: "",
         images: [],
         colors: [],
         productSizes: [],
@@ -274,6 +278,8 @@ export default function ProductUploadForm() {
       router.push('/dashboard/products')
     } catch (error) {
       toast.error(error.response?.data?.message || "An Error Occurred");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -357,7 +363,7 @@ export default function ProductUploadForm() {
                       </select>
                     </div>
                     <div className="col-md-6">
-                      <label className="form-label fw-semibold text-gray-700">Single Price</label>
+                      <label className="form-label fw-semibold text-gray-700">Original Price</label>
                       <div className="input-group">
                         <span className="input-group-text bg-light border-gray-300">৳</span>
                         <input
@@ -367,12 +373,26 @@ export default function ProductUploadForm() {
                           onChange={(e) =>
                             setFormData({ ...formData, price: e.target.value })
                           }
-                          placeholder="Optional base price"
+                          placeholder="Original price (e.g., 1500)"
                         />
                       </div>
                     </div>
                     <div className="col-md-6">
-                      <label className="form-label fw-semibold text-gray-700">Discount</label>
+                      <label className="form-label fw-semibold text-gray-700">SKU</label>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          className="form-control border-gray-300 focus-border-primary"
+                          value={formData.sku}
+                          onChange={(e) =>
+                            setFormData({ ...formData, sku: e.target.value })
+                          }
+                          placeholder="SKU"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label fw-semibold text-gray-700">Discounted Price</label>
                       <input
                         type="number"
                         className="form-control border-gray-300 focus-border-primary"
@@ -380,7 +400,7 @@ export default function ProductUploadForm() {
                         onChange={(e) =>
                           setFormData({ ...formData, discount: e.target.value })
                         }
-                        placeholder="e.g., 10% or 100 BDT"
+                        placeholder="discounted price"
                       />
                     </div>
                     <div className="col-md-6">
@@ -749,7 +769,7 @@ export default function ProductUploadForm() {
                     <label htmlFor="imageUpload" className="btn btn-outline-primary cursor-pointer">
                       Choose Files
                     </label>
-                    <p className="text-muted mt-2 mb-0">PNG, JPG, JPEG files up to 10MB</p>
+                    <p className="text-muted mt-2 mb-0">PNG, JPG, JPEG files up to 3MB</p>
                   </div>
 
                   {formData.images.length > 0 && (
@@ -940,9 +960,12 @@ export default function ProductUploadForm() {
                     <h6 className="fw-semibold mb-1">Ready to publish your product?</h6>
                     <p className="text-muted mb-0">Review all information before submitting</p>
                   </div>
-                  <div className="col-md-4 text-end">
-                    <Button type="submit" className="btn btn-primary px-4 py-2 fw-semibold">
-                      Create Product
+                  <div disa className="col-md-4 text-end">
+                    <Button type="submit" className="btn btn-primary px-4 py-2 fw-semibold" disabled={isLoading}>
+                      {isLoading ? (<>
+                        <FaSpinner className="fa-spin me-2" />
+                        Saving...
+                      </>) : "Save Product"}
                     </Button>
                   </div>
                 </div>

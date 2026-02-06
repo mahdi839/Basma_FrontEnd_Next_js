@@ -118,7 +118,7 @@ export default function ProductIndexPage() {
           </p>
         </div>
         <Link href="/dashboard/products/add_product">
-          <button className="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
+          <button className="btn btn-sm btn-primary px-4 py-2 fw-semibold shadow-sm">
             <FaPlus className="me-2" />
             Add Product
           </button>
