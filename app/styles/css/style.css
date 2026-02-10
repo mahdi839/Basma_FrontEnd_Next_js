@@ -1862,8 +1862,8 @@ table tr td {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	font-weight: 700;
-	font-size: 1.25rem;
+	font-weight: 500;
+	font-size: 16px;
 	color: #1e293b;
 	padding: 0.75rem 0;
 	border-top: 2px solid #f1f5f9;

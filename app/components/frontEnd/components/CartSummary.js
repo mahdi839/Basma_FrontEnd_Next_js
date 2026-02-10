@@ -13,22 +13,30 @@ export default function CartSummary({ totalPrice, onProceed }) {
           <span>Shipping:</span>
           <span>Calculated at checkout</span>
         </div>
-        <div className="summary-total">
+        {/* <div className="summary-total">
           <span>Total:</span>
           <span>{totalPrice} TK</span>
+        </div> */}
+
+        <div className="d-flex flex-row flex-md-column gap-2 w-100">
+
+          <button
+            onClick={onProceed}
+            className="btn btn-sm btn-primary w-100 py-2"
+          >
+            <FaCreditCard className="me-2" />
+           Checkout
+          </button>
+
+          {/* <button
+            className="btn w-100 py-2"
+            onClick={() => window.location.href = '/'}
+          >
+            Continue Shopping
+          </button> */}
+
         </div>
 
-        <button
-          onClick={onProceed}
-          className="btn-grad checkout-btn"
-        >
-          <FaCreditCard className="me-2" />
-          Proceed to Checkout
-        </button>
-
-        <button className="continue-shopping-btn outline" onClick={() => window.location.href = '/'}>
-          Continue Shopping
-        </button>
       </div>
     </div>
   );
