@@ -18,7 +18,7 @@ import { HiTrophy } from "react-icons/hi2";
 import { useAuth } from "@/app/hooks/useAuth";
 
 export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
-  const [openMenus, setOpenMenus] = useState({});
+  const [openMenu, setOpenMenu] = useState(null);
   const pathname = usePathname();
   const { hasPermission, hasRole, hasAnyPermission } = useAuth();
 
@@ -38,15 +38,15 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       // ✅ Show menu if user has ANY of these permissions
       requireAny: ['view categories', 'view products'],
       submenus: [
-        { 
-          href: "/dashboard/category", 
-          label: 'Category', 
+        {
+          href: "/dashboard/category",
+          label: 'Category',
           Icon: BiSolidCategory,
           permission: 'view categories' // ✅ Required permission
         },
-        { 
-          href: "/dashboard/products", 
-          label: 'Products', 
+        {
+          href: "/dashboard/products",
+          label: 'Products',
           Icon: FaProductHunt,
           permission: 'view products' // ✅ Required permission
         },
@@ -59,20 +59,27 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       ]
     },
     {
+      type: 'single',
+      href: "/dashboard/sizes",
+      Icon: AiOutlineDashboard,
+      label: 'Sizes',
+      permission: 'view sizes' // ✅ Required permission
+    },
+    {
       type: 'menu',
       label: 'Orders',
       Icon: FaShoppingBag,
       requireAny: ['view orders'], // ✅ Show menu if has orders permission
       submenus: [
-        { 
-          href: "/dashboard/orders", 
-          label: 'All Orders', 
+        {
+          href: "/dashboard/orders",
+          label: 'All Orders',
           Icon: FaShoppingBag,
           permission: 'view orders' // ✅ Required permission
         },
-        { 
-          href: "/dashboard/incomplete_orders", 
-          label: 'Incomplete Orders', 
+        {
+          href: "/dashboard/incomplete_orders",
+          label: 'Incomplete Orders',
           Icon: FaShoppingBag,
           permission: 'view orders' // ✅ Same permission
         },
@@ -105,27 +112,27 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       Icon: IoIosSettings,
       requireAny: ['view settings'], // ✅ Show if has settings permission
       submenus: [
-        { 
-          href: "/dashboard/about_us", 
-          label: 'About Us', 
+        {
+          href: "/dashboard/about_us",
+          label: 'About Us',
           Icon: FaInfoCircle,
           permission: 'view settings'
         },
-        { 
-          href: "/dashboard/footerSettings", 
-          label: 'Web Settings', 
+        {
+          href: "/dashboard/footerSettings",
+          label: 'Web Settings',
           Icon: IoIosSettings,
           permission: 'view settings'
         },
-        { 
-          href: "/dashboard/socialLinks", 
-          label: 'Social Links', 
+        {
+          href: "/dashboard/socialLinks",
+          label: 'Social Links',
           Icon: MdOutlineSocialDistance,
           permission: 'view settings'
         },
-        { 
-          href: "/dashboard/facebook_conversion_api", 
-          label: 'Facebook Api Settings', 
+        {
+          href: "/dashboard/facebook_conversion_api",
+          label: 'Facebook Api Settings',
           Icon: TbCirclesRelation,
           permission: 'view settings'
         },
@@ -138,15 +145,15 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       Icon: FaUsers,
       role: 'super-admin', // ✅ Role-based (not permission)
       submenus: [
-        { 
-          href: "/dashboard/users", 
-          label: 'Users', 
+        {
+          href: "/dashboard/users",
+          label: 'Users',
           Icon: FaUsers,
           role: 'super-admin'
         },
-        { 
-          href: "/dashboard/roles", 
-          label: 'Roles & Permissions', 
+        {
+          href: "/dashboard/roles",
+          label: 'Roles & Permissions',
           Icon: FaShieldAlt,
           role: 'super-admin'
         },
@@ -192,7 +199,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
     } else if (item.type === 'menu') {
       // For menu groups, check if user can access the group OR any submenu
       if (canAccessMenuItem(item)) return true;
-      
+
       // Also check if any submenu is accessible
       const accessibleSubmenus = item.submenus.filter(canAccessMenuItem);
       return accessibleSubmenus.length > 0;
@@ -208,27 +215,27 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
 
   // Auto-open menu if current path is in submenu
   useEffect(() => {
-    const newOpenMenus = { ...openMenus };
-    menuItems.forEach(item => {
-      if (item.type === 'menu') {
+    for (const item of menuItems) {
+      if (item.type === "menu") {
         const filteredSubmenus = getFilteredSubmenus(item);
-        const isActive = filteredSubmenus.some(subItem => 
-          pathname === subItem.href || pathname.startsWith(subItem.href + '/')
+
+        const isActive = filteredSubmenus.some(subItem =>
+          pathname === subItem.href || pathname.startsWith(subItem.href + "/")
         );
+
         if (isActive) {
-          newOpenMenus[item.label] = true;
+          setOpenMenu(item.label);
+          return;
         }
       }
-    });
-    setOpenMenus(newOpenMenus);
+    }
   }, [pathname]);
 
+
   const toggleMenu = (menuLabel) => {
-    setOpenMenus(prev => ({
-      ...prev,
-      [menuLabel]: !prev[menuLabel]
-    }));
+    setOpenMenu(prev => (prev === menuLabel ? null : menuLabel));
   };
+
 
   // Close sidebar on mobile when clicking a link
   const handleLinkClick = () => {
@@ -257,7 +264,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
     <>
       {/* Mobile Overlay */}
       {isMobile && isSidebarOpen && (
-        <div 
+        <div
           className="sidebar-overlay"
           onClick={toggleSidebar}
         />
@@ -270,7 +277,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
           <h5 className="text-white" style={{ display: isSidebarOpen ? 'block' : 'none' }}>
             Eyara Fashion
           </h5>
-          <button 
+          <button
             className="sidebar-toggle-btn"
             onClick={toggleSidebar}
           >
@@ -290,9 +297,9 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
               if (item.type === 'single') {
                 return (
                   <div key={index} onClick={handleLinkClick}>
-                    <SideBarItem 
-                      href={item.href} 
-                      Icon={item.Icon} 
+                    <SideBarItem
+                      href={item.href}
+                      Icon={item.Icon}
                       label={item.label}
                       isSidebarOpen={isSidebarOpen}
                       isActive={isItemActive(item.href)}
@@ -308,7 +315,7 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
 
                 return (
                   <div key={index} className="sidebar-menu-group">
-                    <div 
+                    <div
                       className={`sidebar-menu-header d-flex align-items-center justify-content-between text-white mb-3 cursor-pointer ${isActive ? 'active' : ''}`}
                       onClick={() => toggleMenu(item.label)}
                     >
@@ -317,19 +324,19 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
                         {isSidebarOpen && <span>{item.label}</span>}
                       </div>
                       {isSidebarOpen && (
-                        openMenus[item.label] ? 
-                        <BsChevronDown className="text-white" /> : 
-                        <BsChevronRight className="text-white" />
+                        openMenu === item.label ?
+                          <BsChevronDown /> :
+                          <BsChevronRight />
                       )}
                     </div>
-                    
-                    {isSidebarOpen && openMenus[item.label] && (
+
+                    {isSidebarOpen && openMenu === item.label && (
                       <div className="sidebar-submenu">
                         {filteredSubmenus.map((subItem, subIndex) => (
                           <div key={subIndex} onClick={handleLinkClick}>
-                            <SideBarItem 
-                              href={subItem.href} 
-                              Icon={subItem.Icon} 
+                            <SideBarItem
+                              href={subItem.href}
+                              Icon={subItem.Icon}
                               label={subItem.label}
                               isSubmenu={true}
                               isSidebarOpen={isSidebarOpen}

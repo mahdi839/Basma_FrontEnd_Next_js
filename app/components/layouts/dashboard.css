@@ -108,6 +108,11 @@
     border-left: 2px solid rgba(255, 255, 255, 0.2);
 }
 
+.sidebar-submenu {
+    overflow: hidden;
+    transition: all 0.25s ease;
+}
+
 .sidebar-subitem.active {
     background: var(--active-color);
 }
@@ -175,7 +180,7 @@
         cursor: pointer;
         z-index: 500;
         font-size: 1.2rem;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
     .mobile-sidebar-toggle:hover {
@@ -196,7 +201,7 @@
         transition: margin-left 0.3s ease;
     }
 
-    .sideBarDiv.sidebar-closed + .dashboard_content {
+    .sideBarDiv.sidebar-closed+.dashboard_content {
         margin-left: var(--sidebar-closed-width);
     }
 
