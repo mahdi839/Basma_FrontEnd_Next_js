@@ -27,7 +27,7 @@ export default function CheckoutStep({
           finalTotal={finalTotal}
         />
 
-        <button type="submit" className="place-order-btn btn-grad">
+        <button type="submit" className="btn btn-sm w-100 btn-grad">
           <FaCreditCard className="me-2" />
           Place Order
         </button>
