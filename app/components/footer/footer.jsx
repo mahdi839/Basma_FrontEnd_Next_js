@@ -124,7 +124,7 @@ export default async function Footer() {
                     href={socialData.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="social-btn btn-sm rounded-circle p-2"
+                    className="footer-social-btn btn-sm rounded-circle p-2"
                   >
                     <FaFacebook className="text-white" />
                   </a>
@@ -134,7 +134,7 @@ export default async function Footer() {
                     href={socialData.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="social-btn btn-sm rounded-circle p-2"
+                    className="footer-social-btn btn-sm rounded-circle p-2"
                   >
                     <FaInstagram className="text-white" />
                   </a>
@@ -144,7 +144,7 @@ export default async function Footer() {
                     href={socialData.youtube}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="social-btn btn-sm rounded-circle p-2"
+                    className="footer-social-btn btn-sm rounded-circle p-2"
                   >
                     <FaYoutube className="text-white" />
                   </a>
@@ -154,7 +154,7 @@ export default async function Footer() {
                     href={`https://wa.me/880${data.company_phone}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="social-btn btn-sm rounded-circle p-2"
+                    className="footer-social-btn btn-sm rounded-circle p-2"
                   >
                     <FaWhatsappSquare className="text-white" />
                   </a>
