@@ -28,7 +28,7 @@ export default function CartDrawerHeader({ currentStep, cartCount, onClose, onBa
           )}
         </h4>
       </div>
-      <button onClick={onClose} className="close-btn" aria-label="Close cart">
+      <button onClick={onClose}  aria-label="Close cart" style={{backgroundColor:'white',color:"red",border:"none",outLine:"none"}}>
         <FaTimes size={22} />
       </button>
     </div>
