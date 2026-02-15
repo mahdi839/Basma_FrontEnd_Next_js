@@ -2361,8 +2361,8 @@ table tr td {
 	.list-unstyled {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
-		align-items: center;
+		justify-content: start;
+		align-items: start;
 	}
 
 	.logo_section_mobile_border {
