@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import CartDrawerHeader from "./CartDrawerHeader";
 import CartStep from "./CartStep";
 import CheckoutStep from "./CheckoutStep";
+import Portal from "../../Portal";
 
 export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   const [currentStep, setCurrentStep] = useState("cart");
@@ -369,40 +370,42 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   if (!isOpen) return null;
 
   return (
-    <div className="cart-drawer-overlay">
-      <div className="cart-drawer">
-        <CartDrawerHeader
-          currentStep={currentStep}
-          cartCount={cartCount}
-          onClose={handleClose}
-          onBack={backToCart}
-        />
+    <Portal>
+      <div className="cart-drawer-overlay">
+        <div className="cart-drawer">
+          <CartDrawerHeader
+            currentStep={currentStep}
+            cartCount={cartCount}
+            onClose={handleClose}
+            onBack={backToCart}
+          />
 
-        <div className="cart-drawer-content">
-          {currentStep === "cart" ? (
-            <CartStep
-              cartItems={cartItems}
-              totalPrice={totalPrice}
-              onIncreament={handleIncreament}
-              onDecreament={handleDecreament}
-              onRemove={handleRemove}
-              onProceed={proceedToCheckout}
-              removingItem={removingItem}
-              onClose={handleClose}
-            />
-          ) : (
-            <CheckoutStep
-              formData={formData}
-              shippingAmount={shippingAmount}
-              finalTotal={finalTotal}
-              cartItems={cartItems}
-              onInputChange={handleInputChange}
-              onDistrictChange={handleDistrictChange}
-              onSubmit={handleCheckoutSubmit}
-            />
-          )}
+          <div className="cart-drawer-content">
+            {currentStep === "cart" ? (
+              <CartStep
+                cartItems={cartItems}
+                totalPrice={totalPrice}
+                onIncreament={handleIncreament}
+                onDecreament={handleDecreament}
+                onRemove={handleRemove}
+                onProceed={proceedToCheckout}
+                removingItem={removingItem}
+                onClose={handleClose}
+              />
+            ) : (
+              <CheckoutStep
+                formData={formData}
+                shippingAmount={shippingAmount}
+                finalTotal={finalTotal}
+                cartItems={cartItems}
+                onInputChange={handleInputChange}
+                onDistrictChange={handleDistrictChange}
+                onSubmit={handleCheckoutSubmit}
+              />
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </Portal>
   );
 }

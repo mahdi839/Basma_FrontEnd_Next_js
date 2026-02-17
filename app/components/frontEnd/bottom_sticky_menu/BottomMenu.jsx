@@ -51,7 +51,7 @@ export default function BottomMenu() {
           left: 0,
           width: '100%',
           height: '70px',
-          zIndex: 9999,
+          zIndex: 1000,
         }}
       >
         <div className="container-fluid h-100 px-0">
