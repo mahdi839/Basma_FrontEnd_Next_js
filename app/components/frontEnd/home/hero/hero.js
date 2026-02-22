@@ -4,6 +4,7 @@ import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Slider from "react-slick";
 import Image from "next/image";
 import style from "../../nabvar/hero.module.css";
+import Link from "next/link";
 export default function Hero({ data }) {
   const bgImages = ["/img/banner/banner-3.png", "/img/banner/banner-4.png"];
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -18,16 +19,16 @@ export default function Hero({ data }) {
     nextArrow: (
       <div className={style.arrow_div_right}>
         {
-          data?.banner_images.length>0?<FaChevronRight className={style.arrow_right} />:''
+          data?.banner_images.length > 0 ? <FaChevronRight className={style.arrow_right} /> : ''
         }
-        
+
       </div>
     ),
     prevArrow: (
       <div className={style.arrow_div_left}>
-       {
-         data?.banner_images.length>0? <FaChevronLeft className={style.arrow_left} />:''
-       }
+        {
+          data?.banner_images.length > 0 ? <FaChevronLeft className={style.arrow_left} /> : ''
+        }
       </div>
     ),
   };
@@ -35,16 +36,29 @@ export default function Hero({ data }) {
     <div className="container">
       <Slider {...settings}>
         {
-          data?.banner_images?.map((slidImg,index) => (
-            <Image
-              key={index}
-              className="hero_slider_img"
-              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${slidImg.path}`}
-              width={1200} // Actual image width
-              height={400}
-              alt="Banner"
-            />
-          ))
+          data?.banner_images?.map((slidImg) => {
+
+            const image = (
+              <Image
+                className="hero_slider_img"
+                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${slidImg.path}`}
+                width={1200}
+                height={400}
+                alt="Banner"
+                priority
+              />
+            );
+
+            return slidImg?.link ? (
+              <Link key={slidImg.id} href={slidImg.link}>
+                {image}
+              </Link>
+            ) : (
+              <div key={slidImg.id}>
+                {image}
+              </div>
+            );
+          })
         }
       </Slider>
     </div>

@@ -4,7 +4,7 @@ import FeatureClient from './featureClient'
 import FeatureSkeleton from './components/FeatureSkeleton'
 
 
-export default async function Feature({BannerCatData}) {
+export default async function Feature() {
   let data = []
   try {
     // Fetch the data
@@ -24,7 +24,7 @@ export default async function Feature({BannerCatData}) {
  
   return (
     <Suspense fallback={<FeatureSkeleton />}>
-      <FeatureClient homeCategories={data} BannerCatData={BannerCatData} />
+      <FeatureClient homeCategories={data}/>
     </Suspense>
   )
 }
