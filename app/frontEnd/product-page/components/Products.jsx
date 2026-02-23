@@ -314,7 +314,27 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
   return (
     <div className="container product-page-container">
-      <div className="row my-4 my-md-5 g-4">
+      <div className="row my-2 my-md-5 g-2 g-lg-4">
+        {/* product header for mobile start */}
+        <div className="col-12 d-lg-none">
+          <div className="product-mobile-header d-flex flex-column justify-content-center px-3">
+            <h1 className="product-title">{product?.title}</h1>
+
+            {product?.sku && (
+              <div className="product-sku">
+                SKU: <strong>{product.sku}</strong>
+              </div>
+            )}
+
+            {product?.status === 'prebook' && (
+              <div className="preorder-badge">
+                ⚡ Pre Order, Delivery Time 20 to 25 Days
+              </div>
+            )}
+          </div>
+        </div>
+        {/* product header for mobile end */}
+        
         {/* Product Images */}
         <div className="col-12 col-md-6">
           <div className="product-gallery-wrapper">
@@ -407,7 +427,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         <div className="col-12 col-md-6">
           <div className="product-info-card">
             {/* Product Header */}
-            <div className="product-header">
+            <div className="product-header d-none d-lg-block">
               <h1 className="product-title">{product?.title}</h1>
 
               {product?.sku && (

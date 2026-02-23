@@ -850,3 +850,9 @@
   }
 }
 
+.product-mobile-header {
+  background: #ffffff;
+  padding: 14px 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
