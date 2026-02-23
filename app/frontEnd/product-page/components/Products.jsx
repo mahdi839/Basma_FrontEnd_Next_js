@@ -334,10 +334,10 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           </div>
         </div>
         {/* product header for mobile end */}
-        
+
         {/* Product Images */}
         <div className="col-12 col-md-6">
-          <div className="product-gallery-wrapper">
+          <div className="product-gallery-wrapper d-flex flex-column flex-md-column gap-1">
             <div className="main-image-container">
               <Zoom>
                 <Image
