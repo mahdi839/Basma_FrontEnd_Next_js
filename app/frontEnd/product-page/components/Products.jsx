@@ -364,8 +364,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                       <div key={img.id} className="px-1">
                         <button
                           type="button"
-                          className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
-                            }`}
+                          className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
                           onClick={() => handleThumbClick(img.id)}
                           style={{
                             padding: 0,
@@ -379,9 +378,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                           <Image
                             src={baseUrl + img.image}
                             alt="product thumbnail"
-                            width={80}
-                            height={80}
-                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            width={600}
+                            height={600}
+                            style={{ width: '100%', height: '100%' }}
                           />
                         </button>
                       </div>
@@ -392,8 +391,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                     {images.map((img) => (
                       <div key={img.id} style={{ flex: '0 0 auto', width: '80px' }}>
                         <button
-                          className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""
-                            }`}
+                          className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
                           onClick={() => handleThumbClick(img.id)}
                           style={{
                             width: '100%',
@@ -409,9 +407,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                           <Image
                             src={baseUrl + img.image}
                             alt="product thumbnail"
-                            width={80}
-                            height={80}
-                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                            width={600}
+                            height={600}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           />
                         </button>
                       </div>
@@ -426,7 +424,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         {/* Product Description & Options */}
         <div className="col-12 col-md-6">
           <div className="product-info-card">
-            {/* Product Header */}
+
+            {/* Product Header — desktop only */}
             <div className="product-header d-none d-lg-block">
               <h1 className="product-title">{product?.title}</h1>
 
@@ -442,10 +441,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 </div>
               )}
             </div>
+
             {/* Price Display */}
             <div className="price-section">
-              {/* Show original price only if discount exists */}
-
               <div className="discount-price text-decoration-line-through">
                 {product?.price ?? 0}৳
               </div>
@@ -468,8 +466,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   {product?.colors?.map((color) => (
                     <div
                       key={color.id}
-                      className={`color-option-card ${selectedColor === color.image ? "selected" : ""
-                        }`}
+                      className={`color-option-card ${selectedColor === color.image ? "selected" : ""}`}
                       onClick={() => handleSelectedColor(color?.image)}
                       data-tooltip-id="color-tooltip"
                       data-tooltip-content={color.name}
@@ -490,7 +487,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               className="custom-color-tooltip"
             />
 
-
             {/* Sizes Selection */}
             {product.sizes?.length > 0 && (
               <div className="variant-section">
@@ -502,7 +498,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   {product?.sizes?.map((size) => {
                     const sizePrice = size?.pivot?.price;
                     const isSelected = selectedSize == size.id;
-
                     return (
                       <button
                         key={size?.id}
@@ -520,21 +515,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             )}
 
-            {/* size guide btn div */}
-            <div className="my-3">
-              <button
-                className="btn btn-sm"
-                onClick={fetchSizeGuideData}
-              >
+            {/* ── ROW 1: Size Guide + Quantity ── */}
+            <div className="size-qty-row my-2 d-lg-flex gap-lg-3 ">
+              <button className="btn btn-sm " onClick={fetchSizeGuideData}>
                 <SiFoursquarecityguide />
                 Size Guide
               </button>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="action-buttons-container">
-              {/* Quantity Selector */}
-              <div className="quantity-controls">
+              <div className="quantity-controls ">
                 <button
                   className="quantity-btn"
                   onClick={() => handleQuantityDecrease(product.id)}
@@ -554,6 +541,10 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   +
                 </button>
               </div>
+            </div>
+
+            {/* ── ROW 2: Add to Cart + Buy Now ── */}
+            <div className="action-buttons-container">
               <button
                 className="single-prod-action-btn btn-grad"
                 onClick={() => handleAddToCart("add")}
@@ -570,7 +561,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </button>
             </div>
 
-            {/* Social Buttons */}
+            {/* ── ROW 3: Messenger + WhatsApp ── */}
             <div className="social-buttons-container">
               <a
                 href={messengerUrl}
@@ -591,37 +582,26 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 WhatsApp
               </a>
             </div>
+
           </div>
         </div>
       </div>
 
       {/* Product Tabs */}
       <div className="desc_tab_container mt-4 mt-md-5">
-        {/* Tabs Header */}
         <div className="tabs-header d-flex flex-wrap justify-content-center gap-2 gap-md-3 mb-4">
-          {/* <button 
-            className={`tab-btn ${activeTab === "desc" ? "active" : ""}`} 
-            onClick={() => setActiveTab("desc")}
-          >
-            Description
-          </button> */}
-
-
           <button
             className={`tab-btn ${activeTab === "specs" ? "active" : ""}`}
             onClick={() => setActiveTab("specs")}
           >
             Description
           </button>
-
-
           <button
             className={`tab-btn ${activeTab === "faq" ? "active" : ""}`}
             onClick={() => setActiveTab("faq")}
           >
             FAQ
           </button>
-
           <button
             className={`tab-btn ${activeTab === "video" ? "active" : ""}`}
             onClick={() => setActiveTab("video")}
@@ -630,20 +610,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           </button>
         </div>
 
-        {/* Content Sections */}
         <div className="tab-content">
-          {/* {activeTab === "desc" && (
-            <div className="description-content animated-fade">
-              <div className="content-card p-3 p-md-4">
-                <div className="description-text">
-                  {product?.description || (
-                    <p className="text-muted text-center">No description available.</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )} */}
-
           {activeTab === "specs" && hasSpecifications && (
             <div className="specifications-content animated-fade">
               <div className="content-card p-3 p-md-4">
@@ -652,12 +619,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                     <tbody>
                       {product.specifications.map((spec, index) => (
                         <tr key={spec.id || index}>
-                          <td className="spec-key">
-                            {spec.key}
-                          </td>
-                          <td className="spec-value">
-                            {spec.value}
-                          </td>
+                          <td className="spec-key">{spec.key}</td>
+                          <td className="spec-value">{spec.value}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -726,13 +689,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       {showSizeGuide && (
         <div className="size-guide-overlay">
           <div className="size-guide-content">
-            <button
-              className="size-guide-close"
-              onClick={() => setShowSizeGuide(false)}
-            >
+            <button className="size-guide-close" onClick={() => setShowSizeGuide(false)}>
               ✕
             </button>
-
             <Image
               src={sizeGuideImage}
               alt="Size Guide"
@@ -744,7 +703,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         </div>
       )}
 
-      {/* VIRTUALIZED Related Products with Infinite Scroll */}
       <VirtualizedRelatedProducts
         initialProducts={initialRelatedProducts}
         productId={productId}
@@ -752,7 +710,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         handleRelatedAddToCart={handleRelatedAddToCart}
       />
 
-      {/* Product Modal for Related Products */}
       {isModalOpen && selectedProduct && (
         <ProductModal
           product={selectedProduct}
@@ -774,56 +731,79 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       />
 
       <style jsx>{`
-        .specifications-table-wrapper {
-          overflow-x: auto;
-        }
+        .specifications-table-wrapper { overflow-x: auto; }
+        .specifications-table { width: 100%; border-collapse: collapse; }
+        .specifications-table td { padding: 12px 16px; vertical-align: middle; border: 1px solid #dee2e6; }
+        .spec-key { font-weight: 600; background-color: #f8f9fa; width: 40%; color: #495057; }
+        .spec-value { background-color: #ffffff; color: #212529; }
 
-        .specifications-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-
-        .specifications-table td {
-          padding: 12px 16px;
-          vertical-align: middle;
-          border: 1px solid #dee2e6;
-        }
-
-        .spec-key {
-          font-weight: 600;
-          background-color: #f8f9fa;
-          width: 40%;
-          color: #495057;
-        }
-
-        .spec-value {
-          background-color: #ffffff;
-          color: #212529;
-        }
-
-        @media (max-width: 768px) {
-          .specifications-table td {
-            padding: 10px 12px;
-            font-size: 0.9rem;
-          }
-
-          .spec-key {
-            width: 45%;
-          }
-        }
-
-        .animated-fade {
-          animation: fadeIn 0.3s ease-in;
-        }
-
+        .animated-fade { animation: fadeIn 0.3s ease-in; }
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── MOBILE LAYOUT FIXES ── */
+        @media (max-width: 768px) {
+          .specifications-table td { padding: 10px 12px; font-size: 0.9rem; }
+          .spec-key { width: 45%; }
+
+          /* Row 1: Size Guide + Quantity */
+          .size-qty-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 18px;
+            margin-top: 0.4rem;
+            margin-bottom: 0.5rem;
           }
-          to {
-            opacity: 1;
-            transform: translateY(0);
+          .size-qty-row .btn { white-space: nowrap; flex-shrink: 0; }
+          .size-qty-row .quantity-controls {
+            display: flex;
+            align-items: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 110px;
+            flex-shrink: 0;
+          }
+
+          /* Row 2: Add to Cart + Buy Now */
+          .action-buttons-container {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            gap: 8px !important;
+            margin-bottom: 0.5rem !important;
+          }
+          .single-prod-action-btn {
+            flex: 1 1 0 !important;
+            min-width: 0 !important;
+            font-size: 0.78rem !important;
+            padding: 9px 6px !important;
+            white-space: nowrap;
+            gap: 5px !important;
+          }
+
+          /* Row 3: Messenger + WhatsApp */
+          .social-buttons-container {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 8px !important;
+            margin-top: 7px !important;
+          }
+          .social-btn {
+            flex: 1 !important;
+            font-size: 0.78rem !important;
+            padding: 9px 6px !important;
+            white-space: nowrap;
+          }
+        }
+
+        @media (max-width: 400px) {
+          .single-prod-action-btn, .social-btn {
+            font-size: 0.7rem !important;
+            padding: 8px 4px !important;
           }
         }
       `}</style>

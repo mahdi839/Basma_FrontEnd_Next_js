@@ -501,9 +501,7 @@
     padding: 0.5rem;
   }
 
-  .variant-section {
-    margin-bottom: 0.5rem;
-  }
+ 
 
   .product-gallery-wrapper {
     flex-direction: row !important;
@@ -568,10 +566,7 @@
 }
 
 @media (max-width: 576px) {
-  .action-buttons-container {
-    flex-direction: column;
-  }
-
+  
   .social-buttons-container {
     flex-direction: column;
   }
@@ -1041,10 +1036,6 @@
     margin-bottom: 0.4rem !important;
   }
 
-  .variant-section {
-    margin-bottom: 0.5rem !important;
-  }
-
   /* Slightly larger color swatches on mobile */
   .color-option-card {
     width: 56px !important;
@@ -1117,9 +1108,7 @@
     margin: 0 !important;
   }
 
-  .action-buttons-container {
-    order: 6;
-  }
+ 
 
   /* Place size-guide + quantity side-by-side by making
      the size guide float left and quantity beside it */
