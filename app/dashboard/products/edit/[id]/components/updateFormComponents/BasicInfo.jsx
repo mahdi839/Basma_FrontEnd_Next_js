@@ -36,7 +36,7 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                                 placeholder="Enter product title"
                             />
                         </div>
-                        <div className="col-md-6">
+                        {/* <div className="col-md-6">
                             <label className="form-label fw-semibold text-gray-700">
                                 Short Description <span className="text-danger">*</span>
                             </label>
@@ -53,7 +53,7 @@ export default function BasicInfo({toggleSection,formData,setFormData,expandedSe
                                 }
                                 placeholder="Brief description of the product"
                             />
-                        </div>
+                        </div> */}
                         <div className="col-md-6">
                             <label className="form-label fw-semibold text-gray-700">
                                 Stock Status <span className="text-danger">*</span>

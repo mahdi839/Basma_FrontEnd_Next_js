@@ -69,21 +69,28 @@ const ProductCard = React.memo(function ProductCard({
         </Link>
 
         {/* Color swatches - outside Link if you don't want them clickable */}
-        {slotProducts?.colors?.length > 0 && (
-          <div className="product-color-wrapper">
-            {slotProducts?.colors?.map((color, index) => (
-              <div key={index} className={`${selectedImage.url && index == selectedImage.index ? "SelectedImageStyle" : "product_color_image_div"}`} onClick={() => handleShowImage(index, color?.image)}>
-                <Image
-                  width={30}
-                  height={30}
-                  src={baseUrl + color?.image}
-                  alt={slotProducts?.title || "Color variant"}
-                  className="h-100 w-100"
-                />
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="d-flex gap-2">
+          {slotProducts?.colors?.length > 0 && (
+            <div className="product-color-wrapper">
+              {slotProducts?.colors?.slice(0,3).map((color, index) => (
+                <div key={index} className={`${selectedImage.url && index == selectedImage.index ? "SelectedImageStyle" : "product_color_image_div"}`} onClick={() => handleShowImage(index, color?.image)}>
+                  <Image
+                    width={30}
+                    height={30}
+                    src={baseUrl + color?.image}
+                    alt={slotProducts?.title || "Color variant"}
+                    className="h-100 w-100"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+         {
+          slotProducts.colors?.length>3 && (
+             <div className="d-flex align-items-center"><small className="text-muted">+ {slotProducts.colors?.length -3} more</small></div>
+          )
+         }
+        </div>
       </div>
 
       {/* Status badge */}
