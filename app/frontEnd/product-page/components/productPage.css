@@ -146,7 +146,9 @@
 
 /* Enhanced Variant Sections */
 .variant-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 8px;
+  padding: 15px 0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .variant-section-title {
@@ -501,7 +503,7 @@
     padding: 0.5rem;
   }
 
- 
+
 
   .product-gallery-wrapper {
     flex-direction: row !important;
@@ -566,7 +568,7 @@
 }
 
 @media (max-width: 576px) {
-  
+
   .social-buttons-container {
     flex-direction: column;
   }
@@ -963,12 +965,12 @@
   }
 
   /* When using the simple flex layout (< 4 images) */
-  .thumbnails-container > .d-flex {
+  .thumbnails-container>.d-flex {
     flex-direction: column !important;
     gap: 6px !important;
   }
 
-  .thumbnails-container > .d-flex > div {
+  .thumbnails-container>.d-flex>div {
     width: 68px !important;
     flex: 0 0 68px !important;
   }
@@ -997,7 +999,8 @@
     display: flex !important;
     flex-direction: column !important;
     gap: 6px !important;
-    transform: none !important; /* prevent horizontal translation */
+    transform: none !important;
+    /* prevent horizontal translation */
   }
 
   .thumbnails-container .slick-slide {
@@ -1006,7 +1009,7 @@
     padding: 0 !important;
   }
 
-  .thumbnails-container .slick-slide > div {
+  .thumbnails-container .slick-slide>div {
     width: 68px;
     height: 68px;
   }
@@ -1060,7 +1063,7 @@
      or using a flex wrapper on the product-info-card children. */
 
   /* Easier: target the .my-3 size-guide div to align inline */
-  .product-info-card > .my-3 {
+  .product-info-card>.my-3 {
     display: inline-flex !important;
     align-items: center;
     margin-bottom: 0 !important;
@@ -1103,16 +1106,16 @@
   /* Since we can't change JSX, override .my-3 and
      .action-buttons-container to create an implicit row:
      pull size-guide button and quantity together */
-  .product-info-card > .my-3 {
+  .product-info-card>.my-3 {
     order: 5;
     margin: 0 !important;
   }
 
- 
+
 
   /* Place size-guide + quantity side-by-side by making
      the size guide float left and quantity beside it */
-  .product-info-card > .my-3 + .action-buttons-container {
+  .product-info-card>.my-3+.action-buttons-container {
     margin-top: 0.5rem !important;
   }
 
@@ -1126,11 +1129,12 @@
 
   /* Final approach: make .my-3 very compact and display
      quantity + size guide in a visual row using flex on parent */
-  .variant-section ~ .my-3 {
+  .variant-section~.my-3 {
     display: flex !important;
     align-items: center;
     margin-bottom: 4px !important;
     margin-top: 4px !important;
+    padding: 8px 0;
   }
 
   /* action-buttons row: quantity + add + buy all in one line */
