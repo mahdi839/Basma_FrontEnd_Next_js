@@ -517,7 +517,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
             {/* ── ROW 1: Size Guide + Quantity ── */}
             <div className="size-qty-row my-2 my-lg-3 d-lg-flex gap-lg-3 ">
-              <button className="btn btn-sm " onClick={fetchSizeGuideData}>
+              <button className="size-guide-btn" onClick={fetchSizeGuideData}>
                 <SiFoursquarecityguide />
                 Size Guide
               </button>

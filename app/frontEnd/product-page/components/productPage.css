@@ -144,6 +144,40 @@
   }
 }
 
+/* Size Guide Button - Professional Control Style */
+.size-guide-btn {
+  height: 40px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary-color);
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all .2s ease;
+  margin-top: 2px;
+}
+
+.size-guide-btn svg {
+  font-size: 15px;
+}
+
+/* hover */
+.size-guide-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+  background: #faf5ff;
+}
+
+/* active click feel */
+.size-guide-btn:active {
+  transform: scale(.97);
+}
+
 /* Enhanced Variant Sections */
 .variant-section {
   margin-bottom: 8px;
