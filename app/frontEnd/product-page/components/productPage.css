@@ -149,9 +149,20 @@
   margin-bottom: 8px;
   padding: 15px 0;
   border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  gap: 12px;
 }
 
 .variant-section-title {
+  height: 30px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.color-section-title {
   font-size: 0.9375rem;
   font-weight: 600;
   color: #333;
@@ -160,7 +171,7 @@
   align-items: center;
 }
 
-.variant-section-title .required-asterisk {
+.color-section-title .required-asterisk {
   color: #dc3545;
   margin-right: 4px;
 }
@@ -479,14 +490,9 @@
     padding: 8px 12px;
   }
 
-  .color-option-card {
-    width: 50px;
-    height: 50px;
-  }
-
   .size-option-btn {
     min-width: 50px;
-    padding: 6px 10px;
+    padding: 5px;
     font-size: 0.8125rem;
   }
 
@@ -1039,16 +1045,6 @@
     margin-bottom: 0.4rem !important;
   }
 
-  /* Slightly larger color swatches on mobile */
-  .color-option-card {
-    width: 56px !important;
-    height: 56px !important;
-  }
-
-  .color-selector-grid {
-    gap: 8px !important;
-  }
-
 
   /* -----------------------------------------------------------
      3. SIZE GUIDE + QUANTITY — side by side on one row
@@ -1136,6 +1132,25 @@
     margin-top: 4px !important;
     padding: 8px 0;
   }
+
+  .variant-section {
+    display: inline;
+  }
+
+  .variant-section-title {
+    display: inline;
+    margin-right: 4px;
+  }
+
+  .size-selector-grid {
+    display: inline;
+  }
+
+  .size-option-btn {
+    display: inline-block;
+    margin: 5px;
+  }
+
 
   /* action-buttons row: quantity + add + buy all in one line */
   .action-buttons-container {

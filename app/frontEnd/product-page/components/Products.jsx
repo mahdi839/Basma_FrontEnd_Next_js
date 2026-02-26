@@ -458,7 +458,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             {/* Colors Selection */}
             {product.colors?.length > 0 && (
               <div className="variant-section">
-                <div className="variant-section-title">
+                <div className="color-section-title">
                   <span className="required-asterisk">*</span>
                   Colors:
                 </div>
