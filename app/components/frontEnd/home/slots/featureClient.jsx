@@ -286,7 +286,7 @@ function FeatureClient({ homeCategories: initialData }) {
           return (
             <React.Fragment key={slot.id || slotIndex}>
               {/* Banner Images */}
-              {slot.products.length > 0 &&
+              {/* {slot.products.length > 0 &&
                 slot?.banner?.banner_images?.map((img, index) => {
                   return (
                     <Link
@@ -304,7 +304,7 @@ function FeatureClient({ homeCategories: initialData }) {
                       />
                     </Link>
                   );
-                })}
+                })} */}
 
               {/* Category Header */}
               <div className="col-12 d-flex justify-content-between align-items-center position-relative home_page_card_header">
