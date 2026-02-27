@@ -43,7 +43,7 @@ function FeatureClient({ homeCategories: initialData }) {
       toast.error(initialData.error);
     }
   }, [homeCategories, initialData]);
-  
+
   function NextArrow({ onClick }) {
     return (
       <button
@@ -309,12 +309,11 @@ function FeatureClient({ homeCategories: initialData }) {
               {/* Category Header */}
               <div className="col-12 d-flex justify-content-between align-items-center position-relative home_page_card_header">
                 {slot.products.length > 0 && (
-                  <h2
-                    className="featured-heading font-weight-bold mb-0 fs-5 fs-md-3 fs-lg-2 fs-xl-1"
-                    style={{ fontWeight: "600", color: "#222" }}
-                  >
-                    {slot.name}
-                  </h2>
+                  <div className="slot-name">
+                    <small className="featured-heading">
+                      {slot.name}
+                    </small>
+                  </div>
                 )}
 
                 {slot.products?.length >= 4 && (
@@ -326,24 +325,6 @@ function FeatureClient({ homeCategories: initialData }) {
                   </Link>
                 )}
               </div>
-
-              {/* Horizontal Line */}
-              {slot.products.length > 0 && (
-                <div className="col-12 position-relative ml-3 mt-0 overflow-hidden">
-                  <hr className="feature-hr m-0" />
-                  <div
-                    className="feature-hr-div"
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      left: "0",
-                      width: "100px",
-                      height: "8px",
-                      zIndex: "1",
-                    }}
-                  ></div>
-                </div>
-              )}
 
               {/* Products Slider (4 or more products) */}
               {slot.products?.length >= 4 && (
