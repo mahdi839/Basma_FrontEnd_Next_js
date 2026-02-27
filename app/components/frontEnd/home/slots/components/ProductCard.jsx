@@ -48,10 +48,9 @@ const ProductCard = React.memo(function ProductCard({
           {/* Product Body */}
           <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
             <p className="mb-1">
-              <span className="text-decoration-none text-dark fw-bold product-card-title">
-                {slotProducts?.title?.split(' ').slice(0, 2).join(' ')}
-                {slotProducts?.title?.split(' ').length > 2 && '...'}
-              </span>
+              <small className="text-decoration-none  fw-bold  product-card-title text-truncate d-block">
+                {slotProducts?.title}
+              </small>
             </p>
             <div className="d-flex gap-3 align-items-left mt-1 mt-md-2">
               <span className="discount-price text-decoration-line-through">
@@ -72,7 +71,7 @@ const ProductCard = React.memo(function ProductCard({
         <div className="d-flex gap-2">
           {slotProducts?.colors?.length > 0 && (
             <div className="product-color-wrapper">
-              {slotProducts?.colors?.slice(0,3).map((color, index) => (
+              {slotProducts?.colors?.slice(0, 3).map((color, index) => (
                 <div key={index} className={`${selectedImage.url && index == selectedImage.index ? "SelectedImageStyle" : "product_color_image_div"}`} onClick={() => handleShowImage(index, color?.image)}>
                   <Image
                     width={30}
@@ -85,11 +84,11 @@ const ProductCard = React.memo(function ProductCard({
               ))}
             </div>
           )}
-         {
-          slotProducts.colors?.length>3 && (
-             <div className="d-flex align-items-center"><small className="text-muted">+ {slotProducts.colors?.length -3} more</small></div>
-          )
-         }
+          {
+            slotProducts.colors?.length > 3 && (
+              <div className="d-flex align-items-center"><small className="text-muted">+ {slotProducts.colors?.length - 3} more</small></div>
+            )
+          }
         </div>
       </div>
 
