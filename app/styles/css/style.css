@@ -216,7 +216,7 @@ ol {
 	width: 50%;
 	/* half the width of .slot-name (which equals text width) */
 	height: 3px;
-	background: black;
+	background: var(--primary-color);
 	border-radius: 3px;
 	/* rounded ends make it look like a curved line */
 	opacity: 0.8;
