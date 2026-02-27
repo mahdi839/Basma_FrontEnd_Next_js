@@ -19,7 +19,7 @@ export default function Hero({ data }) {
     nextArrow: (
       <div className={style.arrow_div_right}>
         {
-          data?.banner_images.length > 0 ? <FaChevronRight className={style.arrow_right} /> : ''
+          data?.banner_images?.length > 0 ? <FaChevronRight className={style.arrow_right} /> : ''
         }
 
       </div>
@@ -27,7 +27,7 @@ export default function Hero({ data }) {
     prevArrow: (
       <div className={style.arrow_div_left}>
         {
-          data?.banner_images.length > 0 ? <FaChevronLeft className={style.arrow_left} /> : ''
+          data?.banner_images?.length > 0 ? <FaChevronLeft className={style.arrow_left} /> : ''
         }
       </div>
     ),

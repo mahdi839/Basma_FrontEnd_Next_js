@@ -10,6 +10,14 @@ import Bootstrap_js from "./components/bootstrapJs/Bootstrap_js";
 import Providers from "./Providers";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata = {
   title: "Eyara Fashion - Your Gateway to Global Footwear Elegance",
@@ -27,7 +35,7 @@ export const metadata = {
     images: [
       {
         url: "/img/favicon.png",
-        
+
       },
     ],
     locale: "en_BD",
@@ -46,14 +54,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body >
+      <body className={inter.variable}>
         <Providers>
-        <div className="gradient-bg">
-        <Bootstrap_js />
-        <ToastContainer />
-        {children}
-        </div>
-        </Providers>        
+          <div className="gradient-bg">
+            <Bootstrap_js />
+            <ToastContainer />
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );
