@@ -32,12 +32,17 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [modalSelectedSize, setModalSelectedSize] = useState(null);
   const [modalSelectedColor, setModalSelectedColor] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
-  const [loadingSizeGuide, setLoadingSizeGuide] = useState(false);
+
+  // ── NEW: instant image state + loader ──
+  const [localImgUrl, setLocalImgUrl] = useState(null);
+  const [imgLoading, setImgLoading] = useState(false);
+
   const {
     originalPrice,
     discount,
     discountedPrice
   } = useDiscountedPrice(product);
+
   const {
     handleSelectedColor,
     selectedColor,
@@ -46,7 +51,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     whatsappUrl,
     preQty,
     handleQuantityIncrease,
-    handleQuantityDecrease, handleThumbClick, imgUrl
+    handleQuantityDecrease,
+    handleThumbClick,
+    imgUrl
   } = useProductLogics(product, socialLinksData.whatsapp_number);
 
   // Modal states
@@ -67,8 +74,10 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
   const cartItem = cartItems.find(item => product.id == item.id);
 
-  // Check if product has specifications
   const hasSpecifications = product?.specifications && product.specifications.length > 0;
+
+  // ── Compute the displayed main image (local state wins for instant update) ──
+  const displayImgUrl = localImgUrl || imgUrl || (images?.[0]?.image ? `${baseUrl}${images[0].image}` : "/placeholder.png");
 
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
@@ -78,6 +87,21 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     if (product) setIsLoading(false);
     if (product?.error) toast.error(product.error);
   }, [product]);
+
+  // ── Instant color click handler ──
+  function handleColorClick(colorImage) {
+    const newUrl = `${baseUrl}${colorImage}`;
+    setLocalImgUrl(newUrl);
+    setImgLoading(true);
+    handleSelectedColor(colorImage);
+  }
+
+  // ── Thumb click resets localImgUrl so hook's imgUrl takes over ──
+  function handleThumbClickLocal(imgId) {
+    setLocalImgUrl(null);
+    setImgLoading(true);
+    handleThumbClick(imgId);
+  }
 
   function toggleFaq(id) {
     setOpenFaqId((prev) => (prev === id ? 0 : id));
@@ -151,24 +175,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     toast.success("Added to cart!");
   }
 
-  function handleSizeSelect(sizeId) {
-    setModalSelectedSize(sizeId);
-  }
-
   async function handleOpenModal(product) {
     setModalSelectedSize(null);
     setModalSelectedColor(null);
     setIsModalOpen(true);
     try {
-      const response = await fetch(
-        `${baseUrl}api/products/${product.id}`,
-        { cache: 'no-store' }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch product details');
-      }
-
+      const response = await fetch(`${baseUrl}api/products/${product.id}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error('Failed to fetch product details');
       const data = await response.json();
       setSelectedProduct(data.data);
     } catch (error) {
@@ -203,32 +216,19 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     }
 
     if (product?.sizes?.length > 1 && !modalSelectedSize) {
-      Swal.fire({
-        title: "Please select a size",
-        icon: "warning",
-        confirmButtonColor: "#DB3340",
-      });
+      Swal.fire({ title: "Please select a size", icon: "warning", confirmButtonColor: "#DB3340" });
       return;
     }
 
     if (product?.colors?.length > 1 && !modalSelectedColor) {
-      Swal.fire({
-        title: "Please select a color",
-        icon: "warning",
-        confirmButtonColor: "#DB3340",
-      });
+      Swal.fire({ title: "Please select a color", icon: "warning", confirmButtonColor: "#DB3340" });
       return;
     }
 
     const baseProduct = product || selectedProduct;
+    const selectedVariant = baseProduct?.sizes?.find(s => s.id == modalSelectedSize) || baseProduct?.sizes?.[0];
+    const imageUrl = baseProduct?.image ? baseUrl + baseProduct?.image : "";
 
-    const selectedVariant =
-      baseProduct?.sizes?.find(s => s.id == modalSelectedSize)
-      || baseProduct?.sizes?.[0];
-    const imageUrl =
-      baseProduct?.image
-        ? baseUrl + baseProduct?.image
-        : "";
     dispatch(
       addToCart({
         id: baseProduct.id,
@@ -249,9 +249,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     }
   }
 
-  if (isLoading) {
-    return <SignProdSkeleton />;
-  }
+  if (isLoading) return <SignProdSkeleton />;
 
   function fetchSizeGuideData() {
     setShowSizeGuide(true);
@@ -259,13 +257,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
   const sizeGuideImage = "/img/size_guide/shoe.webp";
 
-  // Arrow components for slider
   function NextArrow({ onClick }) {
     return (
-      <button
-        className="custom-slick-arrow custom-slick-next"
-        onClick={onClick}
-      >
+      <button className="custom-slick-arrow custom-slick-next" onClick={onClick}>
         <FaChevronRight />
       </button>
     );
@@ -273,16 +267,12 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
   function PrevArrow({ onClick }) {
     return (
-      <button
-        className="custom-slick-arrow custom-slick-prev"
-        onClick={onClick}
-      >
+      <button className="custom-slick-arrow custom-slick-prev" onClick={onClick}>
         <FaChevronLeft />
       </button>
     );
   }
 
-  // Slider settings for thumbnails
   const thumbSliderSettings = {
     dots: false,
     arrows: true,
@@ -295,127 +285,128 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
-      {
-        breakpoint: 768,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
+      { breakpoint: 768, settings: { slidesToShow: 3, slidesToScroll: 1 } },
+      { breakpoint: 480, settings: { slidesToShow: 3, slidesToScroll: 1 } },
     ],
   };
 
   return (
     <div className="container product-page-container">
       <div className="row my-2 my-md-5 g-2 g-lg-4">
-        {/* product header for mobile start */}
+
+        {/* Product header — mobile only */}
         <div className="col-12 d-lg-none">
           <div className="product-mobile-header d-flex flex-column justify-content-center px-3">
             <h1 className="product-title">{product?.title}</h1>
-
             {product?.sku && (
-              <div className="product-sku">
-                SKU: <strong>{product.sku}</strong>
-              </div>
+              <div className="product-sku">SKU: <strong>{product.sku}</strong></div>
             )}
-
             {product?.status === 'prebook' && (
-              <div className="preorder-badge">
-                ⚡ Pre Order, Delivery Time 20 to 25 Days
-              </div>
+              <div className="preorder-badge">⚡ Pre Order, Delivery Time 20 to 25 Days</div>
             )}
           </div>
         </div>
-        {/* product header for mobile end */}
 
         {/* Product Images */}
         <div className="col-12 col-md-6">
           <div className="product-gallery-wrapper d-flex flex-column flex-md-column gap-1">
-            <div className="main-image-container">
+
+            {/* ── MAIN IMAGE with loader ── */}
+            <div className="main-image-container" style={{ position: 'relative' }}>
+              {imgLoading && (
+                <div style={{
+                  position: 'absolute', inset: 0, display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  background: 'rgba(255,255,255,0.75)', zIndex: 2,
+                  borderRadius: '12px'
+                }}>
+                  <div className="img-spinner" />
+                </div>
+              )}
               <Zoom>
                 <Image
-                  src={
-                    imgUrl ||
-                    (images?.[0]?.image
-                      ? `${baseUrl}${images[0].image}`
-                      : "/placeholder.png")
-                  }
+                  src={displayImgUrl}
                   alt={product?.title}
                   width={600}
                   height={600}
                   className="img-fluid"
                   priority
                   style={{ objectFit: "contain" }}
+                  onLoad={() => setImgLoading(false)}
                 />
               </Zoom>
             </div>
+
+            {/* ── THUMBNAILS ── */}
             {images?.length > 1 && (
               <div className="thumbnails-container">
-                {images.length >= 4 ? (
-                  <Slider {...thumbSliderSettings}>
-                    {images.map((img) => (
-                      <div key={img.id} className="px-1">
-                        <button
-                          type="button"
-                          className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
-                          onClick={() => handleThumbClick(img.id)}
-                          style={{
-                            padding: 0,
-                            overflow: 'hidden',
-                            background: '#f8f9fa',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                          }}
-                        >
-                          <Image
-                            src={baseUrl + img.image}
-                            alt="product thumbnail"
-                            width={600}
-                            height={600}
-                            style={{ width: '100%', height: '100%' }}
-                          />
-                        </button>
-                      </div>
-                    ))}
-                  </Slider>
-                ) : (
-                  <div className="d-flex gap-2 flex-wrap">
-                    {images.map((img) => (
-                      <div key={img.id} style={{ flex: '0 0 auto', width: '80px' }}>
-                        <button
-                          className={`sub-img ${imgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
-                          onClick={() => handleThumbClick(img.id)}
-                          style={{
-                            width: '100%',
-                            height: '80px',
-                            padding: 0,
-                            background: '#f8f9fa',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            overflow: 'hidden'
-                          }}
-                        >
-                          <Image
-                            src={baseUrl + img.image}
-                            alt="product thumbnail"
-                            width={600}
-                            height={600}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+
+                {/* Desktop: use Slick slider (horizontal) */}
+                <div className="d-none d-md-block w-100">
+                  {images.length >= 4 ? (
+                    <Slider {...thumbSliderSettings}>
+                      {images.map((img) => (
+                        <div key={img.id} className="px-1">
+                          <button
+                            type="button"
+                            className={`sub-img ${displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
+                            onClick={() => handleThumbClickLocal(img.id)}
+                            style={{ padding: 0, overflow: 'hidden', background: '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                          >
+                            <Image
+                              src={baseUrl + img.image}
+                              alt="product thumbnail"
+                              width={600}
+                              height={600}
+                              style={{ width: '100%', height: '100%' }}
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </Slider>
+                  ) : (
+                    <div className="d-flex gap-2 flex-wrap">
+                      {images.map((img) => (
+                        <div key={img.id} style={{ flex: '0 0 auto', width: '80px' }}>
+                          <button
+                            className={`sub-img ${displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
+                            onClick={() => handleThumbClickLocal(img.id)}
+                            style={{ width: '100%', height: '80px', padding: 0, background: '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
+                          >
+                            <Image
+                              src={baseUrl + img.image}
+                              alt="product thumbnail"
+                              width={600}
+                              height={600}
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Mobile: always simple vertical flex — NO Slick */}
+                <div className="d-flex d-md-none mobile-thumbs-vertical">
+                  {images.map((img) => (
+                    <button
+                      key={img.id}
+                      type="button"
+                      className={`mobile-thumb-btn ${displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
+                      onClick={() => handleThumbClickLocal(img.id)}
+                    >
+                      <Image
+                        src={baseUrl + img.image}
+                        alt="product thumbnail"
+                        width={200}
+                        height={200}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    </button>
+                  ))}
+                </div>
+
               </div>
             )}
           </div>
@@ -428,17 +419,11 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             {/* Product Header — desktop only */}
             <div className="product-header d-none d-lg-block">
               <h1 className="product-title">{product?.title}</h1>
-
               {product?.sku && (
-                <div className="product-sku">
-                  SKU: <strong>{product.sku}</strong>
-                </div>
+                <div className="product-sku">SKU: <strong>{product.sku}</strong></div>
               )}
-
               {product?.status === 'prebook' && (
-                <div className="preorder-badge">
-                  ⚡ Pre Order, Delivery Time 20 to 25 Days
-                </div>
+                <div className="preorder-badge">⚡ Pre Order, Delivery Time 20 to 25 Days</div>
               )}
             </div>
 
@@ -447,7 +432,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               <div className="discount-price text-decoration-line-through">
                 {product?.price ?? 0}৳
               </div>
-
               {product?.discount > 0 && (
                 <div className="product-price">
                   {(product?.discount ?? 0) * (preQty ?? 1)}৳
@@ -467,7 +451,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                     <div
                       key={color.id}
                       className={`color-option-card ${selectedColor === color.image ? "selected" : ""}`}
-                      onClick={() => handleSelectedColor(color?.image)}
+                      onClick={() => handleColorClick(color?.image)}
                       data-tooltip-id="color-tooltip"
                       data-tooltip-content={color.name}
                     >
@@ -481,11 +465,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             )}
 
-            <Tooltip
-              id="color-tooltip"
-              place="top"
-              className="custom-color-tooltip"
-            />
+            <Tooltip id="color-tooltip" place="top" className="custom-color-tooltip" />
 
             {/* Sizes Selection */}
             {product.sizes?.length > 0 && (
@@ -505,9 +485,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                         onClick={() => handleSelectedSize(size.id)}
                       >
                         {size?.size}
-                        {sizePrice && (
-                          <span className="size-price">৳{sizePrice}</span>
-                        )}
+                        {sizePrice && <span className="size-price">৳{sizePrice}</span>}
                       </button>
                     );
                   })}
@@ -515,13 +493,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             )}
 
-            {/* ── ROW 1: Size Guide + Quantity ── */}
-            <div className="size-qty-row my-2 my-lg-3 d-lg-flex gap-lg-3 ">
+            {/* Size Guide + Quantity */}
+            <div className="size-qty-row my-2 my-lg-3 d-lg-flex gap-lg-3">
               <button className="size-guide-btn" onClick={fetchSizeGuideData}>
                 <SiFoursquarecityguide />
                 Size Guide
               </button>
-              <div className="quantity-controls ">
+              <div className="quantity-controls">
                 <button
                   className="quantity-btn"
                   onClick={() => handleQuantityDecrease(product.id)}
@@ -530,9 +508,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 >
                   -
                 </button>
-                <span className="quantity-display">
-                  {cartItem?.qty ?? preQty}
-                </span>
+                <span className="quantity-display">{cartItem?.qty ?? preQty}</span>
                 <button
                   className="quantity-btn"
                   onClick={() => handleQuantityIncrease(product?.id)}
@@ -543,41 +519,25 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             </div>
 
-            {/* ── ROW 2: Add to Cart + Buy Now ── */}
+            {/* Add to Cart + Buy Now */}
             <div className="action-buttons-container">
-              <button
-                className="single-prod-action-btn btn-grad"
-                onClick={() => handleAddToCart("add")}
-              >
+              <button className="single-prod-action-btn btn-grad" onClick={() => handleAddToCart("add")}>
                 <FaCartPlus size={16} />
                 Add to Cart
               </button>
-              <button
-                className="single-prod-action-btn btn-grad"
-                onClick={() => handleAddToCart("buy")}
-              >
+              <button className="single-prod-action-btn btn-grad" onClick={() => handleAddToCart("buy")}>
                 <FaCartPlus size={16} />
                 Buy Now
               </button>
             </div>
 
-            {/* ── ROW 3: Messenger + WhatsApp ── */}
+            {/* Messenger + WhatsApp */}
             <div className="social-buttons-container">
-              <a
-                href={messengerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-btn messenger-btn"
-              >
+              <a href={messengerUrl} target="_blank" rel="noopener noreferrer" className="social-btn messenger-btn">
                 <FaFacebookMessenger size={16} />
                 Messenger
               </a>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-btn whatsapp-btn"
-              >
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="social-btn whatsapp-btn">
                 <FaWhatsapp size={16} />
                 WhatsApp
               </a>
@@ -590,22 +550,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       {/* Product Tabs */}
       <div className="desc_tab_container mt-4 mt-md-5">
         <div className="tabs-header d-flex flex-wrap justify-content-center gap-2 gap-md-3 mb-4">
-          <button
-            className={`tab-btn ${activeTab === "specs" ? "active" : ""}`}
-            onClick={() => setActiveTab("specs")}
-          >
+          <button className={`tab-btn ${activeTab === "specs" ? "active" : ""}`} onClick={() => setActiveTab("specs")}>
             Description
           </button>
-          <button
-            className={`tab-btn ${activeTab === "faq" ? "active" : ""}`}
-            onClick={() => setActiveTab("faq")}
-          >
+          <button className={`tab-btn ${activeTab === "faq" ? "active" : ""}`} onClick={() => setActiveTab("faq")}>
             FAQ
           </button>
-          <button
-            className={`tab-btn ${activeTab === "video" ? "active" : ""}`}
-            onClick={() => setActiveTab("video")}
-          >
+          <button className={`tab-btn ${activeTab === "video" ? "active" : ""}`} onClick={() => setActiveTab("video")}>
             Product Video
           </button>
         </div>
@@ -689,16 +640,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       {showSizeGuide && (
         <div className="size-guide-overlay">
           <div className="size-guide-content">
-            <button className="size-guide-close" onClick={() => setShowSizeGuide(false)}>
-              ✕
-            </button>
-            <Image
-              src={sizeGuideImage}
-              alt="Size Guide"
-              width={600}
-              height={800}
-              className="img-fluid"
-            />
+            <button className="size-guide-close" onClick={() => setShowSizeGuide(false)}>✕</button>
+            <Image src={sizeGuideImage} alt="Size Guide" width={600} height={800} className="img-fluid" />
           </div>
         </div>
       )}
@@ -724,11 +667,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         />
       )}
 
-      <CartDrawer
-        isOpen={isCartDrawerOpen}
-        isDirectBuy={isDirectBuy}
-        onClose={handleCloseDrawer}
-      />
+      <CartDrawer isOpen={isCartDrawerOpen} isDirectBuy={isDirectBuy} onClose={handleCloseDrawer} />
 
       <style jsx>{`
         .specifications-table-wrapper { overflow-x: auto; }
@@ -743,12 +682,77 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ── Spinner ── */
+        .img-spinner {
+          width: 36px;
+          height: 36px;
+          border: 4px solid #e0e0e0;
+          border-top: 4px solid #7d0ba7;
+          border-radius: 50%;
+          animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Mobile thumbnail vertical strip ── */
+        .mobile-thumbs-vertical {
+          flex-direction: column;
+          gap: 6px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          max-height: 360px;
+          scrollbar-width: none;
+        }
+        .mobile-thumbs-vertical::-webkit-scrollbar { display: none; }
+
+        .mobile-thumb-btn {
+          width: 68px;
+          height: 68px;
+          min-height: 68px;
+          flex-shrink: 0;
+          border: 2px solid #e0e0e0;
+          border-radius: 8px;
+          background: #f8f9fa;
+          padding: 0;
+          overflow: hidden;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: border-color 0.2s ease;
+        }
+        .mobile-thumb-btn.active {
+          border-color: #7d0ba7;
+          box-shadow: 0 0 0 2px rgba(125, 11, 167, 0.15);
+        }
+        .mobile-thumb-btn:hover { border-color: #7d0ba7; }
+
         /* ── MOBILE LAYOUT FIXES ── */
         @media (max-width: 768px) {
           .specifications-table td { padding: 10px 12px; font-size: 0.9rem; }
           .spec-key { width: 45%; }
 
-          /* Row 1: Size Guide + Quantity */
+          /* Gallery: thumbnails LEFT, main image RIGHT */
+          .product-gallery-wrapper {
+            flex-direction: row !important;
+            align-items: flex-start;
+            gap: 8px;
+          }
+          /* Thumbnails column moves to left */
+          .thumbnails-container {
+            order: -1;
+            width: 76px !important;
+            min-width: 76px !important;
+            flex-shrink: 0;
+          }
+          /* Main image takes remaining space */
+          .main-image-container {
+            flex: 1 1 auto !important;
+            height: 340px !important;
+            aspect-ratio: auto !important;
+            padding: 10px !important;
+          }
+
+          /* Size Guide + Quantity row */
           .size-qty-row {
             display: flex;
             flex-direction: row;
@@ -757,7 +761,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             margin-top: 0.4rem;
             margin-bottom: 0.5rem;
           }
-          .size-qty-row .btn { white-space: nowrap; flex-shrink: 0; }
           .size-qty-row .quantity-controls {
             display: flex;
             align-items: center;
@@ -768,7 +771,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             flex-shrink: 0;
           }
 
-          /* Row 2: Add to Cart + Buy Now */
+          /* Action buttons row */
           .action-buttons-container {
             display: flex !important;
             flex-direction: row !important;
@@ -785,7 +788,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             gap: 5px !important;
           }
 
-          /* Row 3: Messenger + WhatsApp */
+          /* Social buttons row */
           .social-buttons-container {
             display: flex !important;
             flex-direction: row !important;
@@ -797,6 +800,20 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             font-size: 0.78rem !important;
             padding: 9px 6px !important;
             white-space: nowrap;
+          }
+
+          /* Mobile thumbnail vertical strip sizing */
+          .mobile-thumbs-vertical {
+            max-height: 340px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .main-image-container { height: 280px !important; }
+          .mobile-thumbs-vertical { max-height: 280px; }
+          .single-prod-action-btn, .social-btn {
+            font-size: 0.7rem !important;
+            padding: 8px 4px !important;
           }
         }
 
