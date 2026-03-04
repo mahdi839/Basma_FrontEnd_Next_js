@@ -44,51 +44,54 @@ const ProductCard = React.memo(function ProductCard({
               priority={false}
             />
           </div>
-
-          {/* Product Body */}
-          <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
-            <p className="mb-1">
-              <small className="text-decoration-none  fw-bold  product-card-title text-truncate d-block">
-                {slotProducts?.title}
-              </small>
-            </p>
-            <div className="d-flex gap-3 align-items-left mt-1 mt-md-2">
-              <span className="discount-price text-decoration-line-through">
-                {slotProducts?.price ?? 0}৳
-              </span>
-              {
-                slotProducts.discount && (
-                  <span className="fw-bold product-price">
-                    {slotProducts.discount ?? ""}৳
-                  </span>
-                )
-              }
-            </div>
-          </div>
         </Link>
 
-        {/* Color swatches - outside Link if you don't want them clickable */}
-        <div className="d-flex gap-2">
-          {slotProducts?.colors?.length > 0 && (
-            <div className="product-color-wrapper">
-              {slotProducts?.colors?.slice(0, 3).map((color, index) => (
-                <div key={index} className={`${selectedImage.url && index == selectedImage.index ? "SelectedImageStyle" : "product_color_image_div"}`} onClick={() => handleShowImage(index, color?.image)}>
-                  <Image
-                    width={30}
-                    height={30}
-                    src={baseUrl + color?.image}
-                    alt={slotProducts?.title || "Color variant"}
-                    className="h-100 w-100"
-                  />
-                </div>
-              ))}
+        <div className="product-body-parent pb-3">
+          <Link href={`/frontEnd/product-page/${slotProducts?.id}`} style={{ textDecoration: 'none' }}>
+            {/* Product Body */}
+            <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
+              <p className="mb-1">
+                <small className="text-decoration-none  fw-bold  product-card-title text-truncate d-block">
+                  {slotProducts?.title}
+                </small>
+              </p>
+              <div className="d-flex gap-3 align-items-left mt-1 mt-md-2">
+                <span className="discount-price text-decoration-line-through">
+                  {slotProducts?.price ?? 0}৳
+                </span>
+                {
+                  slotProducts.discount && (
+                    <span className="fw-bold product-price">
+                      {slotProducts.discount ?? ""}৳
+                    </span>
+                  )
+                }
+              </div>
             </div>
-          )}
-          {
-            slotProducts.colors?.length > 3 && (
-              <div className="d-flex align-items-center"><small className="text-muted">+ {slotProducts.colors?.length - 3} more</small></div>
-            )
-          }
+          </Link>
+          {/* Color swatches - outside Link if you don't want them clickable */}
+          <div className="d-flex gap-2 mt-sm-2 mt-3 ">
+            {slotProducts?.colors?.length > 0 && (
+              <div className="product-color-wrapper">
+                {slotProducts?.colors?.slice(0, 3).map((color, index) => (
+                  <div key={index} className={`${selectedImage.url && index == selectedImage.index ? "SelectedImageStyle" : "product_color_image_div"}`} onClick={() => handleShowImage(index, color?.image)}>
+                    <Image
+                      width={30}
+                      height={30}
+                      src={baseUrl + color?.image}
+                      alt={slotProducts?.title || "Color variant"}
+                      className="h-100 w-100"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            {
+              slotProducts.colors?.length > 3 && (
+                <div className="d-flex align-items-center"><small className="text-muted">+ {slotProducts.colors?.length - 3}</small></div>
+              )
+            }
+          </div>
         </div>
       </div>
 
