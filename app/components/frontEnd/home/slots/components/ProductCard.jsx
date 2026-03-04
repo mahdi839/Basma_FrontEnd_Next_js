@@ -70,7 +70,7 @@ const ProductCard = React.memo(function ProductCard({
             </div>
           </Link>
           {/* Color swatches - outside Link if you don't want them clickable */}
-          <div className="d-flex gap-2 mt-sm-2 mt-3 ">
+          <div className="d-flex gap-2 mt-1 mt-lg-3 ">
             {slotProducts?.colors?.length > 0 && (
               <div className="product-color-wrapper">
                 {slotProducts?.colors?.slice(0, 3).map((color, index) => (
