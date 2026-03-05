@@ -51,7 +51,7 @@ const ProductCard = React.memo(function ProductCard({
             {/* Product Body */}
             <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
               <p className="mb-1">
-                <small className="text-decoration-none  fw-bold  product-card-title text-truncate d-block">
+                <small className="text-decoration-none  fw-bold  product-card-title text-truncate d-block" style={{ fontFamily: 'Inter, sans-serif' }}>
                   {slotProducts?.title}
                 </small>
               </p>
