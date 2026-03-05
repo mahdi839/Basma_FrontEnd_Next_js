@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart } from "@/redux/slices/CartSlice";
 import ProductCard from "../../components/frontEnd/home/slots/components/ProductCard";
@@ -9,29 +9,146 @@ import ProductModal from "@/app/components/frontEnd/home/slots/components/Produc
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import ShopSkeleton from "./ShopSkeleton";
 
+/* ─────────────────────────────────────────────
+   Sub-components
+───────────────────────────────────────────── */
+
+function AccordionSection({ title, count = 0, defaultOpen = true, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="spf-accordion">
+      <button className="spf-accordion-trigger" onClick={() => setOpen(!open)}>
+        <span className="spf-accordion-title">
+          {title}
+          {count > 0 && <span className="spf-acc-badge">{count}</span>}
+        </span>
+        <svg
+          className={`spf-chevron${open ? " open" : ""}`}
+          width="12" height="12" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" strokeWidth="2.5"
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
+      <div className={`spf-accordion-body${open ? " open" : ""}`}>
+        <div className="spf-accordion-inner">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function CategoryFilter({ categories, selected, onChange }) {
+  const [showAll, setShowAll] = useState(false);
+  const SHOW = 8;
+  const visible = showAll ? categories : categories.slice(0, SHOW);
+  return (
+    <div className="spf-category-list">
+      {visible.map(cat => {
+        const active = selected.includes(cat.id);
+        return (
+          <button
+            key={cat.id}
+            className={`spf-cat-item${active ? " active" : ""}`}
+            onClick={() => onChange(cat.id)}
+          >
+            <span className="spf-cat-dot" />
+            <span className="spf-cat-name">{cat.name}</span>
+            {active && (
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            )}
+          </button>
+        );
+      })}
+      {categories.length > SHOW && (
+        <button className="spf-show-more" onClick={() => setShowAll(!showAll)}>
+          {showAll ? "Show less" : `+${categories.length - SHOW} more`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+function SizeFilter({ sizes, selected, onChange }) {
+  return (
+    <div className="spf-size-grid">
+      {sizes.map(size => {
+        const active = selected.includes(size.id);
+        return (
+          <button
+            key={size.id}
+            className={`spf-size-chip${active ? " active" : ""}`}
+            onClick={() => onChange(size.id)}
+          >
+            {size.size}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function PriceFilter({ priceInput, onChange, priceRange }) {
+  return (
+    <div className="spf-price-wrap">
+      <div className="spf-price-row">
+        <div className="spf-price-field">
+          <label className="spf-price-label">Min</label>
+          <div className="spf-price-input-wrap">
+            <span className="spf-currency">৳</span>
+            <input
+              type="number"
+              className="spf-price-input"
+              value={priceInput.min}
+              min={priceRange.min}
+              max={priceRange.max}
+              onChange={e => onChange(e.target.value, priceInput.max)}
+              placeholder={priceRange.min}
+            />
+          </div>
+        </div>
+        <div className="spf-price-divider">–</div>
+        <div className="spf-price-field">
+          <label className="spf-price-label">Max</label>
+          <div className="spf-price-input-wrap">
+            <span className="spf-currency">৳</span>
+            <input
+              type="number"
+              className="spf-price-input"
+              value={priceInput.max}
+              min={priceRange.min}
+              max={priceRange.max}
+              onChange={e => onChange(priceInput.min, e.target.value)}
+              placeholder={priceRange.max}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─────────────────────────────────────────────
+   Main ShopPage
+───────────────────────────────────────────── */
 function ShopPage() {
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({
     categories: [],
     sizes: [],
-    min_price: '',
-    max_price: '',
-    search: ''
+    min_price: "",
+    max_price: "",
+    search: "",
   });
-  // Local state for inputs to avoid triggering useEffect immediately
-  const [searchInput, setSearchInput] = useState('');
-  const [priceInput, setPriceInput] = useState({ min: '', max: '' });
-  
+  const [searchInput, setSearchInput] = useState("");
+  const [priceInput, setPriceInput] = useState({ min: "", max: "" });
   const [filterOptions, setFilterOptions] = useState({
     categories: [],
     sizes: [],
-    price_range: { min: 0, max: 1000 }
+    price_range: { min: 0, max: 1000 },
   });
-  const [pagination, setPagination] = useState({
-    current_page: 1,
-    has_more: false,
-    total: 0
-  });
+  const [pagination, setPagination] = useState({ current_page: 1, has_more: false, total: 0 });
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -40,418 +157,584 @@ function ShopPage() {
   const [selectedColor, setSelectedColor] = useState("");
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+
+  const readyToFetch = useRef(false);
 
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items);
-  let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const cartItems = useSelector(state => state.cart.items);
+  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // Debounce effect for search - only trigger when 3+ characters or empty
+  /* ── Debounce: search ── */
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (!readyToFetch.current) return;
+    const t = setTimeout(() => {
       if (searchInput.length >= 3 || searchInput.length === 0) {
-        setFilters(prev => ({
-          ...prev,
-          search: searchInput
-        }));
+        setFilters(prev => ({ ...prev, search: searchInput }));
       }
-    }, 1000); 
-
-    return () => clearTimeout(timer);
+    }, 800);
+    return () => clearTimeout(t);
   }, [searchInput]);
 
-  // Debounce effect for price range
+  /* ── Debounce: price ── */
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setFilters(prev => ({
-        ...prev,
-        min_price: priceInput.min,
-        max_price: priceInput.max
-      }));
-    }, 1000); // 800ms delay for price
-
-    return () => clearTimeout(timer);
+    if (!readyToFetch.current) return;
+    const t = setTimeout(() => {
+      setFilters(prev => ({ ...prev, min_price: priceInput.min, max_price: priceInput.max }));
+    }, 800);
+    return () => clearTimeout(t);
   }, [priceInput]);
 
-  // Fetch filter options
-  const fetchFilterOptions = async () => {
-    try {
-      const response = await fetch(`${baseUrl}api/shop/filters`);
-      const data = await response.json();
-      if (data.message === 'success') {
-        setFilterOptions(data.data);
-        // Set initial price range
-        const minPrice = data.data.price_range.min;
-        const maxPrice = data.data.price_range.max;
-        setFilters(prev => ({
-          ...prev,
-          min_price: minPrice,
-          max_price: maxPrice
-        }));
-        setPriceInput({ min: minPrice, max: maxPrice });
-      }
-    } catch (error) {
-      console.error('Error fetching filter options:', error);
-    }
-  };
-
-  // Fetch products with current filters
-  const fetchProducts = useCallback(async (page = 1, append = false) => {
-    const loadingState = page === 1 ? setLoading : setLoadingMore;
-    loadingState(true);
-
-    try {
-      const params = new URLSearchParams();
-      params.append('page', page);
-
-      if (filters.categories.length > 0) {
-        filters.categories.forEach(cat => params.append('categories[]', cat));
-      }
-      if (filters.sizes.length > 0) {
-        filters.sizes.forEach(size => params.append('sizes[]', size));
-      }
-      if (filters.min_price) params.append('min_price', filters.min_price);
-      if (filters.max_price) params.append('max_price', filters.max_price);
-      if (filters.search) params.append('search', filters.search);
-
-      const response = await fetch(`${baseUrl}api/shop/products?${params}`);
-      const data = await response.json();
-
-      if (data.message === 'success') {
-        if (append) {
-          setProducts(prev => [...prev, ...data.data]);
-        } else {
-          setProducts(data.data);
+  /* ── Fetch filter options ONCE, flip ready flag ── */
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`${baseUrl}api/shop/filters`);
+        const data = await res.json();
+        if (data.message === "success") {
+          const { min, max } = data.data.price_range;
+          setFilterOptions(data.data);
+          setPriceInput({ min, max });
+          setFilters(prev => ({ ...prev, min_price: min, max_price: max }));
+          readyToFetch.current = true;
         }
-        setPagination(data.pagination);
+      } catch (e) {
+        console.error("Filter fetch error:", e);
       }
-    } catch (error) {
-      console.error('Error fetching products:', error);
-      toast.error('Error loading products');
-    } finally {
-      loadingState(false);
-    }
-  }, [filters, baseUrl]);
+    })();
+  }, []); // eslint-disable-line
 
-  // Initial load
+  const fetchProducts = useCallback(
+    async (page = 1, append = false) => {
+      page === 1 ? setLoading(true) : setLoadingMore(true);
+      try {
+        const p = new URLSearchParams({ page });
+        filters.categories.forEach(c => p.append("categories[]", c));
+        filters.sizes.forEach(s => p.append("sizes[]", s));
+        if (filters.min_price) p.append("min_price", filters.min_price);
+        if (filters.max_price) p.append("max_price", filters.max_price);
+        if (filters.search) p.append("search", filters.search);
+
+        const res = await fetch(`${baseUrl}api/shop/products?${p}`);
+        const data = await res.json();
+        if (data.message === "success") {
+          setProducts(prev => (append ? [...prev, ...data.data] : data.data));
+          setPagination(data.pagination);
+        }
+      } catch (e) {
+        toast.error("Error loading products");
+      } finally {
+        page === 1 ? setLoading(false) : setLoadingMore(false);
+      }
+    },
+    [filters, baseUrl]
+  );
+
   useEffect(() => {
-    fetchFilterOptions();
-  }, []);
+    if (!readyToFetch.current) return;
+    fetchProducts(1, false);
+  }, [filters]); // eslint-disable-line
 
-  useEffect(() => {
-    if (filterOptions.categories.length > 0) {
-      fetchProducts(1, false);
-    }
-  }, [filters, fetchProducts, filterOptions]);
-
-  // Filter handlers
-  const handleCategoryChange = (categoryId) => {
-    setFilters(prev => ({
-      ...prev,
-      categories: prev.categories.includes(categoryId)
-        ? prev.categories.filter(id => id !== categoryId)
-        : [...prev.categories, categoryId]
+  /* ── Filter helpers ── */
+  const toggleCategory = id =>
+    setFilters(p => ({
+      ...p,
+      categories: p.categories.includes(id)
+        ? p.categories.filter(x => x !== id)
+        : [...p.categories, id],
     }));
-  };
 
-  const handleSizeChange = (sizeId) => {
-    setFilters(prev => ({
-      ...prev,
-      sizes: prev.sizes.includes(sizeId)
-        ? prev.sizes.filter(id => id !== sizeId)
-        : [...prev.sizes, sizeId]
+  const toggleSize = id =>
+    setFilters(p => ({
+      ...p,
+      sizes: p.sizes.includes(id)
+        ? p.sizes.filter(x => x !== id)
+        : [...p.sizes, id],
     }));
-  };
-
-  const handleSearchChange = (searchTerm) => {
-    setSearchInput(searchTerm);
-  };
-
-  const handlePriceChange = (min, max) => {
-    setPriceInput({ min, max });
-  };
 
   const clearFilters = () => {
-    setSearchInput('');
-    setPriceInput({
-      min: filterOptions.price_range.min,
-      max: filterOptions.price_range.max
-    });
-    setFilters({
-      categories: [],
-      sizes: [],
-      min_price: filterOptions.price_range.min,
-      max_price: filterOptions.price_range.max,
-      search: ''
-    });
+    const { min, max } = filterOptions.price_range;
+    setSearchInput("");
+    setPriceInput({ min, max });
+    setFilters({ categories: [], sizes: [], min_price: min, max_price: max, search: "" });
   };
 
-  // Load more products
-  const loadMore = () => {
-    if (pagination.has_more) {
-      fetchProducts(pagination.current_page + 1, true);
-    }
-  };
+  const activeCount =
+    filters.categories.length +
+    filters.sizes.length +
+    (filters.search ? 1 : 0) +
+    (String(priceInput.min) !== String(filterOptions.price_range.min) ||
+     String(priceInput.max) !== String(filterOptions.price_range.max) ? 1 : 0);
 
-  // Product modal and cart functions
-  const handleOpenModal = (product) => {
-    setSelectedProduct(product);
-    setSelectedSizes("");
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSelectedProduct(null);
-    setSelectedSizes("");
-  };
-
-  const handleCloseDrawer = () => {
-    setIsCartDrawerOpen(false);
-  };
-
-  const handleSizeSelect = (sizeId) => {
-    setSelectedSizes(sizeId);
-  };
-
-  const handleColorSelect = (colorImage) => {
-    setSelectedColor(colorImage);
-  };
+  /* ── Cart / modal ── */
+  const handleOpenModal = product => { setSelectedProduct(product); setSelectedSizes(""); setIsModalOpen(true); };
+  const handleCloseModal = () => { setIsModalOpen(false); setSelectedProduct(null); setSelectedSizes(""); };
+  const handleCloseDrawer = () => setIsCartDrawerOpen(false);
 
   const handleAddToCart = (product, type, preQty) => {
-    const targetProduct = selectedProduct || product;
-
-    let existingCart = cartItems.find(
-      (existProduct) => existProduct.id === targetProduct.id
-    );
-    if (existingCart) {
-      Swal.fire({
-        title: "Already in the cart",
-        text: "This product is already in your cart",
-        icon: "info",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
+    const target = selectedProduct || product;
+    if (cartItems.find(i => i.id === target.id)) {
+      Swal.fire({ title: "Already in cart", icon: "info", confirmButtonColor: "#111" });
       return;
     }
-
-    if (targetProduct.sizes.length > 1 && !selectedSizes) {
-      Swal.fire({
-        title: `Please Select A Size}`,
-        icon: "warning",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
+    if (target.sizes.length > 1 && !selectedSizes) {
+      Swal.fire({ title: "Please select a size", icon: "warning", confirmButtonColor: "#111" });
       return;
     }
-
-    const selectedVariant = targetProduct.sizes.find(v => v.id == selectedSizes) || targetProduct.sizes[0];
-    dispatch(
-      addToCart({
-        id: targetProduct.id,
-        title: targetProduct.title,
-        size: selectedSizes ? selectedVariant.id : "",
-        price: selectedVariant?.pivot.price ?? targetProduct.price,
-        image: baseUrl + targetProduct.images?.[0]?.image || "",
-        colorImage: baseUrl + selectedColor ?? "",
-        preQty: preQty ?? 1,
-      })
-    );
-
+    const variant = target.sizes.find(v => v.id == selectedSizes) || target.sizes[0];
+    dispatch(addToCart({
+      id: target.id,
+      title: target.title,
+      size: selectedSizes ? variant.id : "",
+      price: variant?.pivot.price ?? target.price,
+      image: baseUrl + (target.images?.[0]?.image || ""),
+      colorImage: baseUrl + (selectedColor || ""),
+      preQty: preQty ?? 1,
+    }));
     setSelectedSizes("");
-    if (type == 'buy') {
-      setIsCartDrawerOpen(true);
-      setIsDirectBuy(true)
-    }
+    if (type === "buy") { setIsCartDrawerOpen(true); setIsDirectBuy(true); }
     handleCloseModal();
     toast.success("Added to cart!");
   };
 
-  if (loading) {
-    return <ShopSkeleton />;
-  }
+  if (loading) return <ShopSkeleton />;
+
+  /* ── Shared filter panel ── */
+  const FilterPanel = () => (
+    <div className="spf-panel">
+      <div className="spf-panel-header">
+        <span className="spf-panel-title">Filters</span>
+        {activeCount > 0 && (
+          <button className="spf-clear-all" onClick={clearFilters}>
+            Clear all ({activeCount})
+          </button>
+        )}
+      </div>
+
+      <AccordionSection title="Search" defaultOpen>
+        <div className="spf-search-wrap">
+          <svg className="spf-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input
+            type="text"
+            className="spf-search-input"
+            placeholder="Search products…"
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
+          />
+          {searchInput && (
+            <button className="spf-search-clear" onClick={() => setSearchInput("")}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          )}
+        </div>
+        {searchInput.length > 0 && searchInput.length < 3 && (
+          <p className="spf-hint">Type at least 3 characters</p>
+        )}
+      </AccordionSection>
+
+      <AccordionSection title="Category" count={filters.categories.length} defaultOpen>
+        <CategoryFilter
+          categories={filterOptions.categories}
+          selected={filters.categories}
+          onChange={toggleCategory}
+        />
+      </AccordionSection>
+
+      <AccordionSection title="Size" count={filters.sizes.length} defaultOpen={false}>
+        <SizeFilter sizes={filterOptions.sizes} selected={filters.sizes} onChange={toggleSize} />
+      </AccordionSection>
+
+      <AccordionSection title="Price" defaultOpen={false}>
+        <PriceFilter
+          priceInput={priceInput}
+          onChange={(min, max) => setPriceInput({ min, max })}
+          priceRange={filterOptions.price_range}
+        />
+      </AccordionSection>
+    </div>
+  );
 
   return (
-    <div className="container py-4">
-      <div className="row">
-        {/* Sidebar Filters */}
-        <div className="col-lg-3 col-md-4 mb-4">
-          <div className="card shadow-sm">
-            <div className="card-header bg-white">
-              <h5 className="mb-0">Filters</h5>
+    <>
+      <style>{`
+        /* ── Filter sidebar card ── */
+        .spf-sidebar-card {
+          background:#fff;
+          border:1px solid #e8e8e8;
+          border-radius:8px;
+          position:sticky;
+          top:80px;
+          max-height:calc(100vh - 100px);
+          overflow-y:auto;
+          scrollbar-width:thin;
+          scrollbar-color:#e0e0e0 transparent;
+        }
+        .spf-sidebar-card::-webkit-scrollbar { width:3px; }
+        .spf-sidebar-card::-webkit-scrollbar-thumb { background:#e0e0e0; border-radius:4px; }
+
+        /* ── Mobile top bar ── */
+        .mobile-topbar {
+          display:none;
+          align-items:center;
+          justify-content:space-between;
+          margin-bottom:16px;
+        }
+        .mobile-filter-btn {
+          display:flex; align-items:center; gap:7px;
+          padding:8px 16px; border:1.5px solid #111; border-radius:3px;
+          background:#fff; font-size:11px; font-weight:800;
+          letter-spacing:.09em; text-transform:uppercase; cursor:pointer;
+          transition:all .15s; color:#111;
+        }
+        .mobile-filter-btn.has-filters,
+        .mobile-filter-btn:hover { background:#111; color:#fff; }
+
+        /* ── Mobile drawer ── */
+        .spf-overlay {
+          display:none; position:fixed; inset:0;
+          background:rgba(0,0,0,.45); z-index:1200; backdrop-filter:blur(2px);
+        }
+        .spf-overlay.open { display:flex; }
+        .spf-drawer {
+          width:300px; max-width:88vw; background:#fff;
+          height:100%; display:flex; flex-direction:column;
+          animation:drawerIn .22s ease; overflow:hidden;
+        }
+        .spf-drawer-scroll { flex:1; overflow-y:auto; scrollbar-width:thin; scrollbar-color:#e0e0e0 transparent; }
+        .spf-drawer-footer {
+          padding:14px 20px 24px; border-top:1px solid #e8e8e8;
+          background:#fff; flex-shrink:0;
+        }
+        .spf-apply-btn {
+          width:100%; padding:13px; background:#111; color:#fff;
+          border:none; border-radius:3px; font-size:11px; font-weight:800;
+          letter-spacing:.1em; text-transform:uppercase; cursor:pointer;
+          transition:background .15s;
+        }
+        .spf-apply-btn:hover { background:#333; }
+        @keyframes drawerIn { from{transform:translateX(-100%)} to{transform:translateX(0)} }
+
+        /* ── Filter panel internals ── */
+        .spf-panel { padding:20px 18px 0; }
+        .spf-panel-header {
+          display:flex; align-items:center; justify-content:space-between;
+          padding-bottom:14px; border-bottom:1px solid #e8e8e8;
+        }
+        .spf-panel-title { font-size:10px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#111; }
+        .spf-clear-all {
+          font-size:11px; color:#999; background:none; border:none;
+          cursor:pointer; font-weight:600; padding:0;
+          text-decoration:underline; text-underline-offset:2px; transition:color .12s;
+        }
+        .spf-clear-all:hover { color:#111; }
+
+        /* Accordion */
+        .spf-accordion { border-bottom:1px solid #e8e8e8; }
+        .spf-accordion-trigger {
+          width:100%; display:flex; justify-content:space-between; align-items:center;
+          background:none; border:none; padding:13px 0; cursor:pointer;
+        }
+        .spf-accordion-title {
+          font-size:10px; font-weight:800; letter-spacing:.12em;
+          text-transform:uppercase; color:#111;
+          display:flex; align-items:center; gap:8px;
+        }
+        .spf-acc-badge {
+          background:#111; color:#fff; border-radius:10px;
+          padding:1px 7px; font-size:9px; font-weight:800; letter-spacing:.04em;
+        }
+        .spf-chevron { transition:transform .2s ease; color:#bbb; flex-shrink:0; }
+        .spf-chevron.open { transform:rotate(180deg); }
+        .spf-accordion-body { max-height:0; overflow:hidden; transition:max-height .28s ease; }
+        .spf-accordion-body.open { max-height:520px; }
+        .spf-accordion-inner { padding-bottom:16px; }
+
+        /* Search */
+        .spf-search-wrap {
+          position:relative; display:flex; align-items:center;
+          border:1.5px solid #e0e0e0; border-radius:4px; background:#fafafa;
+          transition:border-color .15s;
+        }
+        .spf-search-wrap:focus-within { border-color:#111; background:#fff; }
+        .spf-search-icon { position:absolute; left:11px; color:#c0c0c0; pointer-events:none; }
+        .spf-search-input {
+          flex:1; padding:9px 32px 9px 34px; border:none; background:transparent;
+          font-size:13px; outline:none; color:#111; width:100%;
+        }
+        .spf-search-input::placeholder { color:#bbb; }
+        .spf-search-clear {
+          position:absolute; right:10px; background:none; border:none;
+          cursor:pointer; color:#bbb; display:flex; padding:2px; transition:color .12s;
+        }
+        .spf-search-clear:hover { color:#111; }
+        .spf-hint { font-size:11px; color:#bbb; margin:6px 0 0; }
+
+        /* Category */
+        .spf-category-list { display:flex; flex-direction:column; }
+        .spf-cat-item {
+          display:flex; align-items:center; gap:10px; padding:8px 0;
+          background:none; border:none; cursor:pointer; text-align:left;
+          font-size:13px; color:#666; width:100%; transition:color .12s;
+          border-bottom:1px solid #f5f5f5;
+        }
+        .spf-cat-item:last-child { border-bottom:none; }
+        .spf-cat-item:hover { color:#111; }
+        .spf-cat-item.active { color:#111; font-weight:600; }
+        .spf-cat-dot {
+          width:7px; height:7px; border-radius:50%; border:1.5px solid #d0d0d0;
+          flex-shrink:0; transition:all .12s;
+        }
+        .spf-cat-item.active .spf-cat-dot { background:#111; border-color:#111; }
+        .spf-cat-name { flex:1; line-height:1.3; }
+        .spf-show-more {
+          padding:10px 0 2px; background:none; border:none; cursor:pointer;
+          font-size:11px; color:#999; font-weight:700; text-align:left;
+          text-decoration:underline; text-underline-offset:2px; transition:color .12s;
+        }
+        .spf-show-more:hover { color:#111; }
+
+        /* Sizes */
+        .spf-size-grid { display:flex; flex-wrap:wrap; gap:6px; }
+        .spf-size-chip {
+          min-width:42px; padding:7px 10px;
+          border:1.5px solid #e0e0e0; border-radius:3px;
+          background:#fff; font-size:12px; font-weight:500; color:#555;
+          cursor:pointer; transition:all .12s; text-align:center;
+        }
+        .spf-size-chip:hover { border-color:#888; color:#111; }
+        .spf-size-chip.active { border-color:#111; background:#111; color:#fff; font-weight:700; }
+
+        /* Price */
+        .spf-price-row { display:flex; align-items:flex-end; gap:10px; }
+        .spf-price-field { flex:1; }
+        .spf-price-label {
+          font-size:9px; font-weight:800; letter-spacing:.1em;
+          color:#bbb; text-transform:uppercase; display:block; margin-bottom:6px;
+        }
+        .spf-price-input-wrap {
+          display:flex; align-items:center; gap:4px;
+          border:1.5px solid #e0e0e0; border-radius:4px; padding:0 10px;
+          background:#fafafa; transition:border-color .15s;
+        }
+        .spf-price-input-wrap:focus-within { border-color:#111; background:#fff; }
+        .spf-currency { font-size:12px; color:#bbb; font-weight:700; flex-shrink:0; }
+        .spf-price-input {
+          width:100%; padding:8px 0; border:none; background:transparent;
+          font-size:13px; outline:none; color:#111; -moz-appearance:textfield;
+        }
+        .spf-price-input::-webkit-outer-spin-button,
+        .spf-price-input::-webkit-inner-spin-button { -webkit-appearance:none; }
+        .spf-price-divider { font-size:16px; color:#ccc; margin-bottom:9px; flex-shrink:0; }
+
+        /* Active filter tags */
+        .shop-active-tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
+        .spf-active-tag {
+          display:inline-flex; align-items:center; gap:5px;
+          padding:4px 10px; background:#f2f2f2; border-radius:2px;
+          font-size:11px; font-weight:600; color:#555;
+          border:none; cursor:pointer; transition:all .12s;
+        }
+        .spf-active-tag:hover { background:#e5e5e5; color:#111; }
+
+        /* Load more */
+        .load-more-wrap { display:flex; justify-content:center; padding-top:40px; }
+        .load-more-btn {
+          padding:12px 48px; border:1.5px solid #111; border-radius:3px;
+          background:transparent; font-size:11px; font-weight:800;
+          letter-spacing:.12em; text-transform:uppercase; cursor:pointer;
+          color:#111; transition:all .15s;
+          display:flex; align-items:center; gap:10px;
+        }
+        .load-more-btn:hover:not(:disabled) { background:#111; color:#fff; }
+        .load-more-btn:disabled { opacity:.45; cursor:not-allowed; }
+        .spf-spinner {
+          width:12px; height:12px; border:2px solid #ccc; border-top-color:#111;
+          border-radius:50%; animation:spin .7s linear infinite;
+        }
+        .load-more-btn:hover .spf-spinner { border-color:rgba(255,255,255,.3); border-top-color:#fff; }
+
+        /* Empty */
+        .shop-empty { text-align:center; padding:80px 20px; }
+        .shop-empty h5 { font-size:18px; font-weight:700; color:#333; margin:16px 0 8px; }
+        .shop-empty p { color:#aaa; margin:0 0 24px; font-size:14px; }
+        .shop-empty-btn {
+          padding:10px 28px; background:#111; color:#fff; border:none;
+          border-radius:3px; font-size:11px; font-weight:800; letter-spacing:.1em;
+          text-transform:uppercase; cursor:pointer;
+        }
+
+        /* Responsive */
+        @media (max-width:991px) {
+          .spf-desktop-sidebar { display:none !important; }
+          .mobile-topbar { display:flex !important; }
+        }
+        @media (min-width:992px) {
+          .mobile-topbar { display:none !important; }
+        }
+        @keyframes spin { to { transform:rotate(360deg); } }
+      `}</style>
+
+      <div className="container py-4">
+        <div className="row g-4 align-items-start">
+
+          {/* ── Desktop sidebar ── */}
+          <div className="col-lg-3 spf-desktop-sidebar">
+            <div className="spf-sidebar-card">
+              <FilterPanel />
             </div>
-            <div className="card-body">
-              {/* Search */}
-              <div className="mb-4">
-                <label className="form-label fw-semibold">Search</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search products... (min 3 chars)"
-                  value={searchInput}
-                  onChange={(e) => handleSearchChange(e.target.value)}
-                />
-                {searchInput.length > 0 && searchInput.length < 3 && (
-                  <small className="text-muted">Type at least 3 characters to search</small>
-                )}
-              </div>
+          </div>
 
-              {/* Categories */}
-              <div className="mb-4">
-                <label className="form-label fw-semibold">Categories</label>
-                <div className="filter-options">
-                  {filterOptions.categories.map(category => (
-                    <div key={category.id} className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        checked={filters.categories.includes(category.id)}
-                        onChange={() => handleCategoryChange(category.id)}
-                        id={`category-${category.id}`}
-                      />
-                      <label className="form-check-label" htmlFor={`category-${category.id}`}>
-                        {category.name}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* ── Main content ── */}
+          <div className="col-12 col-lg-9">
 
-              {/* Sizes */}
-              <div className="mb-4">
-                <label className="form-label fw-semibold">Sizes</label>
-                <div className="filter-options">
-                  {filterOptions.sizes.map(size => (
-                    <div key={size.id} className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        checked={filters.sizes.includes(size.id)}
-                        onChange={() => handleSizeChange(size.id)}
-                        id={`size-${size.id}`}
-                      />
-                      <label className="form-check-label" htmlFor={`size-${size.id}`}>
-                        {size.size}
-                      </label>
-                    </div>
-                  ))}
-                </div>
+            {/* Mobile top bar */}
+            <div className="mobile-topbar">
+              <div>
+                <h5 className="mb-0 fw-bold">Shop</h5>
+                <small className="text-muted">{pagination.total} products</small>
               </div>
-
-              {/* Price Range */}
-              <div className="mb-4">
-                <label className="form-label fw-semibold">
-                  Price Range: ৳{priceInput.min} - ৳{priceInput.max}
-                </label>
-                <div className="row g-2">
-                  <div className="col">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Min"
-                      value={priceInput.min}
-                      onChange={(e) => handlePriceChange(e.target.value, priceInput.max)}
-                    />
-                  </div>
-                  <div className="col">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Max"
-                      value={priceInput.max}
-                      onChange={(e) => handlePriceChange(priceInput.min, e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Clear Filters */}
               <button
-                className="btn btn-outline-secondary w-100"
-                onClick={clearFilters}
+                className={`mobile-filter-btn${activeCount > 0 ? " has-filters" : ""}`}
+                onClick={() => setMobileFilterOpen(true)}
               >
-                Clear Filters
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="4" y1="6" x2="20" y2="6"/>
+                  <line x1="8" y1="12" x2="16" y2="12"/>
+                  <line x1="11" y1="18" x2="13" y2="18"/>
+                </svg>
+                {activeCount > 0 ? `Filters (${activeCount})` : "Filters"}
               </button>
             </div>
-          </div>
-        </div>
 
-        {/* Products Grid */}
-        <div className="col-lg-9 col-md-8">
-          {/* Results Info */}
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <div>
-              <h4 className="mb-0">Shop Products</h4>
-              <small className="text-muted">
-                Showing {products.length} of {pagination.total} products
-              </small>
-            </div>
-          </div>
-
-          {/* Products Grid */}
-          {products.length === 0 && !loading ? (
-            <div className="text-center py-5">
-              <h5>No products found</h5>
-              <p className="text-muted">Try adjusting your filters</p>
-            </div>
-          ) : (
-            <>
-              <div className="row">
-                {products.map((product, index) => (
-                  <div key={product.id} className="col-6 col-lg-4 col-md-4 ">
-                    <ProductCard
-                      slotProducts={product}
-                      handleOpenModal={handleOpenModal}
-                      handleAddToCart={handleAddToCart}
-                    />
-                  </div>
-                ))}
+            {/* Desktop header */}
+            <div className="mb-4">
+              <div className="d-none d-lg-flex align-items-center justify-content-between">
+                <div>
+                  <h4 className="fw-bold mb-0" style={{ letterSpacing: "-.02em" }}>All Products</h4>
+                  <small className="text-muted">Showing {products.length} of {pagination.total}</small>
+                </div>
               </div>
-
-              {/* Load More Button */}
-              {pagination.has_more && (
-                <div className="text-center mt-4">
-                  <button
-                    className="btn btn-primary px-5"
-                    onClick={loadMore}
-                    disabled={loadingMore}
-                  >
-                    {loadingMore ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" />
-                        Loading...
-                      </>
-                    ) : (
-                      'Load More Products'
-                    )}
-                  </button>
+              {/* Active filter pills */}
+              {(filters.categories.length > 0 || filters.sizes.length > 0 || filters.search) && (
+                <div className="shop-active-tags">
+                  {filters.search && (
+                    <button className="spf-active-tag" onClick={() => setSearchInput("")}>
+                      "{filters.search}"
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                      </svg>
+                    </button>
+                  )}
+                  {filters.categories.map(id => {
+                    const cat = filterOptions.categories.find(c => c.id === id);
+                    return cat ? (
+                      <button key={id} className="spf-active-tag" onClick={() => toggleCategory(id)}>
+                        {cat.name}
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                      </button>
+                    ) : null;
+                  })}
+                  {filters.sizes.map(id => {
+                    const sz = filterOptions.sizes.find(s => s.id === id);
+                    return sz ? (
+                      <button key={id} className="spf-active-tag" onClick={() => toggleSize(id)}>
+                        Size: {sz.size}
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                      </button>
+                    ) : null;
+                  })}
                 </div>
               )}
-            </>
-          )}
+            </div>
+
+            {/* Products */}
+            {products.length === 0 ? (
+              <div className="shop-empty">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.2">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <h5>No products found</h5>
+                <p>Try adjusting or clearing your filters</p>
+                <button className="shop-empty-btn" onClick={clearFilters}>Clear Filters</button>
+              </div>
+            ) : (
+              <>
+                <div className="row g-3">
+                  {products.map(product => (
+                    <div key={product.id} className="col-6 col-md-4 col-xl-3">
+                      <ProductCard
+                        slotProducts={product}
+                        handleOpenModal={handleOpenModal}
+                        handleAddToCart={handleAddToCart}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {pagination.has_more && (
+                  <div className="load-more-wrap">
+                    <button
+                      className="load-more-btn"
+                      onClick={() => fetchProducts(pagination.current_page + 1, true)}
+                      disabled={loadingMore}
+                    >
+                      {loadingMore
+                        ? <><span className="spf-spinner" /> Loading</>
+                        : "Load More"}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
         </div>
       </div>
 
-      {/* Product Modal */}
+      {/* ── Mobile drawer ── */}
+      <div className={`spf-overlay${mobileFilterOpen ? " open" : ""}`} onClick={() => setMobileFilterOpen(false)}>
+        <div className="spf-drawer" onClick={e => e.stopPropagation()}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"16px 20px 14px", borderBottom:"1px solid #e8e8e8", flexShrink:0 }}>
+            <span style={{ fontWeight:800, fontSize:"11px", letterSpacing:".12em", textTransform:"uppercase" }}>Filters</span>
+            <button onClick={() => setMobileFilterOpen(false)} style={{ background:"none", border:"none", cursor:"pointer", padding:"4px", color:"#555", display:"flex" }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+          <div className="spf-drawer-scroll">
+            <FilterPanel />
+          </div>
+          <div className="spf-drawer-footer">
+            <button className="spf-apply-btn" onClick={() => setMobileFilterOpen(false)}>
+              View {pagination.total} Results
+            </button>
+          </div>
+        </div>
+      </div>
+
       {isModalOpen && selectedProduct && (
         <ProductModal
           product={selectedProduct}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
           selectedSizes={selectedSizes}
-          onSizeSelect={handleSizeSelect}
+          onSizeSelect={setSelectedSizes}
           onAddToCart={handleAddToCart}
-          onSelectColor={handleColorSelect}
+          onSelectColor={setSelectedColor}
           selectedColor={selectedColor}
           baseUrl={baseUrl}
         />
       )}
-
-      <CartDrawer
-        isOpen={isCartDrawerOpen}
-        isDirectBuy={isDirectBuy}
-        onClose={handleCloseDrawer}
-      />
-    </div>
+      <CartDrawer isOpen={isCartDrawerOpen} isDirectBuy={isDirectBuy} onClose={handleCloseDrawer} />
+    </>
   );
 }
 
