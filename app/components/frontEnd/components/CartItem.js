@@ -27,14 +27,19 @@ export default function CartItem({
         />
       </div>
       <div className="item-details">
-        <h6 className="item-title">
+        <h6 className="item-title text-truncate w-100">
           <Link
             onClick={onClose}
             href={`/frontEnd/product-page/${item.id}`}
+            className="d-inline-block text-truncate w-100"
           >
             {item.title}
           </Link>
         </h6>
+
+        <div className="item-total">
+          <span className="total-price"> <strong>৳</strong> {item.totalPrice}</span>
+        </div>
         {item.size && (
           <p className="item-variant">
             Variant: <span>{getSizeName(item.size)}</span>
@@ -68,9 +73,6 @@ export default function CartItem({
             <FaTrash size={14} />
           </button>
         </div>
-      </div>
-      <div className="item-total">
-        <span className="total-price">{item.totalPrice} TK</span>
       </div>
     </div>
   );
