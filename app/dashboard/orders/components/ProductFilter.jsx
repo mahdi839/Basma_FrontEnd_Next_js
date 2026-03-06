@@ -27,8 +27,6 @@ export default function ProductFilter({ value, onChange, required = false }) {
           }
         );
 
-        console.log('Product API Response:', response.data);
-
         // ✅ Fix: response.data.data is the paginated object, 
         // response.data.data.data is the actual products array
         const productsData = response.data?.data?.data || [];

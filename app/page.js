@@ -8,7 +8,6 @@ import BottomMenu from "./components/frontEnd/bottom_sticky_menu/BottomMenu";
 export default async function Home() {
   
     const data = await getData('api/frontend/banner')
-    console.log(data);
   return ( 
      <FrontEndLayout>
      <div style={{ minHeight: '60vh' }}>
