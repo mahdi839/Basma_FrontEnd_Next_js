@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import ShopSkeleton from "./ShopSkeleton";
+import { RiLoader2Fill } from "react-icons/ri";
 
 import FilterPanel from "./components/FilterPanel";
 
@@ -376,13 +377,13 @@ function ShopPage() {
         /* Load more */
         .load-more-wrap { display:flex; justify-content:center; padding-top:40px; }
         .load-more-btn {
-          padding:12px 48px; border:1.5px solid #111; border-radius:3px;
+          padding:12px 48px; border:1.5px solid #7d0ba7; border-radius:3px;
           background:transparent; font-size:11px; font-weight:800;
           letter-spacing:.12em; text-transform:uppercase; cursor:pointer;
           color:#111; transition:all .15s;
           display:flex; align-items:center; gap:10px;
         }
-        .load-more-btn:hover:not(:disabled) { background:#111; color:#fff; }
+        .load-more-btn:hover:not(:disabled) { background:#7d0ba7; color:#fff; }
         .load-more-btn:disabled { opacity:.45; cursor:not-allowed; }
         .spf-spinner {
           width:12px; height:12px; border:2px solid #ccc; border-top-color:#111;
@@ -521,7 +522,7 @@ function ShopPage() {
                     >
                       {loadingMore
                         ? <><span className="spf-spinner" /> Loading</>
-                        : "Load More"}
+                        : <span> <RiLoader2Fill  size={22} /> Load More </span>}
                     </button>
                   </div>
                 )}
