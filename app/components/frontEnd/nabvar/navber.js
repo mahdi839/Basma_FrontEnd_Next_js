@@ -340,6 +340,95 @@ export default function Navbar() {
         </div>
       </header>
 
+      {/* Mobile collaps menu */}
+      <div
+        className={`${style.collaps_div} ${isShowCollaps ? "position-fixed top-0 start-0 h-100 bg-white d-md-none" : style.hide_col_menu
+          }`}
+        style={{
+          width: '80vw',
+          maxWidth: '350px',
+          boxShadow: '2px 0 10px rgba(0,0,0,0.1)',
+          overflowY: 'auto',
+          zIndex: 10001,
+          animation: 'slideInLeft 0.3s ease'
+        }}
+      >
+        <div
+          className={`${style.collaps_cancel_div}`}
+          onClick={handleCollapsCancel}
+        >
+          <ImCancelCircle size={22} />
+        </div>
+        <div className={`${style.menu_category_main}`}>
+          <div className={`${style.menu_category_sub}`}>
+            <div
+              className={`${style.menu_category_label_one} `}
+              onClick={() => handleCollaps_menu("category")}
+            >
+              <span
+                className={`${isShowCollapsMenu === "category"
+                  ? style.collaps_border_one
+                  : ""
+                  }`}
+              >
+                Category
+              </span>
+            </div>
+            <div
+              className={`${style.menu_category_label_two}`}
+              onClick={() => handleCollaps_menu("menu")}
+            >
+              <span
+                className={`${isShowCollapsMenu === "menu"
+                  ? style.collaps_border_two
+                  : ""
+                  }`}
+              >
+                Menu
+              </span>
+            </div>
+          </div>
+          <div className={`${style.collaps_category_list_div}`}>
+            {isShowCollapsMenu === "category" && (
+              <ul className={`my-3 ${style.collaps_category_list}`}>
+                <NavCategories
+                  onClick={handleCollapsCancel}
+                  isMobile={true}
+                />
+              </ul>
+            )}
+            {isShowCollapsMenu === "menu" && (
+              <ul className={`my-3 ${style.collaps_category_list}`}>
+                <li>
+                  <Link
+                    href="/"
+                    onClick={() => handleCollapsCancel()}
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    onClick={() => handleCollapsCancel()}
+                    href="/frontEnd/about_us"
+                  >
+                    About Us
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    onClick={() => handleCollapsCancel()}
+                    href="/frontEnd/shop"
+                  >
+                    Shop
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </div>
+        </div>
+      </div>
+
       <CartDrawer
         isOpen={isCartDrawerOpen}
         onClose={handleCloseDrawer}
