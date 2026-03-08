@@ -8,7 +8,7 @@ export const siteConfig = {
   address: "Mirpur Dhaka - 1216",
 
   social: {
-    facebook: "https://www.facebook.com/mehedi.hasan.607883",
+    facebook: "https://www.facebook.com/eyarafashion.xyz",
     instagram: "https://www.instagram.com/eyarafashionbd/",
     youtube: "https://eyarafashion.xyz",
     whatsApp: "1795802507"
