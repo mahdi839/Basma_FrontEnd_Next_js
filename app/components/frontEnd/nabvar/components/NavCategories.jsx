@@ -1,27 +1,27 @@
 'use client'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "@/redux/slices/categorySlice";
 
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
 import DesktopCategories from './navCatComponents/DesktopCategories'
 import MobileCategories from './navCatComponents/MobileCategories'
 
 export default function NavCategories({ isMobile = false, onClick }) {
-  const [categories, setCategories] = useState([])
+
+  const dispatch = useDispatch()
+
+  const categories = useSelector((state) => state.categories.list)
+  const status = useSelector((state) => state.categories.status)
 
   useEffect(() => {
-    axios
-      .get(process.env.NEXT_PUBLIC_BACKEND_URL + 'api/frontend/categories')
-      .then(res => {
-        const normalize = cats =>
-          cats.map(c => ({
-            ...c,
-            children: c.all_children ? normalize(c.all_children) : []
-          }))
+    if (status === "idle") {
+      dispatch(fetchCategories())
+    }
+  }, [dispatch, status])
 
-        setCategories(normalize(res.data))
-      })
-      .catch(err => console.error('Error fetching categories:', err))
-  }, [])
+  if (status === "loading") {
+    return <div className="p-3">Loading categories...</div>
+  }
 
   if (isMobile) {
     return <MobileCategories categories={categories} onClick={onClick} />

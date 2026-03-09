@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import Select from "react-select";
-
+import { useDispatch } from "react-redux";
+import { clearCategoryCache, fetchCategories } from "@/redux/slices/categorySlice";
 export default function Page({ params }) {
   const { id } = params;
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function Page({ params }) {
   const [categories, setCategories] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-
+  const dispatch = useDispatch();
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
 
@@ -127,6 +128,12 @@ export default function Page({ params }) {
         body: JSON.stringify({ tags: ["products"] }),
       });
 
+      // Clear cached categories
+      dispatch(clearCategoryCache())
+
+      // Refetch fresh categories
+      dispatch(fetchCategories())
+
       toast.success("Category updated successfully!");
       router.push("/dashboard/category");
       router.refresh();
@@ -204,9 +211,8 @@ export default function Page({ params }) {
             <div className="mb-3">
               <label className="form-label fw-bold">Size Guide Type</label>
               <select
-                className={`form-select ${
-                  errors.size_guide_type ? "is-invalid" : ""
-                }`}
+                className={`form-select ${errors.size_guide_type ? "is-invalid" : ""
+                  }`}
                 name="size_guide_type"
                 value={data.size_guide_type || ""}
                 onChange={handleChange}

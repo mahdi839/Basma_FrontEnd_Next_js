@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import { useDispatch } from "react-redux";
+import { clearCategoryCache, fetchCategories } from "@/redux/slices/categorySlice";
 
 export default function CreateCategoryPage() {
   const router = useRouter();
@@ -12,7 +14,7 @@ export default function CreateCategoryPage() {
   const [categories, setCategories] = useState([]);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const dispatch = useDispatch();
   const [form, setForm] = useState({
     name: "",
     parent_id: "",
@@ -47,7 +49,7 @@ export default function CreateCategoryPage() {
         level: level,
         parent_id: cat.parent_id,
       });
-      
+
       if (cat.all_children && cat.all_children.length > 0) {
         flattenCategories(cat.all_children, level + 1, result);
       }
@@ -136,6 +138,12 @@ export default function CreateCategoryPage() {
           tags: ["products"],
         }),
       });
+      // Clear cached categories
+      dispatch(clearCategoryCache())
+
+      // Refetch fresh categories
+      dispatch(fetchCategories())
+
       toast.success("Category created successfully!");
       router.push("/dashboard/category");
       router.refresh();
@@ -177,8 +185,8 @@ export default function CreateCategoryPage() {
       backgroundColor: state.isSelected
         ? "#0d6efd"
         : state.isFocused
-        ? "#e7f1ff"
-        : "white",
+          ? "#e7f1ff"
+          : "white",
       color: state.isSelected ? "white" : "#212529",
       fontFamily: "monospace",
       "&:active": {
@@ -303,9 +311,8 @@ export default function CreateCategoryPage() {
                         <i className="fas fa-list"></i>
                       </span>
                       <select
-                        className={`form-select ${
-                          errors.size_guide_type ? "is-invalid" : ""
-                        }`}
+                        className={`form-select ${errors.size_guide_type ? "is-invalid" : ""
+                          }`}
                         value={form.size_guide_type}
                         onChange={(e) =>
                           handleInputChange("size_guide_type", e.target.value)
@@ -368,9 +375,8 @@ export default function CreateCategoryPage() {
                       </span>
                       <input
                         type="number"
-                        className={`form-control ${
-                          errors.priority ? "is-invalid" : ""
-                        }`}
+                        className={`form-control ${errors.priority ? "is-invalid" : ""
+                          }`}
                         id="priority"
                         min="0"
                         max="999"
