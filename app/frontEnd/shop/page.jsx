@@ -5,7 +5,6 @@ import { addToCart } from "@/redux/slices/CartSlice";
 import ProductCard from "../../components/frontEnd/home/slots/components/ProductCard";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import ShopSkeleton from "./ShopSkeleton";
 import { RiLoader2Fill } from "react-icons/ri";
@@ -554,20 +553,6 @@ function ShopPage() {
           </div>
         </div>
       </div>
-
-      {isModalOpen && selectedProduct && (
-        <ProductModal
-          product={selectedProduct}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          selectedSizes={selectedSizes}
-          onSizeSelect={setSelectedSizes}
-          onAddToCart={handleAddToCart}
-          onSelectColor={setSelectedColor}
-          selectedColor={selectedColor}
-          baseUrl={baseUrl}
-        />
-      )}
       <CartDrawer isOpen={isCartDrawerOpen} isDirectBuy={isDirectBuy} onClose={handleCloseDrawer} />
     </>
   );

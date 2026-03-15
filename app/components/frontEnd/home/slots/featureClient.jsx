@@ -11,8 +11,6 @@ import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
-import Image from "next/image";
-import ProductModal from "./components/ProductModal";
 import { useRouter } from "next/navigation";
 import CartDrawer from "../../components/CartDrawer";
 import Button from "@/app/components/dashboard/components/button/Button";
@@ -390,22 +388,6 @@ function FeatureClient({ homeCategories: initialData }) {
           </div>
         )}
       </div>
-
-      {/* Product Modal with Loading State */}
-      {isModalOpen && (
-        <ProductModal
-          product={selectedProduct}
-          isOpen={isModalOpen}
-          isLoading={isLoadingProduct}
-          onClose={handleCloseModal}
-          selectedSizes={selectedSizes}
-          onSizeSelect={handleSizeSelect}
-          onAddToCart={handleAddToCart}
-          onSelectColor={handleColorSelect}
-          selectedColor={selectedColor}
-          baseUrl={baseUrl}
-        />
-      )}
 
       {/* Cart Drawer */}
       <CartDrawer

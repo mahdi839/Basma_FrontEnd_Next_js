@@ -10,7 +10,6 @@ import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import './productPage.css';
 import './specification.css';
@@ -652,20 +651,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         handleOpenModal={handleOpenModal}
         handleRelatedAddToCart={handleRelatedAddToCart}
       />
-
-      {isModalOpen && selectedProduct && (
-        <ProductModal
-          product={selectedProduct}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          selectedSize={modalSelectedSize}
-          onSizeSelect={setModalSelectedSize}
-          selectedColor={modalSelectedColor}
-          onSelectColor={setModalSelectedColor}
-          onAddToCart={handleRelatedAddToCart}
-          baseUrl={baseUrl}
-        />
-      )}
 
       <CartDrawer isOpen={isCartDrawerOpen} isDirectBuy={isDirectBuy} onClose={handleCloseDrawer} />
 

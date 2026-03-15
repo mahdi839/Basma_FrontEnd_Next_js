@@ -7,7 +7,6 @@ import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard";
-import ProductModal from "@/app/components/frontEnd/home/slots/components/ProductModal";
 import { useRouter, useSearchParams } from "next/navigation";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import Pagination from "@/app/dashboard/orders/components/Pagination";
@@ -151,20 +150,7 @@ export default function CtgProductsLogic({ products, category, pagination }) {
           </div>
         ))}
 
-        {/* Product Modal */}
-        {isModalOpen && selectedProduct && (
-          <ProductModal
-            product={selectedProduct}
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            selectedSizes={selectedSizes}
-            onSizeSelect={handleSizeSelect}
-            onSelectColor={handleColorSelect}
-            selectedColor={selectedColor}
-            onAddToCart={handleAddToCart}
-            baseUrl={baseUrl}
-          />
-        )}
+    
 
         <CartDrawer
           isOpen={isCartDrawerOpen}
