@@ -12,8 +12,15 @@ import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import CartDrawer from "../../components/CartDrawer";
 import Button from "@/app/components/dashboard/components/button/Button";
+import dynamic from "next/dynamic";
+const CartDrawer = dynamic(
+  () => import("../../components/CartDrawer"),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 function FeatureClient({ homeCategories: initialData }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -390,11 +397,13 @@ function FeatureClient({ homeCategories: initialData }) {
       </div>
 
       {/* Cart Drawer */}
-      <CartDrawer
-        isOpen={isCartDrawerOpen}
-        isDirectBuy={isDirectBuy}
-        onClose={handleCloseDrawer}
-      />
+      {isCartDrawerOpen && (
+        <CartDrawer
+          isOpen={isCartDrawerOpen}
+          isDirectBuy={isDirectBuy}
+          onClose={handleCloseDrawer}
+        />
+      )}
     </div>
   );
 }

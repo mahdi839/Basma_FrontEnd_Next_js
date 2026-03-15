@@ -7,8 +7,16 @@ import { FaShoppingCart, FaWhatsapp } from 'react-icons/fa';
 import { MdCategory } from 'react-icons/md';
 import { ImCancelCircle } from 'react-icons/im';
 import { useSelector } from "react-redux";
-import CartDrawer from '../components/CartDrawer';
 import NavCategories from '../nabvar/components/NavCategories';
+
+import dynamic from "next/dynamic";
+const CartDrawer = dynamic(
+  () => import("../components/CartDrawer"),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 export default function BottomMenu() {
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);

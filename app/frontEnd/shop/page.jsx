@@ -5,7 +5,6 @@ import { addToCart } from "@/redux/slices/CartSlice";
 import ProductCard from "../../components/frontEnd/home/slots/components/ProductCard";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import ShopSkeleton from "./ShopSkeleton";
 import { RiLoader2Fill } from "react-icons/ri";
 
@@ -553,7 +552,6 @@ function ShopPage() {
           </div>
         </div>
       </div>
-      <CartDrawer isOpen={isCartDrawerOpen} isDirectBuy={isDirectBuy} onClose={handleCloseDrawer} />
     </>
   );
 }

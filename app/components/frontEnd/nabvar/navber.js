@@ -22,7 +22,15 @@ import NavCategories from "./components/NavCategories";
 import style from "./hero.module.css";
 
 import { useSelector } from "react-redux";
-import CartDrawer from "../components/CartDrawer";
+
+import dynamic from "next/dynamic";
+const CartDrawer = dynamic(
+  () => import("../components/CartDrawer"),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 import { siteConfig } from "@/config/siteConfig";
 

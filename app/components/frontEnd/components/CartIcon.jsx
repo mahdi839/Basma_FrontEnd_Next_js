@@ -3,7 +3,15 @@ import { RiShoppingBag3Fill } from "react-icons/ri";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import './style.css'
-import CartDrawer from "./CartDrawer";
+import dynamic from "next/dynamic";
+const CartDrawer = dynamic(
+  () => import("./CartDrawer"),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
+
 export default function CartIcon({ itemCount = 0 }) {
   const [isPulsing, setIsPulsing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);

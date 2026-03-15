@@ -10,7 +10,6 @@ import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import './productPage.css';
 import './specification.css';
 import useProductLogics from "@/app/hooks/useProductLogics";
@@ -23,6 +22,16 @@ import "slick-carousel/slick/slick-theme.css";
 import useDiscountedPrice from "@/app/hooks/useDiscountedPrice";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
+import dynamic from "next/dynamic";
+
+
+const CartDrawer = dynamic(
+  () => import("@/app/components/frontEnd/components/CartDrawer"),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+);
 
 export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
   const [activeTab, setActiveTab] = useState("specs");
