@@ -31,6 +31,12 @@ export const fetchCategories = createAsyncThunk(
     }
 
     return normalized;
+  },
+   {
+    condition: (_, { getState }) => {
+      const status = getState().categories.status
+      return status === "idle" 
+    }
   }
 );
 
