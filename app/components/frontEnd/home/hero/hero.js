@@ -42,7 +42,8 @@ export default function Hero({ images }) {
               width={1200}
               height={400}
               alt="Banner"
-              priority={index === 0} // ✅ only first image priority
+              priority={index === 0}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1200px"
             />
           );
 
