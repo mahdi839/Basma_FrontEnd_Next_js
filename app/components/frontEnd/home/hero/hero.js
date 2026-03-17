@@ -1,65 +1,59 @@
 "use client";
-import React, { useState } from "react";
+
+import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Slider from "react-slick";
 import Image from "next/image";
 import style from "../../nabvar/hero.module.css";
 import Link from "next/link";
-export default function Hero({ data }) {
-  const bgImages = ["/img/banner/banner-3.png", "/img/banner/banner-4.png"];
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  var settings = {
+
+export default function Hero({ images }) {
+  if (!images || images.length === 0) return null;
+
+  const settings = {
     dots: false,
     infinite: true,
     speed: 1100,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true, // 👈 Enables autoplay
+    autoplay: true,
     autoplaySpeed: 6000,
+
     nextArrow: (
       <div className={style.arrow_div_right}>
-        {
-          data?.data[0]?.banner_images?.length > 0 ? <FaChevronRight className={style.arrow_right} /> : ''
-        }
-
+        <FaChevronRight className={style.arrow_right} />
       </div>
     ),
     prevArrow: (
       <div className={style.arrow_div_left}>
-        {
-          data?.data[0]?.banner_images?.length > 0 ? <FaChevronLeft className={style.arrow_left} /> : ''
-        }
+        <FaChevronLeft className={style.arrow_left} />
       </div>
     ),
   };
+
   return (
     <div className="container">
       <Slider {...settings}>
-        {
-          data?.data[0]?.banner_images?.map((slidImg) => {
+        {images.map((img, index) => {
+          const imageEl = (
+            <Image
+              className="hero_slider_img"
+              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img.path}`}
+              width={1200}
+              height={400}
+              alt="Banner"
+              priority={index === 0} // ✅ only first image priority
+            />
+          );
 
-            const image = (
-              <Image
-                className="hero_slider_img"
-                src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${slidImg.path}`}
-                width={1200}
-                height={400}
-                alt="Banner"
-                priority
-              />
-            );
-
-            return slidImg?.link ? (
-              <Link key={slidImg.id} href={slidImg.link}>
-                {image}
-              </Link>
-            ) : (
-              <div key={slidImg.id}>
-                {image}
-              </div>
-            );
-          })
-        }
+          return img?.link ? (
+            <Link key={img.id} href={img.link}>
+              {imageEl}
+            </Link>
+          ) : (
+            <div key={img.id}>{imageEl}</div>
+          );
+        })}
       </Slider>
     </div>
   );

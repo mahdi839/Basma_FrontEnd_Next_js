@@ -290,27 +290,6 @@ function FeatureClient({ homeCategories: initialData }) {
 
           return (
             <React.Fragment key={slot.id || slotIndex}>
-              {/* Banner Images */}
-              {/* {slot.products.length > 0 &&
-                slot?.banner?.banner_images?.map((img, index) => {
-                  return (
-                    <Link
-                      key={img.id}
-                      href={slot?.banner?.link ?? ""}
-                      className="text-decoration-none text-dark my-3"
-                    >
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img?.path}`}
-                        alt="banner image"
-                        width={1200}
-                        height={400}
-                        style={{ width: "100%", height: "auto" }}
-                        priority={index === 0}
-                      />
-                    </Link>
-                  );
-                })} */}
-
               {/* Category Header */}
               <div className="col-12 d-flex justify-content-between align-items-center position-relative home_page_card_header">
                 {slot.products.length > 0 && (
