@@ -136,24 +136,12 @@ function FeatureClient({ homeCategories: initialData }) {
     }
   }
 
-  function handleCloseModal() {
-    setIsModalOpen(false);
-    setSelectedProduct(null);
-    setSelectedSizes("");
-    setSelectedColor("");
-  }
 
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
 
-  function handleSizeSelect(sizeId) {
-    setSelectedSizes(sizeId);
-  }
-
-  function handleColorSelect(colorImage) {
-    setSelectedColor(colorImage);
-  }
+  
 
   function handleAddToCart(product, type, preQty) {
     const targetProduct = selectedProduct || product;
@@ -237,7 +225,6 @@ function FeatureClient({ homeCategories: initialData }) {
       setIsDirectBuy(true);
     }
 
-    handleCloseModal();
     toast.success("Added to cart!");
   }
 
