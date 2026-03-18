@@ -25,12 +25,10 @@ const CartDrawer = dynamic(
 function FeatureClient({ homeCategories: initialData }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [isLoadingProduct, setIsLoadingProduct] = useState(false);
   const sliderRefs = useRef([]);
   const [selectedSizes, setSelectedSizes] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
 
   const [homeCategories, setHomeCategories] = useState(initialData?.data || []);
@@ -107,35 +105,7 @@ function FeatureClient({ homeCategories: initialData }) {
     ],
   };
 
-  // OPTIMIZED: Fetch full product details when modal opens
-  async function handleOpenModal(product) {
-    setIsLoadingProduct(true);
-    setIsModalOpen(true);
-
-    try {
-      // Fetch full product details with sizes and colors
-      const response = await fetch(
-        `${baseUrl}api/products/${product.id}`,
-        { cache: 'no-store' }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch product details');
-      }
-
-      const data = await response.json();
-      setSelectedProduct(data.data);
-      setSelectedSizes("");
-      setSelectedColor("");
-    } catch (error) {
-      console.error('Error fetching product:', error);
-      toast.error('Failed to load product details');
-      setIsModalOpen(false);
-    } finally {
-      setIsLoadingProduct(false);
-    }
-  }
-
+ 
 
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
@@ -309,7 +279,6 @@ function FeatureClient({ homeCategories: initialData }) {
                       className={slot.products.length >= 4 ? "mx-2" : ""}
                       key={product.id || productIndex}
                       slotProducts={product}
-                      handleOpenModal={handleOpenModal}
                       handleAddToCart={handleAddToCart}
                       slotLength={slot.products.length}
                     />
@@ -327,7 +296,6 @@ function FeatureClient({ homeCategories: initialData }) {
                     >
                       <ProductCard
                         slotProducts={product}
-                        handleOpenModal={handleOpenModal}
                         handleAddToCart={handleAddToCart}
                       />
                     </div>
