@@ -1,110 +1,75 @@
-"use client"
-import React, { useState } from "react";
+
 import Link from "next/link";
-import Image from "next/image";
-import './productCard.css';
-import useDiscountedPrice from "@/app/hooks/useDiscountedPrice";
+import ColorSwatchIsland from "./ColorSwatchIsland";
+import "./productCard.css";
 
-const ProductCard = React.memo(function ProductCard({
-  slotProducts,
-  slotLength,
-  className
-}) {
-  const [selectedImage, setSelectedImage] = useState({
-    url: null,
-    index: null
-  });
-  let baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  function handleShowImage(index, colorImage) {
-    setSelectedImage({ url: colorImage, index })
-  }
+export default function ProductCard({ slotProducts, slotLength, className }) {
+  const firstImage = slotProducts?.images?.[0]?.image
+    ? `${baseUrl}${slotProducts.images[0].image}`
+    : slotProducts?.image
+    ? `${baseUrl}${slotProducts.image}`
+    : "";
 
   return (
-    <div className={`${slotLength >= 4 ? "px-1" : ''} ${className} my-2 my-md-5 position-relative`}>
-      <div className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative">
-        {/* Wrap only the content that should be clickable */}
-        <Link href={`/frontEnd/product-page/${slotProducts?.id}`} style={{ textDecoration: 'none' }}>
-          {/* Product Image - This is now properly clickable */}
-          <div className="position-relative overflow-hidden product-image-container">
-            <Image
-              width={500}
-              height={400}
-              src={
-                selectedImage?.url
-                  ? baseUrl + selectedImage.url
-                  : slotProducts?.images?.[0]?.image
-                    ? baseUrl + slotProducts.images[0].image
-                    : slotProducts?.image
-                      ? baseUrl + slotProducts.image
-                      : ""
-              }
-              className="product-image p-0 p-md-3"
-              alt={slotProducts?.title || "Product"}
-              priority={false}
-            />
+    <div
+      className={`${slotLength >= 4 ? "px-1" : ""} ${className ?? ""} my-2 my-md-5 position-relative`}
+    >
+      {/*
+       * `d-flex flex-column` on the card makes `order` work across
+       * SSR children and CSR island children uniformly.
+       */}
+      <div className="card product-div p-1 p-md-2 bg-white h-100 product-card position-relative d-flex flex-column">
+
+        {/* Renders: hero image (order:0) + swatch row (order:3) */}
+        <ColorSwatchIsland
+          productId={slotProducts?.id}
+          productTitle={slotProducts?.title}
+          firstImage={firstImage}
+          colors={slotProducts?.colors ?? []}
+          baseUrl={baseUrl}
+        />
+
+        {/* order:1 — title */}
+        <Link
+          href={`/frontEnd/product-page/${slotProducts?.id}`}
+          style={{ textDecoration: "none", order: 1 }}
+        >
+          <div className="px-2 px-md-3 pt-2 pt-md-3 pb-0">
+            <p className="mb-1">
+              <small
+                className="text-decoration-none fw-bold product-card-title text-truncate d-block"
+                style={{ fontFamily: "Inter, sans-serif" }}
+              >
+                {slotProducts?.title}
+              </small>
+            </p>
           </div>
         </Link>
 
-        <div className="product-body-parent pb-3">
-          <Link href={`/frontEnd/product-page/${slotProducts?.id}`} style={{ textDecoration: 'none' }}>
-            {/* Product Body */}
-            <div className="card-body px-2 px-md-3 pb-1 pb-md-2 pt-2 pt-md-3">
-              <p className="mb-1">
-                <small className="text-decoration-none  fw-bold  product-card-title text-truncate d-block" style={{ fontFamily: 'Inter, sans-serif' }}>
-                  {slotProducts?.title}
-                </small>
-              </p>
-              <div className="d-flex gap-3 align-items-left mt-1 mt-md-2">
-                <span className="discount-price text-decoration-line-through">
-                  {slotProducts?.price ?? 0}৳
-                </span>
-                {
-                  slotProducts.discount && (
-                    <span className="fw-bold product-price">
-                      {slotProducts.discount ?? ""}৳
-                    </span>
-                  )
-                }
-              </div>
-            </div>
-          </Link>
-          {/* Color swatches - outside Link if you don't want them clickable */}
-          <div className="d-flex gap-2 mt-1 mt-lg-3 ">
-            {slotProducts?.colors?.length > 0 && (
-              <div className="product-color-wrapper">
-                {slotProducts?.colors?.slice(0, 3).map((color, index) => (
-                  <div key={index} className={`${selectedImage.url && index == selectedImage.index ? "SelectedImageStyle" : "product_color_image_div"}`} onClick={() => handleShowImage(index, color?.image)}>
-                    <Image
-                      width={30}
-                      height={30}
-                      src={baseUrl + color?.image}
-                      alt={slotProducts?.title || "Color variant"}
-                      className="h-100 w-100"
-                    />
-                  </div>
-                ))}
-              </div>
+        {/* order:2 — price (swatch row order:3 sits after this) */}
+        <div className="px-2 px-md-3 pb-1" style={{ order: 2 }}>
+          <div className="d-flex gap-3 align-items-center mt-1 mt-md-2">
+            <span className="discount-price text-decoration-line-through">
+              {slotProducts?.price ?? 0}৳
+            </span>
+            {slotProducts?.discount && (
+              <span className="fw-bold product-price">
+                {slotProducts.discount}৳
+              </span>
             )}
-            {
-              slotProducts.colors?.length > 3 && (
-                <div className="d-flex align-items-center"><small className="text-muted">+ {slotProducts.colors?.length - 3}</small></div>
-              )
-            }
           </div>
         </div>
+
       </div>
 
-      {/* Status badge */}
-      {slotProducts?.status === 'prebook' && (
-        <div
-          className="position-absolute m-2 px-2 px-md-3 py-1 shadow-sm product_status_badge"
-        >
+      {/* Status badge — absolute, unaffected by flex order */}
+      {slotProducts?.status === "prebook" && (
+        <div className="position-absolute m-2 px-2 px-md-3 py-1 shadow-sm product_status_badge">
           PRE-BOOK
         </div>
       )}
     </div>
   );
-});
-
-export default ProductCard;
+}
