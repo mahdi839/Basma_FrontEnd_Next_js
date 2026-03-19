@@ -17,7 +17,7 @@ import "./footer.css";
 
 export default function Footer() {
 
-  const currentYear = new Date().getFullYear();
+  // const currentYear = new Date().getFullYear();
 
   const footerLinks = {
     shop: [
@@ -203,7 +203,7 @@ export default function Footer() {
 
           <div className="col-md-6 mb-3 mb-md-0 text-center text-md-start">
             <p className="text-white mb-0 small">
-              © {currentYear} {siteConfig.company_name}. All rights reserved.
+              © {siteConfig.company_name}. All rights reserved.
             </p>
           </div>
 
