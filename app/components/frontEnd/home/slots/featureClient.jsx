@@ -1,9 +1,6 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/slices/CartSlice";
@@ -14,6 +11,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/app/components/dashboard/components/button/Button";
 import dynamic from "next/dynamic";
+const FeatureSlider = dynamic(() => import("./components/FeatureSlider"), {
+  ssr: false,
+});
 const CartDrawer = dynamic(
   () => import("../../components/CartDrawer"),
   {
@@ -105,13 +105,13 @@ function FeatureClient({ homeCategories: initialData }) {
     ],
   };
 
- 
+
 
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
 
-  
+
 
   function handleAddToCart(product, type, preQty) {
     const targetProduct = selectedProduct || product;
@@ -269,21 +269,11 @@ function FeatureClient({ homeCategories: initialData }) {
 
               {/* Products Slider (4 or more products) */}
               {slot.products?.length >= 4 && (
-                <Slider
-                  ref={sliderRefs.current[slotIndex]}
-                  {...settings}
-                  className="w-100"
-                >
-                  {slot.products?.map((product, productIndex) => (
-                    <ProductCard
-                      className={slot.products.length >= 4 ? "mx-2" : ""}
-                      key={product.id || productIndex}
-                      slotProducts={product}
-                      handleAddToCart={handleAddToCart}
-                      slotLength={slot.products.length}
-                    />
-                  ))}
-                </Slider>
+                <FeatureSlider
+                  products={slot.products}
+                  handleAddToCart={handleAddToCart}
+                  sliderRef={sliderRefs.current[slotIndex]} // ✅ keep ref
+                />
               )}
 
               {/* Products Grid (less than 4 products) */}
