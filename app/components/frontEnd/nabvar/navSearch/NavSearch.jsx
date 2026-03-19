@@ -5,7 +5,7 @@ import style from "../hero.module.css"
 import NavCategories from '../components/NavCategories';
 import Link from 'next/link';
 import './nav_search.css'
-export default function NavSearch({footerData}) {
+export default function NavSearch({ footerData }) {
   const [isClient, setIsClient] = useState(false)
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -84,7 +84,15 @@ export default function NavSearch({footerData}) {
             <div className="card-body p-0" style={{ maxHeight: '400px', overflowY: 'auto' }}>
 
               {isOpen && results.length > 0 && (
-                <ul className="list-group position-absolute w-100 shadow" style={{ top: '100%', zIndex: 1000, maxHeight: '300px', overflowY: 'auto' }}>
+                <ul
+                  className="list-group position-absolute w-100 shadow"
+                  style={{
+                    top: "100%",
+                    zIndex: 1000,
+                    maxHeight: "300px",
+                    overflowY: "auto",
+                  }}
+                >
                   {results.map((product) => (
                     <Link
                       key={product.id}
@@ -93,33 +101,33 @@ export default function NavSearch({footerData}) {
                       onClick={() => setIsOpen(false)}
                     >
                       <li className="list-group-item d-flex align-items-center hover-bg-light">
-                        <div className="me-3" style={{ width: '50px', height: '50px' }}>
-                          <img
+                        <div
+                          className="me-3"
+                          style={{ width: "50px", height: "50px", position: "relative" }}
+                        >
+                          <Image
                             src={baseUrl + product.images?.[0]?.image}
                             alt={product.title}
-                            className="img-fluid w-100 h-100 object-fit-cover rounded"
-                            onError={(e) => { e.target.src = '/images/placeholder.jpg' }}
+                            fill
+                            className="object-fit-cover rounded"
+                            onError={(e) => {
+                              e.currentTarget.src = "/images/placeholder.jpg";
+                            }}
                           />
                         </div>
 
                         <div>
                           <strong>{product.title}</strong>
-                          {
-                            product.sizes.length > 0 && (
-                              <div className='d-flex gap-2'>
-                                <span className='mt-2'>Size:</span>
-                                {
-                                  product?.sizes?.map((size) => (
-
-                                    <div className=" size_div_search mt-1">
-                                      <strong>{size?.size ?? ""}</strong>
-                                    </div>
-                                  ))
-                                }
-                              </div>
-                            )
-                          }
-
+                          {product.sizes.length > 0 && (
+                            <div className="d-flex gap-2">
+                              <span className="mt-2">Size:</span>
+                              {product?.sizes?.map((size) => (
+                                <div className="size_div_search mt-1" key={size?.size}>
+                                  <strong>{size?.size ?? ""}</strong>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </li>
                     </Link>

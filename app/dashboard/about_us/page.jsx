@@ -6,6 +6,7 @@ import useUpdateData from "@/app/hooks/useUpdateData";
 import useShowData from "@/app/hooks/useShowData";
 import Loading from "@/app/loading";
 import "react-quill/dist/quill.snow.css";
+import Image from "next/image";
 
 // Dynamically import ReactQuill (important for Next.js SSR)
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
@@ -142,11 +143,13 @@ export default function AboutUsForm() {
               <label className="form-label fw-semibold">Image</label>
               <input type="file" className="form-control" onChange={handleFileChange} />
               {previewUrl && (
-                <img
+                <Image
                   src={previewUrl}
                   alt="Image Preview"
+                  width={200}
+                  height={200}
                   className="mt-2 rounded"
-                  style={{ maxWidth: "200px", height: "auto" }}
+                  style={{ height: "auto" }}
                 />
               )}
             </div>

@@ -463,9 +463,16 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                       data-tooltip-id="color-tooltip"
                       data-tooltip-content={color.name}
                     >
-                      <img
-                        src={process.env.NEXT_PUBLIC_BACKEND_URL + color?.image ?? ""}
+                      <Image
+                        src={
+                          color?.image
+                            ? process.env.NEXT_PUBLIC_BACKEND_URL + color.image
+                            : "/images/placeholder.jpg"
+                        }
                         alt={color.name || "Color option"}
+                        width={50}
+                        height={50}
+                        style={{ objectFit: "cover" }}
                       />
                     </div>
                   ))}

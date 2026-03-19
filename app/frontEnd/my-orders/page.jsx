@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import { FaBox, FaShippingFast, FaCheckCircle, FaTimes, FaClock } from "react-icons/fa";
 import './my-order.css'
+import Image from "next/image";
+
 export default function MyOrders() {
     const { isAuthenticated, getToken } = useAuth();
     const router = useRouter();
@@ -174,9 +176,17 @@ export default function MyOrders() {
                                 <div className="order-body">
                                     {order.order_items?.slice(0, 2).map((item, idx) => (
                                         <div key={idx} className="product-item">
-                                            <img src={item?.product?.images?.[0]?.image
-                                                ? baseUrl + item?.product?.images?.[0]?.image
-                                                : ""} alt={item.title} />
+                                            <Image
+                                                src={
+                                                    item?.product?.images?.[0]?.image
+                                                        ? baseUrl + item.product.images[0].image
+                                                        : "/images/placeholder.jpg"
+                                                }
+                                                alt={item.title}
+                                                width={60}
+                                                height={60}
+                                                style={{ objectFit: "cover" }}
+                                            />
                                             <div>
                                                 <div className="product-title">{item.title}</div>
                                                 <div className="product-meta">

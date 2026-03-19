@@ -217,11 +217,11 @@ export default function Navbar() {
                         onClick={() => setMobileOpen(false)}
                       >
                         <li className="list-group-item d-flex align-items-center">
-                          <img
+                          <Image
                             src={baseUrl + product.images?.[0]?.image}
                             alt={product.title}
-                            width="45"
-                            height="45"
+                            width={45}
+                            height={45}
                             className="rounded me-3 object-fit-cover"
                           />
                           <div>
@@ -299,11 +299,10 @@ export default function Navbar() {
 
       {/* Mobile collapse menu */}
       <div
-        className={`${style.collaps_div} ${
-          isShowCollaps
-            ? "position-fixed top-0 start-0 h-100 bg-white d-md-none"
-            : style.hide_col_menu
-        }`}
+        className={`${style.collaps_div} ${isShowCollaps
+          ? "position-fixed top-0 start-0 h-100 bg-white d-md-none"
+          : style.hide_col_menu
+          }`}
         style={{
           width: "80vw",
           maxWidth: "350px",
@@ -327,11 +326,10 @@ export default function Navbar() {
               onClick={() => handleCollaps_menu("category")}
             >
               <span
-                className={`${
-                  isShowCollapsMenu === "category"
-                    ? style.collaps_border_one
-                    : ""
-                }`}
+                className={`${isShowCollapsMenu === "category"
+                  ? style.collaps_border_one
+                  : ""
+                  }`}
               >
                 Category
               </span>
@@ -341,9 +339,8 @@ export default function Navbar() {
               onClick={() => handleCollaps_menu("menu")}
             >
               <span
-                className={`${
-                  isShowCollapsMenu === "menu" ? style.collaps_border_two : ""
-                }`}
+                className={`${isShowCollapsMenu === "menu" ? style.collaps_border_two : ""
+                  }`}
               >
                 Menu
               </span>
