@@ -484,14 +484,7 @@
   font-weight: 400;
 }
 
-.form-control {
-  padding: 0.875rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-  background: white;
-}
+
 
 .form-control:focus {
   outline: none;

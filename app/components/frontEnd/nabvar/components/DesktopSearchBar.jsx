@@ -118,6 +118,7 @@ export default function DesktopSearchBar({ footerData }) {
                 onChange={(e) => setQuery(e.target.value)}
                 aria-label="Search products"
                 autoComplete="off"
+                style={{ height:'3rem' }}
               />
               <button
                 type="button"
@@ -173,14 +174,6 @@ export default function DesktopSearchBar({ footerData }) {
                 </div>
                 <div>
                   <strong>{product.title}</strong>
-                  {product.sizes?.length > 0 && (
-                    <div className="d-flex gap-2 mt-1">
-                      <span className="text-muted small">Sizes:</span>
-                      {product.sizes.map((s) => (
-                        <span key={s.size} className="badge bg-light text-dark border">{s.size}</span>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </Link>
             </li>
