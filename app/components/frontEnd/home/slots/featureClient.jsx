@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "@/app/components/dashboard/components/button/Button";
 import dynamic from "next/dynamic";
+import { IoReload } from "react-icons/io5";
 const FeatureSlider = dynamic(() => import("./components/FeatureSlider"), {
   ssr: false,
 });
@@ -296,10 +297,11 @@ function FeatureClient({ homeCategories: initialData }) {
           );
         })}
 
+
         {/* Load More Button */}
         {hasMorePages && (
           <div className="col-12 text-center my-4">
-            <Button
+            <button className="slot-loadmore-btn"
               onClick={handleLoadMore}
               disabled={isLoadingMore}
             >
@@ -313,9 +315,9 @@ function FeatureClient({ homeCategories: initialData }) {
                   Loading...
                 </>
               ) : (
-                "Load More"
+                <div> Load More</div>
               )}
-            </Button>
+            </button>
           </div>
         )}
       </div>

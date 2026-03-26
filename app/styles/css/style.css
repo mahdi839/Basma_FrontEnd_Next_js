@@ -71,6 +71,13 @@ p {
 	margin: 0 0 15px 0;
 }
 
+.slot-loadmore-btn{
+	padding: 8px 1.5rem;
+	border: 1px solid var(--primary-color);
+	background-color: transparent;
+	border-radius: 5px;
+}
+
 img {
 	max-width: 100%;
 }

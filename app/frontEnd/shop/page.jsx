@@ -9,6 +9,7 @@ import ShopSkeleton from "./ShopSkeleton";
 import { RiLoader2Fill } from "react-icons/ri";
 
 import FilterPanel from "./components/FilterPanel";
+import { IoReload } from "react-icons/io5";
 
 function ShopPage() {
   const [products, setProducts] = useState([]);
@@ -520,7 +521,7 @@ function ShopPage() {
                     >
                       {loadingMore
                         ? <><span className="spf-spinner" /> Loading</>
-                        : <span> <RiLoader2Fill  size={22} /> Load More </span>}
+                        : <span> Load More </span>}
                     </button>
                   </div>
                 )}
