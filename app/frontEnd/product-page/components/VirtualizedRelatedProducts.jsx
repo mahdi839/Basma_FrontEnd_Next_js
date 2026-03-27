@@ -115,7 +115,7 @@ export default function VirtualizedRelatedProducts({
     if (windowWidth < 375) return 320;
     if (windowWidth < 576) return 340;
     if (windowWidth < 768) return 360;
-    return 400;
+    return 420;
   };
 
   // Viewport height (show 3 rows)
@@ -254,7 +254,7 @@ export default function VirtualizedRelatedProducts({
                           transform: `translateY(${virtualRow.start}px)`,
                         }}
                       >
-                        <div className="row g-2 g-md-3 mx-0">
+                        <div className="row g-2 g-md-3 mx-0" style={{ marginBottom: "16px" }}>
                           {rowProducts.map((product) => (
                             <div
                               key={product.id}
