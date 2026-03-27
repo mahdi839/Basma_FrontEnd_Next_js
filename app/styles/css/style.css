@@ -441,16 +441,15 @@ ol {
 }
 
 .header__menu a:hover{
-	border: none;
-	outline: none;
+	text-decoration: none;
 }
 
 .header__menu .activated-nav{
 	border-bottom: 2px solid var(--primary-color);
 }
 
-.header__menu .activated-nav:hover{
-	border-bottom: 2px solid var(--primary-color);
+.header__menu .header__menu ul li a:hover{
+	background-color: var(--primary-color);
 }
 
 .header__menu ul li {
