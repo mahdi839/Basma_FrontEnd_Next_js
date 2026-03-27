@@ -440,6 +440,19 @@ ol {
 	padding: 24px 0;
 }
 
+.header__menu a:hover{
+	border: none;
+	outline: none;
+}
+
+.header__menu .activated-nav{
+	border-bottom: 2px solid var(--primary-color);
+}
+
+.header__menu .activated-nav:hover{
+	border-bottom: 2px solid var(--primary-color);
+}
+
 .header__menu ul li {
 	list-style: none;
 	display: inline-block;
@@ -490,9 +503,7 @@ ol {
 	visibility: visible;
 }
 
-.header__menu ul li:hover>a {
-	color: var(--primary-color);
-}
+
 
 .header__menu ul li:last-child {
 	margin-right: 0;
