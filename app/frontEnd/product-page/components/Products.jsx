@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaCartPlus, FaChevronLeft, FaChevronRight, FaFacebookMessenger, FaWhatsapp } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
@@ -10,8 +10,8 @@ import { addToCart } from "@/redux/slices/CartSlice";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import "react-medium-image-zoom/dist/styles.css";
-import './productPage.css';
-import './specification.css';
+import "./productPage.css";
+import "./specification.css";
 import useProductLogics from "@/app/hooks/useProductLogics";
 import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
@@ -23,7 +23,6 @@ import useDiscountedPrice from "@/app/hooks/useDiscountedPrice";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import dynamic from "next/dynamic";
-
 
 const CartDrawer = dynamic(
   () => import("@/app/components/frontEnd/components/CartDrawer"),
@@ -42,11 +41,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [localImgUrl, setLocalImgUrl] = useState(null);
 
-  const {
-    originalPrice,
-    discount,
-    discountedPrice
-  } = useDiscountedPrice(product);
+  // smart image loader
+  const [showImgLoader, setShowImgLoader] = useState(false);
+  const loaderDelayRef = useRef(null);
+  const loaderShownAtRef = useRef(0);
+  const activeLoadIdRef = useRef(0);
+
+  const { discount } = useDiscountedPrice(product);
 
   const {
     handleSelectedColor,
@@ -58,7 +59,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     handleQuantityIncrease,
     handleQuantityDecrease,
     handleThumbClick,
-    imgUrl
+    imgUrl,
   } = useProductLogics(product, socialLinksData.whatsapp_number);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -75,12 +76,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const messengerUrl = `https://m.me/${pageId}`;
 
   const images = product?.images || [];
-  const displayPrice = product?.sizes[0]?.pivot?.price == null ? product?.price : "";
-  const cartItem = cartItems.find(item => product.id == item.id);
-
+  const cartItem = cartItems.find((item) => product.id == item.id);
   const hasSpecifications = product?.specifications && product.specifications.length > 0;
 
-  const displayImgUrl = localImgUrl || imgUrl || (images?.[0]?.image ? `${baseUrl}${images[0].image}` : "/placeholder.png");
+  const displayImgUrl =
+    localImgUrl ||
+    imgUrl ||
+    (images?.[0]?.image ? `${baseUrl}${images[0].image}` : "/placeholder.png");
 
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
@@ -91,7 +93,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     if (product?.error) toast.error(product.error);
   }, [product]);
 
-  // Preload helper
+  useEffect(() => {
+    return () => {
+      if (loaderDelayRef.current) clearTimeout(loaderDelayRef.current);
+    };
+  }, []);
+
+  // preload helper
   function preloadImage(url) {
     return new Promise((resolve) => {
       const img = new window.Image();
@@ -101,22 +109,62 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     });
   }
 
-  // Instant color click — preload then swap
-  async function handleColorClick(colorImage) {
-    const newUrl = `${baseUrl}${colorImage}`;
-    await preloadImage(newUrl);
-    setLocalImgUrl(newUrl);
-    handleSelectedColor(colorImage);
+  // show loader only if load takes some milliseconds
+  function startDelayedLoader() {
+    if (loaderDelayRef.current) clearTimeout(loaderDelayRef.current);
+
+    loaderDelayRef.current = setTimeout(() => {
+      loaderShownAtRef.current = Date.now();
+      setShowImgLoader(true);
+    }, 120);
   }
 
-  // Thumb click — preload then swap
+  async function stopDelayedLoader() {
+    if (loaderDelayRef.current) clearTimeout(loaderDelayRef.current);
+
+    if (!showImgLoader) {
+      setShowImgLoader(false);
+      return;
+    }
+
+    const minVisible = 180;
+    const elapsed = Date.now() - loaderShownAtRef.current;
+
+    if (elapsed < minVisible) {
+      await new Promise((resolve) => setTimeout(resolve, minVisible - elapsed));
+    }
+
+    setShowImgLoader(false);
+  }
+
+  async function switchMainImage(newUrl, afterChange) {
+    const loadId = ++activeLoadIdRef.current;
+
+    startDelayedLoader();
+    await preloadImage(newUrl);
+
+    if (loadId !== activeLoadIdRef.current) return;
+
+    setLocalImgUrl(newUrl);
+    if (afterChange) afterChange();
+    await stopDelayedLoader();
+  }
+
+  async function handleColorClick(colorImage) {
+    const newUrl = `${baseUrl}${colorImage}`;
+    await switchMainImage(newUrl, () => {
+      handleSelectedColor(colorImage);
+    });
+  }
+
   async function handleThumbClickLocal(imgId) {
     const img = images.find((i) => i.id === imgId);
-    if (img) {
-      await preloadImage(`${baseUrl}${img.image}`);
-    }
-    setLocalImgUrl(null);
-    handleThumbClick(imgId);
+    if (!img) return;
+
+    const newUrl = `${baseUrl}${img.image}`;
+    await switchMainImage(newUrl, () => {
+      handleThumbClick(imgId);
+    });
   }
 
   function toggleFaq(id) {
@@ -165,7 +213,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       return;
     }
 
-    const selectedVariant = product.sizes.find(s => s.id == selectedSize) || product.sizes[0];
+    const selectedVariant = product.sizes.find((s) => s.id == selectedSize) || product.sizes[0];
     const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
 
     dispatch(
@@ -180,11 +228,11 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       })
     );
 
-    if (type === 'buy') {
+    if (type === "buy") {
       setIsDirectBuy(true);
       setIsCartDrawerOpen(true);
     }
-    if (type === 'add') {
+    if (type === "add") {
       setIsDirectBuy(false);
       setIsCartDrawerOpen(true);
     }
@@ -196,13 +244,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     setModalSelectedColor(null);
     setIsModalOpen(true);
     try {
-      const response = await fetch(`${baseUrl}api/products/${product.id}`, { cache: 'no-store' });
-      if (!response.ok) throw new Error('Failed to fetch product details');
+      const response = await fetch(`${baseUrl}api/products/${product.id}`, { cache: "no-store" });
+      if (!response.ok) throw new Error("Failed to fetch product details");
       const data = await response.json();
       setSelectedProduct(data.data);
     } catch (error) {
-      console.error('Error fetching product:', error);
-      toast.error('Failed to load product details');
+      console.error("Error fetching product:", error);
+      toast.error("Failed to load product details");
       setIsModalOpen(false);
     }
   }
@@ -215,7 +263,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   function handleRelatedAddToCart(product, type, preQty) {
     const existing = cartItems.find((item) => item.id === product.id);
     if (existing) {
-      if (type == 'buy') {
+      if (type == "buy") {
         setIsCartDrawerOpen(true);
         setIsDirectBuy(true);
         handleCloseModal();
@@ -242,7 +290,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     }
 
     const baseProduct = product || selectedProduct;
-    const selectedVariant = baseProduct?.sizes?.find(s => s.id == modalSelectedSize) || baseProduct?.sizes?.[0];
+    const selectedVariant =
+      baseProduct?.sizes?.find((s) => s.id == modalSelectedSize) || baseProduct?.sizes?.[0];
     const imageUrl = baseProduct?.image ? baseUrl + baseProduct?.image : "";
 
     dispatch(
@@ -309,48 +358,43 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   return (
     <div className="container product-page-container">
       <div className="row my-2 my-md-5 g-2 g-lg-4">
-
-        {/* Product header — mobile only */}
         <div className="col-12 d-lg-none">
           <div className="product-mobile-header d-flex flex-column justify-content-center px-3">
             <h1 className="product-title">{product?.title}</h1>
             {product?.sku && (
-              <div className="product-sku">SKU: <strong>{product.sku}</strong></div>
+              <div className="product-sku">
+                SKU: <strong>{product.sku}</strong>
+              </div>
             )}
-            {product?.status === 'prebook' && (
+            {product?.status === "prebook" && (
               <div className="preorder-badge">⚡ Pre Order, Delivery Time 20 to 25 Days</div>
             )}
           </div>
         </div>
 
-        {/* Product Images */}
         <div className="col-12 col-md-6">
           <div className="product-gallery-wrapper d-flex flex-column flex-md-column gap-1">
-
-            {/* MAIN IMAGE */}
             <div className="main-image-container">
+              {showImgLoader && (
+                <div className="main-image-loader">
+                  <div className="img-spinner" />
+                </div>
+              )}
+
               <Zoom>
                 <Image
                   src={displayImgUrl}
                   alt={product?.title}
-                  width={600}
-                  height={600}
+                  width={900}
+                  height={900}
                   priority
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain",
-                    borderRadius: "6px",
-                  }}
+                  className="main-product-image"
                 />
               </Zoom>
             </div>
 
-            {/* THUMBNAILS */}
             {images?.length > 1 && (
               <div className="thumbnails-container">
-
-                {/* Desktop: Slick slider */}
                 <div className="d-none d-md-block w-100">
                   {images.length >= 4 ? (
                     <Slider {...thumbSliderSettings}>
@@ -358,16 +402,25 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                         <div key={img.id} className="px-1">
                           <button
                             type="button"
-                            className={`sub-img ${displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
+                            className={`sub-img ${
+                              displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                            }`}
                             onClick={() => handleThumbClickLocal(img.id)}
-                            style={{ padding: 0, overflow: 'hidden', background: '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            style={{
+                              padding: 0,
+                              overflow: "hidden",
+                              background: "#f8f9fa",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
                           >
                             <Image
                               src={baseUrl + img.image}
                               alt="product thumbnail"
                               width={600}
                               height={600}
-                              style={{ width: '100%', height: '100%' }}
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
                             />
                           </button>
                         </div>
@@ -376,18 +429,29 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   ) : (
                     <div className="d-flex gap-2 flex-wrap">
                       {images.map((img) => (
-                        <div key={img.id} style={{ flex: '0 0 auto', width: '80px' }}>
+                        <div key={img.id} style={{ flex: "0 0 auto", width: "80px" }}>
                           <button
-                            className={`sub-img ${displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
+                            className={`sub-img ${
+                              displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                            }`}
                             onClick={() => handleThumbClickLocal(img.id)}
-                            style={{ width: '100%', height: '80px', padding: 0, background: '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}
+                            style={{
+                              width: "100%",
+                              height: "80px",
+                              padding: 0,
+                              background: "#f8f9fa",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              overflow: "hidden",
+                            }}
                           >
                             <Image
                               src={baseUrl + img.image}
                               alt="product thumbnail"
                               width={600}
                               height={600}
-                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
                             />
                           </button>
                         </div>
@@ -396,13 +460,14 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   )}
                 </div>
 
-                {/* Mobile: vertical strip */}
                 <div className="d-flex d-md-none mobile-thumbs-vertical">
                   {images.map((img) => (
                     <button
                       key={img.id}
                       type="button"
-                      className={`mobile-thumb-btn ${displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""}`}
+                      className={`mobile-thumb-btn ${
+                        displayImgUrl === `${baseUrl}${img.image}` ? "active" : ""
+                      }`}
                       onClick={() => handleThumbClickLocal(img.id)}
                     >
                       <Image
@@ -410,45 +475,37 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                         alt="product thumbnail"
                         width={200}
                         height={200}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
                       />
                     </button>
                   ))}
                 </div>
-
               </div>
             )}
           </div>
         </div>
 
-        {/* Product Description & Options */}
         <div className="col-12 col-md-6">
           <div className="product-info-card">
-
-            {/* Product Header — desktop only */}
             <div className="product-header d-none d-lg-block">
               <h1 className="product-title">{product?.title}</h1>
               {product?.sku && (
-                <div className="product-sku">SKU: <strong>{product.sku}</strong></div>
+                <div className="product-sku">
+                  SKU: <strong>{product.sku}</strong>
+                </div>
               )}
-              {product?.status === 'prebook' && (
+              {product?.status === "prebook" && (
                 <div className="preorder-badge">⚡ Pre Order, Delivery Time 20 to 25 Days</div>
               )}
             </div>
 
-            {/* Price Display */}
             <div className="price-section">
-              <div className="discount-price text-decoration-line-through">
-                {product?.price ?? 0}৳
-              </div>
+              <div className="discount-price text-decoration-line-through">{product?.price ?? 0}৳</div>
               {product?.discount > 0 && (
-                <div className="product-price">
-                  {(product?.discount ?? 0) * (preQty ?? 1)}৳
-                </div>
+                <div className="product-price">{(product?.discount ?? 0) * (preQty ?? 1)}৳</div>
               )}
             </div>
 
-            {/* Colors Selection */}
             {product.colors?.length > 0 && (
               <div className="variant-section">
                 <div className="color-section-title">
@@ -483,7 +540,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
             <Tooltip id="color-tooltip" place="top" className="custom-color-tooltip" />
 
-            {/* Sizes Selection */}
             {product.sizes?.length > 0 && (
               <div className="variant-section">
                 <div className="variant-section-title">
@@ -497,7 +553,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                     return (
                       <button
                         key={size?.id}
-                        className={`size-option-btn ${isSelected ? 'selected' : ''}`}
+                        className={`size-option-btn ${isSelected ? "selected" : ""}`}
                         onClick={() => handleSelectedSize(size.id)}
                       >
                         {size?.size}
@@ -509,7 +565,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             )}
 
-            {/* Size Guide + Quantity */}
             <div className="size-qty-row my-2 my-lg-3 d-lg-flex gap-lg-3">
               <button className="size-guide-btn" onClick={fetchSizeGuideData}>
                 <SiFoursquarecityguide />
@@ -535,7 +590,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             </div>
 
-            {/* Add to Cart + Buy Now */}
             <div className="action-buttons-container">
               <button className="single-prod-action-btn btn-grad" onClick={() => handleAddToCart("add")}>
                 <FaCartPlus size={16} />
@@ -547,7 +601,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </button>
             </div>
 
-            {/* Messenger + WhatsApp */}
             <div className="social-buttons-container">
               <a href={messengerUrl} target="_blank" rel="noopener noreferrer" className="social-btn messenger-btn">
                 <FaFacebookMessenger size={16} />
@@ -558,12 +611,10 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 WhatsApp
               </a>
             </div>
-
           </div>
         </div>
       </div>
 
-      {/* Product Tabs */}
       <div className="desc_tab_container mt-4 mt-md-5">
         <div className="tabs-header d-flex flex-wrap justify-content-center gap-2 gap-md-3 mb-4">
           <button className={`tab-btn ${activeTab === "specs" ? "active" : ""}`} onClick={() => setActiveTab("specs")}>
@@ -656,7 +707,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       {showSizeGuide && (
         <div className="size-guide-overlay">
           <div className="size-guide-content">
-            <button className="size-guide-close" onClick={() => setShowSizeGuide(false)}>✕</button>
+            <button className="size-guide-close" onClick={() => setShowSizeGuide(false)}>
+              ✕
+            </button>
             <Image src={sizeGuideImage} alt="Size Guide" width={600} height={800} className="img-fluid" />
           </div>
         </div>
@@ -672,33 +725,89 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       <CartDrawer isOpen={isCartDrawerOpen} isDirectBuy={isDirectBuy} onClose={handleCloseDrawer} />
 
       <style jsx>{`
-        .specifications-table-wrapper { overflow-x: auto; }
-        .specifications-table { width: 100%; border-collapse: collapse; }
-        .specifications-table td { padding: 12px 16px; vertical-align: middle; border: 1px solid #dee2e6; }
-        .spec-key { font-weight: 600; background-color: #f8f9fa; width: 40%; color: #495057; }
-        .spec-value { background-color: #ffffff; color: #212529; }
-
-        .animated-fade { animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
+        .specifications-table-wrapper {
+          overflow-x: auto;
+        }
+        .specifications-table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        .specifications-table td {
+          padding: 12px 16px;
+          vertical-align: middle;
+          border: 1px solid #dee2e6;
+        }
+        .spec-key {
+          font-weight: 600;
+          background-color: #f8f9fa;
+          width: 40%;
+          color: #495057;
+        }
+        .spec-value {
+          background-color: #ffffff;
+          color: #212529;
         }
 
-        /* ── MAIN IMAGE CONTAINER ── */
+        .animated-fade {
+          animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
         .main-image-container {
           width: 100%;
-          aspect-ratio: 1 / 1;
-          padding: 10px;
+          height: 520px;
+          padding: 12px;
           box-sizing: border-box;
           background: #f8f9fa;
           border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          position: relative;
           overflow: hidden;
         }
 
-        /* ── Mobile thumbnail vertical strip ── */
+        .main-product-image {
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+          border-radius: 8px;
+          display: block;
+        }
+
+        .main-image-loader {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(255, 255, 255, 0.55);
+          backdrop-filter: blur(1px);
+          z-index: 3;
+          border-radius: 12px;
+        }
+
+        .img-spinner {
+          width: 34px;
+          height: 34px;
+          border: 4px solid #e8e8e8;
+          border-top: 4px solid #7d0ba7;
+          border-radius: 50%;
+          animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
         .mobile-thumbs-vertical {
           flex-direction: column;
           gap: 6px;
@@ -707,7 +816,9 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           max-height: 360px;
           scrollbar-width: none;
         }
-        .mobile-thumbs-vertical::-webkit-scrollbar { display: none; }
+        .mobile-thumbs-vertical::-webkit-scrollbar {
+          display: none;
+        }
 
         .mobile-thumb-btn {
           width: 68px;
@@ -729,28 +840,35 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           border-color: #7d0ba7;
           box-shadow: 0 0 0 2px rgba(125, 11, 167, 0.15);
         }
-        .mobile-thumb-btn:hover { border-color: #7d0ba7; }
+        .mobile-thumb-btn:hover {
+          border-color: #7d0ba7;
+        }
 
-        /* ── MOBILE LAYOUT FIXES ── */
         @media (max-width: 768px) {
-          .specifications-table td { padding: 10px 12px; font-size: 0.9rem; }
-          .spec-key { width: 45%; }
+          .specifications-table td {
+            padding: 10px 12px;
+            font-size: 0.9rem;
+          }
+          .spec-key {
+            width: 45%;
+          }
 
           .product-gallery-wrapper {
             flex-direction: row !important;
             align-items: flex-start;
             gap: 8px;
           }
+
           .thumbnails-container {
             order: -1;
             width: 76px !important;
             min-width: 76px !important;
             flex-shrink: 0;
           }
+
           .main-image-container {
             flex: 1 1 auto !important;
-            aspect-ratio: 1 / 1 !important;
-            height: auto !important;
+            height: 340px !important;
             padding: 8px !important;
           }
 
@@ -762,6 +880,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             margin-top: 0.4rem;
             margin-bottom: 0.5rem;
           }
+
           .size-qty-row .quantity-controls {
             display: flex;
             align-items: center;
@@ -779,6 +898,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             gap: 8px !important;
             margin-bottom: 0.5rem !important;
           }
+
           .single-prod-action-btn {
             flex: 1 1 0 !important;
             min-width: 0 !important;
@@ -794,6 +914,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             gap: 8px !important;
             margin-top: 7px !important;
           }
+
           .social-btn {
             flex: 1 !important;
             font-size: 0.78rem !important;
@@ -808,18 +929,23 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
         @media (max-width: 480px) {
           .main-image-container {
-            aspect-ratio: 1 / 1 !important;
-            height: auto !important;
+            height: 280px !important;
           }
-          .mobile-thumbs-vertical { max-height: 280px; }
-          .single-prod-action-btn, .social-btn {
+
+          .mobile-thumbs-vertical {
+            max-height: 280px;
+          }
+
+          .single-prod-action-btn,
+          .social-btn {
             font-size: 0.7rem !important;
             padding: 8px 4px !important;
           }
         }
 
         @media (max-width: 400px) {
-          .single-prod-action-btn, .social-btn {
+          .single-prod-action-btn,
+          .social-btn {
             font-size: 0.7rem !important;
             padding: 8px 4px !important;
           }
