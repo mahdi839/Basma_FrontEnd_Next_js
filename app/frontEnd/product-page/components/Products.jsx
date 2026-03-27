@@ -40,10 +40,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [modalSelectedSize, setModalSelectedSize] = useState(null);
   const [modalSelectedColor, setModalSelectedColor] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
-
-  // ── NEW: instant image state + loader ──
   const [localImgUrl, setLocalImgUrl] = useState(null);
-  const [imgLoading, setImgLoading] = useState(false);
 
   const {
     originalPrice,
@@ -64,7 +61,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     imgUrl
   } = useProductLogics(product, socialLinksData.whatsapp_number);
 
-  // Modal states
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
@@ -84,7 +80,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
   const hasSpecifications = product?.specifications && product.specifications.length > 0;
 
-  // ── Compute the displayed main image (local state wins for instant update) ──
   const displayImgUrl = localImgUrl || imgUrl || (images?.[0]?.image ? `${baseUrl}${images[0].image}` : "/placeholder.png");
 
   const handleCloseDrawer = () => {
@@ -96,18 +91,31 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     if (product?.error) toast.error(product.error);
   }, [product]);
 
-  // ── Instant color click handler ──
-  function handleColorClick(colorImage) {
+  // Preload helper
+  function preloadImage(url) {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.src = url;
+      img.onload = resolve;
+      img.onerror = resolve;
+    });
+  }
+
+  // Instant color click — preload then swap
+  async function handleColorClick(colorImage) {
     const newUrl = `${baseUrl}${colorImage}`;
+    await preloadImage(newUrl);
     setLocalImgUrl(newUrl);
-    setImgLoading(true);
     handleSelectedColor(colorImage);
   }
 
-  // ── Thumb click resets localImgUrl so hook's imgUrl takes over ──
-  function handleThumbClickLocal(imgId) {
+  // Thumb click — preload then swap
+  async function handleThumbClickLocal(imgId) {
+    const img = images.find((i) => i.id === imgId);
+    if (img) {
+      await preloadImage(`${baseUrl}${img.image}`);
+    }
     setLocalImgUrl(null);
-    setImgLoading(true);
     handleThumbClick(imgId);
   }
 
@@ -319,37 +327,30 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         <div className="col-12 col-md-6">
           <div className="product-gallery-wrapper d-flex flex-column flex-md-column gap-1">
 
-            {/* ── MAIN IMAGE with loader ── */}
-            <div className="main-image-container" style={{ position: 'relative' }}>
-              {imgLoading && (
-                <div style={{
-                  position: 'absolute', inset: 0, display: 'flex',
-                  alignItems: 'center', justifyContent: 'center',
-                  background: 'rgba(255,255,255,0.75)', zIndex: 2,
-                  borderRadius: '12px'
-                }}>
-                  <div className="img-spinner" />
-                </div>
-              )}
+            {/* MAIN IMAGE */}
+            <div className="main-image-container">
               <Zoom>
                 <Image
                   src={displayImgUrl}
                   alt={product?.title}
                   width={600}
                   height={600}
-                  className="img-fluid"
                   priority
-                  style={{ objectFit: "contain" }}
-                  onLoad={() => setImgLoading(false)}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    borderRadius: "6px",
+                  }}
                 />
               </Zoom>
             </div>
 
-            {/* ── THUMBNAILS ── */}
+            {/* THUMBNAILS */}
             {images?.length > 1 && (
               <div className="thumbnails-container">
 
-                {/* Desktop: use Slick slider (horizontal) */}
+                {/* Desktop: Slick slider */}
                 <div className="d-none d-md-block w-100">
                   {images.length >= 4 ? (
                     <Slider {...thumbSliderSettings}>
@@ -395,7 +396,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   )}
                 </div>
 
-                {/* Mobile: always simple vertical flex — NO Slick */}
+                {/* Mobile: vertical strip */}
                 <div className="d-flex d-md-none mobile-thumbs-vertical">
                   {images.map((img) => (
                     <button
@@ -683,16 +684,19 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── Spinner ── */
-        .img-spinner {
-          width: 36px;
-          height: 36px;
-          border: 4px solid #e0e0e0;
-          border-top: 4px solid #7d0ba7;
-          border-radius: 50%;
-          animation: spin 0.7s linear infinite;
+        /* ── MAIN IMAGE CONTAINER ── */
+        .main-image-container {
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          padding: 10px;
+          box-sizing: border-box;
+          background: #f8f9fa;
+          border-radius: 12px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* ── Mobile thumbnail vertical strip ── */
         .mobile-thumbs-vertical {
@@ -732,28 +736,24 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
           .specifications-table td { padding: 10px 12px; font-size: 0.9rem; }
           .spec-key { width: 45%; }
 
-          /* Gallery: thumbnails LEFT, main image RIGHT */
           .product-gallery-wrapper {
             flex-direction: row !important;
             align-items: flex-start;
             gap: 8px;
           }
-          /* Thumbnails column moves to left */
           .thumbnails-container {
             order: -1;
             width: 76px !important;
             min-width: 76px !important;
             flex-shrink: 0;
           }
-          /* Main image takes remaining space */
           .main-image-container {
             flex: 1 1 auto !important;
-            height: 340px !important;
-            aspect-ratio: auto !important;
-            padding: 10px !important;
+            aspect-ratio: 1 / 1 !important;
+            height: auto !important;
+            padding: 8px !important;
           }
 
-          /* Size Guide + Quantity row */
           .size-qty-row {
             display: flex;
             flex-direction: row;
@@ -772,7 +772,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             flex-shrink: 0;
           }
 
-          /* Action buttons row */
           .action-buttons-container {
             display: flex !important;
             flex-direction: row !important;
@@ -789,7 +788,6 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             gap: 5px !important;
           }
 
-          /* Social buttons row */
           .social-buttons-container {
             display: flex !important;
             flex-direction: row !important;
@@ -803,14 +801,16 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             white-space: nowrap;
           }
 
-          /* Mobile thumbnail vertical strip sizing */
           .mobile-thumbs-vertical {
             max-height: 340px;
           }
         }
 
         @media (max-width: 480px) {
-          .main-image-container { height: 280px !important; }
+          .main-image-container {
+            aspect-ratio: 1 / 1 !important;
+            height: auto !important;
+          }
           .mobile-thumbs-vertical { max-height: 280px; }
           .single-prod-action-btn, .social-btn {
             font-size: 0.7rem !important;
