@@ -777,10 +777,19 @@ ol {
 }
 
 .hero_slider_img {
-	max-width: 100%;
-	height: auto;
-	max-height: 400px;
-	margin-bottom: 2rem;
+  width: 100% !important;
+  height: auto;
+  max-height: 400px;
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.slick-slider {
+  position: relative;
+}
+
+.slick-slide > div {
+  display: block;
 }
 
 /* featured */

@@ -1,4 +1,4 @@
-import Script from "next/script";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../app/styles/globals.scss";
 import "../app/styles/css/bootstrap.min.css";
@@ -10,6 +10,7 @@ import Bootstrap_js from "./components/bootstrapJs/Bootstrap_js";
 import Providers from "./Providers";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Script from "next/script";
 import { Inter } from "next/font/google";
 import PixelTracker from "./components/PixelTracker";
 
