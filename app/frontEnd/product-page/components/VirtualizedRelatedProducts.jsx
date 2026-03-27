@@ -15,7 +15,7 @@ export default function VirtualizedRelatedProducts({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeMenu, setActiveMenu] = useState("related");
+  const [activeMenu, setActiveMenu] = useState("new");
   const [scrollProgress, setScrollProgress] = useState(0);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
 
