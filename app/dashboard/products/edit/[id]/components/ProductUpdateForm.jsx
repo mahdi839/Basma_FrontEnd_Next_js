@@ -43,7 +43,6 @@ export default function ProductUpdateForm({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
   // Sidebar states
   const [newSize, setNewSize] = useState("");
   const [newCategory, setNewCategory] = useState({
@@ -64,8 +63,12 @@ export default function ProductUpdateForm({
 
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
+  // ✅ FIX: Only fetch sizes here — NOT categories.
+  // Categories come from the `categoryData` prop (admin endpoint).
+  // Fetching from api/frontend/categories was overwriting the admin list
+  // with a different/filtered dataset, causing missing categories.
   useEffect(() => {
-    fetchData();
+    fetchSizes();
   }, []);
 
   useEffect(() => {
@@ -74,10 +77,19 @@ export default function ProductUpdateForm({
     return () => window.removeEventListener("update-existing-images", handler);
   }, []);
 
+  // ✅ FIX: Normalize categoryData on arrival — handles both raw array
+  // and { data: [...] } shaped responses from getData()
+  useEffect(() => {
+    const normalized = Array.isArray(categoryData)
+      ? categoryData
+      : Array.isArray(categoryData?.data)
+      ? categoryData.data
+      : [];
+    setCategories(normalized);
+  }, [categoryData]);
 
   useEffect(() => {
     if (isEditMode && initialData) {
-      // Parse colors if it's a JSON string
       let parsedColors = [];
       if (initialData.colors) {
         if (typeof initialData.colors === 'string') {
@@ -92,16 +104,14 @@ export default function ProductUpdateForm({
         }
       }
 
-      // Transform colors to include all necessary fields
       const transformedColors = parsedColors.map(color => ({
         id: color.id,
         code: color.code || "#000000",
         name: color.name || "",
-        image: null, // New uploads will go here
-        existing_image: color.image || null // Keep track of existing image path
+        image: null,
+        existing_image: color.image || null
       }));
 
-      // Transform initial data to match backend structure
       const transformedData = {
         title: initialData.title || "",
         short_description: initialData.short_description || "",
@@ -124,8 +134,10 @@ export default function ProductUpdateForm({
           question: faq.question || "",
           answer: faq.answer || ""
         })) || [],
+        // ✅ FIX: Normalize category_id to String so react-select matching
+        // never fails due to number vs string type mismatch
         categories: initialData.category?.map(cat => ({
-          category_id: cat.id
+          category_id: String(cat.id)
         })) || [],
         specifications: initialData.specifications?.map(spec => ({
           id: spec.id,
@@ -137,16 +149,12 @@ export default function ProductUpdateForm({
       setFormData(transformedData);
       setExistingImages(initialData.images || []);
     }
-    setCategories(categoryData?.data || categoryData || []);
-  }, [isEditMode, initialData, categoryData]);
+  }, [isEditMode, initialData]);
 
-  const fetchData = async () => {
+  // ✅ Only fetch sizes from the client side
+  const fetchSizes = async () => {
     try {
-      const [catRes, sizeRes] = await Promise.all([
-        axios.get(`${baseUrl}api/frontend/categories`),
-        axios.get(`${baseUrl}api/sizes`),
-      ]);
-      setCategories(catRes.data);
+      const sizeRes = await axios.get(`${baseUrl}api/sizes`);
       setSizes(sizeRes.data);
     } catch (e) {
       toast.error(e.message);
@@ -199,7 +207,8 @@ export default function ProductUpdateForm({
         newCategory,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setCategories([res.data, ...categories]);
+      // ✅ Prepend newly created category to the list immediately
+      setCategories(prev => [res.data, ...prev]);
       setNewCategory({ name: "", home_category: "0", priority: 0 });
       toast.success("Category created successfully");
     } catch (error) {
@@ -209,7 +218,6 @@ export default function ProductUpdateForm({
     }
   };
 
-  // Handlers
   const handleColorChange = (index, field, value) => {
     const next = [...formData.colors];
     next[index] = { ...next[index], [field]: value };
@@ -223,8 +231,8 @@ export default function ProductUpdateForm({
   };
 
   const selectedSizeIds = formData.sizes
-    .map((item, i) => item.size_id)
-    .filter((id, i2) => id !== "" && id !== null);
+    .map((item) => item.size_id)
+    .filter((id) => id !== "" && id !== null);
 
   const handleFAQChange = (index, field, value) => {
     const next = [...formData.faqs];
@@ -260,7 +268,6 @@ export default function ProductUpdateForm({
     handleColorChange(index, "existing_image", null);
   };
 
-  // Toggle section expansion
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -268,11 +275,10 @@ export default function ProductUpdateForm({
     }));
   };
 
-  // Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (isSubmitting) return; // prevent double submit
+    if (isSubmitting) return;
     setIsSubmitting(true);
 
     const data = new FormData();
@@ -283,14 +289,9 @@ export default function ProductUpdateForm({
     data.append("discount", formData.discount || "");
     data.append("status", formData.status);
 
-    if (formData.price) {
-      data.append("price", formData.price);
-    }
-     if (formData.sku) {
-      data.append("sku", formData.sku);
-    }
+    if (formData.price) data.append("price", formData.price);
+    if (formData.sku) data.append("sku", formData.sku);
 
-    // 🔽 PASTE HERE
     if (isEditMode && existingImages.length > 0) {
       existingImages.forEach((img, index) => {
         data.append(`image_order[${index}][id]`, img.id);
@@ -298,36 +299,16 @@ export default function ProductUpdateForm({
       });
     }
 
-    if (isEditMode) {
-      data.append("_method", "PUT");
-    }
+    if (isEditMode) data.append("_method", "PUT");
 
-    // Colors with images and names
     formData.colors.forEach((color, i) => {
-      // Always include code (backend requires it)
       data.append(`colors[${i}][code]`, color.code || "#000000");
-
-      // Include name if provided
-      if (color.name) {
-        data.append(`colors[${i}][name]`, color.name);
-      }
-
-      // Include ID if editing existing color
-      if (color.id) {
-        data.append(`colors[${i}][id]`, color.id);
-      }
-
-      // Handle new image upload
-      if (color.image) {
-        data.append(`colors[${i}][image]`, color.image);
-      }
-      // Keep existing image if no new upload
-      else if (color.existing_image) {
-        data.append(`colors[${i}][existing_image]`, color.existing_image);
-      }
+      if (color.name) data.append(`colors[${i}][name]`, color.name);
+      if (color.id) data.append(`colors[${i}][id]`, color.id);
+      if (color.image) data.append(`colors[${i}][image]`, color.image);
+      else if (color.existing_image) data.append(`colors[${i}][existing_image]`, color.existing_image);
     });
 
-    // Sizes with pricing
     formData.sizes.forEach((size, i) => {
       if (size.size_id) {
         data.append(`sizes[${i}][size_id]`, size.size_id);
@@ -336,26 +317,20 @@ export default function ProductUpdateForm({
       }
     });
 
-    // Product images
     formData.images.forEach((image) => data.append("image[]", image));
 
-    // Delete removed existing images
     if (isEditMode) {
       const initialImageIds = initialData?.images?.map(img => img.id) || [];
       const currentImageIds = existingImages.map(img => img.id);
       const deletedImages = initialImageIds.filter(id => !currentImageIds.includes(id));
-
-      deletedImages.forEach(imgId => {
-        data.append("deleted_images[]", imgId);
-      });
+      deletedImages.forEach(imgId => data.append("deleted_images[]", imgId));
     }
 
-    // Categories
+    // ✅ category_id was normalized to String, backend receives it correctly
     formData.categories.forEach((category, i) => {
       data.append(`categories[${i}][category_id]`, category.category_id);
     });
 
-    // FAQs
     const validFAQs = formData.faqs.filter(
       (f) => f.question?.trim() !== "" && f.answer?.trim() !== ""
     );
@@ -364,7 +339,6 @@ export default function ProductUpdateForm({
       data.append(`faqs[${i}][answer]`, faq.answer);
     });
 
-    // Specifications
     const validSpecs = formData.specifications.filter(
       (s) => s.key?.trim() !== "" && s.value?.trim() !== ""
     );
@@ -381,7 +355,7 @@ export default function ProductUpdateForm({
         ? `${baseUrl}api/products/${productId}`
         : `${baseUrl}api/products`;
 
-      const response = await axios.post(url, data, {
+      await axios.post(url, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -407,13 +381,10 @@ export default function ProductUpdateForm({
         });
       }
 
-      // 🔥 invalidate cache
       await fetch("/api/revalidate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tags: ["products"],
-        }),
+        body: JSON.stringify({ tags: ["products"] }),
       });
 
       toast.success(`Product ${isEditMode ? 'Updated' : 'Created'} Successfully`);
@@ -429,7 +400,6 @@ export default function ProductUpdateForm({
   return (
     <div className="container-fluid mt-4">
       <div className="row">
-        {/* Main Form - Left Side */}
         <div className="col-lg-8">
           <div className="d-flex align-items-center mb-4">
             <h3 className="mb-0 fw-bold text-gray-800">
@@ -438,15 +408,12 @@ export default function ProductUpdateForm({
           </div>
 
           <form onSubmit={handleSubmit} className="product-form">
-            {/* Basic Information */}
             <BasicInfo
               toggleSection={toggleSection}
               formData={formData}
               setFormData={setFormData}
               expandedSections={expandedSections}
             />
-
-            {/* Specifications */}
             <Specifications
               toggleSection={toggleSection}
               expandedSections={expandedSections}
@@ -454,8 +421,6 @@ export default function ProductUpdateForm({
               handleSpecificationChange={handleSpecificationChange}
               setFormData={setFormData}
             />
-
-            {/* Colors */}
             <Colors
               toggleSection={toggleSection}
               formData={formData}
@@ -466,8 +431,6 @@ export default function ProductUpdateForm({
               baseUrl={baseUrl}
               handleDeleteColorImage={handleDeleteColorImage}
             />
-
-            {/* Sizes & Pricing */}
             <SizesPricing
               toggleSection={toggleSection}
               expandedSections={expandedSections}
@@ -477,8 +440,6 @@ export default function ProductUpdateForm({
               setFormData={setFormData}
               selectedSizeIds={selectedSizeIds}
             />
-
-            {/* Product Images */}
             <ProductImages
               handleDeleteExistingImage={handleDeleteExistingImage}
               toggleSection={toggleSection}
@@ -490,8 +451,6 @@ export default function ProductUpdateForm({
               expandedSections={expandedSections}
               baseUrl={baseUrl}
             />
-
-            {/* Categories */}
             <Categories
               toggleSection={toggleSection}
               expandedSections={expandedSections}
@@ -499,8 +458,6 @@ export default function ProductUpdateForm({
               setFormData={setFormData}
               categories={categories}
             />
-
-            {/* FAQs */}
             <Faq
               toggleSection={toggleSection}
               expandedSections={expandedSections}
@@ -508,7 +465,6 @@ export default function ProductUpdateForm({
               handleFAQChange={handleFAQChange}
               setFormData={setFormData}
             />
-
             <SubmitButtonDiv
               isEditMode={isEditMode}
               isSubmitting={isSubmitting}
@@ -516,9 +472,7 @@ export default function ProductUpdateForm({
           </form>
         </div>
 
-        {/* Sidebar - Right Side */}
         <div className="col-lg-4">
-          {/* Create Size */}
           <CreateSize
             sizes={sizes}
             handleCreateSize={handleCreateSize}
@@ -526,8 +480,6 @@ export default function ProductUpdateForm({
             loadingSidebar={loadingSidebar}
             setNewSize={setNewSize}
           />
-
-          {/* Create Category */}
           <CreateCategory
             setNewCategory={setNewCategory}
             newCategory={newCategory}
@@ -539,19 +491,13 @@ export default function ProductUpdateForm({
       </div>
 
       <style jsx>{`
-        .border-dashed {
-          border: 2px dashed #dee2e6;
-        }
-        .cursor-pointer {
-          cursor: pointer;
-        }
+        .border-dashed { border: 2px dashed #dee2e6; }
+        .cursor-pointer { cursor: pointer; }
         .focus-border-primary:focus {
           border-color: #4e73df;
           box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
         }
-        .border-gray-300 {
-          border-color: #d1d3e2 !important;
-        }
+        .border-gray-300 { border-color: #d1d3e2 !important; }
       `}</style>
     </div>
   );

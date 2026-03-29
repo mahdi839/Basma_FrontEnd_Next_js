@@ -7,19 +7,20 @@ export default function Categories({
     expandedSections,
     formData,
     setFormData,
-    categories, 
+    categories,
 }) {
-    // 1️⃣ Convert backend categories → react-select format
-    const options = categories?.map((category) => ({
-        value: category.id,
+    // ✅ Normalize to String so number vs string mismatches never break selection
+    const options = (categories ?? []).map((category) => ({
+        value: String(category.id),
         label: category.name,
-    })) || [];
+    }));
 
-    // 2️⃣ Convert saved form data → selected options
+    // ✅ category_id was already normalized to String in ProductUpdateForm,
+    // so this comparison is always string === string — no type mismatch
     const selectedOptions = options.filter((opt) =>
-        formData.categories.some((c) => c.category_id == opt.value)
+        (formData.categories ?? []).some((c) => String(c.category_id) === opt.value)
     );
-    
+
     return (
         <div className="card mb-4 border-0 shadow-sm">
             <div
@@ -34,27 +35,32 @@ export default function Categories({
                         <h5 className="mb-0 fw-semibold text-dark">Categories</h5>
                     </div>
                     <div className="d-flex align-items-center">
-                        <span className="badge bg-secondary me-2">{formData.categories.length}</span>
+                        <span className="badge bg-secondary me-2">
+                            {formData.categories?.length ?? 0}
+                        </span>
                         {expandedSections.categories ? <FaChevronUp /> : <FaChevronDown />}
                     </div>
                 </div>
             </div>
+
             <div className={`collapse ${expandedSections.categories ? 'show' : ''}`}>
                 <div className="card-body pt-0">
                     <label className="form-label fw-semibold text-gray-700">
                         Select Categories <span className="text-danger">*</span>
                     </label>
+
                     <Select
                         isMulti
                         isSearchable
                         options={options}
                         value={selectedOptions}
-                        onChange={(selectedOptions) => {
+                        onChange={(selected) => {
                             setFormData((s) => ({
                                 ...s,
-                                categories: selectedOptions ? selectedOptions.map((opt) => ({
-                                    category_id: opt.value,
-                                })) : [],
+                                // ✅ Keep category_id as String consistently
+                                categories: selected
+                                    ? selected.map((opt) => ({ category_id: opt.value }))
+                                    : [],
                             }));
                         }}
                         placeholder="Search and select categories..."
@@ -77,11 +83,11 @@ export default function Categories({
                             Hold Ctrl/Cmd to select multiple | Type to search
                         </small>
                         <span className="badge bg-primary">
-                            {formData.categories.length} selected
+                            {formData.categories?.length ?? 0} selected
                         </span>
                     </div>
-                    
-                    {formData.categories.length === 0 && (
+
+                    {(formData.categories?.length ?? 0) === 0 && (
                         <div className="alert alert-warning mt-3 mb-0" role="alert">
                             <small>
                                 <strong>Note:</strong> Please select at least one category for this product.
@@ -91,5 +97,5 @@ export default function Categories({
                 </div>
             </div>
         </div>
-    )
+    );
 }
