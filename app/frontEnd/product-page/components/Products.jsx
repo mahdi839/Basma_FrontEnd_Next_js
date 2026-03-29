@@ -320,7 +320,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     setShowSizeGuide(true);
   }
 
-  const sizeGuideImage = "/img/size_guide/shoe.webp";
+  const sizeGuideImage = "/img/size_guide/eyara_size_guid.jpeg";
 
   function NextArrow({ onClick }) {
     return (
