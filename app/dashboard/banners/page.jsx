@@ -84,11 +84,20 @@ export default function Page() {
 
     const payload = new FormData();
 
-    /* --- NEW IMAGES --- */
-    banners.forEach((banner, index) => {
-      if (banner.image) {
-        payload.append(`banners[${index}][image]`, banner.image);
-        payload.append(`banners[${index}][link]`, banner.link || "");
+    /* --- NEW IMAGES ---
+      Send as:
+        banners[0][image] = File
+        banners[0][link]  = "..."
+      Laravel reads these via $request->file('banners.0.image')
+      and $request->input('banners.0.link') inside the loop.
+      We use a separate sequential index so empty slots are skipped.
+    */
+    let fileIndex = 0;
+    banners.forEach((banner) => {
+      if (banner.image instanceof File) {
+        payload.append(`banners[${fileIndex}][image]`, banner.image);
+        payload.append(`banners[${fileIndex}][link]`, banner.link || "");
+        fileIndex++;
       }
     });
 
@@ -106,7 +115,12 @@ export default function Page() {
         await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}api/banners/${bannerId}`,
           payload,
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            }
+          }
         );
 
         Swal.fire("Updated!", "Banner updated successfully", "success");
@@ -116,14 +130,20 @@ export default function Page() {
         await axios.post(
           process.env.NEXT_PUBLIC_BACKEND_URL + "api/banners",
           payload,
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            }
+          }
         );
 
         Swal.fire("Created!", "Banner created successfully", "success");
       }
 
-      router.refresh();
-      router.push("/dashboard/banners");
+      fetchBanner();
+      setBanners([{ image: null, link: "" }]);
+      setEditedLinks({});
 
     } catch (err) {
       Swal.fire("Error", err.response?.data?.message || "Failed", "error");
@@ -154,6 +174,7 @@ export default function Page() {
                   <img
                     src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img.path}`}
                     className="img-fluid mb-2"
+                    alt="banner"
                   />
 
                   <input
@@ -190,16 +211,17 @@ export default function Page() {
 
               <input
                 type="file"
+                accept="image/*"
                 className="form-control mb-2"
                 onChange={(e) =>
-                  handleBannerChange(index, "image", e.target.files[0])
+                  handleBannerChange(index, "image", e.target.files[0] || null)
                 }
               />
 
               <input
                 type="text"
                 className="form-control"
-                placeholder="Banner Link"
+                placeholder="Banner Link (optional)"
                 value={banner.link}
                 onChange={(e) =>
                   handleBannerChange(index, "link", e.target.value)
