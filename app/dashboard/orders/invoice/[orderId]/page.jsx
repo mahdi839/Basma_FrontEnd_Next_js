@@ -175,7 +175,7 @@ export default function InvoicePage() {
                                     <thead className="table-dark">
                                         <tr>
                                             <th width="5%">#</th>
-                                            <th width="35%">Product Description</th>
+                                            <th width="42%">Product Description</th>
                                             <th width="20%">Variant</th>
                                             <th width="10%" className="text-center">Qty</th>
                                             <th width="15%" className="text-end">Unit Price</th>
@@ -187,20 +187,29 @@ export default function InvoicePage() {
                                             <tr key={item.id}>
                                                 <td>{index + 1}</td>
                                                 <td>
-                                                    <div className="d-flex align-items-center">
+                                                    {/* ── CHANGED: square image + gap-3 + 10-word title truncation ── */}
+                                                    <div className="d-flex align-items-center gap-3">
                                                         {item.colorImage && (
                                                             <Zoom>
                                                                 <img
                                                                     src={item.colorImage}
                                                                     alt="Color"
-                                                                    width="80"
-                                                                    height="80"
-                                                                    className="rounded border me-2"
-                                                                    style={{ objectFit: "cover" }}
+                                                                    style={{
+                                                                        width: "80px",
+                                                                        height: "80px",
+                                                                        objectFit: "cover",
+                                                                        flexShrink: 0,
+                                                                        borderRadius: "6px",
+                                                                        border: "1px solid #dee2e6",
+                                                                        display: "block",
+                                                                    }}
                                                                 />
                                                             </Zoom>
                                                         )}
-                                                        <span className="fw-medium">{item.title}</span>
+                                                        <span className="fw-medium" style={{ wordBreak: "break-word" }}>
+                                                            {item.title?.split(" ").slice(0, 5).join(" ")}
+                                                            {item.title?.split(" ").length > 5 ? "…" : ""}
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td>
