@@ -7,8 +7,7 @@ import Image from "next/image";
 import style from "../../nabvar/hero.module.css";
 import Link from "next/link";
 
-export default function Hero({ images }) {
-  if (!images || images.length === 0) return null;
+export default function Hero() {
 
   const settings = {
     dots: false,
@@ -31,6 +30,22 @@ export default function Hero({ images }) {
     ),
   };
 
+  const images = [
+    {
+      id:1,
+      url:'/img/hero_banners/premium shoes-01.jpg',
+      link:'/frontEnd/women-shoes-collection'|| '/',
+    },
+    {
+      id:2,
+      url:'/img/hero_banners/summer collection-01.jpg'
+    },
+    {
+      id:3,
+      url:'/img/hero_banners/winter collection-01.jpg'
+    }
+  ]
+
   return (
     <div className="container">
       <Slider {...settings}>
@@ -38,7 +53,7 @@ export default function Hero({ images }) {
           const imageEl = (
             <Image
               className="hero_slider_img"
-              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img.path}`}
+              src={img.url}
               width={1200}
               height={400}
               alt="Banner"
