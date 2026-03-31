@@ -34,7 +34,7 @@ export default function Hero() {
     {
       id:1,
       url:'/img/hero_banners/premium shoes-01.jpg',
-      link:'/frontEnd/women-shoes-collection'|| '/',
+      link:'/frontEnd/women-shoes-collection',
     },
     {
       id:2,
