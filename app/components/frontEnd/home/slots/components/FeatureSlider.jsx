@@ -7,7 +7,7 @@ import ProductCard from "./ProductCard";
 
 const Slider = dynamic(() => import("react-slick"), {
   ssr: false,
-  loading: () => <div style={{ height: "200px" }} />,
+  loading: () => null,
 });
 
 function NextArrow({ onClick }) {
@@ -27,12 +27,12 @@ function PrevArrow({ onClick }) {
 }
 
 export default function FeatureSlider({
-  products,
+  products = [],
   handleAddToCart,
   sliderRef,
 }) {
   const settings = {
-    infinite: true,
+    infinite: products.length > 4,
     speed: 400,
     slidesToShow: 4,
     slidesToScroll: 1,
@@ -47,16 +47,19 @@ export default function FeatureSlider({
     ],
   };
 
+  if (!products.length) return null;
+
   return (
     <Slider ref={sliderRef} {...settings} className="w-100">
-      {products?.map((product, index) => (
-        <ProductCard
-          key={product.id || index}
-          slotProducts={product}
-          handleAddToCart={handleAddToCart}
-          slotLength={products.length} // ✅ keep this
-          className={products.length >= 4 ? "mx-2" : ""} // ✅ keep this
-        />
+      {products.map((product, index) => (
+        <div key={product.id || index}>
+          <ProductCard
+            slotProducts={product}
+            handleAddToCart={handleAddToCart}
+            slotLength={products.length}
+            className={products.length >= 4 ? "mx-2" : ""}
+          />
+        </div>
       ))}
     </Slider>
   );
