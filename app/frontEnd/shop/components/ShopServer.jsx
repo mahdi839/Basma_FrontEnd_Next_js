@@ -6,8 +6,8 @@ async function getInitialData() {
   
   try {
     const [filtersRes, productsRes] = await Promise.all([
-      fetch(`${baseUrl}api/shop/filters`, { next: { revalidate: 600 } }),
-      fetch(`${baseUrl}api/shop/products?page=1`, { next: { revalidate: 120 } }),
+      fetch(`${baseUrl}api/shop/filters`, { next: { revalidate: 10800  } }),
+      fetch(`${baseUrl}api/shop/products?page=1`, { next: { revalidate: 1800 } }),
     ]);
 
     const [filtersData, productsData] = await Promise.all([
