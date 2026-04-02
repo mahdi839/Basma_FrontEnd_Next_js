@@ -1,16 +1,15 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Slider from "react-slick";
 import Image from "next/image";
 import style from "../../nabvar/hero.module.css";
 import Link from "next/link";
+import { heroImages } from "./components/heroData";
+export default function Hero() {
 
-export default function Hero({ images }) {
-  if (!images || images.length === 0) return null;
-
-  const settings = {
+  const settings = useMemo(() => ({
     dots: false,
     infinite: true,
     speed: 1100,
@@ -29,19 +28,21 @@ export default function Hero({ images }) {
         <FaChevronLeft className={style.arrow_left} />
       </div>
     ),
-  };
+  }), []);
+
+
 
   return (
     <div className="container">
       <Slider {...settings}>
-        {images.map((img, index) => {
+        {heroImages.map((img, index) => {
           const imageEl = (
             <Image
               className="hero_slider_img"
-              src={`${process.env.NEXT_PUBLIC_BACKEND_URL}storage/${img.path}`}
+              src={img.url}
               width={1200}
               height={400}
-              alt="Banner"
+              alt={img.alt}
               priority={index === 0}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 1200px"
             />
