@@ -6,10 +6,7 @@ import ProductCard from "../../components/frontEnd/home/slots/components/Product
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import ShopSkeleton from "./ShopSkeleton";
-import { RiLoader2Fill } from "react-icons/ri";
-
 import FilterPanel from "./components/FilterPanel";
-import { IoReload } from "react-icons/io5";
 
 function ShopPage() {
   const [products, setProducts] = useState([]);

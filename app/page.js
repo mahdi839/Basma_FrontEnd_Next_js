@@ -10,7 +10,6 @@ export default function Home() {
     <FrontEndLayout>
       <div style={{ minHeight: "60vh" }}>
         <Hero />
-
         <Suspense fallback={<FeatureSkeleton />}>
           <FeatureServer />
         </Suspense>
