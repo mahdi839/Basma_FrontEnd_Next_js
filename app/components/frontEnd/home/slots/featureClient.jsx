@@ -16,10 +16,6 @@ const FeatureSlider = dynamic(() => import("./components/FeatureSlider"), {
   loading: () => null,
 });
 
-const CartDrawer = dynamic(() => import("../../components/CartDrawer"), {
-  ssr: false,
-  loading: () => null,
-});
 
 function FeatureClient({ homeCategories: initialData }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -40,7 +36,7 @@ function FeatureClient({ homeCategories: initialData }) {
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const router = useRouter();
-  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+
 
   useEffect(() => {
     if (initialData?.error) {
@@ -57,99 +53,9 @@ function FeatureClient({ homeCategories: initialData }) {
       .filter((slot) => slot.products.length > 0);
   }, [homeCategories]);
 
-  const handleCloseDrawer = () => {
-    setIsCartDrawerOpen(false);
-  };
 
-  function handleAddToCart(product, type, preQty) {
-    const targetProduct = selectedProduct || product;
 
-    const existingCart = cartItems.find(
-      (existProduct) => existProduct.id === targetProduct.id
-    );
-
-    if (existingCart) {
-      Swal.fire({
-        title: "Already in the cart",
-        text: "This product is already in your cart",
-        icon: "info",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
-      return;
-    }
-
-    if (!selectedProduct) {
-      dispatch(
-        addToCart({
-          id: product.id,
-          title: product.title,
-          size: "",
-          price: product.price,
-          image: product.images?.[0]?.image
-            ? baseUrl + product.images[0].image
-            : "",
-          colorImage: null,
-          preQty: preQty ?? 1,
-        })
-      );
-      toast.success("Added to cart!");
-      return;
-    }
-
-    const needsSizeSelection = targetProduct.sizes?.length > 0;
-    const needsColorSelection = targetProduct.colors?.length > 1;
-
-    if (needsSizeSelection && !selectedSizes) {
-      Swal.fire({
-        title: "Please Select A Size",
-        icon: "warning",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
-      return;
-    }
-
-    if (needsColorSelection && !selectedColor) {
-      Swal.fire({
-        title: "Please Select A Color",
-        icon: "warning",
-        confirmButtonText: "Ok",
-        confirmButtonColor: "#DB3340",
-      });
-      return;
-    }
-
-    const selectedVariant =
-      targetProduct.sizes?.find((v) => v.id == selectedSizes) ||
-      targetProduct.sizes?.[0];
-
-    const finalPrice = selectedVariant?.pivot?.price ?? targetProduct.price;
-
-    dispatch(
-      addToCart({
-        id: targetProduct.id,
-        title: targetProduct.title,
-        size: selectedSizes || "",
-        price: finalPrice,
-        image: targetProduct.images?.[0]?.image
-          ? baseUrl + targetProduct.images[0].image
-          : "",
-        colorImage: selectedColor ? baseUrl + selectedColor : null,
-        preQty: preQty ?? 1,
-      })
-    );
-
-    setSelectedSizes("");
-    setSelectedColor("");
-
-    if (type === "buy") {
-      setIsCartDrawerOpen(true);
-      setIsDirectBuy(true);
-    }
-
-    toast.success("Added to cart!");
-  }
+  
 
   const handleLoadMore = async () => {
     setIsLoadingMore(true);
@@ -224,7 +130,6 @@ function FeatureClient({ homeCategories: initialData }) {
                 <div className="col-12">
                   <FeatureSlider
                     products={products}
-                    handleAddToCart={handleAddToCart}
                     sliderRef={sliderRefs.current[slotIndex]}
                   />
                 </div>
@@ -271,14 +176,6 @@ function FeatureClient({ homeCategories: initialData }) {
           </div>
         )}
       </div>
-
-      {isCartDrawerOpen && (
-        <CartDrawer
-          isOpen={isCartDrawerOpen}
-          isDirectBuy={isDirectBuy}
-          onClose={handleCloseDrawer}
-        />
-      )}
     </div>
   );
 }
