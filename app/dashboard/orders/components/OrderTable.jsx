@@ -17,21 +17,21 @@ import Image from "next/image";
 
 // Status badge color mapping
 const STATUS_COLORS = {
-  pending:              { bg: '#fff3cd', color: '#856404', border: '#ffc107' },
-  completed:            { bg: '#d1e7dd', color: '#0a3622', border: '#198754' },
-  placed:               { bg: '#cfe2ff', color: '#084298', border: '#0d6efd' },
-  cancelled:            { bg: '#f8d7da', color: '#842029', border: '#dc3545' },
-  processing:           { bg: '#e2d9f3', color: '#432874', border: '#6f42c1' },
-  returned:             { bg: '#fde8d8', color: '#7d3c0f', border: '#fd7e14' },
-  first_call:           { bg: '#d0f4f7', color: '#0c6571', border: '#0dcaf0' },
-  second_call:          { bg: '#d0f4f7', color: '#0c6571', border: '#0dcaf0' },
-  third_call:           { bg: '#d0f4f7', color: '#0c6571', border: '#0dcaf0' },
-  stock_sold:           { bg: '#f8d7da', color: '#842029', border: '#dc3545' },
-  shipped_to_you:       { bg: '#cfe2ff', color: '#084298', border: '#0d6efd' },
-  received_in_bd:       { bg: '#d1e7dd', color: '#0a3622', border: '#198754' },
-  order_sent_to_china:  { bg: '#fff3cd', color: '#856404', border: '#ffc107' },
-  file_completed:       { bg: '#d1e7dd', color: '#0a3622', border: '#198754' },
-  order_confirmed:      { bg: '#d1e7dd', color: '#0a3622', border: '#198754' },
+  pending: { bg: '#fff3cd', color: '#856404', border: '#ffc107' },
+  completed: { bg: '#d1e7dd', color: '#0a3622', border: '#198754' },
+  placed: { bg: '#cfe2ff', color: '#084298', border: '#0d6efd' },
+  cancelled: { bg: '#f8d7da', color: '#842029', border: '#dc3545' },
+  processing: { bg: '#e2d9f3', color: '#432874', border: '#6f42c1' },
+  returned: { bg: '#fde8d8', color: '#7d3c0f', border: '#fd7e14' },
+  first_call: { bg: '#d0f4f7', color: '#0c6571', border: '#0dcaf0' },
+  second_call: { bg: '#d0f4f7', color: '#0c6571', border: '#0dcaf0' },
+  third_call: { bg: '#d0f4f7', color: '#0c6571', border: '#0dcaf0' },
+  stock_sold: { bg: '#f8d7da', color: '#842029', border: '#dc3545' },
+  shipped_to_you: { bg: '#cfe2ff', color: '#084298', border: '#0d6efd' },
+  received_in_bd: { bg: '#d1e7dd', color: '#0a3622', border: '#198754' },
+  order_sent_to_china: { bg: '#fff3cd', color: '#856404', border: '#ffc107' },
+  file_completed: { bg: '#d1e7dd', color: '#0a3622', border: '#198754' },
+  order_confirmed: { bg: '#d1e7dd', color: '#0a3622', border: '#198754' },
 };
 
 function StatusBadge({ status }) {
@@ -398,9 +398,10 @@ export default function OrderTable({
               {/* ── Column header row ── */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: '36px 1fr auto auto auto 40px',
+                gridTemplateColumns: 'auto auto auto auto auto auto',
                 gap: '0 12px',
-                padding: '10px 16px',
+                padding: '12px 16px',
+                alignItems: 'center',
                 background: '#f8f9fa',
                 borderBottom: '2px solid #e9ecef',
                 fontSize: '11px',
@@ -411,10 +412,9 @@ export default function OrderTable({
               }}>
                 <span>#</span>
                 <span>Customer</span>
-                <span style={{ textAlign: 'right' }}>Amount</span>
-                <span>Status</span>
-                <span className="d-none d-md-block">Date</span>
-                <span></span>
+                <span className="text-center d-none d-lg-block">Status</span>
+                <span className="d-none d-md-block text-center">Date</span>
+                <span className="text-right">Expand</span>
               </div>
 
               {/* ── Order rows ── */}
@@ -428,7 +428,7 @@ export default function OrderTable({
                       onClick={() => toggleRow(order.id)}
                       style={{
                         display: 'grid',
-                        gridTemplateColumns: '36px 1fr auto auto auto 40px',
+                        gridTemplateColumns: 'auto auto auto  auto auto',
                         gap: '0 12px',
                         padding: '12px 16px',
                         alignItems: 'center',
@@ -464,33 +464,31 @@ export default function OrderTable({
                           <span className="d-none d-md-inline" style={{ marginLeft: '8px', color: '#adb5bd' }}>
                             {order.district || ''}
                           </span>
+                          {/* Date - hidden on mobile */}
+                          <div className="d-block d-md-none mt-2" style={{ fontSize: '10px', color: '#6c757d', whiteSpace: 'nowrap' }}>
+                            {formatDate(order.created_at || '')}
+                          </div>
+                          {/* Status badge */}
+                          <div className="d-block d-md-none mt-2">
+                            <StatusBadge status={order.status} />
+                          </div>
                         </div>
                       </div>
 
-                      {/* Amount */}
-                      <div style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
-                        <div style={{ fontWeight: 700, fontSize: '14px', color: '#212529' }}>
-                          ৳{order.total}
-                        </div>
-                        {order?.advance_payment > 0 && (
-                          <div style={{ fontSize: '11px', color: '#6c757d' }}>
-                            Due: ৳{order.total - order.advance_payment}
-                          </div>
-                        )}
-                      </div>
+                      
 
                       {/* Status badge */}
-                      <div>
+                      <div className="d-none d-md-block ml-lg-5">
                         <StatusBadge status={order.status} />
                       </div>
 
                       {/* Date - hidden on mobile */}
-                      <div className="d-none d-md-block" style={{ fontSize: '12px', color: '#6c757d', whiteSpace: 'nowrap' }}>
+                      <div className="d-none d-md-block text-left" style={{ fontSize: '12px', color: '#6c757d', whiteSpace: 'nowrap' }}>
                         {formatDate(order.created_at || '')}
                       </div>
 
                       {/* Expand toggle */}
-                      <div onClick={(e) => { e.stopPropagation(); toggleRow(order.id); }}>
+                      <div className="text-left" onClick={(e) => { e.stopPropagation(); toggleRow(order.id); }}>
                         <span className={`expand-btn${isExpanded ? ' active' : ''}`}>
                           {isExpanded
                             ? <FiChevronUp size={16} />
