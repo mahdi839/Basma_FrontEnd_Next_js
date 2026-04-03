@@ -6,7 +6,7 @@ async function getSlots() {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}api/product-slots_index/frontEndIndex?page=1`,
       {
-        next: { revalidate: 600 },
+        next: { revalidate: 3600 },
       }
     );
 
