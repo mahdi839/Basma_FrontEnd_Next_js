@@ -8,6 +8,7 @@ import PageLoader from "@/app/components/loader/pageLoader";
 
 export default function IncompleteOrder() {
   const [loading, setLoading] = useState(false);
+  const [statusLoadingId, setStatusLoadingId] = useState(null);
   const [data, setData] = useState([]);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({
@@ -17,25 +18,29 @@ export default function IncompleteOrder() {
   const [filters, setFilters] = useState({
     start_date: "",
     end_date: "",
+    status: "",
   });
 
   useEffect(() => {
     fetchData();
   }, [page]);
 
-  const fetchData = async () => {
-    let token = null;
-
+  const getToken = () => {
     if (typeof window !== "undefined") {
-      token = localStorage.getItem("token");
+      return localStorage.getItem("token");
     }
+    return null;
+  };
+
+  const fetchData = async () => {
+    const token = getToken();
 
     let url = `${process.env.NEXT_PUBLIC_BACKEND_URL}api/abandoned-checkouts?page=${page}`;
 
-    // Add date filters as query params
     const params = [];
     if (filters.start_date) params.push(`start_date=${filters.start_date}`);
     if (filters.end_date) params.push(`end_date=${filters.end_date}`);
+    if (filters.status) params.push(`status=${filters.status}`);
     if (params.length > 0) url += `&${params.join("&")}`;
 
     setLoading(true);
@@ -46,7 +51,6 @@ export default function IncompleteOrder() {
         },
       });
 
-      // Handle Laravel pagination response
       if (response.data.data) {
         setData(response.data.data.data || []);
         setPagination({
@@ -63,7 +67,7 @@ export default function IncompleteOrder() {
   };
 
   const handleApplyFilters = () => {
-    setPage(1); // Reset to first page when filters change
+    setPage(1);
     fetchData();
   };
 
@@ -71,12 +75,42 @@ export default function IncompleteOrder() {
     setFilters({
       start_date: "",
       end_date: "",
+      status: "",
     });
     setPage(1);
-    // Fetch will be triggered by useEffect when page changes
   };
 
-  // Helper to format date/time
+  const handleStatusChange = async (orderId, newStatus) => {
+    const token = getToken();
+
+    setStatusLoadingId(orderId);
+    try {
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}api/dashboard/abandoned-checkouts/${orderId}/status`,
+        {
+          status: newStatus,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setData((prev) =>
+        prev.map((item) =>
+          item.id === orderId ? { ...item, status: newStatus } : item
+        )
+      );
+
+      toast.success(response.data.message || "Status updated successfully");
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message);
+    } finally {
+      setStatusLoadingId(null);
+    }
+  };
+
   const { formatDate } = useFormatDate();
 
   return (
@@ -105,6 +139,33 @@ export default function IncompleteOrder() {
                 setFilters({ ...filters, end_date: e.target.value })
               }
             />
+          </div>
+
+          <div>
+            <label className="form-label">Status</label>
+            <select
+              className="form-select"
+              value={filters.status}
+              onChange={(e) =>
+                setFilters({ ...filters, status: e.target.value })
+              }
+            >
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="placed">Placed</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="processing">Processing</option>
+              <option value="returned">Returned</option>
+              <option value="first_call">1st Call Done</option>
+              <option value="second_call">2nd Call Done</option>
+              <option value="third_call">3rd Call Done</option>
+              <option value="stock_sold">Stock Sold</option>
+              <option value="shipped_to_you">Shipped To You</option>
+              <option value="received_in_bd">Received In BD</option>
+              <option value="order_sent_to_china">Order Sent To China</option>
+              <option value="file_completed">File Completed</option>
+              <option value="order_confirmed">Order Confirmed</option>
+            </select>
           </div>
 
           <button
@@ -140,6 +201,7 @@ export default function IncompleteOrder() {
                       <th>Phone</th>
                       <th>Address</th>
                       <th>Cart Items</th>
+                      <th>Status</th>
                       <th>Date</th>
                     </tr>
                   </thead>
@@ -158,9 +220,9 @@ export default function IncompleteOrder() {
                             <td>
                               {(pagination.current_page - 1) * 20 + index + 1}
                             </td>
-                            <td>{order.name}</td>
-                            <td>{order.phone}</td>
-                            <td>{order.address}</td>
+                            <td>{order.name || "-"}</td>
+                            <td>{order.phone || "-"}</td>
+                            <td>{order.address || "-"}</td>
                             <td>
                               {cartItems.length > 0 ? (
                                 <ul className="m-0 p-0 list-unstyled">
@@ -192,13 +254,44 @@ export default function IncompleteOrder() {
                                 <span className="text-muted">No items</span>
                               )}
                             </td>
+                            <td style={{ minWidth: "180px" }}>
+                              <select
+                                className="form-select"
+                                value={order.status || "pending"}
+                                disabled={statusLoadingId === order.id}
+                                onChange={(e) =>
+                                  handleStatusChange(order.id, e.target.value)
+                                }
+                              >
+                                <option value="pending">Pending</option>
+                                <option value="completed">Completed</option>
+                                <option value="placed">Placed</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="processing">Processing</option>
+                                <option value="returned">Returned</option>
+                                <option value="first_call">1st Call Done</option>
+                                <option value="second_call">2nd Call Done</option>
+                                <option value="third_call">3rd Call Done</option>
+                                <option value="stock_sold">Stock Sold</option>
+                                <option value="shipped_to_you">Shipped To You</option>
+                                <option value="received_in_bd">Received In BD</option>
+                                <option value="order_sent_to_china">Order Sent To China</option>
+                                <option value="file_completed">File Completed</option>
+                                <option value="order_confirmed">Order Confirmed</option>
+                              </select>
+                              {statusLoadingId === order.id && (
+                                <small className="text-muted">
+                                  Updating...
+                                </small>
+                              )}
+                            </td>
                             <td>{formatDate(order.created_at)}</td>
                           </tr>
                         );
                       })
                     ) : (
                       <tr>
-                        <td colSpan="6" className="text-center py-4">
+                        <td colSpan="7" className="text-center py-4">
                           No incomplete orders found
                         </td>
                       </tr>
