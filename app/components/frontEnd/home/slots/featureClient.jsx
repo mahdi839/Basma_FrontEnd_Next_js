@@ -143,7 +143,6 @@ function FeatureClient({ homeCategories: initialData }) {
                       <ProductCard
                         slotProducts={product}
                         slotLength={products.length}
-                        handleAddToCart={handleAddToCart}
                       />
                     </div>
                   ))}
