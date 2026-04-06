@@ -9,7 +9,7 @@ export default function FrontEndLayout({ children }) {
     <>
       <Navbar />
       <main>{children}</main>
-      <ScrollToTop />
+      {/* <ScrollToTop /> */}
       <Footer />
     </>
   );
