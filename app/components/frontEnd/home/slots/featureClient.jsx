@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/slices/CartSlice";
@@ -9,18 +9,10 @@ import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "./components/ProductCard";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-
-const FeatureSlider = dynamic(() => import("./components/FeatureSlider"), {
-  ssr: false,
-  loading: () => null,
-});
-
 
 function FeatureClient({ homeCategories: initialData }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const sliderRefs = useRef([]);
   const [selectedSizes, setSelectedSizes] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -37,7 +29,6 @@ function FeatureClient({ homeCategories: initialData }) {
   const cartItems = useSelector((state) => state.cart.items);
   const router = useRouter();
 
-
   useEffect(() => {
     if (initialData?.error) {
       toast.error(initialData.error);
@@ -52,10 +43,6 @@ function FeatureClient({ homeCategories: initialData }) {
       }))
       .filter((slot) => slot.products.length > 0);
   }, [homeCategories]);
-
-
-
-  
 
   const handleLoadMore = async () => {
     setIsLoadingMore(true);
@@ -102,12 +89,7 @@ function FeatureClient({ homeCategories: initialData }) {
     <div className="container mb-3 mb-md-5 mt-0 py-2">
       <div className="row position-relative">
         {normalizedSlots.map((slot, slotIndex) => {
-          if (!sliderRefs.current[slotIndex]) {
-            sliderRefs.current[slotIndex] = React.createRef();
-          }
-
           const products = slot.products || [];
-          const isSlider = products.length >= 4;
 
           return (
             <React.Fragment key={slot.id || slotIndex}>
@@ -116,38 +98,27 @@ function FeatureClient({ homeCategories: initialData }) {
                   <small className="featured-heading">{slot.name}</small>
                 </div>
 
-                {isSlider && (
-                  <Link
-                    href={`/frontEnd/${slot.slug ?? slot.id}`}
-                    className="btn btn-outline-dark btn-sm fw-semibold"
-                  >
-                    View All
-                  </Link>
-                )}
+                <Link
+                  href={`/frontEnd/${slot.slug ?? slot.id}`}
+                  className="btn btn-outline-dark btn-sm fw-semibold"
+                >
+                  View All
+                </Link>
               </div>
 
-              {isSlider ? (
-                <div className="col-12">
-                  <FeatureSlider
-                    products={products}
-                    sliderRef={sliderRefs.current[slotIndex]}
-                  />
-                </div>
-              ) : (
-                <div className="row mx-0 mb-4">
-                  {products.map((product, productIndex) => (
-                    <div
-                      key={product.id || productIndex}
-                      className="col-6 col-lg-3 col-md-4 px-1 px-md-2"
-                    >
-                      <ProductCard
-                        slotProducts={product}
-                        slotLength={products.length}
-                      />
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="row mx-0 mb-4">
+                {products.map((product, productIndex) => (
+                  <div
+                    key={product.id || productIndex}
+                    className="col-6 col-md-4 col-lg-3 px-1 px-md-2 mb-3"
+                  >
+                    <ProductCard
+                      slotProducts={product}
+                      slotLength={products.length}
+                    />
+                  </div>
+                ))}
+              </div>
             </React.Fragment>
           );
         })}
