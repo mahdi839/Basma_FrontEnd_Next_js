@@ -1,13 +1,17 @@
 module.exports = {
-  apps: [{
-    name: 'eyarafashion-nextjs',
-    script: '.next/standalone/server.js',
-    cwd: '/home/eyarafashion/public_html',
-    instances: 1,
-    exec_mode: 'cluster',
-    env: {
-      NODE_ENV: 'production',
-      PORT: 3000
+  apps: [
+    {
+      name: "eyarafashion-nextjs",
+      cwd: "/home/eyarafashion/public_html",
+      script: "npm",
+      args: "start",
+      env: {
+        NODE_ENV: "production",
+        PORT: 3000
+      },
+      autorestart: true,
+      watch: false,
+      max_memory_restart: "2G"
     }
-  }]
-}
+  ]
+};
