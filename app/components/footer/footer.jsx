@@ -201,26 +201,11 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="row align-items-center py-3">
 
-          <div className="col-md-6 mb-3 mb-md-0 text-center text-md-start">
-            <p className="text-white mb-0 small">
+          <div className="col-12 mb-5 mb-md-3 mb-md-0 text-center text-md-center">
+            <p className="text-white mb-0 small text-center">
               © {siteConfig.company_name}. All rights reserved.
             </p>
           </div>
-
-          <div className="col-md-6 text-center text-md-end">
-            <p className="text-white mb-0 small">
-              Developed By -{" "}
-              <a
-                href="https://wa.me/8801795802507"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="developer-link text-white text-decoration-none fw-bold"
-              >
-                Mehedi Hasan
-              </a>
-            </p>
-          </div>
-
         </div>
       </div>
     </footer>
