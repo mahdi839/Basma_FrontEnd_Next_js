@@ -860,6 +860,8 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       flex: 1 1 auto !important;
       height: 340px !important;
       padding: 0 !important;
+      background: Transparent;
+      border:none
     }
 
     .main-image-container :global([data-rmiz-wrap="visible"]),
