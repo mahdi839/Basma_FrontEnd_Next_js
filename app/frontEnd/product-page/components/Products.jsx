@@ -40,7 +40,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [modalSelectedColor, setModalSelectedColor] = useState(null);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [localImgUrl, setLocalImgUrl] = useState(null);
-
+  const [selectedColorName,setSelectedColorName] = useState(null)
   // smart image loader
   const [showImgLoader, setShowImgLoader] = useState(false);
   const loaderDelayRef = useRef(null);
@@ -150,11 +150,12 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     await stopDelayedLoader();
   }
 
-  async function handleColorClick(colorImage) {
+  async function handleColorClick(colorImage,colorName) {
     const newUrl = `${baseUrl}${colorImage}`;
     await switchMainImage(newUrl, () => {
       handleSelectedColor(colorImage);
     });
+    setSelectedColorName(colorName)
   }
 
   async function handleThumbClickLocal(imgId) {
@@ -224,6 +225,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
         price: selectedVariant?.pivot?.price ?? product.discount ?? 0,
         image: imageUrl,
         colorImage: selectedColor ? baseUrl + selectedColor : null,
+        color_name: selectedColorName,
         preQty: preQty ?? 1,
       })
     );
@@ -517,7 +519,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                     <div
                       key={color.id}
                       className={`color-option-card ${selectedColor === color.image ? "selected" : ""}`}
-                      onClick={() => handleColorClick(color?.image)}
+                      onClick={() => handleColorClick(color?.image,color?.name)}
                       data-tooltip-id="color-tooltip"
                       data-tooltip-content={color.name}
                     >

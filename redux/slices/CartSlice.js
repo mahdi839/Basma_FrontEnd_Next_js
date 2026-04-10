@@ -15,7 +15,7 @@ const cartSlice = createSlice({
     },
     reducers:{
         addToCart: (state,action)=>{
-            const {id,title,size,price,image,preQty,colorImage} = action.payload;
+            const {id,title,size,price,image,preQty,colorImage,color_name} = action.payload;
             const existingItem = state.items.find(item=> item.id === id)
             if(existingItem){
                 existingItem.qty += 1;                
@@ -28,6 +28,7 @@ const cartSlice = createSlice({
                     totalPrice:preQty?price*preQty:price,
                     image,
                     colorImage,
+                    color_name,
                     qty:preQty??1
                 })
             }

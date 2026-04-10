@@ -245,6 +245,11 @@ export default function OrderTable({
                   </Zoom>
                 </div>
               )}
+               {item.color_name && (
+                <div style={{ fontSize: '12px', color: '#6c757d', marginTop: '3px' }}>
+                  <strong>Color Name:</strong> {item.color_name ?? "N/A"}
+                </div>
+              )}
               {item.size && (
                 <div style={{ fontSize: '12px', color: '#6c757d', marginTop: '3px' }}>
                   <strong>Size:</strong> {item?.size?.size ?? "N/A"}
