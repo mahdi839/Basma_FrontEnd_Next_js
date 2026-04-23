@@ -61,6 +61,8 @@ export default function OrderTable({
   filters,
   onApplyFilters,
   onResetFilters,
+  selectedOrderIds = [],
+  onSelectionChange,
 }) {
   const [draftFilters, setDraftFilters] = useState(filters);
   const [loadingStates, setLoadingStates] = useState({});
@@ -74,6 +76,37 @@ export default function OrderTable({
   const toggleRow = (orderId) => {
     setExpandedRows(prev => ({ ...prev, [orderId]: !prev[orderId] }));
   };
+
+  // ── Selection helpers ────────────────────────────────────────────────────
+  const allSelected =
+    orders.length > 0 && orders.every(o => selectedOrderIds.includes(o.id));
+
+  const someSelected =
+    orders.some(o => selectedOrderIds.includes(o.id)) && !allSelected;
+
+  const toggleAll = () => {
+    if (allSelected) {
+      // Deselect all orders on current page
+      onSelectionChange(
+        selectedOrderIds.filter(id => !orders.find(o => o.id === id))
+      );
+    } else {
+      // Select all orders on current page (keep already selected from other pages)
+      const newIds = orders
+        .map(o => o.id)
+        .filter(id => !selectedOrderIds.includes(id));
+      onSelectionChange([...selectedOrderIds, ...newIds]);
+    }
+  };
+
+  const toggleOne = (id) => {
+    onSelectionChange(
+      selectedOrderIds.includes(id)
+        ? selectedOrderIds.filter(i => i !== id)
+        : [...selectedOrderIds, id]
+    );
+  };
+  // ────────────────────────────────────────────────────────────────────────
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -90,14 +123,14 @@ export default function OrderTable({
     }));
   };
 
-  async function handleStatus(e, orderId) {
+  async function handleStatus(e, orderId, userPhone) {
     let token = null;
     if (typeof window !== "undefined") token = localStorage.getItem("token");
     if (!token) { toast.error("No auth token found"); return; }
     try {
       await axios.post(
         process.env.NEXT_PUBLIC_BACKEND_URL + `api/order_status/${orderId}`,
-        { status: e.target.value },
+        { status: e.target.value, userPhone },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success("Successfully Updated!");
@@ -210,7 +243,7 @@ export default function OrderTable({
     </div>
   );
 
-  // ─── Expanded detail panel (shared between desktop & mobile) ────────────
+  // ─── Expanded detail panel ────────────────────────────────────────────────
   const ExpandedDetail = ({ order }) => (
     <div style={{
       background: '#f8f9fa',
@@ -245,7 +278,7 @@ export default function OrderTable({
                   </Zoom>
                 </div>
               )}
-               {item.color_name && (
+              {item.color_name && (
                 <div style={{ fontSize: '12px', color: '#6c757d', marginTop: '3px' }}>
                   <strong>Color Name:</strong> {item.color_name ?? "N/A"}
                 </div>
@@ -289,7 +322,7 @@ export default function OrderTable({
             {/* Status */}
             <div>
               <label style={{ fontSize: '12px', fontWeight: 600, color: '#495057', marginBottom: '4px', display: 'block' }}>Status</label>
-              <select className="form-select form-select-sm" value={order.status} onChange={(e) => handleStatus(e, order.id)}>
+              <select className="form-select form-select-sm" value={order.status} onChange={(e) => handleStatus(e, order.id, order.phone)}>
                 <option value="pending">Pending</option>
                 <option value="completed">Completed</option>
                 <option value="placed">Placed</option>
@@ -364,6 +397,12 @@ export default function OrderTable({
         .order-row-summary.expanded {
           background: #e8eeff !important;
         }
+        .order-row-summary.selected {
+          background: #eef6ff !important;
+        }
+        .order-row-summary.selected:hover {
+          background: #ddeeff !important;
+        }
         .expand-btn {
           display: flex;
           align-items: center;
@@ -387,10 +426,55 @@ export default function OrderTable({
           border-color: #0d6efd;
           color: #fff;
         }
+        .order-checkbox {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          accent-color: #0d6efd;
+          flex-shrink: 0;
+        }
+        .select-all-checkbox {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          accent-color: #0d6efd;
+        }
       `}</style>
 
       <div className="card">
         {FilterSection}
+
+        {/* Selection info bar */}
+        {selectedOrderIds.length > 0 && (
+          <div style={{
+            padding: '8px 16px',
+            background: '#e7f1ff',
+            borderBottom: '1px solid #b8d4f8',
+            fontSize: '13px',
+            color: '#084298',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}>
+            <i className="bi bi-check2-square"></i>
+            <strong>{selectedOrderIds.length}</strong> order{selectedOrderIds.length > 1 ? 's' : ''} selected
+            <button
+              onClick={() => onSelectionChange([])}
+              style={{
+                marginLeft: 'auto',
+                fontSize: '12px',
+                background: 'none',
+                border: 'none',
+                color: '#084298',
+                cursor: 'pointer',
+                textDecoration: 'underline',
+                padding: 0,
+              }}
+            >
+              Clear selection
+            </button>
+          </div>
+        )}
 
         <div className="card-body p-0">
           {orders.length === 0 ? (
@@ -403,7 +487,7 @@ export default function OrderTable({
               {/* ── Column header row ── */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'auto auto auto auto auto auto',
+                gridTemplateColumns: '32px auto auto auto auto auto auto',
                 gap: '0 12px',
                 padding: '12px 16px',
                 alignItems: 'center',
@@ -415,6 +499,19 @@ export default function OrderTable({
                 letterSpacing: '0.5px',
                 color: '#6c757d',
               }}>
+                {/* Select all checkbox */}
+                <span style={{ display: 'flex', alignItems: 'center' }}>
+                  <input
+                    type="checkbox"
+                    className="select-all-checkbox"
+                    checked={allSelected}
+                    ref={el => {
+                      if (el) el.indeterminate = someSelected;
+                    }}
+                    onChange={toggleAll}
+                    title={allSelected ? 'Deselect all on this page' : 'Select all on this page'}
+                  />
+                </span>
                 <span>#</span>
                 <span>Customer</span>
                 <span className="text-center d-none d-lg-block">Status</span>
@@ -425,20 +522,34 @@ export default function OrderTable({
               {/* ── Order rows ── */}
               {orders.map((order, index) => {
                 const isExpanded = !!expandedRows[order.id];
+                const isSelected = selectedOrderIds.includes(order.id);
                 return (
                   <div key={order.id} style={{ borderBottom: '1px solid #e9ecef' }}>
                     {/* Summary row */}
                     <div
-                      className={`order-row-summary${isExpanded ? ' expanded' : ''}`}
+                      className={`order-row-summary${isExpanded ? ' expanded' : ''}${isSelected ? ' selected' : ''}`}
                       onClick={() => toggleRow(order.id)}
                       style={{
                         display: 'grid',
-                        gridTemplateColumns: 'auto auto auto  auto auto',
+                        gridTemplateColumns: '32px auto auto auto auto auto',
                         gap: '0 12px',
                         padding: '12px 16px',
                         alignItems: 'center',
                       }}
                     >
+                      {/* Checkbox — stopPropagation so it doesn't expand the row */}
+                      <span
+                        onClick={e => e.stopPropagation()}
+                        style={{ display: 'flex', alignItems: 'center' }}
+                      >
+                        <input
+                          type="checkbox"
+                          className="order-checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleOne(order.id)}
+                        />
+                      </span>
+
                       {/* # */}
                       <span style={{ fontSize: '13px', color: '#adb5bd', fontWeight: 600 }}>
                         {index + 1}
@@ -473,27 +584,28 @@ export default function OrderTable({
                           <div className="d-block d-md-none mt-2" style={{ fontSize: '10px', color: '#6c757d', whiteSpace: 'nowrap' }}>
                             {formatDate(order.created_at || '')}
                           </div>
-                          {/* Status badge */}
+                          {/* Status badge on mobile */}
                           <div className="d-block d-md-none mt-2">
                             <StatusBadge status={order.status} />
                           </div>
                         </div>
                       </div>
 
-                      
-
-                      {/* Status badge */}
+                      {/* Status badge — desktop */}
                       <div className="d-none d-md-block ml-lg-5">
                         <StatusBadge status={order.status} />
                       </div>
 
-                      {/* Date - hidden on mobile */}
+                      {/* Date — desktop */}
                       <div className="d-none d-md-block text-left" style={{ fontSize: '12px', color: '#6c757d', whiteSpace: 'nowrap' }}>
                         {formatDate(order.created_at || '')}
                       </div>
 
                       {/* Expand toggle */}
-                      <div className="text-left" onClick={(e) => { e.stopPropagation(); toggleRow(order.id); }}>
+                      <div
+                        className="text-left"
+                        onClick={(e) => { e.stopPropagation(); toggleRow(order.id); }}
+                      >
                         <span className={`expand-btn${isExpanded ? ' active' : ''}`}>
                           {isExpanded
                             ? <FiChevronUp size={16} />
