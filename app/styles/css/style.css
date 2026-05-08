@@ -1423,10 +1423,37 @@ table tr td {
 }
 
 .scrollToTop_btn {
-	border: none;
+	position: fixed !important;
+	right: 1rem !important;
+	bottom: 5.75rem !important;
+	z-index: 2147483647 !important;
+	width: 3.25rem;
+	height: 3.25rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
 	outline: none;
-	background: var(--primary-color);
-	color: white;
+	background: var(--primary-color, #7d0ba7);
+	color: #fff;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+	cursor: pointer;
+	pointer-events: auto;
+	transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.scrollToTop_btn:hover {
+	background: #620885;
+	transform: translateY(-2px);
+}
+
+@media (min-width: 768px) {
+	.scrollToTop_btn {
+		right: 1.5rem !important;
+		bottom: 1.5rem !important;
+	}
 }
 
 .about-content h2 {
