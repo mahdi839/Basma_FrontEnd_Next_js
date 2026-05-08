@@ -5,7 +5,7 @@ import Portal from '../../Portal';
 
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
-  const visibilityOffset = 240;
+  const visibilityOffset = 540;
 
   const getScrollState = () => {
     const documentElement = document.documentElement;
