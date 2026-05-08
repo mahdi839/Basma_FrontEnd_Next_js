@@ -10,7 +10,8 @@ export default function CheckoutStep({
   cartItems, 
   onInputChange, 
   onDistrictChange, 
-  onSubmit 
+  onSubmit,
+  isSubmitting = false,
 }) {
   return (
     <div className="checkout-step">
@@ -27,9 +28,21 @@ export default function CheckoutStep({
           finalTotal={finalTotal}
         />
 
-        <button type="submit" className="btn btn-sm w-100 btn-grad">
-          <FaCreditCard className="me-2" />
-          Place Order
+        <button type="submit" className="btn btn-sm w-100 btn-grad" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                aria-hidden="true"
+              />
+              Placing Order...
+            </>
+          ) : (
+            <>
+              <FaCreditCard className="me-2" />
+              Place Order
+            </>
+          )}
         </button>
       </form>
     </div>

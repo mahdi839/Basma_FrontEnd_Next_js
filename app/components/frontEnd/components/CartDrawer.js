@@ -24,10 +24,12 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   const [shippingAmount, setShippingAmount] = useState(0);
   const [removingItem, setRemovingItem] = useState(null);
   const [orderCompleted, setOrderCompleted] = useState(false);
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false);
 
   // Tracking refs
   const abandonedCheckoutSent = useRef(false);
   const formInteracted = useRef(false);
+  const orderSubmittingRef = useRef(false);
 
   const cartItems = useSelector((state) => state.cart.items);
   const cartCount = useSelector((state) => state.cart.count);
@@ -175,7 +177,9 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
     if (isOpen) {
       abandonedCheckoutSent.current = false;
       formInteracted.current = false;
+      orderSubmittingRef.current = false;
       setOrderCompleted(false);
+      setIsSubmittingOrder(false);
     }
   }, [isOpen]);
 
@@ -252,6 +256,8 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
 
+    if (orderSubmittingRef.current) return;
+
     if (cartItems.length === 0) {
       Swal.fire({
         icon: "error",
@@ -261,6 +267,9 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
       });
       return;
     }
+
+    orderSubmittingRef.current = true;
+    setIsSubmittingOrder(true);
 
     // Mark order as completed BEFORE API call
     setOrderCompleted(true);
@@ -336,13 +345,19 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
         // Reset tracking flags
         abandonedCheckoutSent.current = false;
         formInteracted.current = false;
+        orderSubmittingRef.current = false;
+        setIsSubmittingOrder(false);
 
         onClose();
+      } else {
+        throw new Error("Unexpected order response");
       }
     } catch (error) {
       console.error("Order submission error:", error);
 
       setOrderCompleted(false);
+      orderSubmittingRef.current = false;
+      setIsSubmittingOrder(false);
       const errorMessage =
         error.response?.data?.error ||
         error.response?.data?.message ||
@@ -401,6 +416,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
                 onInputChange={handleInputChange}
                 onDistrictChange={handleDistrictChange}
                 onSubmit={handleCheckoutSubmit}
+                isSubmitting={isSubmittingOrder}
               />
             )}
           </div>
