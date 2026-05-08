@@ -6,6 +6,7 @@ import Portal from '../../Portal';
 export default function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
   const visibilityOffset = 540;
+  const scrollDuration = 650;
 
   const getScrollState = () => {
     const documentElement = document.documentElement;
@@ -58,20 +59,32 @@ export default function ScrollToTop() {
   }, []);
 
   const handleScroll = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    const startPosition = Math.max(
+      window.scrollY || 0,
+      document.documentElement?.scrollTop || 0,
+      document.body?.scrollTop || 0
+    );
 
-    document.documentElement.scrollTo?.({
-      top: 0,
-      behavior: 'smooth',
-    });
+    if (startPosition <= 0) return;
 
-    document.body.scrollTo?.({
-      top: 0,
-      behavior: 'smooth',
-    });
+    const startTime = window.performance.now();
+    const easeOutCubic = (progress) => 1 - Math.pow(1 - progress, 3);
+
+    const animateScroll = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / scrollDuration, 1);
+      const nextPosition = startPosition * (1 - easeOutCubic(progress));
+
+      window.scrollTo(0, nextPosition);
+      document.documentElement.scrollTop = nextPosition;
+      document.body.scrollTop = nextPosition;
+
+      if (progress < 1) {
+        window.requestAnimationFrame(animateScroll);
+      }
+    };
+
+    window.requestAnimationFrame(animateScroll);
   };
 
   if (!isVisible) return null;
