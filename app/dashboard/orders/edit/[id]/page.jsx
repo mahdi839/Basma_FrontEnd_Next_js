@@ -39,6 +39,13 @@ export default function EditOrderPage() {
     const [products, setProducts] = useState([]);
     const [sizes, setSizes] = useState([]);
 
+    const normalizeColorForApi = (color) => ({
+        id: color?.id ?? null,
+        code: color?.code ?? "",
+        image: color?.image ?? "",
+        name: color?.name ?? "",
+    });
+
     // Get token
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -98,6 +105,7 @@ export default function EditOrderPage() {
                             id: null,
                             code: null,
                             image: item.colorImage,
+                            name: item.color_name || "",
                         } : null),
                         unitPrice: parseFloat(item.unitPrice),
                         qty: item.qty,
@@ -222,17 +230,35 @@ export default function EditOrderPage() {
 
         setSubmitting(true);
         try {
+            const invalidItem = items.find(
+                (item) =>
+                    !item.product_id ||
+                    !item.title ||
+                    !Number(item.qty) ||
+                    Number(item.qty) < 1 ||
+                    Number.isNaN(Number(item.unitPrice)) ||
+                    Number.isNaN(Number(item.totalPrice))
+            );
+
+            if (invalidItem) {
+                toast.error("Please complete all product rows before updating");
+                setSubmitting(false);
+                return;
+            }
+
             const payload = {
                 ...formData,
+                shipping_cost: Number(formData.shipping_cost) || 0,
+                advance_payment: Number(formData.advance_payment) || 0,
                 items: items.map((item) => ({
                     id: item.id,
-                    product_id: item.product_id,
+                    product_id: Number(item.product_id),
                     title: item.title,
-                    size_id: item.size_id,
-                    color: item.color,
-                    unitPrice: item.unitPrice,
-                    qty: item.qty,
-                    totalPrice: item.totalPrice,
+                    size_id: item.size_id ? Number(item.size_id) : null,
+                    color: normalizeColorForApi(item.color),
+                    unitPrice: Number(item.unitPrice) || 0,
+                    qty: Number(item.qty) || 1,
+                    totalPrice: Number(item.totalPrice) || 0,
                 })),
                 deleted_items: deletedItems,
             };
