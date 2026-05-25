@@ -16,7 +16,7 @@ export default function ProtectedRoute({
   useEffect(() => {
     // Check authentication
     if (!isAuthenticated()) {
-      router.push("/frontEnd/log_in");
+      router.push("/admin/login");
       return;
     }
 

@@ -1,7 +1,9 @@
 // redux/slices/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000/';
+
+const apiUrl = (endpoint) => `${API_URL}${API_URL.endsWith('/') ? '' : '/'}${endpoint}`;
 
 // Load user from localStorage
 const loadUserFromStorage = () => {
@@ -28,7 +30,7 @@ export const loginUser = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${API_URL}api/logIn`, {
+      const response = await fetch(apiUrl('api/logIn'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +57,7 @@ export const logoutUser = createAsyncThunk(
     try {
       const { token } = getState().auth;
       
-      await fetch(`${API_URL}api/logOut`, {
+      await fetch(apiUrl('api/logOut'), {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -80,7 +82,7 @@ export const checkAuth = createAsyncThunk(
         return rejectWithValue('No token found');
       }
 
-      const response = await fetch(`${API_URL}api/me`, {
+      const response = await fetch(apiUrl('api/me'), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',

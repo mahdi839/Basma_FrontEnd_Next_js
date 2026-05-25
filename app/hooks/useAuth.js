@@ -9,6 +9,7 @@ import axios from "axios";
 export const useAuth = () => {
   const router = useRouter();
   const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+  const apiUrl = (endpoint) => `${API_BASE}${API_BASE.endsWith("/") ? "" : "/"}${endpoint}`;
   const [userPermissions, setUserPermissions] = useState([]);
   const [userRoles, setUserRoles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +47,7 @@ export const useAuth = () => {
       const token = localStorage.getItem("token");
       if (!token) return false;
 
-      const response = await axios.get(`${API_BASE}/api/me`, {
+      const response = await axios.get(apiUrl("api/me"), {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -62,6 +63,7 @@ export const useAuth = () => {
         // Update cookies
         setCookie("token", token);
         setCookie("roles", JSON.stringify(user.roles));
+        setCookie("permissions", JSON.stringify(user.permissions));
         setCookie("user_id", user.id);
 
         // Update state
@@ -85,7 +87,7 @@ export const useAuth = () => {
       const token = localStorage.getItem("token");
       
       if (token) {
-        await fetch(`${API_BASE}/api/logOut`, {
+        await fetch(apiUrl("api/logOut"), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -107,6 +109,7 @@ export const useAuth = () => {
       // Clear cookies
       deleteCookie("token");
       deleteCookie("roles");
+      deleteCookie("permissions");
       deleteCookie("user_id");
 
       // Clear state

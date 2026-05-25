@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
-export default function CustomerLogin() {
+export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ export default function CustomerLogin() {
   const router = useRouter();
 
   const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "";
-  const LOGIN_ENDPOINT = "api/logIn";
+  const LOGIN_ENDPOINT = "api/admin/logIn";
 
   const setCookie = (name, value, days = 7) => {
     const expires = new Date(Date.now() + days * 864e5).toUTCString();
@@ -36,12 +36,12 @@ export default function CustomerLogin() {
   };
 
   const getSafeRedirect = () => {
-    if (typeof window === "undefined") return "/frontEnd/my-orders";
+    if (typeof window === "undefined") return "/dashboard";
     const redirect = new URLSearchParams(window.location.search).get("redirect");
-    if (!redirect || redirect.startsWith("/dashboard") || redirect.startsWith("/admin")) {
-      return "/frontEnd/my-orders";
+    if (!redirect || !redirect.startsWith("/dashboard")) {
+      return "/dashboard";
     }
-    return redirect.startsWith("/") ? redirect : "/frontEnd/my-orders";
+    return redirect;
   };
 
   const handleSubmit = async (e) => {
@@ -59,13 +59,13 @@ export default function CustomerLogin() {
       const { status, token, user, message } = response.data;
 
       if (!status || !token || !user?.id) {
-        toast.error(message || "Login failed.");
+        toast.error(message || "Admin login failed.");
         return;
       }
 
       saveAuth(token, user);
       toast.success("Successfully logged in");
-      router.push(getSafeRedirect());
+      window.location.href = getSafeRedirect();
     } catch (err) {
       const errorMessage = err?.response?.data?.message || err?.message || "An error occurred.";
       toast.error(errorMessage);
@@ -75,13 +75,13 @@ export default function CustomerLogin() {
   };
 
   return (
-    <div className="container my-5 py-5 d-flex justify-content-center">
-      <div className="col-12 col-md-6 col-lg-10">
+    <div className="container min-vh-100 py-5 d-flex align-items-center justify-content-center">
+      <div className="col-12 col-md-6 col-lg-5">
         <div className="card shadow-lg border-0 rounded-4">
           <div className="card-body p-4">
             <div className="text-center mb-4">
               <h1 className="h4 mb-1 text-center position-relative d-inline-block">
-                Log In
+                Admin Login
                 <span
                   className="d-block mx-auto mt-2 btn-grad"
                   style={{ width: "80px", height: "5px", borderRadius: "50px" }}
@@ -95,7 +95,7 @@ export default function CustomerLogin() {
                 <input
                   type="email"
                   className="form-control form-control-lg"
-                  placeholder="Enter email"
+                  placeholder="Enter admin email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
