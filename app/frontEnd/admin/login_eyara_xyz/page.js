@@ -75,7 +75,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="container min-vh-100 py-5 d-flex align-items-center justify-content-center">
+    <div className="container  py-5 d-flex align-items-center justify-content-center">
       <div className="col-12 col-md-6 col-lg-5">
         <div className="card shadow-lg border-0 rounded-4">
           <div className="card-body p-4">
