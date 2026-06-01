@@ -32,6 +32,7 @@ function CheckoutPage() {
   });
 
   const [orderCompleted, setOrderCompleted] = useState(false);
+  const orderCompletedRef = useRef(false);
   const abandonedCheckoutSent = useRef(false); // Track if already sent
   const formInteracted = useRef(false); // Track if user interacted with form
 
@@ -62,6 +63,7 @@ function CheckoutPage() {
     // 5. User has interacted with the form
     if (
       !orderCompleted &&
+      !orderCompletedRef.current &&
       cartItems.length > 0 &&
       formData.phone &&
       !abandonedCheckoutSent.current &&
@@ -200,11 +202,13 @@ function CheckoutPage() {
     const updatedFormData = {
       ...formData,
       shipping_cost: shippingAmount,
+      checkout_session_id: getSessionId(),
     };
 
     const storeOrderUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/orders";
     
     // Mark order as completed BEFORE storing
+    orderCompletedRef.current = true;
     setOrderCompleted(true);
     
     // Mark abandoned checkout as converted
@@ -212,7 +216,7 @@ function CheckoutPage() {
       try {
         await axios.post(
           `${process.env.NEXT_PUBLIC_BACKEND_URL}api/mark-checkout-converted`,
-          { phone: formData.phone },
+          { phone: formData.phone, session_id: getSessionId() },
           { withCredentials: true }
         );
       } catch (err) {

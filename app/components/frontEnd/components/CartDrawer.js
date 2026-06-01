@@ -59,6 +59,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
     // 6. Currently on checkout step
     if (
       !orderCompleted &&
+      !orderSubmittingRef.current &&
       cartItems.length > 0 &&
       formData.phone &&
       !abandonedCheckoutSent.current &&
@@ -297,6 +298,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
       user_id,
       shipping_cost: shippingAmount,
       total_amount: finalTotal,
+      checkout_session_id: getSessionId(),
       fbp: fbp,
       fbc: fbc,
       event_source_url: window.location.href,
@@ -309,7 +311,7 @@ export default function CartDrawer({ isOpen, onClose, isDirectBuy }) {
           const session_id = getSessionId();
           await axios.post(
             `${process.env.NEXT_PUBLIC_BACKEND_URL}api/mark-checkout-converted`,
-            { session_id },
+            { session_id, phone: formData.phone },
             { withCredentials: true }
           );
         } catch (err) {

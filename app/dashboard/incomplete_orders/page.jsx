@@ -170,7 +170,11 @@ export default function IncompleteOrder() {
       });
 
       if (response.data.data) {
-        setData(response.data.data.data || []);
+        setData(
+          (response.data.data.data || []).filter(
+            (item) => !item.is_recovered && !item.converted_order_id
+          )
+        );
         setPagination({
           current_page: response.data.data.current_page || 1,
           last_page: response.data.data.last_page || 1,
