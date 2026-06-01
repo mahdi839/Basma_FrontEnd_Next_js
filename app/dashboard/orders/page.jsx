@@ -263,17 +263,17 @@ export default function Page() {
   return (
     <div className="container-fluid py-4">
       <div className='d-flex justify-content-between align-items-center'>
-        <Button
-          className="mb-3"
+        <button
+          className="mb-3 btn btn-success btn-sm px-3 py-2"
           onClick={handleDownloadCSV}
           disabled={isDownloading || !token}
         >
           {isDownloading ? 'Downloading...' : 'Download CSV'}
-        </Button>
+        </button>
 
         {selectedOrderIds.length > 0 && (
           <Button
-            className="mb-3"
+            className="mb-3 btn btn-success btn-md"
             onClick={handleBulkPrint}
             disabled={isPrinting}
             style={{ background: '#198754', borderColor: '#198754', color: '#fff' }}
