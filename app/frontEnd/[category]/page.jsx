@@ -1,15 +1,14 @@
 import CtgProductsLogic from "./components/CtgProductsLogic"
 import Link from "next/link"
 
-export default async function Page({ params, searchParams }) {
+export default async function Page({ params }) {
   let products = []
   let paginationData = null
   const category = params?.category
-  const page = searchParams?.page || 1
 
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}api/products?slug=${category}&page=${page}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}api/products?slug=${category}&page=1`,
       {
         cache: 'no-store', // Disable caching for production
         headers: {
@@ -28,11 +27,12 @@ export default async function Page({ params, searchParams }) {
     products = data.data?.data ?? []
     
     // Extract pagination info
-    paginationData = {
+    paginationData = data.pagination ?? {
       current_page: data.data?.current_page || 1,
       last_page: data.data?.last_page || 1,
-      per_page: data.data?.per_page || 8,
-      total: data.data?.total || 0
+      per_page: data.data?.per_page || 20,
+      total: data.data?.total || 0,
+      has_more: Boolean(data.data?.next_page_url)
     }
 
   } catch (err) {
