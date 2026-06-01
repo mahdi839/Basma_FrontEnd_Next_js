@@ -278,12 +278,12 @@ export default function IncompleteOrder() {
     });
   };
 
-  const addCartItem = () => {
-    setConvertForm((prev) => ({
-      ...prev,
-      cart: [...prev.cart, { ...emptyItem }],
-    }));
-  };
+  // const addCartItem = () => {
+  //   setConvertForm((prev) => ({
+  //     ...prev,
+  //     cart: [...prev.cart, { ...emptyItem }],
+  //   }));
+  // };
 
   const removeCartItem = (index) => {
     setConvertForm((prev) => ({
@@ -735,13 +735,13 @@ export default function IncompleteOrder() {
                         Size and color are prefilled from the customer&apos;s checkout selection.
                       </p>
                     </div>
-                    <button
+                    {/* <button
                       type="button"
                       className="btn btn-sm btn-outline-primary"
                       onClick={addCartItem}
                     >
                       Add Item
-                    </button>
+                    </button> */}
                   </div>
 
                   <div className="table-responsive">
