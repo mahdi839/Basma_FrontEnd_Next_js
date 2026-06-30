@@ -30,6 +30,7 @@ export default function Page() {
     start_date: '',
     end_date: '',
     district: '',
+    product_id: '',
     product_title: '',
     status: ''
   });
@@ -183,6 +184,7 @@ export default function Page() {
       start_date: '',
       end_date: '',
       district: '',
+      product_id: '',
       product_title: '',
       status: ''
     });

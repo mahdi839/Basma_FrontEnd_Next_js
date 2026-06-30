@@ -5,7 +5,7 @@ import Select from 'react-select';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
-export default function ProductFilter({ value, onChange, required = false }) {
+export default function ProductFilter({ value, titleValue, onChange, required = false }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -19,7 +19,7 @@ export default function ProductFilter({ value, onChange, required = false }) {
         }
 
         const response = await axios.get(
-          process.env.NEXT_PUBLIC_BACKEND_URL + 'api/products',
+          process.env.NEXT_PUBLIC_BACKEND_URL + 'api/order-product-options',
           {
             headers: {
               Authorization: `Bearer ${token}`
@@ -29,13 +29,14 @@ export default function ProductFilter({ value, onChange, required = false }) {
 
         // ✅ Fix: response.data.data is the paginated object, 
         // response.data.data.data is the actual products array
-        const productsData = response.data?.data?.data || [];
+        const productsData = response.data?.data || [];
 
         if (Array.isArray(productsData)) {
           const options = productsData.map(product => ({
-            value: product.title,
-            label: product.title,
-            id: product.id
+            value: product.id ? String(product.id) : `title:${product.title}`,
+            label: product.sku ? `${product.title} (${product.sku})` : product.title,
+            id: product.id,
+            title: product.title
           }));
           setProducts(options);
         } else {
@@ -56,7 +57,10 @@ export default function ProductFilter({ value, onChange, required = false }) {
   }, []);
 
   // Find selected value
-  const selectedValue = products.find(option => option.value === value) || null;
+  const selectedValue = products.find(option =>
+    (value && option.id && String(option.id) === String(value))
+    || (!value && titleValue && option.title === titleValue)
+  ) || null;
 
   return (
     <Select

@@ -1,472 +1,137 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import useFormatDate from "../hooks/useFormatDate";
+import { FiArrowDownRight, FiArrowRight, FiArrowUpRight, FiRefreshCw, FiShoppingBag, FiUsers } from "react-icons/fi";
+import { HiOutlineBanknotes } from "react-icons/hi2";
+import { PiPackage } from "react-icons/pi";
+import styles from "./dashboard.module.css";
 
-const STATUSES = [
-  'pending',
-  'completed',
-  'placed',
-  'cancelled',
-  'processing',
-  'returned',
-  'first_call',
-  'second_call',
-  'third_call',
-  'stock_sold',
-  'shipped_to_you',
-  'received_in_bd',
-  'order_sent_to_china',
-  'file_completed',
-  'order_confirmed',
-];
+const money = (value) =>
+  new Intl.NumberFormat("en-BD", { maximumFractionDigits: 0 }).format(Number(value || 0));
+const statusLabel = (value) =>
+  String(value || "").replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 
-
-/** Simple canvas bar chart (no libs) */
-function HotProductsBarChart({ data = [], hotBy = "qty", height = 260 }) {
-  const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    const dpr = window.devicePixelRatio || 1;
-    const width = canvas.clientWidth * dpr;
-    const h = height * dpr;
-
-    canvas.width = width;
-    canvas.height = h;
-    ctx.clearRect(0, 0, width, h);
-
-    const padL = 40 * dpr;
-    const padR = 16 * dpr;
-    const padT = 16 * dpr;
-    const padB = 36 * dpr;
-
-    const innerW = width - padL - padR;
-    const innerH = h - padT - padB;
-
-    const values =
-      hotBy === "revenue"
-        ? data.map((d) => Number(d.revenue))
-        : data.map((d) => Number(d.qty_sold));
-
-    // ✅ Changed: Use size_name instead of variant_value
-    const labels = data.map(
-      (d) => (d.title || `#${d.product_id}`) + (d.size_name ? ` (${d.size_name})` : "")
-    );
-
-    const maxVal = Math.max(1, ...values);
-    const barGap = 12 * dpr;
-    const barW = Math.max(10 * dpr, innerW / values.length - barGap);
-
-    ctx.strokeStyle = "#dee2e6";
-    ctx.lineWidth = 1 * dpr;
-    ctx.beginPath();
-    ctx.moveTo(padL, padT);
-    ctx.lineTo(padL, h - padB);
-    ctx.lineTo(width - padR, h - padB);
-    ctx.stroke();
-
-    ctx.fillStyle = "#0d6efd";
-    values.forEach((v, i) => {
-      const x = padL + i * (barW + barGap) + barGap / 2;
-      const bh = (v / maxVal) * innerH;
-      const y = h - padB - bh;
-      ctx.fillRect(x, y, barW, bh);
-
-      ctx.fillStyle = "#212529";
-      ctx.font = `${12 * dpr}px system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "bottom";
-      const txt =
-        hotBy === "revenue" ? `৳${Number(v).toLocaleString()}` : `${Number(v).toLocaleString()}`;
-      ctx.fillText(txt, x + barW / 2, y - 4 * dpr);
-
-      ctx.fillStyle = "#0d6efd";
-    });
-
-    ctx.fillStyle = "#6c757d";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "top";
-    ctx.font = `${11 * dpr}px system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial`;
-    labels.forEach((lb, i) => {
-      const x = padL + i * (barW + barGap) + barGap / 2 + barW / 2;
-      const short = lb.length > 20 ? lb.slice(0, 20) + "…" : lb;
-      ctx.fillText(short, x, h - padB + 8 * dpr);
-    });
-  }, [data, hotBy, height]);
-
-  return (
-    <div className="ratio ratio-21x9 border rounded bg-white">
-      <canvas ref={canvasRef} style={{ width: "100%", height }} />
-    </div>
-  );
+function Change({ value }) {
+  if (value === null || value === undefined) return <span className={styles.newActivity}>New activity</span>;
+  const up = value >= 0;
+  return <span className={up ? styles.positive : styles.negative}>
+    {up ? <FiArrowUpRight /> : <FiArrowDownRight />}{Math.abs(value)}% <small>vs previous period</small>
+  </span>;
 }
 
-const { formatDate } = useFormatDate();
+function SalesChart({ data }) {
+  if (!data?.length) return <div className={styles.emptyChart}>Sales activity will appear here.</div>;
+  const width = 820, height = 250, left = 20, top = 18, bottom = 36;
+  const max = Math.max(...data.map((row) => Number(row.sales)), 1);
+  const points = data.map((row, index) => {
+    const x = left + (index / Math.max(data.length - 1, 1)) * (width - left * 2);
+    const y = top + (1 - Number(row.sales) / max) * (height - top - bottom);
+    return { ...row, x, y };
+  });
+  const line = points.map((point, index) => `${index ? "L" : "M"} ${point.x} ${point.y}`).join(" ");
+  const area = `${line} L ${points.at(-1).x} ${height - bottom} L ${points[0].x} ${height - bottom} Z`;
+  const labelEvery = Math.max(1, Math.ceil(data.length / 6));
+  return <div className={styles.chartWrap}>
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Sales trend">
+      <defs><linearGradient id="salesFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#9b2b9c" stopOpacity=".28" /><stop offset="1" stopColor="#9b2b9c" stopOpacity="0" /></linearGradient></defs>
+      {[0, 1, 2, 3].map((lineIndex) => <line key={lineIndex} x1={left} x2={width - left} y1={top + lineIndex * 56} y2={top + lineIndex * 56} stroke="#eee8ef" strokeWidth="1" />)}
+      <path d={area} fill="url(#salesFill)" /><path d={line} fill="none" stroke="#78167e" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+      {points.map((point, index) => <g key={point.date}>
+        <circle cx={point.x} cy={point.y} r="4" fill="#fff" stroke="#78167e" strokeWidth="3"><title>{point.date}: ৳{money(point.sales)}</title></circle>
+        {(index % labelEvery === 0 || index === points.length - 1) && <text x={point.x} y={height - 10} textAnchor="middle" fontSize="11" fill="#8a7d8d">{new Date(`${point.date}T00:00:00`).toLocaleDateString("en-BD", { month: "short", day: "numeric" })}</text>}
+      </g>)}
+    </svg>
+  </div>;
+}
+
+function StatusDonut({ rows }) {
+  const total = rows.reduce((sum, row) => sum + row.orders, 0);
+  const colors = ["#741478", "#b743a6", "#e399c9", "#53245b", "#d7bfd9", "#8c6c91"];
+  let cursor = 0;
+  const stops = rows.map((row, index) => {
+    const start = cursor;
+    cursor += total ? (row.orders / total) * 100 : 0;
+    return `${colors[index % colors.length]} ${start}% ${cursor}%`;
+  }).join(",");
+  return <div className={styles.donutLayout}>
+    <div className={styles.donut} style={{ background: total ? `conic-gradient(${stops})` : "#eee9ef" }}><div><strong>{total}</strong><span>orders</span></div></div>
+    <div className={styles.legend}>{rows.slice(0, 6).map((row, index) => <div key={row.status}><i style={{ background: colors[index % colors.length] }} /><span>{statusLabel(row.status)}</span><strong>{row.percentage}%</strong></div>)}</div>
+  </div>;
+}
 
 export default function DashboardHome() {
-  const [range, setRange] = useState("today");
+  const [range, setRange] = useState("month");
+  const [status, setStatus] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [selectedStatuses, setSelectedStatuses] = useState([]);
-  const [hotBy, setHotBy] = useState("qty");
-  const [hotLimit, setHotLimit] = useState(10);
-
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState("");
   const [data, setData] = useState(null);
-
-  const apiBase = (process.env.NEXT_PUBLIC_BACKEND_URL ?? "").replace(/\/+$/, "");
-  const tokenFromEnv = process.env.NEXT_PUBLIC_API_TOKEN ?? "";
-
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const query = useMemo(() => {
-    const params = new URLSearchParams();
-    params.set("range", range);
-    if (range === "custom") {
-      if (startDate) params.set("start_date", startDate);
-      if (endDate) params.set("end_date", endDate);
+    const params = new URLSearchParams({ range, hot_limit: "7" });
+    if (status) params.set("status", status);
+    if (range === "custom" && startDate && endDate) {
+      params.set("start_date", startDate); params.set("end_date", endDate);
     }
-    if (selectedStatuses.length) params.set("status", selectedStatuses.join(","));
-    if (hotBy) params.set("hot_by", hotBy);
-    if (hotLimit) params.set("hot_limit", String(hotLimit));
     return params.toString();
-  }, [range, startDate, endDate, selectedStatuses, hotBy, hotLimit]);
-
-  const fetchSummary = async () => {
-    setLoading(true);
-    setErr("");
+  }, [range, status, startDate, endDate]);
+  const load = async () => {
+    if (range === "custom" && (!startDate || !endDate)) return;
+    setLoading(true); setError("");
     try {
-      const token =
-        (typeof window !== "undefined" && localStorage.getItem("token")) ||
-        tokenFromEnv;
-
-      if (!token) {
-        throw new Error(
-          "Please Login As Admin"
-        );
-      }
-
-      const url = `${apiBase}/api/dashboard/summary?${query}`;
-      const res = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}api/dashboard/summary?${query}`, {
+        headers: { Accept: "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(
-          `Request failed: ${res.status} ${res.statusText} — ${text || "No response body"}`
-        );
-      }
-
-      const json = await res.json();
-      setData(json);
-    } catch (e) {
-      setErr(e.message || "Something went wrong");
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
+      if (!response.ok) throw new Error("The dashboard data could not be loaded.");
+      setData(await response.json());
+    } catch (err) { setError(err.message); } finally { setLoading(false); }
   };
-
-  useEffect(() => {
-    fetchSummary();
-  }, [query]);
-
-  const fmtMoney = (num) => {
-    const n = Number(num ?? 0);
-    return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
-
+  useEffect(() => { load(); }, [query]);
   const totals = data?.totals || {};
-  const hotProducts = data?.hot_products || [];
-  const kpis = [
-    { label: "Total Sales", key: "sales_amount" },
-    { label: "Orders", key: "orders" },
-    { label: "Revenue", key: "revenue" },
-    { label: "Customers", key: "customers" },
+  const changes = data?.changes || {};
+  const cards = [
+    { title: "Gross sales", value: `৳${money(totals.gross_sales)}`, change: changes.gross_sales, icon: <HiOutlineBanknotes /> },
+    { title: "Orders", value: money(totals.orders), change: changes.orders, icon: <FiShoppingBag /> },
+    { title: "Units sold", value: money(totals.units_sold), change: changes.units_sold, icon: <PiPackage /> },
+    { title: "Customers", value: money(totals.customers), change: changes.customers, icon: <FiUsers /> },
   ];
 
-  const isSelected = (s) => selectedStatuses.includes(s);
-  const toggleStatus = (s) =>
-    setSelectedStatuses((prev) =>
-      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
-    );
-  const clearStatuses = () => setSelectedStatuses([]);
-
-
-
-  return (
-    <div className="container-fluid py-4">
-      <div className="d-flex flex-wrap align-items-center justify-content-between mb-4">
-        <div>
-          <h3 className="mb-0">Dashboard</h3>
-          <small className="text-muted">Overview of sales, orders, and activity</small>
-        </div>
-        <div className="d-flex gap-2">
-          <button className="btn btn-outline-secondary" onClick={fetchSummary}>
-            Refresh
-          </button>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="card shadow-sm border-0 mb-4">
-        <div className="card-body">
-          <div className="row g-3 align-items-end">
-            <div className="col-6 col-md-2">
-              <label className="form-label">Range</label>
-              <select className="form-select" value={range} onChange={(e) => setRange(e.target.value)}>
-                <option value="today">Today</option>
-                <option value="week">This week</option>
-                <option value="month">This month</option>
-                <option value="year">This year</option>
-                <option value="custom">Custom</option>
-              </select>
-            </div>
-
-            {range === "custom" && (
-              <>
-                <div className="col-6 col-md-2">
-                  <label className="form-label">Start date</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={startDate}
-                    onChange={(e) => setStartDate(e.target.value)}
-                  />
-                </div>
-                <div className="col-6 col-md-2">
-                  <label className="form-label">End date</label>
-                  <input
-                    type="date"
-                    className="form-control"
-                    value={endDate}
-                    onChange={(e) => setEndDate(e.target.value)}
-                  />
-                </div>
-              </>
-            )}
-
-            <div className="col-12 col-md-3">
-              <label className="form-label">Status</label>
-              <div className="dropdown w-100">
-                <button
-                  className="btn btn-outline-secondary w-100 text-start dropdown-toggle"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="outside"
-                  aria-expanded="false"
-                >
-                  {selectedStatuses.length === 0 ? "All statuses" : `${selectedStatuses.length} selected`}
-                </button>
-                <ul className="dropdown-menu p-2 w-100" style={{ maxHeight: 260, overflow: "auto" }}>
-                  {STATUSES.map((s) => (
-                    <li key={s} className="px-2 py-1">
-                      <label className="form-check d-flex align-items-center gap-2">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          checked={isSelected(s)}
-                          onChange={() => toggleStatus(s)}
-                        />
-                        <span className="form-check-label text-capitalize">{s}</span>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              {selectedStatuses.length > 0 && (
-                <div className="mt-2 d-flex flex-wrap gap-2">
-                  {selectedStatuses.map((s) => (
-                    <span key={s} className="badge text-bg-light text-capitalize">{s}</span>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="col-6 col-md-2">
-              <label className="form-label">Hot products by</label>
-              <select className="form-select" value={hotBy} onChange={(e) => setHotBy(e.target.value)}>
-                <option value="qty">Quantity</option>
-                <option value="revenue">Revenue</option>
-              </select>
-            </div>
-
-            <div className="col-6 col-md-2">
-              <label className="form-label">Hot products limit</label>
-              <input
-                type="number"
-                min={1}
-                max={50}
-                className="form-control"
-                value={hotLimit}
-                onChange={(e) => setHotLimit(parseInt(e.target.value || "10", 10))}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {loading && <div className="alert alert-info">Loading dashboard…</div>}
-      {err && !loading && (
-        <div className="alert alert-danger">
-          <div className="fw-semibold">Error</div>
-          <div className="small">{err}</div>
-        </div>
-      )}
-
-      {/* KPI Cards */}
-      <div className="row g-3 mb-4">
-        {kpis.map((k, i) => (
-          <div className="col-12 col-sm-6 col-xl-3" key={k.key}>
-            <div className="card h-100 shadow-sm border-0">
-              <div className="card-body">
-                <div className="text-uppercase text-muted small fw-semibold">{k.label}</div>
-                <div className="display-6 fw-semibold">
-                  {["sales_amount", "revenue"].includes(k.key)
-                    ? `৳${fmtMoney(totals[k.key])}`
-                    : totals[k.key] ?? 0}
-                </div>
-                {k.key === "revenue" && (
-                  <div className="text-muted small mt-1">
-                    Profit: <span className="fw-semibold">৳{fmtMoney(totals?.estimated_profit || 0)}</span>
-                  </div>
-                )}
-                <div className="progress mt-3">
-                  <div className="progress-bar" style={{ width: `${60 + i * 8}%` }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Main Grid */}
-      <div className="row g-3">
-        <div className="col-12 col-xl-8">
-          <div className="card shadow-sm border-0 h-100">
-            <div className="card-header bg-white d-flex justify-content-between align-items-center">
-              <h6 className="mb-0">Sales Overview</h6>
-              <div className="small text-muted">
-                {formatDate(data?.range?.from)} — {formatDate(data?.range?.to)}
-              </div>
-            </div>
-            <div className="card-body">
-              <div className="row g-3">
-                <div className="col-12 col-md-4">
-                  <div className="p-3 rounded border h-100">
-                    <div className="text-muted small">Revenue</div>
-                    <div className="h4 mb-0">৳{fmtMoney(totals?.revenue || 0)}</div>
-                  </div>
-                </div>
-                <div className="col-12 col-md-4">
-                  <div className="p-3 rounded border h-100">
-                    <div className="text-muted small">Estimated COGS</div>
-                    <div className="h4 mb-0">৳{fmtMoney(totals?.estimated_cogs || 0)}</div>
-                  </div>
-                </div>
-                <div className="col-12 col-md-4">
-                  <div className="p-3 rounded border h-100">
-                    <div className="text-muted small">Estimated Profit</div>
-                    <div className="h4 mb-0">৳{fmtMoney(totals?.estimated_profit || 0)}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="d-flex flex-wrap gap-3 mt-3">
-                <span className="badge rounded-pill text-bg-primary">Revenue</span>
-                <span className="badge rounded-pill text-bg-secondary">Orders</span>
-                <span className="badge rounded-pill text-bg-success">Customers</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-12 col-xl-4">
-          <div className="card shadow-sm border-0 mb-3">
-            <div className="card-body">
-              <h6 className="mb-3">Quick Stats</h6>
-              <div className="d-flex align-items-center justify-content-between mb-2">
-                <span className="text-muted">Orders</span>
-                <strong>{totals?.orders ?? 0}</strong>
-              </div>
-              <div className="progress mb-3" style={{ height: 6 }}>
-                <div className="progress-bar" style={{ width: "68%" }} />
-              </div>
-              <div className="d-flex align-items-center justify-content-between mb-2">
-                <span className="text-muted">Customers</span>
-                <strong>{totals?.customers ?? 0}</strong>
-              </div>
-              <div className="progress mb-3" style={{ height: 6 }}>
-                <div className="progress-bar bg-success" style={{ width: "52%" }} />
-              </div>
-              <div className="d-flex align-items-center justify-content-between mb-2">
-                <span className="text-muted">Profit</span>
-                <strong>৳{fmtMoney(totals?.estimated_profit || 0)}</strong>
-              </div>
-              <div className="progress" style={{ height: 6 }}>
-                <div className="progress-bar bg-info" style={{ width: "40%" }} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Top Products Table */}
-        <div className="col-12">
-          <div className="card shadow-sm border-0">
-            <div className="card-header bg-white d-flex align-items-center justify-content-between">
-              <h6 className="mb-0">Top Products</h6>
-              <div className="small text-muted">
-                Sorted by <code>{hotBy}</code>, top <code>{hotLimit}</code>
-              </div>
-            </div>
-            <div className="card-body">
-              {hotProducts.length === 0 ? (
-                <div className="text-muted">No products in this range.</div>
-              ) : (
-                <div className="table-responsive">
-                  <table className="table align-middle">
-                    <thead className="table-light">
-                      <tr>
-                        <th>Product</th>
-                        <th>Size</th>
-                        <th className="text-end">Qty sold</th>
-                        <th className="text-end">Revenue</th>
-                        <th className="text-end">Est. COGS</th>
-                        <th className="text-end">Est. Profit</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {hotProducts.map((p, i) => (
-                        <tr key={`${p.product_id}-${p.size_id}-${i}`}>
-                          <td className="fw-semibold">{p.title || p.product_id}</td>
-                          <td><span className="badge text-bg-light">{p.size_name ?? "-"}</span></td>
-                          <td className="text-end">{Number(p.qty_sold).toLocaleString()}</td>
-                          <td className="text-end">৳{fmtMoney(p.revenue)}</td>
-                          <td className="text-end">৳{fmtMoney(p.estimated_cogs)}</td>
-                          <td className="text-end">৳{fmtMoney(p.estimated_profit)}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="text-center text-muted small mt-4">
-        © {new Date().getFullYear()} Eyara Fashion — Dashboard
-      </div>
-    </div>
-  );
+  return <div className={styles.page}>
+    <header className={styles.header}>
+      <div><span>Business overview</span><h1>Good to see you.</h1><p>Here is what is happening across Eyara Fashion.</p></div>
+      <div className={styles.headerActions}><Link href="/dashboard/sales-report">Open sales report <FiArrowRight /></Link><button onClick={load} aria-label="Refresh dashboard"><FiRefreshCw className={loading ? styles.spin : ""} /></button></div>
+    </header>
+    <section className={styles.filterBar}>
+      <div className={styles.rangeTabs}>{["today", "week", "month", "year", "custom"].map((item) => <button className={range === item ? styles.active : ""} key={item} onClick={() => setRange(item)}>{item === "week" ? "This week" : item === "month" ? "This month" : item === "year" ? "This year" : statusLabel(item)}</button>)}</div>
+      {range === "custom" && <div className={styles.dates}><input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /><span>to</span><input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} /></div>}
+      <select value={status} onChange={(e) => setStatus(e.target.value)}><option value="">All order statuses</option>{["pending", "placed", "processing", "completed", "cancelled", "returned", "order_confirmed"].map((item) => <option value={item} key={item}>{statusLabel(item)}</option>)}</select>
+    </section>
+    {error && <div className={styles.error}>{error}</div>}
+    <main className={loading ? styles.loading : ""}>
+      <section className={styles.cards}>{cards.map((card) => <article key={card.title} className={styles.card}>
+        <div className={styles.cardTop}><span>{card.title}</span><i>{card.icon}</i></div><strong>{card.value}</strong><Change value={card.change} />
+      </article>)}</section>
+      <section className={styles.grid}>
+        <article className={`${styles.panel} ${styles.salesPanel}`}>
+          <div className={styles.panelHead}><div><span>Revenue movement</span><h2>Sales trend</h2></div><div className={styles.aov}>Average order <strong>৳{money(totals.average_order_value)}</strong></div></div>
+          <SalesChart data={data?.sales_trend || []} />
+        </article>
+        <article className={styles.panel}><div className={styles.panelHead}><div><span>Order pipeline</span><h2>Status distribution</h2></div></div><StatusDonut rows={data?.status_breakdown || []} /></article>
+        <article className={`${styles.panel} ${styles.productsPanel}`}>
+          <div className={styles.panelHead}><div><span>Product momentum</span><h2>Top-selling products</h2></div><Link href="/dashboard/sales-report">View full report <FiArrowRight /></Link></div>
+          <div className={styles.productList}>{(data?.top_products || []).map((product, index) => <div key={`${product.product_id}-${product.title}`}>
+            <span className={styles.rank}>{String(index + 1).padStart(2, "0")}</span><p><strong>{product.title}</strong><small>{product.quantity_sold} units sold</small></p><b>৳{money(product.sales)}</b>
+          </div>)}{!data?.top_products?.length && <div className={styles.empty}>No product sales in this period.</div>}</div>
+        </article>
+        <article className={`${styles.panel} ${styles.snapshot}`}>
+          <div className={styles.panelHead}><div><span>At a glance</span><h2>Sales snapshot</h2></div></div>
+          <div><span>Shipping collected</span><strong>৳{money(totals.shipping_collected)}</strong></div>
+          <div><span>Average units per order</span><strong>{totals.orders ? (totals.units_sold / totals.orders).toFixed(1) : "0.0"}</strong></div>
+          <div><span>Orders per customer</span><strong>{totals.customers ? (totals.orders / totals.customers).toFixed(1) : "0.0"}</strong></div>
+          <Link href="/dashboard/orders">Manage orders <FiArrowRight /></Link>
+        </article>
+      </section>
+    </main>
+  </div>;
 }

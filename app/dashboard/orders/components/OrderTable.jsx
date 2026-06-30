@@ -123,6 +123,14 @@ export default function OrderTable({
     }));
   };
 
+  const handleProductChange = (selectedOption) => {
+    setDraftFilters((prev) => ({
+      ...prev,
+      product_id: selectedOption?.id ? String(selectedOption.id) : "",
+      product_title: selectedOption && !selectedOption.id ? selectedOption.title : "",
+    }));
+  };
+
   async function handleStatus(e, orderId, userPhone) {
     let token = null;
     if (typeof window !== "undefined") token = localStorage.getItem("token");
@@ -229,7 +237,11 @@ export default function OrderTable({
         </div>
         <div className="col-md-3 mt-2">
           <label className="form-label small mb-1">Product</label>
-          <ProductFilter value={draftFilters.product_title} onChange={handleSelectChange("product_title")} />
+          <ProductFilter
+            value={draftFilters.product_id}
+            titleValue={draftFilters.product_title}
+            onChange={handleProductChange}
+          />
         </div>
         <div className="col-md-3 d-flex align-items-end">
           <button className="btn btn-primary me-2" onClick={handleApply}>

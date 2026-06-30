@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import "../../layouts/dashboard.css";
 import { BsLayoutTextSidebar, BsChevronDown, BsChevronRight } from "react-icons/bs";
-import { FaInfoCircle, FaProductHunt, FaShippingFast, FaShoppingBag, FaUsers, FaShieldAlt } from "react-icons/fa";
+import { FaChartBar, FaInfoCircle, FaProductHunt, FaShippingFast, FaShoppingBag, FaUsers, FaShieldAlt } from "react-icons/fa";
 import { RiKanbanView2 } from "react-icons/ri";
 import { IoIosSettings } from "react-icons/io";
 import { MdInventory } from "react-icons/md";
@@ -76,6 +76,12 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
           label: 'All Orders',
           Icon: FaShoppingBag,
           permission: 'view orders' // ✅ Required permission
+        },
+        {
+          href: "/dashboard/sales-report",
+          label: 'Sales Report',
+          Icon: FaChartBar,
+          permission: 'view orders'
         },
         {
           href: "/dashboard/incomplete_orders",
