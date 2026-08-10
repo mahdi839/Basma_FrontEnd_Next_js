@@ -456,7 +456,7 @@ export default function OrderTable({
         }
       `}</style>
 
-      <div className="card">
+      <div className="card order-table-card">
         {FilterSection}
 
         {/* Selection info bar */}
