@@ -14,6 +14,8 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import './orderTable.css'
 import Link from "next/link";
 import Image from "next/image";
+import CustomerBadgeChip from "../../customers/components/CustomerBadgeChip";
+import AssignBadgeModal from "./AssignBadgeModal";
 
 // Status badge color mapping
 const STATUS_COLORS = {
@@ -66,10 +68,12 @@ export default function OrderTable({
   onResetFilters,
   selectedOrderIds = [],
   onSelectionChange,
+  onBadgeUpdated,
 }) {
   const [draftFilters, setDraftFilters] = useState(filters);
   const [loadingStates, setLoadingStates] = useState({});
   const [expandedRows, setExpandedRows] = useState({});
+  const [badgeOrder, setBadgeOrder] = useState(null);
   const { formatDate } = useFormatDate();
 
   React.useEffect(() => {
@@ -583,12 +587,28 @@ export default function OrderTable({
                               Repeat
                             </span>
                           )}
+                          {order.assigned_badge && (
+                            <span style={{ marginLeft: '6px', display: 'inline-block' }}>
+                              <CustomerBadgeChip badge={order.assigned_badge} />
+                            </span>
+                          )}
                         </div>
                         <div className="order-wrap" style={{ fontSize: '12px', color: '#6c757d', marginTop: '2px' }}>
                           <span className="order-wrap">{order.phone || 'N/A'}</span>
                           <span className="d-none d-md-inline order-wrap" style={{ marginLeft: '8px', color: '#adb5bd' }}>
                             {order.district || ''}
                           </span>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-primary ms-2"
+                            style={{ fontSize: '10px', padding: '1px 8px' }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setBadgeOrder(order);
+                            }}
+                          >
+                            Badge
+                          </button>
                           {/* Date - hidden on mobile */}
                           <div className="d-block d-md-none mt-2" style={{ fontSize: '10px', color: '#6c757d', whiteSpace: 'nowrap' }}>
                             {formatDate(order.created_at || '')}
@@ -633,6 +653,14 @@ export default function OrderTable({
           )}
         </div>
       </div>
+
+      {badgeOrder && (
+        <AssignBadgeModal
+          order={badgeOrder}
+          onClose={() => setBadgeOrder(null)}
+          onSaved={(assignedBadge) => onBadgeUpdated?.(badgeOrder.phone, assignedBadge)}
+        />
+      )}
     </>
   );
 }
