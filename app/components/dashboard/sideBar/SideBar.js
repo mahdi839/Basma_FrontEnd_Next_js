@@ -120,18 +120,24 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       permission: 'view banners' // ✅ Required permission
     },
     {
-      type: 'single',
-      href: "/dashboard/fraud-checker",
-      Icon: FaShieldAlt,
-      label: 'Courier Checker',
-      permission: 'view settings'
-    },
-    {
-      type: 'single',
-      href: "/dashboard/fraud-checker/plan",
-      Icon: FaCreditCard,
-      label: 'Courier Plan & Usage',
-      permission: 'view settings'
+      type: 'menu',
+      label: 'Courier Management',
+      Icon: FaShippingFast,
+      requireAny: ['view settings'],
+      submenus: [
+        {
+          href: "/dashboard/fraud-checker",
+          label: 'Courier Checker',
+          Icon: FaShieldAlt,
+          permission: 'view settings'
+        },
+        {
+          href: "/dashboard/fraud-checker/plan",
+          label: 'Courier Plan & Usage',
+          Icon: FaCreditCard,
+          permission: 'view settings'
+        },
+      ]
     },
     {
       type: 'menu',
