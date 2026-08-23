@@ -149,6 +149,12 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
           Icon: TbCirclesRelation,
           permission: 'view settings'
         },
+        {
+          href: "/dashboard/fraud-checker",
+          label: 'Courier Checker',
+          Icon: FaShieldAlt,
+          permission: 'view settings'
+        },
       ]
     },
     // ✅ SUPER ADMIN ONLY ITEMS

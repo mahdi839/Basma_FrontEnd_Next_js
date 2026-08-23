@@ -9,13 +9,14 @@ import { toast } from "react-toastify";
 import useFormatDate from "@/app/hooks/useFormatDate";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
-import { FaPrint } from "react-icons/fa";
+import { FaPrint, FaShieldAlt } from "react-icons/fa";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import './orderTable.css'
 import Link from "next/link";
 import Image from "next/image";
 import CustomerBadgeChip from "../../customers/components/CustomerBadgeChip";
 import AssignBadgeModal from "./AssignBadgeModal";
+import FraudCheckModal from "./FraudCheckModal";
 
 // Status badge color mapping
 const STATUS_COLORS = {
@@ -74,6 +75,7 @@ export default function OrderTable({
   const [loadingStates, setLoadingStates] = useState({});
   const [expandedRows, setExpandedRows] = useState({});
   const [badgeOrder, setBadgeOrder] = useState(null);
+  const [fraudOrder, setFraudOrder] = useState(null);
   const { formatDate } = useFormatDate();
 
   React.useEffect(() => {
@@ -609,6 +611,19 @@ export default function OrderTable({
                           >
                             Badge
                           </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-success ms-1"
+                            style={{ fontSize: '10px', padding: '1px 8px' }}
+                            disabled={!order.phone}
+                            title={order.phone ? 'Check courier delivery history' : 'No phone number available'}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setFraudOrder(order);
+                            }}
+                          >
+                            <FaShieldAlt size={10} className="me-1" /> Check
+                          </button>
                           {/* Date - hidden on mobile */}
                           <div className="d-block d-md-none mt-2" style={{ fontSize: '10px', color: '#6c757d', whiteSpace: 'nowrap' }}>
                             {formatDate(order.created_at || '')}
@@ -659,6 +674,12 @@ export default function OrderTable({
           order={badgeOrder}
           onClose={() => setBadgeOrder(null)}
           onSaved={(assignedBadge) => onBadgeUpdated?.(badgeOrder.phone, assignedBadge)}
+        />
+      )}
+      {fraudOrder && (
+        <FraudCheckModal
+          order={fraudOrder}
+          onClose={() => setFraudOrder(null)}
         />
       )}
     </>
