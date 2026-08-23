@@ -163,10 +163,10 @@ export default function FraudCheckModal({ order, onClose }) {
                 <div className="courier-section-heading"><div><span className="courier-eyebrow">Network view</span><h3>Courier breakdown</h3></div><span className="courier-section-count">{result.couriers?.length || 0} couriers</span></div>
                 {result.couriers?.length > 0 ? (
                   <div className="courier-breakdown-list">
-                    {result.couriers.map((courier) => {
+                    {result.couriers.map((courier, index) => {
                       const courierRatio = Math.max(0, Math.min(100, Number(courier.success_ratio || 0)));
                       return (
-                        <div className="courier-breakdown-row" key={courier.key || courier.name}>
+                        <div className={`courier-breakdown-row courier-theme-${index % 6}`} key={courier.key || courier.name}>
                           <div className="courier-brand">
                             {courier.logo ? <img src={courier.logo} alt="" /> : <span className="courier-brand-fallback"><FaBoxOpen /></span>}
                             <div><strong>{courier.name || "Courier"}</strong><small>{number(courier.total_parcel)} total parcels</small></div>

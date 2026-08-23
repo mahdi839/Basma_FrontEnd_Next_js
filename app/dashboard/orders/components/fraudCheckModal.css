@@ -11,7 +11,7 @@
 }
 
 .courier-modal-dialog {
-  width: min(820px, 100%);
+  width: min(960px, 100%);
   max-height: min(92vh, 900px);
   overflow: hidden;
   display: flex;
@@ -84,24 +84,33 @@
 .courier-section { margin-top: 24px; }
 .courier-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 11px; }
 .courier-section-heading .courier-eyebrow { margin-bottom: 2px; }
-.courier-section-heading h3 { margin: 0; color: #23384f; font-size: 15px; font-weight: 750; }
-.courier-section-count { color: #8494a5; font-size: 11px; }
-.courier-breakdown-list { overflow: hidden; background: #fff; border: 1px solid #e4eaf2; border-radius: 14px; }
-.courier-breakdown-row { display: grid; grid-template-columns: minmax(150px, 1.2fr) minmax(190px, 1fr) minmax(105px, .55fr); align-items: center; gap: 14px; padding: 13px 15px; border-bottom: 1px solid #edf1f5; }
-.courier-breakdown-row:last-child { border-bottom: 0; }
+.courier-section-heading h3 { margin: 0; color: #23384f; font-size: 17px; font-weight: 750; }
+.courier-section-count { color: #8494a5; font-size: 12px; }
+.courier-breakdown-list { max-height: 410px; overflow-y: auto; padding: 7px 0; background: #fff; border: 1px solid #e4eaf2; border-radius: 14px; scrollbar-width: thin; scrollbar-color: #b8c8d5 transparent; }
+.courier-breakdown-list::-webkit-scrollbar { width: 7px; }
+.courier-breakdown-list::-webkit-scrollbar-track { background: #f5f8fa; }
+.courier-breakdown-list::-webkit-scrollbar-thumb { background: #b8c8d5; border-radius: 999px; }
+.courier-breakdown-row { --courier-accent: #168c82; --courier-soft: #e8f7f4; --courier-border: #b8e4dd; --courier-shadow: rgba(22, 140, 130, .13); display: grid; grid-template-columns: minmax(180px, 1.2fr) minmax(230px, 1fr) minmax(125px, .55fr); align-items: center; gap: 18px; margin: 6px 8px; padding: 18px 19px; background: linear-gradient(105deg, var(--courier-soft), #fff 58%); border: 1px solid var(--courier-border); border-left: 5px solid var(--courier-accent); border-radius: 13px; box-shadow: 0 4px 13px rgba(26, 53, 77, .06); }
+.courier-theme-0 { --courier-accent: #168c82; --courier-soft: #e8f7f4; --courier-border: #b8e4dd; --courier-shadow: rgba(22, 140, 130, .13); }
+.courier-theme-1 { --courier-accent: #5368c9; --courier-soft: #eef0ff; --courier-border: #c8cff4; --courier-shadow: rgba(83, 104, 201, .13); }
+.courier-theme-2 { --courier-accent: #8759ad; --courier-soft: #f4edfb; --courier-border: #dcc9ed; --courier-shadow: rgba(135, 89, 173, .13); }
+.courier-theme-3 { --courier-accent: #c18425; --courier-soft: #fff5df; --courier-border: #f0d69e; --courier-shadow: rgba(193, 132, 37, .13); }
+.courier-theme-4 { --courier-accent: #c45166; --courier-soft: #fff0f3; --courier-border: #efc4cc; --courier-shadow: rgba(196, 81, 102, .13); }
+.courier-theme-5 { --courier-accent: #2d7db6; --courier-soft: #eaf5fc; --courier-border: #bfdbed; --courier-shadow: rgba(45, 125, 182, .13); }
 .courier-brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.courier-brand img, .courier-brand-fallback { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; object-fit: contain; color: #668098; background: #f2f6f9; border-radius: 9px; }
+.courier-brand img, .courier-brand-fallback { display: grid; place-items: center; width: 50px; height: 50px; flex: 0 0 50px; object-fit: contain; color: var(--courier-accent); background: var(--courier-soft); border: 1px solid var(--courier-border); border-radius: 13px; box-shadow: 0 5px 12px var(--courier-shadow); }
 .courier-brand div { min-width: 0; }
-.courier-brand strong { display: block; overflow: hidden; color: #2a3e54; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
-.courier-brand small { display: block; margin-top: 3px; color: #8998a9; font-size: 10px; }
-.courier-breakdown-stats { display: flex; flex-wrap: wrap; gap: 5px 12px; color: #8392a3; font-size: 10px; }
+.courier-brand strong { display: block; overflow: hidden; color: var(--courier-accent); font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.courier-brand small { display: block; margin-top: 4px; color: #8998a9; font-size: 12px; }
+.courier-breakdown-stats { display: flex; flex-wrap: wrap; gap: 7px 14px; color: #8392a3; font-size: 12px; }
 .courier-breakdown-stats span { display: inline-flex; align-items: center; gap: 4px; }
-.courier-breakdown-stats span:first-child svg { color: #159879; }
-.courier-breakdown-stats span:last-child svg { color: #d45b68; }
+.courier-breakdown-stats span:first-child svg { color: var(--courier-accent); }
+.courier-breakdown-stats span:last-child svg { color: #c45166; }
 .courier-row-score { text-align: right; }
-.courier-row-score strong { display: block; margin-bottom: 5px; color: #2a3e54; font-size: 12px; }
-.courier-row-score .courier-progress { height: 5px; }
-.courier-empty { display: flex; align-items: center; gap: 9px; padding: 17px; color: #8796a7; background: #fff; border: 1px solid #e4eaf2; border-radius: 14px; font-size: 12px; }
+.courier-row-score strong { display: block; margin-bottom: 7px; color: var(--courier-accent); font-size: 14px; }
+.courier-row-score .courier-progress { height: 6px; }
+.courier-row-score .courier-progress span { background: var(--courier-accent); }
+.courier-empty { display: flex; align-items: center; gap: 9px; padding: 19px; color: #8796a7; background: #fff; border: 1px solid #e4eaf2; border-radius: 14px; font-size: 13px; }
 .courier-empty svg { color: #6aa18e; }
 .courier-reports-list { display: grid; gap: 8px; }
 .courier-report-card { display: flex; align-items: flex-start; gap: 11px; padding: 13px 14px; background: #fffaf0; border: 1px solid #f4dfac; border-radius: 13px; }
@@ -150,6 +159,11 @@
   .courier-metric-icon { margin: 0 auto 7px; }
   .courier-metric strong { display: block; margin-top: 4px; font-size: 17px; }
   .courier-breakdown-row { grid-template-columns: minmax(120px, 1fr) minmax(95px, .8fr); gap: 9px; padding: 12px; }
+  .courier-brand img, .courier-brand-fallback { width: 44px; height: 44px; flex-basis: 44px; }
+  .courier-brand strong { font-size: 12px; }
+  .courier-brand small { font-size: 11px; }
+  .courier-breakdown-stats { font-size: 10px; }
+  .courier-row-score strong { font-size: 12px; }
   .courier-breakdown-stats { grid-column: 1 / 2; grid-row: 2; }
   .courier-row-score { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
   .courier-report-meta { flex-direction: column; gap: 3px; }
