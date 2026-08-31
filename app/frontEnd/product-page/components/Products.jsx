@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { FaCartPlus, FaChevronLeft, FaChevronRight, FaFacebookMessenger, FaWhatsapp } from "react-icons/fa";
+import { FaCartPlus, FaChevronLeft, FaChevronRight, FaFacebookMessenger, FaRuler, FaWhatsapp } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
-import { SiFoursquarecityguide } from "react-icons/si";
 import { toast } from "react-toastify";
 import Zoom from "react-medium-image-zoom";
 import { addToCart } from "@/redux/slices/CartSlice";
@@ -569,7 +568,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
             <div className="size-qty-row my-2 my-lg-3 d-lg-flex gap-lg-3">
               <button className="size-guide-btn" onClick={fetchSizeGuideData}>
-                <SiFoursquarecityguide />
+                <FaRuler />
                 Size Guide
               </button>
               <div className="quantity-controls">
