@@ -133,12 +133,12 @@ const AboutUs = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="py-5" style={{ backgroundColor: 'rgba(125, 11, 167, 0.05)' }}>
+      <section className="py-5" style={{ backgroundColor: 'rgba(var(--primary-rgb), 0.05)' }}>
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-6 mb-4 mb-lg-0">
-              <h1 className="display-4 fw-bold mb-4" style={{ color: '#7d0ba7' }}>
-                Welcome to <span style={{ color: '#7d0ba7' }}>eyarafashion.xyz</span>
+              <h1 className="display-4 fw-bold mb-4" style={{ color: 'var(--primary-color)' }}>
+                Welcome to <span style={{ color: 'var(--primary-color)' }}>eyarafashion.xyz</span>
               </h1>
               <p className="lead mb-4">
                 Your Ultimate Fashion Destination! We bring you a world of possibilities with millions of 
@@ -149,7 +149,7 @@ const AboutUs = () => {
                 <a 
                   href="#why-shop" 
                   className="btn btn-lg px-4" 
-                  style={{ backgroundColor: '#7d0ba7', color: 'white' }}
+                  style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
                 >
                   <i className="bi bi-star me-2"></i>Why Choose Us
                 </a>
@@ -167,7 +167,7 @@ const AboutUs = () => {
                   <div className="card-body p-0">
                     <div className="row g-0">
                       <div className="col-md-6 p-4 d-flex flex-column justify-content-center">
-                        <h4 className="fw-bold" style={{ color: '#7d0ba7' }}>Global Fashion</h4>
+                        <h4 className="fw-bold" style={{ color: 'var(--primary-color)' }}>Global Fashion</h4>
                         <p className="small mb-0">Direct from international markets to your doorstep</p>
                       </div>
                       <div className="col-md-6">
@@ -175,7 +175,7 @@ const AboutUs = () => {
                           className="h-100" 
                           style={{ 
                             minHeight: '200px',
-                            background: 'linear-gradient(135deg, rgba(125,11,167,0.8) 0%, rgba(125,11,167,0.2) 100%)',
+                            background: 'linear-gradient(135deg, rgba(var(--primary-rgb),0.8) 0%, rgba(var(--primary-rgb),0.2) 100%)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center'
@@ -198,7 +198,7 @@ const AboutUs = () => {
         <div className="container">
           <div className="row justify-content-center mb-5">
             <div className="col-lg-8 text-center">
-              <h2 className="fw-bold mb-3" style={{ color: '#7d0ba7' }}>
+              <h2 className="fw-bold mb-3" style={{ color: 'var(--primary-color)' }}>
                 <i className="bi bi-heart me-2"></i>Our Fashion Journey
               </h2>
               <p className="lead text-muted">
@@ -211,7 +211,7 @@ const AboutUs = () => {
             <div className="col-lg-6 mb-4 mb-lg-0">
               <div className="card border-0 shadow-sm h-100">
                 <div className="card-body p-5">
-                  <h3 className="fw-bold mb-4" style={{ color: '#7d0ba7' }}>
+                  <h3 className="fw-bold mb-4" style={{ color: 'var(--primary-color)' }}>
                     Direct from Global Markets
                   </h3>
                   <p className="mb-4">
@@ -222,7 +222,7 @@ const AboutUs = () => {
                   <div className="row">
                     <div className="col-md-6 mb-3">
                       <div className="d-flex align-items-center">
-                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '40px', height: '40px', backgroundColor: '#7d0ba7', color: 'white' }}>
+                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '40px', height: '40px', backgroundColor: 'var(--primary-color)', color: 'white' }}>
                           <i className="bi bi-box"></i>
                         </div>
                         <div>
@@ -233,7 +233,7 @@ const AboutUs = () => {
                     </div>
                     <div className="col-md-6 mb-3">
                       <div className="d-flex align-items-center">
-                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '40px', height: '40px', backgroundColor: '#7d0ba7', color: 'white' }}>
+                        <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '40px', height: '40px', backgroundColor: 'var(--primary-color)', color: 'white' }}>
                           <i className="bi bi-lightning"></i>
                         </div>
                         <div>
@@ -254,36 +254,36 @@ const AboutUs = () => {
             <div className="col-lg-6">
               <div className="row g-3">
                 <div className="col-6">
-                  <div className="card border-0 shadow-sm h-100" style={{ backgroundColor: 'rgba(125, 11, 167, 0.05)' }}>
+                  <div className="card border-0 shadow-sm h-100" style={{ backgroundColor: 'rgba(var(--primary-rgb), 0.05)' }}>
                     <div className="card-body text-center p-4">
-                      <i className="bi bi-truck" style={{ fontSize: '2.5rem', color: '#7d0ba7', marginBottom: '1rem' }}></i>
+                      <i className="bi bi-truck" style={{ fontSize: '2.5rem', color: 'var(--primary-color)', marginBottom: '1rem' }}></i>
                       <h5 className="fw-bold">Global Sourcing</h5>
                       <p className="small mb-0">Direct from international markets</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-6">
-                  <div className="card border-0 shadow-sm h-100" style={{ backgroundColor: 'rgba(125, 11, 167, 0.05)' }}>
+                  <div className="card border-0 shadow-sm h-100" style={{ backgroundColor: 'rgba(var(--primary-rgb), 0.05)' }}>
                     <div className="card-body text-center p-4">
-                      <i className="bi bi-cash-coin" style={{ fontSize: '2.5rem', color: '#7d0ba7', marginBottom: '1rem' }}></i>
+                      <i className="bi bi-cash-coin" style={{ fontSize: '2.5rem', color: 'var(--primary-color)', marginBottom: '1rem' }}></i>
                       <h5 className="fw-bold">Best Prices</h5>
                       <p className="small mb-0">Competitive international rates</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-6">
-                  <div className="card border-0 shadow-sm h-100" style={{ backgroundColor: 'rgba(125, 11, 167, 0.05)' }}>
+                  <div className="card border-0 shadow-sm h-100" style={{ backgroundColor: 'rgba(var(--primary-rgb), 0.05)' }}>
                     <div className="card-body text-center p-4">
-                      <i className="bi bi-shield-check" style={{ fontSize: '2.5rem', color: '#7d0ba7', marginBottom: '1rem' }}></i>
+                      <i className="bi bi-shield-check" style={{ fontSize: '2.5rem', color: 'var(--primary-color)', marginBottom: '1rem' }}></i>
                       <h5 className="fw-bold">Quality Assurance</h5>
                       <p className="small mb-0">Verified brands & merchants</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-6">
-                  <div className="card border-0 shadow-sm h-100" style={{ backgroundColor: 'rgba(125, 11, 167, 0.05)' }}>
+                  <div className="card border-0 shadow-sm h-100" style={{ backgroundColor: 'rgba(var(--primary-rgb), 0.05)' }}>
                     <div className="card-body text-center p-4">
-                      <i className="bi bi-award" style={{ fontSize: '2.5rem', color: '#7d0ba7', marginBottom: '1rem' }}></i>
+                      <i className="bi bi-award" style={{ fontSize: '2.5rem', color: 'var(--primary-color)', marginBottom: '1rem' }}></i>
                       <h5 className="fw-bold">Happy Customers</h5>
                       <p className="small mb-0">Thousands of satisfied shoppers</p>
                     </div>
@@ -300,7 +300,7 @@ const AboutUs = () => {
         <div className="container">
           <div className="row justify-content-center mb-5">
             <div className="col-lg-8 text-center">
-              <h2 className="fw-bold mb-3" style={{ color: '#7d0ba7' }}>
+              <h2 className="fw-bold mb-3" style={{ color: 'var(--primary-color)' }}>
                 <i className="bi bi-check-circle me-2"></i>Why Shop with eyarafashion.xyz?
               </h2>
               <p className="lead text-muted">
@@ -314,8 +314,8 @@ const AboutUs = () => {
               <div className="card border-0 shadow-sm h-100">
                 <div className="card-body p-4">
                   <div className="d-flex align-items-center mb-3">
-                    <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '50px', height: '50px', backgroundColor: 'rgba(125, 11, 167, 0.1)' }}>
-                      <i className="bi bi-grid-3x3-gap" style={{ fontSize: '1.5rem', color: '#7d0ba7' }}></i>
+                    <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '50px', height: '50px', backgroundColor: 'rgba(var(--primary-rgb), 0.1)' }}>
+                      <i className="bi bi-grid-3x3-gap" style={{ fontSize: '1.5rem', color: 'var(--primary-color)' }}></i>
                     </div>
                     <h5 className="fw-bold mb-0">Massive Selection</h5>
                   </div>
@@ -331,8 +331,8 @@ const AboutUs = () => {
               <div className="card border-0 shadow-sm h-100">
                 <div className="card-body p-4">
                   <div className="d-flex align-items-center mb-3">
-                    <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '50px', height: '50px', backgroundColor: 'rgba(125, 11, 167, 0.1)' }}>
-                      <i className="bi bi-tag" style={{ fontSize: '1.5rem', color: '#7d0ba7' }}></i>
+                    <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '50px', height: '50px', backgroundColor: 'rgba(var(--primary-rgb), 0.1)' }}>
+                      <i className="bi bi-tag" style={{ fontSize: '1.5rem', color: 'var(--primary-color)' }}></i>
                     </div>
                     <h5 className="fw-bold mb-0">Unbeatable Prices</h5>
                   </div>
@@ -348,8 +348,8 @@ const AboutUs = () => {
               <div className="card border-0 shadow-sm h-100">
                 <div className="card-body p-4">
                   <div className="d-flex align-items-center mb-3">
-                    <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '50px', height: '50px', backgroundColor: 'rgba(125, 11, 167, 0.1)' }}>
-                      <i className="bi bi-shield-check" style={{ fontSize: '1.5rem', color: '#7d0ba7' }}></i>
+                    <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '50px', height: '50px', backgroundColor: 'rgba(var(--primary-rgb), 0.1)' }}>
+                      <i className="bi bi-shield-check" style={{ fontSize: '1.5rem', color: 'var(--primary-color)' }}></i>
                     </div>
                     <h5 className="fw-bold mb-0">Worry-Free Shopping</h5>
                   </div>
@@ -365,8 +365,8 @@ const AboutUs = () => {
               <div className="card border-0 shadow-sm h-100">
                 <div className="card-body p-4">
                   <div className="d-flex align-items-center mb-3">
-                    <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '50px', height: '50px', backgroundColor: 'rgba(125, 11, 167, 0.1)' }}>
-                      <i className="bi bi-award" style={{ fontSize: '1.5rem', color: '#7d0ba7' }}></i>
+                    <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '50px', height: '50px', backgroundColor: 'rgba(var(--primary-rgb), 0.1)' }}>
+                      <i className="bi bi-award" style={{ fontSize: '1.5rem', color: 'var(--primary-color)' }}></i>
                     </div>
                     <h5 className="fw-bold mb-0">Trusted Brands</h5>
                   </div>
@@ -386,7 +386,7 @@ const AboutUs = () => {
         <div className="container">
           <div className="row justify-content-center mb-5">
             <div className="col-lg-8 text-center">
-              <h2 className="fw-bold mb-3" style={{ color: '#7d0ba7' }}>
+              <h2 className="fw-bold mb-3" style={{ color: 'var(--primary-color)' }}>
                 <i className="bi bi-tags me-2"></i>Our Fashion Categories
               </h2>
               <p className="lead text-muted">
@@ -401,7 +401,7 @@ const AboutUs = () => {
                 <div className="card-body p-0">
                   <div className="p-4">
                     <h5 className="fw-bold d-flex align-items-center">
-                      <i className="bi bi-person-standing me-3" style={{ color: '#7d0ba7' }}></i>
+                      <i className="bi bi-person-standing me-3" style={{ color: 'var(--primary-color)' }}></i>
                       Clothing & Apparel
                     </h5>
                     <p className="mb-0">
@@ -412,13 +412,13 @@ const AboutUs = () => {
                     className="category-image" 
                     style={{
                       height: '150px',
-                      background: 'linear-gradient(45deg, rgba(125,11,167,0.1) 0%, rgba(125,11,167,0.3) 100%)',
+                      background: 'linear-gradient(45deg, rgba(var(--primary-rgb),0.1) 0%, rgba(var(--primary-rgb),0.3) 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}
                   >
-                    <i className="bi bi-person-standing-dress" style={{ fontSize: '3rem', color: '#7d0ba7' }}></i>
+                    <i className="bi bi-person-standing-dress" style={{ fontSize: '3rem', color: 'var(--primary-color)' }}></i>
                   </div>
                 </div>
               </div>
@@ -429,7 +429,7 @@ const AboutUs = () => {
                 <div className="card-body p-0">
                   <div className="p-4">
                     <h5 className="fw-bold d-flex align-items-center">
-                      <i className="bi bi-gem me-3" style={{ color: '#7d0ba7' }}></i>
+                      <i className="bi bi-gem me-3" style={{ color: 'var(--primary-color)' }}></i>
                       Accessories
                     </h5>
                     <p className="mb-0">
@@ -440,13 +440,13 @@ const AboutUs = () => {
                     className="category-image" 
                     style={{
                       height: '150px',
-                      background: 'linear-gradient(45deg, rgba(125,11,167,0.1) 0%, rgba(125,11,167,0.3) 100%)',
+                      background: 'linear-gradient(45deg, rgba(var(--primary-rgb),0.1) 0%, rgba(var(--primary-rgb),0.3) 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}
                   >
-                    <i className="bi bi-gem" style={{ fontSize: '3rem', color: '#7d0ba7' }}></i>
+                    <i className="bi bi-gem" style={{ fontSize: '3rem', color: 'var(--primary-color)' }}></i>
                   </div>
                 </div>
               </div>
@@ -457,7 +457,7 @@ const AboutUs = () => {
                 <div className="card-body p-0">
                   <div className="p-4">
                     <h5 className="fw-bold d-flex align-items-center">
-                      <i className="bi bi-bag-heart me-3" style={{ color: '#7d0ba7' }}></i>
+                      <i className="bi bi-bag-heart me-3" style={{ color: 'var(--primary-color)' }}></i>
                       Beauty & Cosmetics
                     </h5>
                     <p className="mb-0">
@@ -468,13 +468,13 @@ const AboutUs = () => {
                     className="category-image" 
                     style={{
                       height: '150px',
-                      background: 'linear-gradient(45deg, rgba(125,11,167,0.1) 0%, rgba(125,11,167,0.3) 100%)',
+                      background: 'linear-gradient(45deg, rgba(var(--primary-rgb),0.1) 0%, rgba(var(--primary-rgb),0.3) 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}
                   >
-                    <i className="bi bi-bag-heart" style={{ fontSize: '3rem', color: '#7d0ba7' }}></i>
+                    <i className="bi bi-bag-heart" style={{ fontSize: '3rem', color: 'var(--primary-color)' }}></i>
                   </div>
                 </div>
               </div>
@@ -484,7 +484,7 @@ const AboutUs = () => {
       </section>
 
       {/* Join Us Section */}
-      <section className="py-5" style={{ backgroundColor: '#7d0ba7' }}>
+      <section className="py-5" style={{ backgroundColor: 'var(--primary-color)' }}>
         <div className="container">
           <div className="row justify-content-center text-center">
             <div className="col-lg-8">
@@ -500,7 +500,7 @@ const AboutUs = () => {
                 <div className="col-md-8">
                   <div className="card shadow-lg border-0">
                     <div className="card-body p-5">
-                      <h4 className="fw-bold mb-3" style={{ color: '#7d0ba7' }}>
+                      <h4 className="fw-bold mb-3" style={{ color: 'var(--primary-color)' }}>
                         <i className="bi bi-heart me-2"></i>Connect With Us
                       </h4>
                       <p className="mb-4">
@@ -512,7 +512,7 @@ const AboutUs = () => {
                         <a 
                           href="https://www.facebook.com/eyarafashion.xyz" 
                           className="btn btn-lg px-4" 
-                          style={{ backgroundColor: '#7d0ba7', color: 'white' }}
+                          style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
                         >
                           <i className="bi bi-facebook me-2"></i>Facebook
                         </a>
@@ -558,19 +558,19 @@ const AboutUs = () => {
         <div className="container">
           <div className="row text-center">
             <div className="col-md-3 mb-4 mb-md-0">
-              <div className="display-4 fw-bold" style={{ color: '#7d0ba7' }}>10000+</div>
+              <div className="display-4 fw-bold" style={{ color: 'var(--primary-color)' }}>10000+</div>
               <p className="text-muted mb-0">Happy Customers</p>
             </div>
             <div className="col-md-3 mb-4 mb-md-0">
-              <div className="display-4 fw-bold" style={{ color: '#7d0ba7' }}>5000+</div>
+              <div className="display-4 fw-bold" style={{ color: 'var(--primary-color)' }}>5000+</div>
               <p className="text-muted mb-0">Products Available</p>
             </div>
             <div className="col-md-3 mb-4 mb-md-0">
-              <div className="display-4 fw-bold" style={{ color: '#7d0ba7' }}>50+</div>
+              <div className="display-4 fw-bold" style={{ color: 'var(--primary-color)' }}>50+</div>
               <p className="text-muted mb-0">International Brands</p>
             </div>
             <div className="col-md-3">
-              <div className="display-4 fw-bold" style={{ color: '#7d0ba7' }}>24/7</div>
+              <div className="display-4 fw-bold" style={{ color: 'var(--primary-color)' }}>24/7</div>
               <p className="text-muted mb-0">Customer Support</p>
             </div>
           </div>

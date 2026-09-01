@@ -207,7 +207,7 @@ export default function VirtualizedRelatedProducts({
                   role="progressbar"
                   style={{
                     width: `${scrollProgress}%`,
-                    backgroundColor: '#7d0ba7'
+                    backgroundColor: 'var(--primary-color)'
                   }}
                   aria-valuenow={scrollProgress}
                   aria-valuemin="0"
@@ -285,7 +285,7 @@ export default function VirtualizedRelatedProducts({
                       }}
                     >
                       <div className="d-flex align-items-center gap-3 px-4 py-3 bg-white rounded-pill shadow-sm border">
-                        <div className="spinner-border spinner-border-sm" style={{ color: '#7d0ba7' }} role="status">
+                        <div className="spinner-border spinner-border-sm" style={{ color: 'var(--primary-color)' }} role="status">
                           <span className="visually-hidden">Loading...</span>
                         </div>
                         <span className="text-muted">Loading more products...</span>
@@ -313,7 +313,7 @@ export default function VirtualizedRelatedProducts({
       <style jsx>{`
         .virtualized-grid-container {
           scrollbar-width: thin;
-          scrollbar-color: #7d0ba7 #f8f9fa;
+          scrollbar-color: var(--primary-color) #f8f9fa;
         }
 
         .virtualized-grid-container::-webkit-scrollbar {
@@ -327,7 +327,7 @@ export default function VirtualizedRelatedProducts({
         }
 
         .virtualized-grid-container::-webkit-scrollbar-thumb {
-          background-color: #7d0ba7;
+          background-color: var(--primary-color);
           border-radius: 4px;
           border: 2px solid #f8f9fa;
         }
@@ -370,8 +370,8 @@ export default function VirtualizedRelatedProducts({
         }
 
         .nav-pills .nav-link.active {
-          background-color: #7d0ba7;
-          border-color: #7d0ba7;
+          background-color: var(--primary-color);
+          border-color: var(--primary-color);
           color: white;
         }
 

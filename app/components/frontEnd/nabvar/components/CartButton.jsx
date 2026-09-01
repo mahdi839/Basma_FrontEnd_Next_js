@@ -37,7 +37,7 @@ export default function CartButton() {
           {cartCount > 0 && (
             <span
               className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-              style={{ background: "#7d0ba7" }}
+              style={{ background: "var(--primary-color)" }}
             >
               {cartCount}
             </span>

@@ -13,6 +13,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Script from "next/script";
 import { Inter } from "next/font/google";
 import PixelTracker from "./components/PixelTracker";
+import "./components/theme/theme-overrides.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -55,10 +56,15 @@ export const metadata = {
 };
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      {/* ✅ Meta Pixel Script */}
-      <Script id="facebook-pixel" strategy="afterInteractive">
-        {`
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.variable}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var raw=localStorage.getItem('site-theme-vars');if(!raw)return;var vars=JSON.parse(raw);var root=document.documentElement;for(var key in vars){root.style.setProperty(key,vars[key]);}}catch(e){}})();`,
+          }}
+        />
+        <Script id="facebook-pixel" strategy="afterInteractive">
+          {`
           !function(f,b,e,v,n,t,s)
           {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
           n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -73,10 +79,7 @@ export default function RootLayout({ children }) {
           fbq('init', '2078716722977213');
           fbq('track', 'PageView');
         `}
-      </Script>
-
-      <body className={inter.variable}>
-        {/* ✅ Noscript fallback */}
+        </Script>
         <noscript>
           <img
             height="1"
