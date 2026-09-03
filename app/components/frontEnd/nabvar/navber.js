@@ -64,7 +64,15 @@ export default function Navbar() {
 
               <div className="mobile_logo">
                 <Link href="/">
-                  <Image src="/img/logo.png" alt="Logo" width={150} height={40} priority />
+                  <Image
+                    src="/img/eyara-fashion-logo.jpeg"
+                    alt="Eyara Fashion"
+                    width={1600}
+                    height={650}
+                    sizes="150px"
+                    className="site-logo site-logo--mobile"
+                    priority
+                  />
                 </Link>
               </div>
 
@@ -82,11 +90,12 @@ export default function Navbar() {
               <div className="header__logo py-2">
                 <Link href="/">
                   <Image
-                    src="/img/logo.png"
-                    alt="Logo"
-                    width={200}
-                    height={60}
-                    style={{ objectFit: "contain" }}
+                    src="/img/eyara-fashion-logo.jpeg"
+                    alt="Eyara Fashion"
+                    width={1600}
+                    height={650}
+                    sizes="200px"
+                    className="site-logo site-logo--desktop"
                     priority
                   />
                 </Link>

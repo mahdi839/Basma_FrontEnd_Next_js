@@ -444,6 +444,20 @@ ol {
 	display: inline-block;
 }
 
+.site-logo {
+	display: block;
+	height: auto;
+	object-fit: contain;
+}
+
+.site-logo--desktop {
+	width: 200px;
+}
+
+.site-logo--mobile {
+	width: 150px;
+}
+
 .header__menu {
 	padding: 24px 0;
 }
@@ -794,12 +808,16 @@ ol {
 	margin-bottom: 35px;
 }
 
-.hero_slider_img {
-  width: 100% !important;
-  height: auto;
-  max-height: 400px;
-  display: block;
-  margin-bottom: 2rem;
+.hero_banner {
+	margin-bottom: 2rem;
+}
+
+.hero_banner_img {
+	display: block;
+	width: 100%;
+	height: auto;
+	aspect-ratio: 32 / 13;
+	object-fit: cover;
 }
 
 .slick-slider {

@@ -48,13 +48,13 @@ export default function Footer() {
 
               <Link href="/" className="d-block mb-3">
                 <Image
-                  src="/img/logo.png"
+                  src="/img/eyara-fashion-logo.jpeg"
                   alt={siteConfig.company_name}
-                  width={180}
-                  height={50}
-                  style={{ objectFit: "contain" }}
+                  width={1600}
+                  height={650}
+                  sizes="180px"
                   priority
-                  className="img-fluid"
+                  className="footer-brand-logo"
                 />
               </Link>
 
