@@ -78,8 +78,16 @@ function ShopClient({ filterOptions: initialFilterOptions, initialProducts, init
         const res = await fetch(`${baseUrl}api/shop/products?${p}`);
         const data = await res.json();
         if (data.message === "success") {
-          setProducts((prev) => (append ? [...prev, ...data.data] : data.data));
-          setPagination(data.pagination);
+          // Page 2+ of Laravel paginate() can JSON-encode as an object
+          // ({"12": product}) instead of an array. Spreading that object
+          // throws and Next.js production shows a blank "Application error".
+          const incoming = Array.isArray(data.data)
+            ? data.data
+            : data.data && typeof data.data === "object"
+              ? Object.values(data.data)
+              : [];
+          setProducts((prev) => (append ? [...(prev || []), ...incoming] : incoming));
+          if (data.pagination) setPagination(data.pagination);
         }
       } catch (e) {
         toast.error("Error loading products");
