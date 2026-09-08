@@ -22,7 +22,11 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Eyara Fashion - Your Gateway to Global Footwear Elegance",
+  metadataBase: new URL("https://eyarafashion.xyz"),
+  title: {
+    default: "Eyara Fashion - Your Gateway to Global Footwear Elegance",
+    template: "%s | Eyara Fashion",
+  },
   description: "Eyara Fashion offers premium shoes, bags, and fashion accessories. Shop women's shoes, men's footwear, and stylish bags. Call: +8801614477721",
   keywords: "shoes online Bangladesh, women's shoes, men's shoes, bags, fashion accessories, Eyara Fashion",
   authors: [{ name: "Eyara Fashion" }],
@@ -32,12 +36,13 @@ export const metadata = {
   openGraph: {
     title: "Eyara Fashion - Your Gateway to Global Footwear Elegance",
     description: "Shop premium shoes and fashion accessories at Eyara Fashion",
-    url: "https://eyarafashion.xyz",
     siteName: "Eyara Fashion",
     images: [
       {
-        url: "/img/favicon.png",
-
+        url: "https://eyarafashion.xyz/img/logo.png",
+        width: 512,
+        height: 512,
+        alt: "Eyara Fashion",
       },
     ],
     locale: "en_BD",
@@ -47,11 +52,8 @@ export const metadata = {
     card: "summary_large_image",
     title: "Eyara Fashion",
     description: "Your Gateway to Global Footwear Elegance",
-    images: ["/img/favicon.png"],
+    images: ["https://eyarafashion.xyz/img/logo.png"],
   },
-  // verification: {
-  //   google: "your-google-verification-code", // Add after Google Search Console setup
-  // },
 };
 export default function RootLayout({ children }) {
   return (

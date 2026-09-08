@@ -1,7 +1,8 @@
 import BackEndLayout from "../components/layouts/BackEndLayout"
 
 export const metadata = {
-  title: 'Dashboard | Eyara Fashion',
+  title: { absolute: 'Dashboard | Eyara Fashion' },
+  robots: { index: false, follow: false },
 }
 
 export default function RootLayout({ children }) {
