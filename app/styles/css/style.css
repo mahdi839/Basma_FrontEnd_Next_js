@@ -458,6 +458,12 @@ ol {
 	width: 150px;
 }
 
+.auth-brand-logo {
+	width: 180px;
+	height: auto;
+	object-fit: contain;
+}
+
 .header__menu {
 	padding: 24px 0;
 }

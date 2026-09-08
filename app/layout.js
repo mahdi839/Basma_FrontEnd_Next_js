@@ -37,7 +37,7 @@ export const metadata = {
     siteName: "Eyara Fashion",
     images: [
       {
-        url: "/img/favicon.png",
+        url: "/img/eyara-fashion-logo.jpeg",
 
       },
     ],
@@ -48,7 +48,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Eyara Fashion",
     description: "Your Gateway to Global Footwear Elegance",
-    images: ["/img/favicon.png"],
+    images: ["/img/eyara-fashion-logo.jpeg"],
   },
   // verification: {
   //   google: "your-google-verification-code", // Add after Google Search Console setup

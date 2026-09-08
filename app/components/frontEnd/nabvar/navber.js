@@ -3,10 +3,10 @@
 // Renders static shell; all interactive pieces are isolated client sub-components
 
 import Link from "next/link";
-import Image from "next/image";
 import { FaEnvelope, FaFacebook, FaTwitter, FaLinkedin, FaPinterest } from "react-icons/fa";
 
 import { siteConfig } from "@/config/siteConfig";
+import SiteLogo from "@/app/components/frontEnd/SiteLogo";
 import DesktopSearchBar from "./components/DesktopSearchBar";
 import CartButton from "./components/CartButton";
 import DesktopNav from "./components/DesktopNav";
@@ -63,17 +63,11 @@ export default function Navbar() {
               <MobileMenuDrawer/>
 
               <div className="mobile_logo">
-                <Link href="/">
-                  <Image
-                    src="/img/eyara-fashion-logo.jpeg"
-                    alt="Eyara Fashion"
-                    width={1600}
-                    height={650}
-                    sizes="150px"
-                    className="site-logo site-logo--mobile"
-                    priority
-                  />
-                </Link>
+                <SiteLogo
+                  sizes="150px"
+                  className="site-logo site-logo--mobile"
+                  priority
+                />
               </div>
 
               {/* Mobile user dropdown — client island */}
@@ -88,17 +82,11 @@ export default function Navbar() {
             {/* Desktop logo */}
             <div className="col-lg-3 d-none d-xl-block">
               <div className="header__logo py-2">
-                <Link href="/">
-                  <Image
-                    src="/img/eyara-fashion-logo.jpeg"
-                    alt="Eyara Fashion"
-                    width={1600}
-                    height={650}
-                    sizes="200px"
-                    className="site-logo site-logo--desktop"
-                    priority
-                  />
-                </Link>
+                <SiteLogo
+                  sizes="200px"
+                  className="site-logo site-logo--desktop"
+                  priority
+                />
               </div>
             </div>
 

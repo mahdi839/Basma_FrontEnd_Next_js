@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import { TbCirclesRelation } from "react-icons/tb";
 import { HiTrophy } from "react-icons/hi2";
 import { useAuth } from "@/app/hooks/useAuth";
+import SiteLogo from "@/app/components/frontEnd/SiteLogo";
 
 export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
   const [openMenu, setOpenMenu] = useState(null);
@@ -313,9 +314,14 @@ export default function SideBar({ isSidebarOpen, toggleSidebar, isMobile }) {
       <div className={`sideBarDiv d-flex flex-column ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'} ${isMobile ? 'mobile-sidebar' : ''}`}>
         {/* Header */}
         <div className="d-flex justify-content-between align-items-center sideBar_icon_siteName">
-          <h5 className="text-white" style={{ display: isSidebarOpen ? 'block' : 'none' }}>
-            Eyara Fashion
-          </h5>
+          <div style={{ display: isSidebarOpen ? "block" : "none", minWidth: 0 }}>
+            <SiteLogo
+              variant="light"
+              href="/dashboard"
+              sizes="140px"
+              className="sidebar-brand-logo"
+            />
+          </div>
           <button
             className="sidebar-toggle-btn"
             onClick={toggleSidebar}

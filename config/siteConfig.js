@@ -1,5 +1,10 @@
 export const siteConfig = {
   company_name: "Eyara Fashion",
+  logo: {
+    dark: "/img/eyara-fashion-logo.png",
+    light: "/img/eyara-fashion-logo-white.png",
+    icon: "/img/favicon.png",
+  },
   company_description:
     "Welcome to Eyarafashion.xyz “We Believe In Satisfaction” defines our commitment to excellence and unforgettable products.",
 
