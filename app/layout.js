@@ -33,7 +33,7 @@ export const metadata = {
   openGraph: {
     title: "Eyara Fashion - Your Gateway to Global Footwear Elegance",
     description: "Shop premium shoes and fashion accessories at Eyara Fashion",
-    url: "https://eyarafashion.xyz",
+    url: "https://eyarafashion.com",
     siteName: "Eyara Fashion",
     images: [
       {

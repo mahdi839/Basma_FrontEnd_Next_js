@@ -6,16 +6,16 @@ export const siteConfig = {
     icon: "/img/favicon.png",
   },
   company_description:
-    "Welcome to Eyarafashion.xyz “We Believe In Satisfaction” defines our commitment to excellence and unforgettable products.",
+    "Welcome to Eyarafashion.com “We Believe In Satisfaction” defines our commitment to excellence and unforgettable products.",
 
   phone: "01614477721",
   email: "contact@eyarafashion.com",
   address: "Mirpur Dhaka - 1216",
 
   social: {
-    facebook: "https://www.facebook.com/eyarafashion.xyz",
+    facebook: "https://www.facebook.com/eyarafashion.com",
     instagram: "https://www.instagram.com/eyarafashionbd/",
-    youtube: "https://eyarafashion.xyz",
+    youtube: "https://eyarafashion.com",
     whatsApp: "1795802507"
   }
 };
