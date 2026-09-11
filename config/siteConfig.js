@@ -1,5 +1,10 @@
 export const siteConfig = {
   company_name: "Eyara Fashion",
+  logo: {
+    dark: "/img/eyara-fashion-logo.png",
+    light: "/img/eyara-fashion-logo-white.png",
+    icon: "/img/favicon.png",
+  },
   company_description:
     "Welcome to Eyarafashion.xyz “We Believe In Satisfaction” defines our commitment to excellence and unforgettable products.",
 
@@ -10,7 +15,7 @@ export const siteConfig = {
   social: {
     facebook: "https://www.facebook.com/eyarafashion.xyz",
     instagram: "https://www.instagram.com/eyarafashionbd/",
-    youtube: "https://eyarafashion.xyz",
-    whatsApp: "1795802507"
+    youtube: "https://eyarafashion.com",
+    whatsApp: "01614477721"
   }
 };

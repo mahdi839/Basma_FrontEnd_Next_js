@@ -78,8 +78,16 @@ function ShopClient({ filterOptions: initialFilterOptions, initialProducts, init
         const res = await fetch(`${baseUrl}api/shop/products?${p}`);
         const data = await res.json();
         if (data.message === "success") {
-          setProducts((prev) => (append ? [...prev, ...data.data] : data.data));
-          setPagination(data.pagination);
+          // Page 2+ of Laravel paginate() can JSON-encode as an object
+          // ({"12": product}) instead of an array. Spreading that object
+          // throws and Next.js production shows a blank "Application error".
+          const incoming = Array.isArray(data.data)
+            ? data.data
+            : data.data && typeof data.data === "object"
+              ? Object.values(data.data)
+              : [];
+          setProducts((prev) => (append ? [...(prev || []), ...incoming] : incoming));
+          if (data.pagination) setPagination(data.pagination);
         }
       } catch (e) {
         toast.error("Error loading products");
@@ -378,13 +386,13 @@ function ShopClient({ filterOptions: initialFilterOptions, initialProducts, init
 
         .load-more-wrap { display:flex; justify-content:center; padding-top:40px; }
         .load-more-btn {
-          padding:12px 48px; border:1.5px solid #7d0ba7; border-radius:3px;
+          padding:12px 48px; border:1.5px solid var(--primary-color); border-radius:3px;
           background:transparent; font-size:11px; font-weight:800;
           letter-spacing:.12em; text-transform:uppercase; cursor:pointer;
           color:#111; transition:all .15s;
           display:flex; align-items:center; gap:10px;
         }
-        .load-more-btn:hover:not(:disabled) { background:#7d0ba7; color:#fff; }
+        .load-more-btn:hover:not(:disabled) { background:var(--primary-color); color:#fff; }
         .load-more-btn:disabled { opacity:.45; cursor:not-allowed; }
         .spf-spinner {
           width:12px; height:12px; border:2px solid #ccc; border-top-color:#111;

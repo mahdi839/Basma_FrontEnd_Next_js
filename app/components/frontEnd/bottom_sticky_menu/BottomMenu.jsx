@@ -135,7 +135,7 @@ export default function BottomMenu() {
                     {isClient && cartCount > 0 && (
                       <span 
                         className="position-absolute top-0 start-100 translate-middle badge rounded-pill" 
-                        style={{ background: '#7d0ba7', fontSize: '9px' }}
+                        style={{ background: 'var(--primary-color)', fontSize: '9px' }}
                       >
                         {cartCount}
                       </span>
@@ -215,7 +215,7 @@ export default function BottomMenu() {
                           content: '',
                           width: '50%',
                           height: '2px',
-                          background: '#7d0ba7',
+                          background: 'var(--primary-color)',
                           bottom: 0,
                           left: 0,
                           transform: 'translateY(12px)'
@@ -242,7 +242,7 @@ export default function BottomMenu() {
                           content: '',
                           width: '50%',
                           height: '2px',
-                          background: '#7d0ba7',
+                          background: 'var(--primary-color)',
                           bottom: 0,
                           left: 0,
                           transform: 'translateY(12px)'

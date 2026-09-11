@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
+import { FaArrowDown } from 'react-icons/fa';
 import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard";
 
 export default function VirtualizedRelatedProducts({
@@ -207,7 +208,7 @@ export default function VirtualizedRelatedProducts({
                   role="progressbar"
                   style={{
                     width: `${scrollProgress}%`,
-                    backgroundColor: '#7d0ba7'
+                    backgroundColor: 'var(--primary-color)'
                   }}
                   aria-valuenow={scrollProgress}
                   aria-valuemin="0"
@@ -285,7 +286,7 @@ export default function VirtualizedRelatedProducts({
                       }}
                     >
                       <div className="d-flex align-items-center gap-3 px-4 py-3 bg-white rounded-pill shadow-sm border">
-                        <div className="spinner-border spinner-border-sm" style={{ color: '#7d0ba7' }} role="status">
+                        <div className="spinner-border spinner-border-sm" style={{ color: 'var(--primary-color)' }} role="status">
                           <span className="visually-hidden">Loading...</span>
                         </div>
                         <span className="text-muted">Loading more products...</span>
@@ -297,12 +298,18 @@ export default function VirtualizedRelatedProducts({
 
               {/* Scroll Hint */}
               {rowCount > 3 && (
-                <div className="text-center mt-3">
-                  <small className="text-muted">
-                    <i className="bi bi-arrow-down me-1"></i>
-                    Scroll to see more products
+                <div className="related-products-scroll-hint" role="status">
+                  <FaArrowDown aria-hidden="true" />
+                  <span>Scroll to see more products</span>
+                  {/*
                     {hasMore && windowWidth > 576 && ' • More products will load automatically'}
-                  </small>
+                  */}
+                  {hasMore && windowWidth > 576 && (
+                    <>
+                      <span className="related-products-scroll-hint-separator" aria-hidden="true">|</span>
+                      <span>More products will load automatically</span>
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -313,7 +320,7 @@ export default function VirtualizedRelatedProducts({
       <style jsx>{`
         .virtualized-grid-container {
           scrollbar-width: thin;
-          scrollbar-color: #7d0ba7 #f8f9fa;
+          scrollbar-color: var(--primary-color) #f8f9fa;
         }
 
         .virtualized-grid-container::-webkit-scrollbar {
@@ -327,7 +334,7 @@ export default function VirtualizedRelatedProducts({
         }
 
         .virtualized-grid-container::-webkit-scrollbar-thumb {
-          background-color: #7d0ba7;
+          background-color: var(--primary-color);
           border-radius: 4px;
           border: 2px solid #f8f9fa;
         }
@@ -370,8 +377,8 @@ export default function VirtualizedRelatedProducts({
         }
 
         .nav-pills .nav-link.active {
-          background-color: #7d0ba7;
-          border-color: #7d0ba7;
+          background-color: var(--primary-color);
+          border-color: var(--primary-color);
           color: white;
         }
 
@@ -450,6 +457,30 @@ export default function VirtualizedRelatedProducts({
 
         .virtualized-grid-container {
           background-color: transparent;
+        }
+
+        .related-products-scroll-hint {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 0.45rem;
+          margin-top: 1rem;
+          color: var(--primary-color);
+          font-size: 0.9rem;
+          font-weight: 600;
+          line-height: 1.5;
+          text-align: center;
+        }
+
+        .related-products-scroll-hint svg {
+          flex: 0 0 auto;
+          font-size: 0.85rem;
+        }
+
+        .related-products-scroll-hint-separator {
+          opacity: 0.65;
+          margin: 0 0.1rem;
         }
       `}</style>
     </div>
