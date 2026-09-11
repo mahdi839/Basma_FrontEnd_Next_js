@@ -138,7 +138,7 @@ const AboutUs = () => {
           <div className="row align-items-center">
             <div className="col-lg-6 mb-4 mb-lg-0">
               <h1 className="display-4 fw-bold mb-4" style={{ color: 'var(--primary-color)' }}>
-                Welcome to <span style={{ color: 'var(--primary-color)' }}>eyarafashion.com</span>
+                Welcome to <span style={{ color: 'var(--primary-color)' }}>eyarafashion.xyz</span>
               </h1>
               <p className="lead mb-4">
                 Your Ultimate Fashion Destination! We bring you a world of possibilities with millions of 
@@ -510,7 +510,7 @@ const AboutUs = () => {
                       
                       <div className="d-flex flex-wrap justify-content-center gap-3">
                         <a 
-                          href="https://www.facebook.com/eyarafashion.com" 
+                          href="https://www.facebook.com/eyarafashion.xyz" 
                           className="btn btn-lg px-4" 
                           style={{ backgroundColor: 'var(--primary-color)', color: 'white' }}
                         >

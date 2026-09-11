@@ -10,7 +10,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'api.eyarafashion.com',
+        hostname: 'api.eyarafashion.xyz',
         pathname: '/**',  // ← Allow all paths
       },
     ],
