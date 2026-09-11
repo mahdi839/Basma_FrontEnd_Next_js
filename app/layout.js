@@ -78,6 +78,18 @@ export default function RootLayout({ children }) {
       </Script>
 
       <body className={inter.variable}>
+        {/*
+          DOM guard: browser extensions (translators like TransOver / Google
+          Translate, Grammarly, etc.) rewrite text nodes React owns. When React
+          later calls removeChild / insertBefore on a node that was moved, the
+          browser throws NotFoundError and Next.js shows a blank
+          "Application error" page. Skip those operations instead of crashing.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(typeof Node!=='function'||!Node.prototype)return;var rc=Node.prototype.removeChild;Node.prototype.removeChild=function(child){if(child&&child.parentNode!==this){if(typeof console!=='undefined'&&console.warn)console.warn('Skipped removeChild: node was moved by a browser extension');return child;}return rc.apply(this,arguments);};var ib=Node.prototype.insertBefore;Node.prototype.insertBefore=function(newNode,ref){if(ref&&ref.parentNode!==this){if(typeof console!=='undefined'&&console.warn)console.warn('Skipped insertBefore: reference node was moved by a browser extension');return newNode;}return ib.apply(this,arguments);};})();`,
+          }}
+        />
         {/* ✅ Noscript fallback */}
         <noscript>
           <img

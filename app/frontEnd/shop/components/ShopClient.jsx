@@ -536,10 +536,14 @@ function ShopClient({ filterOptions: initialFilterOptions, initialProducts, init
                       className="load-more-btn"
                       onClick={() => fetchProducts(pagination.current_page + 1, true)}
                       disabled={loadingMore}
+                      translate="no"
                     >
+                      {/* Keep text inside elements so React swaps elements, not raw
+                          text nodes, which translator extensions like to rewrite. */}
                       {loadingMore ? (
                         <>
-                          <span className="spf-spinner" /> Loading
+                          <span className="spf-spinner" />
+                          <span>Loading</span>
                         </>
                       ) : (
                         <span>Load More</span>
