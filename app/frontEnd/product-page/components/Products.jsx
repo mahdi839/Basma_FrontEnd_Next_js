@@ -13,6 +13,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import "./productPage.css";
 import "./specification.css";
 import useProductLogics from "@/app/hooks/useProductLogics";
+import useProductInventory from "@/app/hooks/useProductInventory";
 import { useDispatch, useSelector } from "react-redux";
 import SignProdSkeleton from "./SignProdSkeleton";
 import VirtualizedRelatedProducts from "./VirtualizedRelatedProducts";
@@ -41,6 +42,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [localImgUrl, setLocalImgUrl] = useState(null);
   const [selectedColorName, setSelectedColorName] = useState(null)
+  const [selectedColorId, setSelectedColorId] = useState(null)
   // smart image loader
   const [showImgLoader, setShowImgLoader] = useState(false);
   const loaderDelayRef = useRef(null);
@@ -76,8 +78,37 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const messengerUrl = `https://m.me/${pageId}`;
 
   const images = product?.images || [];
-  const cartItem = cartItems.find((item) => product.id == item.id);
   const hasSpecifications = product?.specifications && product.specifications.length > 0;
+
+  const stock = useProductInventory(product);
+
+  // A product with only one colour or only one size is effectively pre-selected,
+  // so availability can be shown before the customer touches anything.
+  const effectiveColorId =
+    selectedColorId ??
+    (product?.colors?.length === 1 ? product.colors[0].id : null);
+  const effectiveSizeId =
+    selectedSize ?? (product?.sizes?.length === 1 ? product.sizes[0].id : null);
+
+  const selection = stock.selection(effectiveColorId, effectiveSizeId);
+
+  // Pre-order copy comes from the product's own settings, falling back to the
+  // wording the site used before inventory existed.
+  const preorderLabel =
+    stock.preorderNote ||
+    (stock.preorderEtaDays
+      ? `Pre Order, Delivery Time ${stock.preorderEtaDays} Days`
+      : "Pre Order, Delivery Time 20 to 25 Days");
+
+  const needsColor = (product?.colors?.length ?? 0) > 1 && !selectedColor;
+  const needsSize = (product?.sizes?.length ?? 0) > 1 && !selectedSize;
+  const selectionComplete = !needsColor && !needsSize;
+
+  const cartItem = cartItems.find((item) =>
+    selection.variantId
+      ? item.variant_id === selection.variantId
+      : product.id == item.id
+  );
 
   const displayImgUrl =
     localImgUrl ||
@@ -150,12 +181,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     await stopDelayedLoader();
   }
 
-  async function handleColorClick(colorImage, colorName) {
+  async function handleColorClick(colorImage, colorName, colorId) {
     const newUrl = `${baseUrl}${colorImage}`;
     await switchMainImage(newUrl, () => {
       handleSelectedColor(colorImage);
     });
     setSelectedColorName(colorName)
+    setSelectedColorId(colorId ?? null)
   }
 
   async function handleThumbClickLocal(imgId) {
@@ -181,7 +213,44 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
 
   function handleAddToCart(type) {
     if (!product) return;
-    const existing = cartItems.find((item) => item.id === product.id);
+
+    if (needsSize) {
+      Swal.fire({
+        title: `Please Select A Size`,
+        icon: "warning",
+        confirmButtonText: "Ok",
+        confirmButtonColor: getPrimaryColor(),
+      });
+      return;
+    }
+
+    if (needsColor) {
+      Swal.fire({
+        title: `Please Select A Color`,
+        icon: "warning",
+        confirmButtonText: "Ok",
+        confirmButtonColor: getPrimaryColor(),
+      });
+      return;
+    }
+
+    // The exact colour + size is known by now, so stock can be checked properly.
+    if (stock.tracks && !selection.sellable) {
+      Swal.fire({
+        title: "Out of stock",
+        text: "This colour and size combination is sold out. Please pick another one.",
+        icon: "warning",
+        confirmButtonText: "Ok",
+        confirmButtonColor: getPrimaryColor(),
+      });
+      return;
+    }
+
+    const existing = cartItems.find((item) =>
+      selection.variantId
+        ? item.variant_id === selection.variantId
+        : item.id === product.id
+    );
 
     if (existing) {
       Swal.fire({
@@ -194,39 +263,35 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       return;
     }
 
-    if (product.sizes.length > 1 && !selectedSize) {
-      Swal.fire({
-        title: `Please Select A Size`,
-        icon: "warning",
-        confirmButtonText: "Ok",
-        confirmButtonColor: getPrimaryColor(),
-      });
-      return;
-    }
-
-    if (product?.colors?.length > 1 && !selectedColor) {
-      Swal.fire({
-        title: `Please Select A Color`,
-        icon: "warning",
-        confirmButtonText: "Ok",
-        confirmButtonColor: getPrimaryColor(),
-      });
-      return;
-    }
-
     const selectedVariant = product.sizes.find((s) => s.id == selectedSize) || product.sizes[0];
     const imageUrl = product.images?.[0]?.image ? baseUrl + product.images[0].image : "";
+    const requestedQty = preQty ?? 1;
+    const cappedQty =
+      stock.tracks && !selection.preorder && selection.available > 0
+        ? Math.min(requestedQty, selection.available)
+        : requestedQty;
+
+    if (cappedQty < requestedQty) {
+      toast.info(`Only ${selection.available} left, quantity adjusted.`);
+    }
 
     dispatch(
       addToCart({
         id: product.id,
         title: product.title,
         size: selectedSize ? selectedVariant.id : "",
+        size_label: selectedSize ? selectedVariant.size : null,
         price: selectedVariant?.pivot?.price ?? product.discount ?? 0,
         image: imageUrl,
         colorImage: selectedColor ? baseUrl + selectedColor : null,
         color_name: selectedColorName,
-        preQty: preQty ?? 1,
+        // Inventory hints so the API resolves the exact stock row.
+        variant_id: selection.variantId,
+        product_color_id: selection.productColorId,
+        color_id: effectiveColorId,
+        max_qty: stock.tracks && !selection.preorder ? selection.available : null,
+        is_preorder: selection.preorder,
+        preQty: cappedQty,
       })
     );
 
@@ -292,18 +357,36 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
     }
 
     const baseProduct = product || selectedProduct;
+
+    // Related-product cards only carry a product-level total; the API re-checks
+    // the exact colour and size when the order is placed.
+    const summary = baseProduct?.inventory_summary;
+    if (summary?.track_inventory && !summary.in_stock && !summary.allow_preorder) {
+      Swal.fire({
+        title: "Out of stock",
+        text: "This product is sold out right now.",
+        icon: "warning",
+        confirmButtonColor: getPrimaryColor(),
+      });
+      return;
+    }
+
     const selectedVariant =
       baseProduct?.sizes?.find((s) => s.id == modalSelectedSize) || baseProduct?.sizes?.[0];
     const imageUrl = baseProduct?.image ? baseUrl + baseProduct?.image : "";
+    const modalColor = baseProduct?.colors?.find((c) => c.image === modalSelectedColor);
 
     dispatch(
       addToCart({
         id: baseProduct.id,
         title: baseProduct.title,
         size: modalSelectedSize ?? "",
+        size_label: selectedVariant?.size ?? null,
         price: selectedVariant?.pivot?.price ?? baseProduct.discount ?? 0,
         image: imageUrl,
         colorImage: modalSelectedColor ? baseUrl + modalSelectedColor : null,
+        color_name: modalColor?.name ?? null,
+        color_id: modalColor?.id ?? null,
         preQty: preQty ?? 1,
       })
     );
@@ -369,7 +452,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             )}
             {product?.status === "prebook" && (
-              <div className="preorder-badge">⚡ Pre Order, Delivery Time 20 to 25 Days</div>
+              <div className="preorder-badge">⚡ {preorderBadgeText}</div>
             )}
              {product?.status === "in-stock" && (
               <div className="preorder-badge">⚡Delivery Time 2 to 4 Days</div>
@@ -497,7 +580,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 </div>
               )}
               {product?.status === "prebook" && (
-                <div className="preorder-badge">⚡ Pre Order, Delivery Time 20 to 25 Days</div>
+                <div className="preorder-badge">⚡ {preorderLabel}</div>
               )}
             </div>
 
@@ -515,27 +598,43 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   Colors:
                 </div>
                 <div className="color-selector-grid">
-                  {product?.colors?.map((color) => (
-                    <div
-                      key={color.id}
-                      className={`color-option-card ${selectedColor === color.image ? "selected" : ""}`}
-                      onClick={() => handleColorClick(color?.image, color?.name)}
-                      data-tooltip-id="color-tooltip"
-                      data-tooltip-content={color.name}
-                    >
-                      <Image
-                        src={
-                          color?.image
-                            ? process.env.NEXT_PUBLIC_BACKEND_URL + color.image
-                            : "/images/placeholder.jpg"
+                  {product?.colors?.map((color) => {
+                    const colorStock = stock.colorAvailability(color.id);
+                    const soldOut = stock.tracks && !colorStock.sellable;
+
+                    return (
+                      <div
+                        key={color.id}
+                        className={`color-option-card ${selectedColor === color.image ? "selected" : ""} ${soldOut ? "sold-out" : ""}`}
+                        onClick={() =>
+                          soldOut
+                            ? null
+                            : handleColorClick(color?.image, color?.name, color?.id)
                         }
-                        alt={color.name || "Color option"}
-                        width={50}
-                        height={50}
-                        style={{ objectFit: "cover" }}
-                      />
-                    </div>
-                  ))}
+                        data-tooltip-id="color-tooltip"
+                        data-tooltip-content={
+                          soldOut
+                            ? `${color.name ?? "Colour"} — sold out`
+                            : stock.tracks
+                            ? `${color.name ?? "Colour"} — ${colorStock.available} available`
+                            : color.name
+                        }
+                      >
+                        <Image
+                          src={
+                            color?.image
+                              ? process.env.NEXT_PUBLIC_BACKEND_URL + color.image
+                              : "/images/placeholder.jpg"
+                          }
+                          alt={color.name || "Color option"}
+                          width={50}
+                          height={50}
+                          style={{ objectFit: "cover" }}
+                        />
+                        {soldOut && <span className="variant-strike" />}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -552,18 +651,67 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   {product?.sizes?.map((size) => {
                     const sizePrice = size?.pivot?.price;
                     const isSelected = selectedSize == size.id;
+                    const sizeStock = stock.sizeAvailability(size.id, effectiveColorId);
+                    const soldOut = stock.tracks && !sizeStock.sellable;
+
                     return (
                       <button
                         key={size?.id}
-                        className={`size-option-btn ${isSelected ? "selected" : ""}`}
-                        onClick={() => handleSelectedSize(size.id)}
+                        className={`size-option-btn ${isSelected ? "selected" : ""} ${soldOut ? "sold-out" : ""}`}
+                        onClick={() => (soldOut ? null : handleSelectedSize(size.id))}
+                        disabled={soldOut}
+                        title={
+                          soldOut
+                            ? "Sold out"
+                            : stock.tracks
+                            ? `${sizeStock.available} available`
+                            : undefined
+                        }
                       >
                         {size?.size}
                         {sizePrice && <span className="size-price">৳{sizePrice}</span>}
+                        {stock.tracks && !soldOut && (
+                          <span className="size-stock">{sizeStock.available} left</span>
+                        )}
                       </button>
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* Live availability for the exact colour + size chosen */}
+            {stock.tracks && (
+              <div className="stock-line">
+                {!selectionComplete ? (
+                  <span className="stock-chip stock-chip-neutral">
+                    Choose {needsColor && needsSize
+                      ? "a colour and size"
+                      : needsColor
+                      ? "a colour"
+                      : "a size"}{" "}
+                    to see availability
+                  </span>
+                ) : selection.preorder ? (
+                  <span className="stock-chip stock-chip-pre">
+                    Pre-order
+                    {stock.preorderEtaDays
+                      ? ` · ships in about ${stock.preorderEtaDays} days`
+                      : ""}
+                  </span>
+                ) : !selection.sellable ? (
+                  <span className="stock-chip stock-chip-out">
+                    Sold out in this combination
+                  </span>
+                ) : selection.lowStock ? (
+                  <span className="stock-chip stock-chip-low">
+                    Only {selection.available} left
+                  </span>
+                ) : (
+                  <span className="stock-chip stock-chip-in">
+                    In stock · {selection.available} available
+                  </span>
+                )}
               </div>
             )}
 
@@ -585,6 +733,13 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                 <button
                   className="quantity-btn"
                   onClick={() => handleQuantityIncrease(product?.id)}
+                  // Cannot order more than is actually on the shelf.
+                  disabled={
+                    stock.tracks &&
+                    selectionComplete &&
+                    !selection.preorder &&
+                    (cartItem?.qty ?? preQty) >= selection.available
+                  }
                   aria-label="Increase quantity"
                 >
                   +
@@ -593,13 +748,21 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
             </div>
 
             <div className="action-buttons-container">
-              <button className="single-prod-action-btn btn-grad" onClick={() => handleAddToCart("add")}>
+              <button
+                className="single-prod-action-btn btn-grad"
+                onClick={() => handleAddToCart("add")}
+                disabled={stock.tracks && selectionComplete && !selection.sellable}
+              >
                 <FaCartPlus size={16} />
                 Add to Cart
               </button>
-              <button className="single-prod-action-btn btn-grad" onClick={() => handleAddToCart("buy")}>
+              <button
+                className="single-prod-action-btn btn-grad"
+                onClick={() => handleAddToCart("buy")}
+                disabled={stock.tracks && selectionComplete && !selection.sellable}
+              >
                 <FaCartPlus size={16} />
-                Buy Now
+                {selection.preorder ? "Pre-order Now" : "Buy Now"}
               </button>
             </div>
 
@@ -727,6 +890,84 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
       <CartDrawer isOpen={isCartDrawerOpen} isDirectBuy={isDirectBuy} onClose={handleCloseDrawer} />
 
       <style jsx>{`
+  /* ── Availability states ── */
+  .color-option-card.sold-out {
+    position: relative;
+    cursor: not-allowed;
+    opacity: 0.42;
+    filter: grayscale(0.85);
+  }
+  .variant-strike {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to top left,
+      transparent calc(50% - 1px),
+      rgba(180, 35, 24, 0.85) calc(50% - 1px),
+      rgba(180, 35, 24, 0.85) calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
+  }
+  .size-option-btn.sold-out {
+    cursor: not-allowed;
+    opacity: 0.45;
+    text-decoration: line-through;
+    text-decoration-color: rgba(180, 35, 24, 0.75);
+  }
+  .size-stock {
+    display: block;
+    margin-top: 2px;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #667085;
+  }
+  .size-option-btn.selected .size-stock {
+    color: inherit;
+    opacity: 0.85;
+  }
+
+  .stock-line {
+    margin: 10px 0 2px;
+  }
+  .stock-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+  .stock-chip-in {
+    background: #e2f6ec;
+    color: #0f6b52;
+  }
+  .stock-chip-low {
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .stock-chip-out {
+    background: #fee4e2;
+    color: #b42318;
+  }
+  .stock-chip-pre {
+    background: #e8e6fd;
+    color: #4a3aa8;
+  }
+  .stock-chip-neutral {
+    background: #f2f4f7;
+    color: #667085;
+  }
+
+  .single-prod-action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.4);
+  }
+
   .specifications-table-wrapper {
     overflow-x: auto;
   }

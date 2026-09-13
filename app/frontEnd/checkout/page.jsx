@@ -201,17 +201,28 @@ function CheckoutPage() {
 
     const updatedFormData = {
       ...formData,
+      // Read the cart at submit time; formData.cart is only a mount-time snapshot.
+      cart: cartItems,
       shipping_cost: shippingAmount,
+      total_amount: totalPrice + shippingAmount,
       checkout_session_id: getSessionId(),
     };
 
     const storeOrderUrl = process.env.NEXT_PUBLIC_BACKEND_URL + "api/orders";
-    
-    // Mark order as completed BEFORE storing
+
+    const placed = await storeData(
+      storeOrderUrl,
+      updatedFormData,
+      "Thank you for your purchase! Order placed successfully."
+    );
+
+    // Only tear the cart down once the order really exists. A stock shortfall
+    // now returns 422, and losing the cart on that would be unrecoverable.
+    if (!placed) return;
+
     orderCompletedRef.current = true;
     setOrderCompleted(true);
-    
-    // Mark abandoned checkout as converted
+
     if (formData.phone) {
       try {
         await axios.post(
@@ -224,12 +235,6 @@ function CheckoutPage() {
       }
     }
 
-    storeData(
-      storeOrderUrl,
-      updatedFormData,
-      "Thank you for your purchase! Order placed successfully."
-    );
-    
     dispatch(clearCart());
     route.push("/");
   };
@@ -380,7 +385,7 @@ function CheckoutPage() {
               <ul className="list-group list-group-flush mb-4">
                 {cartItems.map((item) => (
                   <li
-                    key={item.id}
+                    key={item.lineId ?? item.id}
                     className="list-group-item d-flex justify-content-between align-items-center px-0"
                   >
                     <div>
