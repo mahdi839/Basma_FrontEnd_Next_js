@@ -46,7 +46,9 @@ export default function ColorFilterSidebar({
 }) {
   const [exploreOpen, setExploreOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const colorList = Array.isArray(colors) ? colors : Object.values(colors || {});
+  const colorList = (Array.isArray(colors) ? colors : Object.values(colors || {})).filter(
+    (color) => (color?.available ?? 0) > 0 && String(color?.name || "").trim() !== ""
+  );
   const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "";
   const activeCount = selectedColors.length + (inStockOnly ? 1 : 0);
   const preview = colorList.slice(0, PREVIEW_COUNT);

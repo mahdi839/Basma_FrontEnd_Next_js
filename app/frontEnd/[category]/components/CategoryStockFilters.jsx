@@ -23,7 +23,9 @@ export default function CategoryStockFilters({
   resultCount,
 }) {
   const sliderRef = useRef(null);
-  const sizeList = Array.isArray(sizes) ? sizes : Object.values(sizes || {});
+  const sizeList = (Array.isArray(sizes) ? sizes : Object.values(sizes || {})).filter(
+    (size) => (size?.available ?? 0) > 0
+  );
 
   if (sizeList.length === 0) return null;
 
