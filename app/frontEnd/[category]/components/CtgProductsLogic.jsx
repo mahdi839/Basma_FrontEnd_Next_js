@@ -10,6 +10,7 @@ import DynamicLoader from "@/app/components/loader/dynamicLoader";
 import ProductCard from "@/app/components/frontEnd/home/slots/components/ProductCard";
 import CartDrawer from "@/app/components/frontEnd/components/CartDrawer";
 import CategoryStockFilters from "./CategoryStockFilters";
+import ColorFilterSidebar from "./ColorFilterSidebar";
 
 
 export default function CtgProductsLogic({ products, category, pagination, stockFilters }) {
@@ -244,37 +245,52 @@ export default function CtgProductsLogic({ products, category, pagination, stock
     return <div className="text-center my-5">Error: {products.error}</div>;
   }
 
-  const filterBar = showStockFilters ? (
+  const sizeList = stockFilters?.sizes ?? [];
+  const colorList = stockFilters?.colors ?? [];
+  const hasColorSidebar = showStockFilters && colorList.length > 0;
+  const productCols = hasColorSidebar ? "col-6 col-md-4 col-lg-4" : "col-6 col-lg-3 col-md-4";
+
+  const sizeSlider = showStockFilters ? (
     <CategoryStockFilters
-      sizes={stockFilters?.sizes ?? []}
-      colors={stockFilters?.colors ?? []}
+      sizes={sizeList}
       selectedSizes={filterSizes}
+      onToggleSize={toggleSize}
+      loading={filtering}
+      resultCount={categoryPagination?.total}
+    />
+  ) : null;
+
+  const colorSidebar = hasColorSidebar ? (
+    <ColorFilterSidebar
+      colors={colorList}
       selectedColors={filterColors}
       inStockOnly={inStockOnly}
-      onToggleSize={toggleSize}
       onToggleColor={toggleColor}
       onToggleInStock={() => setInStockOnly((prev) => !prev)}
       onClear={clearFilters}
-      loading={filtering}
-      resultCount={categoryPagination?.total}
     />
   ) : null;
 
   if (!categoryProducts?.length) {
     return (
       <div className="container">
-        {filterBar}
-        <div className="text-center my-5">
-          <p className="text-muted mb-3">
-            {hasActiveFilters
-              ? "No products match these filters."
-              : "No products found"}
-          </p>
-          {hasActiveFilters && (
-            <button className="load-more-btn" onClick={clearFilters}>
-              Clear filters
-            </button>
-          )}
+        {sizeSlider}
+        <div className="row g-4 align-items-start">
+          {hasColorSidebar && <div className="col-12 col-lg-3">{colorSidebar}</div>}
+          <div className={hasColorSidebar ? "col-12 col-lg-9" : "col-12"}>
+            <div className="text-center my-5">
+              <p className="text-muted mb-3">
+                {hasActiveFilters
+                  ? "No products match these filters."
+                  : "No products found"}
+              </p>
+              {hasActiveFilters && (
+                <button className="load-more-btn" onClick={clearFilters}>
+                  Clear filters
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -282,49 +298,54 @@ export default function CtgProductsLogic({ products, category, pagination, stock
 
   return (
     <div className="container">
-      {filterBar}
-      <div className="row position-relative">
-        {categoryProducts?.map((product) => (
-          <div className="col-6 col-lg-3 col-md-4" key={product.id}>
-            <ProductCard
-              slotProducts={product}
-              handleOpenModal={handleOpenModal}
-              handleAddToCart={handleAddToCart}
+      {sizeSlider}
+      <div className="row g-4 align-items-start">
+        {hasColorSidebar && <div className="col-12 col-lg-3">{colorSidebar}</div>}
+        <div className={hasColorSidebar ? "col-12 col-lg-9" : "col-12"}>
+          <div className="row position-relative">
+            {categoryProducts?.map((product) => (
+              <div className={productCols} key={product.id}>
+                <ProductCard
+                  slotProducts={product}
+                  handleOpenModal={handleOpenModal}
+                  handleAddToCart={handleAddToCart}
+                />
+              </div>
+            ))}
+
+            <CartDrawer
+              isOpen={isCartDrawerOpen}
+              isDirectBuy={isDirectBuy}
+              onClose={handleCloseDrawer}
             />
           </div>
-        ))}
 
-        <CartDrawer
-          isOpen={isCartDrawerOpen}
-          isDirectBuy={isDirectBuy}
-          onClose={handleCloseDrawer}
-        />
-      </div>
-
-      {categoryPagination?.has_more && (
-        <div className="d-flex justify-content-center my-4">
-          <button
-            className="load-more-btn"
-            onClick={handleLoadMore}
-            disabled={loadingMore}
-            style={{
-              padding: "12px 48px",
-              border: "1.5px solid var(--primary-color)",
-              borderRadius: "3px",
-              background: "transparent",
-              fontSize: "11px",
-              fontWeight: 800,
-              letterSpacing: ".12em",
-              textTransform: "uppercase",
-              cursor: loadingMore ? "not-allowed" : "pointer",
-              color: "#111",
-              opacity: loadingMore ? 0.45 : 1,
-            }}
-          >
-            {loadingMore ? "Loading" : "Load More"}
-          </button>
+          {categoryPagination?.has_more && (
+            <div className="d-flex justify-content-center my-4">
+              <button
+                className="load-more-btn"
+                onClick={handleLoadMore}
+                disabled={loadingMore}
+                style={{
+                  padding: "12px 48px",
+                  border: "1.5px solid var(--primary-color)",
+                  borderRadius: "3px",
+                  background: "transparent",
+                  fontSize: "11px",
+                  fontWeight: 800,
+                  letterSpacing: ".12em",
+                  textTransform: "uppercase",
+                  cursor: loadingMore ? "not-allowed" : "pointer",
+                  color: "#111",
+                  opacity: loadingMore ? 0.45 : 1,
+                }}
+              >
+                {loadingMore ? "Loading" : "Load More"}
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -671,7 +671,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                         {size?.size}
                         {sizePrice && <span className="size-price">৳{sizePrice}</span>}
                         {stock.tracks && !soldOut && (
-                          <span className="size-stock">{sizeStock.available} left</span>
+                          <span className="size-stock">{sizeStock.available} available</span>
                         )}
                       </button>
                     );
@@ -705,7 +705,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
                   </span>
                 ) : selection.lowStock ? (
                   <span className="stock-chip stock-chip-low">
-                    Only {selection.available} left
+                    Only {selection.available} available
                   </span>
                 ) : (
                   <span className="stock-chip stock-chip-in">
