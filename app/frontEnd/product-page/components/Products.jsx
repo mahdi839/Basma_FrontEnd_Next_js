@@ -452,7 +452,7 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
               </div>
             )}
             {product?.status === "prebook" && (
-              <div className="preorder-badge">⚡ {preorderBadgeText}</div>
+              <div className="preorder-badge">⚡ {preorderLabel}</div>
             )}
              {product?.status === "in-stock" && (
               <div className="preorder-badge">⚡Delivery Time 2 to 4 Days</div>
