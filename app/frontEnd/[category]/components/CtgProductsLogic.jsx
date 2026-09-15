@@ -22,7 +22,8 @@ export default function CtgProductsLogic({ products, category, pagination, stock
 
   // Availability filters. Only shown for stock categories, so the rest of the
   // catalogue looks and behaves exactly as before.
-  const showStockFilters = Boolean(stockFilters?.category?.track_inventory);
+  const [liveFilters, setLiveFilters] = useState(stockFilters);
+  const showStockFilters = Boolean(liveFilters?.category?.track_inventory);
   const [filterSizes, setFilterSizes] = useState([]);
   const [filterColors, setFilterColors] = useState([]);
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -37,6 +38,29 @@ export default function CtgProductsLogic({ products, category, pagination, stock
   const cartItems = useSelector((state) => state.cart.items);
   const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
   const [isDirectBuy, setIsDirectBuy] = useState(false);
+
+  useEffect(() => {
+    setLiveFilters(stockFilters);
+  }, [stockFilters]);
+
+  // Re-read sizes/colours from inventory so this page never keeps a stale
+  // catalogue-wide list from the first server render.
+  useEffect(() => {
+    if (!category || !baseUrl) return undefined;
+
+    let cancelled = false;
+
+    fetch(`${baseUrl}api/category-filters/${category}`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!cancelled && json?.data) setLiveFilters(json.data);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [category, baseUrl]);
 
   // Open modal with product details
   function handleOpenModal(product) {
@@ -245,8 +269,10 @@ export default function CtgProductsLogic({ products, category, pagination, stock
     return <div className="text-center my-5">Error: {products.error}</div>;
   }
 
-  const sizeList = stockFilters?.sizes ?? [];
-  const colorList = stockFilters?.colors ?? [];
+  const sizeList = (liveFilters?.sizes ?? []).filter((size) => (size?.available ?? 0) > 0);
+  const colorList = (liveFilters?.colors ?? []).filter(
+    (color) => (color?.available ?? 0) > 0 && String(color?.name || "").trim() !== ""
+  );
   const hasColorSidebar = showStockFilters && colorList.length > 0;
   const productCols = hasColorSidebar ? "col-6 col-md-4 col-lg-4" : "col-6 col-lg-3 col-md-4";
 
