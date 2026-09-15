@@ -33,7 +33,8 @@ const CartDrawer = dynamic(
   }
 );
 
-export default function Products({ product, socialLinksData, initialRelatedProducts, productId }) {
+export default function Products({ product: initialProduct, socialLinksData, initialRelatedProducts, productId }) {
+  const [product, setProduct] = useState(initialProduct);
   const [activeTab, setActiveTab] = useState("specs");
   const [openFaqId, setOpenFaqId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -118,6 +119,28 @@ export default function Products({ product, socialLinksData, initialRelatedProdu
   const handleCloseDrawer = () => {
     setIsCartDrawerOpen(false);
   };
+
+  useEffect(() => {
+    setProduct(initialProduct);
+  }, [initialProduct]);
+
+  // Re-read inventory after confirm so size counts are not an hour-old SSR copy.
+  useEffect(() => {
+    if (!initialProduct?.id || !baseUrl) return undefined;
+
+    let cancelled = false;
+
+    fetch(`${baseUrl}api/products/${initialProduct.id}`, { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!cancelled && json?.data) setProduct(json.data);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+    };
+  }, [initialProduct?.id, baseUrl]);
 
   useEffect(() => {
     if (product) setIsLoading(false);
