@@ -104,6 +104,10 @@ export default function Products({ product: initialProduct, socialLinksData, ini
   const needsColor = (product?.colors?.length ?? 0) > 1 && !selectedColor;
   const needsSize = (product?.sizes?.length ?? 0) > 1 && !selectedSize;
   const selectionComplete = !needsColor && !needsSize;
+  const showInStockBadge =
+    stock.tracks &&
+    (stock.totalAvailable ?? 0) > 0 &&
+    product?.status !== "prebook";
 
   const cartItem = cartItems.find((item) =>
     selection.variantId
@@ -477,6 +481,9 @@ export default function Products({ product: initialProduct, socialLinksData, ini
             {product?.status === "prebook" && (
               <div className="preorder-badge">⚡ {preorderLabel}</div>
             )}
+            {showInStockBadge && (
+              <div className="stock-status-badge in-stock">In stock</div>
+            )}
              {product?.status === "in-stock" && (
               <div className="preorder-badge">⚡Delivery Time 2 to 4 Days</div>
             )}
@@ -490,6 +497,13 @@ export default function Products({ product: initialProduct, socialLinksData, ini
                 <div className="main-image-loader">
                   <div className="img-spinner" />
                 </div>
+              )}
+
+              {showInStockBadge && (
+                <div className="product-gallery-stock-badge">IN-STOCK</div>
+              )}
+              {product?.status === "prebook" && (
+                <div className="product-gallery-stock-badge prebook">PRE-BOOK</div>
               )}
 
               <Zoom>
@@ -604,6 +618,9 @@ export default function Products({ product: initialProduct, socialLinksData, ini
               )}
               {product?.status === "prebook" && (
                 <div className="preorder-badge">⚡ {preorderLabel}</div>
+              )}
+              {showInStockBadge && (
+                <div className="stock-status-badge in-stock">In stock</div>
               )}
             </div>
 
